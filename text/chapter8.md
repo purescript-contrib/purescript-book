@@ -226,10 +226,11 @@ The function we will write is called `foldM`. It generalizes the `foldl` functio
 
 ```haskell
 foldM :: forall m a b
-       . Monad m
+       . Foldable b
+      => Monad m
       => (a -> b -> m a)
       -> a
-      -> List b
+      -> b
       -> m a
 ```
 
@@ -237,9 +238,10 @@ Notice that this is the same as the type of `foldl`, except for the appearance o
 
 ```haskell
 foldl :: forall a b
-       . (a -> b -> a)
+       . Foldable b
+      => (a -> b -> a)
       -> a
-      -> List b
+      -> b
       -> a
 ```
 
