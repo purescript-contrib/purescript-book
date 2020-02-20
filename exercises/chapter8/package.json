@@ -1,0 +1,18 @@
+{
+  "name": "purescript-book-chapter8",
+  "version": "0.1.0",
+  "description": "The Effect Monad",
+  "main": "",
+  "private": true,
+  "author": "Phil Freeman",
+  "license": "Creative,Commons,Attribution-NonCommercial-ShareAlike,4.0,International,License",
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4",
+    "purescript": "^0.13.6",
+    "spago": "^0.14.0"
+  }
+}
