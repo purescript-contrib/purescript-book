@@ -12,6 +12,6 @@
 * [Canvas Graphics](chapter9.md)
 * [The Foreign Function Interface](chapter10.md)
 * [Monadic Adventures](chapter11.md)
-* [Callback Hell](chapter12.md)
+* [Asynchronous Effects](chapter12.md)
 * [Generative Testing](chapter13.md)
 * [Domain-Specific Languages](chapter14.md)
