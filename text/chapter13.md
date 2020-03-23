@@ -24,31 +24,21 @@ merge :: Array Int -> Array Int -> Array Int
 
 ```text
 > import Merge
-> merge [1, 3, 5] [2, 4, 6]
+> merge [1, 3, 5] [2, 4, 5]
 
-[1, 2, 3, 4, 5, 6]
+[1, 2, 3, 4, 5, 5]
 ```
 
-In a typical test suite, we might test `merge` by generating a few small test cases like this by hand, and asserting that the results were equal to the appropriate values. However, everything we need to know about the `merge` function can be summarized in two properties:
+In a typical test suite, we might test `merge` by generating a few small test cases like this by hand, and asserting that the results were equal to the appropriate values. However, everything we need to know about the `merge` function can be summarized by this property:
 
-- (Sortedness) If `xs` and `ys` are sorted, then `merge xs ys` is also sorted.
-- (Subarray) `xs` and `ys` are both subarrays of `merge xs ys`, and their elements appear in the same order.
+- If `xs` and `ys` are sorted, then `merge xs ys` is the sorted result of both arrays appended together.
 
-`purescript-quickcheck` allows us to test these properties directly, by generating random test cases. We simply state the properties that we want our code to have, as functions:
+`purescript-quickcheck` allows us to test this property directly, by generating random test cases. We simply state the properties that we want our code to have, as functions. In this case, we have a single property:
 
 ```haskell
 main = do
   quickCheck \xs ys ->
-    isSorted $ merge (sort xs) (sort ys)
-  quickCheck \xs ys ->
-    xs `isSubarrayOf` merge xs ys
-```
-
-Here, `isSorted` and `isSubarrayOf` are implemented as helper functions with the following types:
-
-```haskell
-isSorted :: forall a. Ord a => Array a -> Boolean
-isSubarrayOf :: forall a. Eq a => Array a -> Array a -> Boolean
+    eq (merge (sort xs) (sort ys)) (sort $ xs <> ys)
 ```
 
 When we run this code, `purescript-quickcheck` will attempt to disprove the properties we claimed, by generating random inputs `xs` and `ys`, and passing them to our functions. If our function returns `false` for any inputs, the property will be incorrect, and the library will raise an error. Fortunately, the library is unable to disprove our properties after generating 100 random test cases:
@@ -58,7 +48,6 @@ $ spago test
 
 Installation complete.
 Build succeeded.
-100/100 test(s) passed.
 100/100 test(s) passed.
 ...
 Tests succeeded.
@@ -81,22 +70,26 @@ To provide error messages along with our failed test cases, `purescript-quickche
 quickCheck \xs ys ->
   let
     result = merge (sort xs) (sort ys)
+    expected = sort $ xs <> ys
   in
-    xs `isSubarrayOf` result <?> show xs <> " not a subarray of " <> show result
+    eq result expected <?> "Result:\n" <> show result <> "\nnot equal to expected:\n" <> show expected
 ```
 
 This time, if we modify the code to introduce a bug, we see our improved error message after the first failed test case:
 
 ```text
-Error: Test 6 failed:
-[79168] not a subarray of [-752832,686016]
+Error: Test 1 (seed 534161891) failed:
+Result:
+[-822215,-196136,-116841,618343,887447,-888285]
+not equal to expected:
+[-888285,-822215,-196136,-116841,618343,887447]
 ```
 
-Notice how the input `xs` and `ys` were generated as a arrays of randomly-selected integers.
+Notice how the input `xs` and `ys` were generated as arrays of randomly-selected integers.
 
  ## Exercises
 
- 1. (Easy) Write a property which asserts that merging an array with the empty array does not modify the original array.
+ 1. (Easy) Write a property which asserts that merging an array with the empty array does not modify the original array. _Note_: This new property is redundant, since this situation is already covered by our existing property. We're just trying to give you readers a simple way to practice using quickCheck.
  1. (Easy) Add an appropriate error message to the remaining property for `merge`.
 
 ## Testing Polymorphic Code
@@ -107,7 +100,7 @@ The `Merge` module defines a generalization of the `merge` function, called `mer
 mergePoly :: forall a. Ord a => Array a -> Array a -> Array a
 ```
 
-If we modify our original tests to use `mergePoly` in place of `merge`, we see the following error message:
+If we modify our original test to use `mergePoly` in place of `merge`, we see the following error message:
 
 ```text
 No type class instance was found for
@@ -118,20 +111,25 @@ The instance head contains unknown type variables.
 Consider adding a type annotation.
 ```
 
-This error message indicates that the compiler could not generate random test cases, because it did not know what type of elements we wanted our arrays to have. In these sorts of cases, we can use a helper function to force the compiler to infer a particular type. For example, if we define a function `ints` as a synonym for the identity function:
+This error message indicates that the compiler could not generate random test cases, because it did not know what type of elements we wanted our arrays to have. In these sorts of cases, we can use type annotations to force the compiler to infer a particular type, such as `Array Int`:
+
+```haskell
+quickCheck \xs ys ->
+  eq (mergePoly (sort xs) (sort ys) :: Array Int) (sort $ xs <> ys)
+```
+
+We can alternatively use a helper function to specify type, which may result in cleaner code. For example, if we define a function `ints` as a synonym for the identity function:
 
 ```haskell
 ints :: Array Int -> Array Int
 ints = id
 ```
 
-then we can modify our tests so that the compiler infers the type `Array Int` for our two array arguments:
+then we can modify our test so that the compiler infers the type `Array Int` for our two array arguments:
 
 ```haskell
 quickCheck \xs ys ->
-  isSorted $ ints $ mergePoly (sort xs) (sort ys)
-quickCheck \xs ys ->
-  ints xs `isSubarrayOf` mergePoly xs ys
+  eq (ints $ mergePoly (sort xs) (sort ys)) (sort $ xs <> ys)
 ```
 
 Here, `xs` and `ys` both have type `Array Int`, since the `ints` function has been used to disambiguate the unknown type.
@@ -170,11 +168,11 @@ instance arbitraryByte :: Arbitrary Byte where
 
 Here, we define a type `Byte` of integral values between 0 and 255. The `Arbitrary` instance uses the `map` function to lift the `intToByte` function over the `arbitrary` action. The type of the inner `arbitrary` action is inferred as `Gen Int`.
 
-We can also use this idea to improve our sortedness test for `merge`:
+We can also use this idea to improve our test for `merge`:
 
 ```haskell
 quickCheck \xs ys ->
-  isSorted $ numbers $ mergePoly (sort xs) (sort ys)
+  eq (numbers $ mergePoly (sort xs) (sort ys)) (sort $ xs <> ys)
 ```
 
 In this test, we generated arbitrary arrays `xs` and `ys`, but had to sort them, since `merge` expects sorted input. On the other hand, we could create a newtype representing sorted arrays, and write an `Arbitrary` instance which generates sorted data:
@@ -193,7 +191,7 @@ With this type constructor, we can modify our test as follows:
 
 ```haskell
 quickCheck \xs ys ->
-  isSorted $ ints $ mergePoly (sorted xs) (sorted ys)
+  eq (ints $ mergePoly (sorted xs) (sorted ys)) (sort $ sorted xs <> sorted ys)
 ```
 
 This may look like a small change, but the types of `xs` and `ys` have changed to `Sorted Int`, instead of just `Array Int`. This communicates our _intent_ in a clearer way - the `mergePoly` function takes sorted input. Ideally, the type of the `mergePoly` function itself would be updated to use the `Sorted` type constructor.
@@ -283,15 +281,21 @@ instance arbFunction :: (Coarbitrary a, Arbitrary b) => Arbitrary (a -> b)
 
 In practice, this means that we can write properties which take functions as arguments. In the case of the `mergeWith` function, we can generate the first argument randomly, modifying our tests to take account of the new argument.
 
-In the case of the sortedness property, we cannot guarantee that the result will be sorted - we do not even necessarily have an `Ord` instance - but we can expect that the result be sorted with respect to the function `f` that we pass in as an argument. In addition, we need the two input arrays to be sorted with respect to `f`, so we use the `sortBy` function to sort `xs` and `ys` based on comparison after the function `f` has been applied:
+We cannot guarantee that the result will be sorted - we do not even necessarily have an `Ord` instance - but we can expect that the result be sorted with respect to the function `f` that we pass in as an argument. In addition, we need the two input arrays to be sorted with respect to `f`, so we use the `sortBy` function to sort `xs` and `ys` based on comparison after the function `f` has been applied:
 
 ```haskell
 quickCheck \xs ys f ->
-  isSorted $
-    map f $
-      mergeWith (intToBool f)
-                (sortBy (compare `on` f) xs)
-                (sortBy (compare `on` f) ys)
+  let
+    result =
+      map f $
+        mergeWith (intToBool f)
+                  (sortBy (compare `on` f) xs)
+                  (sortBy (compare `on` f) ys)
+    expected =
+      map f $
+        sortBy (compare `on` f) $ xs <> ys
+  in
+    eq result expected
 ```
 
 Here, we use a function `intToBool` to disambiguate the type of the function `f`:
@@ -299,13 +303,6 @@ Here, we use a function `intToBool` to disambiguate the type of the function `f`
 ```haskell
 intToBool :: (Int -> Boolean) -> Int -> Boolean
 intToBool = id
-```
-
-In the case of the subarray property, we simply have to change the name of the function to `mergeWith` - we still expect our input arrays to be subarrays of the result:
-
-```haskell
-quickCheck \xs ys f ->
-  xs `isSubarrayOf` mergeWith (numberToBool f) xs ys
 ```
 
 In addition to being `Arbitrary`, functions are also `Coarbitrary`:
@@ -332,7 +329,7 @@ We have to write a function which perturbs a random generator given a value of t
   coarbitrary Leaf = id
 ```
 
-If the tree is a `Branch`, then we will perturb the generator using the left subtree, the value and the right subtree, using function composition to create our perturbing function:
+If the tree is a `Branch`, then we will perturb the generator using the left subtree, the value, and the right subtree. We use function composition to create our perturbing function:
 
 ```haskell
   coarbitrary (Branch l a r) =
