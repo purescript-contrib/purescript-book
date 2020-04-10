@@ -296,7 +296,7 @@ Try out the interactive mode now. If you get stuck at any point, simply use the 
 ## Exercises
 
  1. (Easy) Use the `pi` constant, which is defined in the `Math` module, to write a function `circleArea` which computes the area of a circle with a given radius. Test your function using PSCi (_Hint_: don't forget to import `pi` by modifying the `import Math` statement).
- 1. (Medium) Use `spago install` to install the `purescript-globals` package as a dependency. Test out its functions in PSCi (_Hint_: you can use the `:browse` command in PSCi to browse the contents of a module).
+ 1. (Medium) Use `spago install` to install the `globals` package as a dependency. Test out its functions in PSCi (_Hint_: you can use the `:browse` command in PSCi to browse the contents of a module; try `:browse Global` and compare what PSCi tells you to what you find in **[Pursuit](https://pursuit.purescript.org/packages/purescript-globals/4.1.0/docs/Global)**).
 
 ## Conclusion
 
