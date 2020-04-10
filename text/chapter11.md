@@ -10,8 +10,8 @@ This module's project introduces the following new dependencies:
 
 - `purescript-ordered-collections`, which provides data typs for immutable maps and sets
 - `purescript-transformers`, which provides implementations of standard monad transformers
-- `purescript-node-readline`, which provides FFI bindings to the [`readline`](http://nodejs.org/api/readline.html) interface provided by NodeJS
-- `purescript-yargs`, which provides an applicative interface to the [`yargs`](https://www.npmjs.org/package/yargs) command line argument processing library
+- `purescript-node-readline`, which provides FFI bindings to the [`readline`](https://nodejs.org/api/readline.html) interface provided by NodeJS
+- `purescript-yargs`, which provides an applicative interface to the [`yargs`](https://www.npmjs.com/package/yargs) command line argument processing library
 
 It is also necessary to install the `yargs` module using NPM:
 

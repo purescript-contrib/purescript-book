@@ -10,15 +10,15 @@ Our first project will be a very simple PureScript library, which will provide a
 
 Here are the tools we will be using to set up our PureScript development environment:
 
-- [`purs`](http://purescript.org) - The PureScript compiler itself.
-- [`npm`](http://npmjs.org) - The Node Package Manager, which will allow us to install the rest of our development tools.
-- [`spago`](https://github.com/spacchetti/spago) - A command-line tool that automates many of the tasks associated with managing PureScript projects.
+- [`purs`](https://www.purescript.org) - The PureScript compiler itself.
+- [`npm`](https://www.npmjs.com) - The Node Package Manager, which will allow us to install the rest of our development tools.
+- [`spago`](https://github.com/purescript/spago) - A command-line tool that automates many of the tasks associated with managing PureScript projects.
 
 The rest of the chapter will guide you through installing and configuring these tools.
 
 ## Installing PureScript
 
-The recommended approach to installing the PureScript compiler is to download a binary release for your platform from the [PureScript website](http://purescript.org).
+The recommended approach to installing the PureScript compiler is to download a binary release for your platform from the [PureScript website](https://www.purescript.org).
 
 You should verify that the PureScript compiler executables are available on your path. Try running the PureScript compiler on the command line to verify this:
 
@@ -33,7 +33,7 @@ Other options for installing the PureScript compiler include:
 
 ## Installing Tools
 
-If you do not have a working installation of [NodeJS](http://nodejs.org/), you should install it. This should also install the `npm` package manager on your system. Make sure you have `npm` installed and available on your path.
+If you do not have a working installation of [NodeJS](https://nodejs.org), you should install it. This should also install the `npm` package manager on your system. Make sure you have `npm` installed and available on your path.
 
 Spago is a PureScript build tool and package manager. You will need to install it using `npm`, as follows:
 
