@@ -63,7 +63,10 @@
           (_, index) => `chapter${++index}.md`
         );
 
-        const bookChaptersLinks = bookChapters.map((path) => `/text/${path}`);
+        const bookChaptersLinks = bookChapters.map(
+          (path) =>
+            `https://raw.githubusercontent.com/s0kil/purescript-book/master/text/${path}`
+        );
 
         const promises = bookChaptersLinks.map(
           async (page) =>
