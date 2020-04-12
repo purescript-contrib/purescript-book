@@ -311,7 +311,7 @@ factors n = filter (\xs -> product xs == n) $ do
 The keyword `do` introduces a block of code which uses do notation. The block consists of expressions of a few types:
 
 - Expressions which bind elements of an array to a name. These are indicated with the backwards-facing arrow `<-`, with a name on the left, and an expression on the right whose type is an array.
-- Expressions which do not bind elements of the array to names. The last line `pure [i, j]` is an example of this kind of expression.
+- Expressions which do not bind elements of the array to names. The `do` *result* is an example of this category of expression and is illustrated in the last line, `pure [i, j]`.
 - Expressions which give names to expressions, using the `let` keyword.
 
 This new notation hopefully makes the structure of the algorithm clearer. If you mentally replace the arrow `<-` with the word "choose", you might read it as follows: "choose an element `i` between 1 and n, then choose an element `j` between `i` and `n`, and return `[i, j]`".
