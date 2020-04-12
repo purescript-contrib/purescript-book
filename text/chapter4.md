@@ -18,11 +18,11 @@ The `FileOperations` module contains functions which use the `Data.Path` API. So
 
 The project has the following dependencies:
 
-- `purescript-maybe`, which defines the `Maybe` type constructor
-- `purescript-arrays`, which defines functions for working with arrays
-- `purescript-strings`, which defines functions for working with JavaScript strings
-- `purescript-foldable-traversable`, which defines functions for folding arrays and other data structures
-- `purescript-console`, which defines functions for printing to the console
+- `maybe`, which defines the `Maybe` type constructor
+- `arrays`, which defines functions for working with arrays
+- `strings`, which defines functions for working with JavaScript strings
+- `foldable-traversable`, which defines functions for folding arrays and other data structures
+- `console`, which defines functions for printing to the console
 
 ## Introduction
 
@@ -288,7 +288,7 @@ Great! Now that we have all of the pairs of potential factors, we can use `filte
 [[1,10],[2,5]]
 ```
 
-This code uses the `product` function from the `Data.Foldable` module in the `purescript-foldable-traversable` library.
+This code uses the `product` function from the `Data.Foldable` module in the `foldable-traversable` library.
 
 Excellent! We've managed to find the correct set of factor pairs without duplicates.
 
@@ -337,7 +337,7 @@ and the result would be the same.
 
 ## Guards
 
-One further change we can make to the `factors` function is to move the filter inside the array comprehension. This is possible using the `guard` function from the `Control.MonadZero` module (from the `purescript-control` package):
+One further change we can make to the `factors` function is to move the filter inside the array comprehension. This is possible using the `guard` function from the `Control.MonadZero` module (from the `control` package):
 
 ```haskell
 import Control.MonadZero (guard)
@@ -475,7 +475,7 @@ This is a problem. If we are going to adopt recursion as a standard technique fr
 
 PureScript provides a partial solution to this problem in the form of _tail recursion optimization_.
 
-_Note_: more complete solutions to the problem can be implemented in libraries using so-called _trampolining_, but that is beyond the scope of this chapter. The interested reader can consult the documentation for the `purescript-free` and `purescript-tailrec` packages.
+_Note_: more complete solutions to the problem can be implemented in libraries using so-called _trampolining_, but that is beyond the scope of this chapter. The interested reader can consult the documentation for the `free` and `tailrec` packages.
 
 The key observation which enables tail recursion optimization is the following: a recursive call in _tail position_ to a function can be replaced with a _jump_, which does not allocate a stack frame. A call is in _tail position_ when it is the last call made before a function returns. This is the reason why we observed a stack overflow in the example - the recursive call to `f` was _not_ in tail position.
 

@@ -2,14 +2,14 @@
 
 ## Chapter Goals
 
-This chapter will be an extended example focussing on the `purescript-canvas` package, which provides a way to generate 2D graphics from PureScript using the HTML5 Canvas API.
+This chapter will be an extended example focussing on the `canvas` package, which provides a way to generate 2D graphics from PureScript using the HTML5 Canvas API.
 
 ## Project Setup
 
 This module's project introduces the following new dependencies:
 
-- `purescript-canvas`, which gives types to methods from the HTML5 Canvas API
-- `purescript-refs`, which provides a side-effect for using _global mutable references_
+- `canvas`, which gives types to methods from the HTML5 Canvas API
+- `refs`, which provides a side-effect for using _global mutable references_
 
 The source code for the chapter is broken up into a set of modules, each of which defines a `main` method. Different sections of this chapter are implemented in different files, and the `Main` module can be changed by modifying the Spago build command to run the appropriate file's `main` method at each point.
 
@@ -253,7 +253,7 @@ and view the result by opening `html/index.html`.
 
 There is more to the canvas than just rendering simple shapes. Every canvas maintains a transformation which is used to transform shapes before rendering. Shapes can be translated, rotated, scaled, and skewed.
 
-The `purescript-canvas` library supports these transformations using the following functions:
+The `canvas` library supports these transformations using the following functions:
 
 ```haskell
 translate :: Context2D
@@ -300,7 +300,7 @@ The effect of this sequence of actions is that the scene is rotated, then scaled
 
 A common use case is to render some subset of the scene using a transformation, and then to reset the transformation afterwards.
 
-The Canvas API provides the `save` and `restore` methods, which manipulate a _stack_ of states associated with the canvas. `purescript-canvas` wraps this functionality into the following functions:
+The Canvas API provides the `save` and `restore` methods, which manipulate a _stack_ of states associated with the canvas. `canvas` wraps this functionality into the following functions:
 
 ```haskell
 save
@@ -324,7 +324,7 @@ rotated ctx render = do
   restore ctx
 ```
 
-In the interest of abstracting over common use cases using higher-order functions, the `purescript-canvas` library provides the `withContext` function, which performs some canvas action while preserving the original context state:
+In the interest of abstracting over common use cases using higher-order functions, the `canvas` library provides the `withContext` function, which performs some canvas action while preserving the original context state:
 
 ```haskell
 withContext
@@ -344,7 +344,7 @@ rotated ctx render =
 
 ## Global Mutable State
 
-In this section, we'll use the `purescript-refs` package to demonstrate another effect in the `Effect` monad.
+In this section, we'll use the `refs` package to demonstrate another effect in the `Effect` monad.
 
 The `Effect.Ref` module provides a type constructor for global mutable references, and an associated effect:
 
@@ -414,7 +414,7 @@ and open the `html/index.html` file. If you click the canvas repeatedly, you sho
 
 ## L-Systems
 
-In this final example, we will use the `purescript-canvas` package to write a function for rendering _L-systems_ (or _Lindenmayer systems_).
+In this final example, we will use the `canvas` package to write a function for rendering _L-systems_ (or _Lindenmayer systems_).
 
 An L-system is defined by an _alphabet_, an initial sequence of letters from the alphabet, and a set of _production rules_. Each production rule takes a letter of the alphabet and returns a sequence of replacement letters. This process is iterated some number of times starting with the initial sequence of letters.
 
@@ -550,7 +550,7 @@ lsystem init prod interpret n state = go init n
 
 The `go` function works by recursion on its second argument. There are two cases: when `n` is zero, and when `n` is non-zero.
 
-In the first case, the recursion is complete, and we simply need to interpret the current sentence according to the interpretation function. We have a sentence of type `Array a`, a state of type `s`, and a function of type `s -> a -> Effect s`. This sounds like a job for the `foldM` function which we defined earlier, and which is available from the `purescript-control` package:
+In the first case, the recursion is complete, and we simply need to interpret the current sentence according to the interpretation function. We have a sentence of type `Array a`, a state of type `s`, and a function of type `s -> a -> Effect s`. This sounds like a job for the `foldM` function which we defined earlier, and which is available from the `control` package:
 
 ```haskell
   go s 0 = foldM interpret state s
@@ -664,7 +664,7 @@ and open `html/index.html`. You should see the Koch curve rendered to the canvas
 
 ## Conclusion
 
-In this chapter, we learned how to use the HTML5 Canvas API from PureScript by using the `purescript-canvas` library. We also saw a practical demonstration of many of the techniques we have learned already: maps and folds, records and row polymorphism, and the `Effect` monad for handling side-effects.
+In this chapter, we learned how to use the HTML5 Canvas API from PureScript by using the `canvas` library. We also saw a practical demonstration of many of the techniques we have learned already: maps and folds, records and row polymorphism, and the `Effect` monad for handling side-effects.
 
 The examples also demonstrated the power of higher-order functions and _separating data from implementation_. It would be possible to extend these ideas to completely separate the representation of a scene from its rendering function, using an algebraic data type, for example:
 
@@ -678,6 +678,6 @@ data Scene
   | ...
 ```
 
-This approach is taken in the `purescript-drawing` package, and it brings the flexibility of being able to manipulate the scene as data in various ways before rendering.
+This approach is taken in the `drawing` package, and it brings the flexibility of being able to manipulate the scene as data in various ways before rendering.
 
-In the next chapter, we will see how to implement libraries like `purescript-canvas` which wrap existing JavaScript functionality, by using PureScript's _foreign function interface_.
+In the next chapter, we will see how to implement libraries like `canvas` which wrap existing JavaScript functionality, by using PureScript's _foreign function interface_.

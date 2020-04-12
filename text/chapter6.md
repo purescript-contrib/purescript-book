@@ -14,11 +14,11 @@ The source code for this chapter is defined in the file `src/Data/Hashable.purs`
 
 The project has the following dependencies:
 
-- `purescript-maybe`, which defines the `Maybe` data type, which represents optional values.
-- `purescript-tuples`, which defines the `Tuple` data type, which represents pairs of values.
-- `purescript-either`, which defines the `Either` data type, which represents disjoint unions.
-- `purescript-strings`, which defines functions which operate on strings.
-- `purescript-functions`, which defines some helper functions for defining PureScript functions.
+- `maybe`, which defines the `Maybe` data type, which represents optional values.
+- `tuples`, which defines the `Tuple` data type, which represents pairs of values.
+- `either`, which defines the `Either` data type, which represents disjoint unions.
+- `strings`, which defines functions which operate on strings.
+- `functions`, which defines some helper functions for defining PureScript functions.
 
 The module `Data.Hashable` imports several modules provided by these packages.
 
@@ -177,7 +177,7 @@ class EuclideanRing a <= Field a
 
 The `Field` type class is composed from several more general _superclasses_. This allows us to talk abstractly about types which support some but not all of the `Field` operations. For example, a type of natural numbers would be closed under addition and multiplication, but not necessarily under subtraction, so that type might have an instance of the `Semiring` class (which is a superclass of `Num`), but not an instance of `Ring` or `Field`.
 
-Superclasses will be explained later in this chapter, but the full numeric type class hierarchy is beyond the scope of this chapter. The interested reader is encouraged to read the documentation for the superclasses of `Field` in `purescript-prelude`.
+Superclasses will be explained later in this chapter, but the full numeric type class hierarchy is beyond the scope of this chapter. The interested reader is encouraged to read the documentation for the superclasses of `Field` in `prelude`.
 
 ### Semigroups and Monoids
 
@@ -188,11 +188,11 @@ class Semigroup a where
   append :: a -> a -> a
 ```
 
-Strings form a semigroup under regular string concatenation, and so do arrays. Several other standard instances are provided by the `purescript-prelude` package.
+Strings form a semigroup under regular string concatenation, and so do arrays. Several other standard instances are provided by the `prelude` package.
 
 The `<>` concatenation operator, which we have already seen, is provided as an alias for `append`.
 
-The `Monoid` type class (provided by the `purescript-prelude` package) extends the `Semigroup` type class with the concept of an empty value, called `mempty`:
+The `Monoid` type class (provided by the `prelude` package) extends the `Semigroup` type class with the concept of an empty value, called `mempty`:
 
 ```haskell
 class Semigroup m <= Monoid m where
@@ -215,13 +215,13 @@ A `Monoid` type class instance for a type describes how to _accumulate_ a result
 [1,2,3,4,5,6]
 ```
 
-The `purescript-prelude` package provides many examples of monoids and semigroups, which we will use in the rest of the book.
+The `prelude` package provides many examples of monoids and semigroups, which we will use in the rest of the book.
 
 ### Foldable
 
 If the `Monoid` type class identifies those types which act as the result of a fold, then the `Foldable` type class identifies those type constructors which can be used as the source of a fold.
 
-The `Foldable` type class is provided in the `purescript-foldable-traversable` package, which also contains instances for some standard containers such as arrays and `Maybe`.
+The `Foldable` type class is provided in the `foldable-traversable` package, which also contains instances for some standard containers such as arrays and `Maybe`.
 
 The type signatures for the functions belonging to the `Foldable` class are a little more complicated than the ones we've seen so far:
 
@@ -247,7 +247,7 @@ Let's try out `foldMap` in PSCi:
 
 Here, we choose the monoid for strings, which concatenates strings together, and the `show` function which renders an `Int` as a `String`. Then, passing in an array of integers, we see that the results of `show`ing each integer have been concatenated into a single `String`.
 
-But arrays are not the only types which are foldable. `purescript-foldable-traversable` also defines `Foldable` instances for types like `Maybe` and `Tuple`, and other libraries like `purescript-lists` define `Foldable` instances for their own data types. `Foldable` captures the notion of an _ordered container_.
+But arrays are not the only types which are foldable. `foldable-traversable` also defines `Foldable` instances for types like `Maybe` and `Tuple`, and other libraries like `lists` define `Foldable` instances for their own data types. `Foldable` captures the notion of an _ordered container_.
 
 ### Functor, and Type Class Laws
 
@@ -375,7 +375,7 @@ Overlapping type class instances found for Data.Show.Show T
 
 The overlapping instances rule is enforced so that automatic selection of type class instances is a predictable process. If we allowed two type class instances for a type to exist, then either could be chosen depending on the order of module imports, and that could lead to unpredictable behavior of the program at runtime, which is undesirable.
 
-If it is truly the case that there are two valid type class instances for a type, satisfying the appropriate laws, then a common approach is to define newtypes which wrap the existing type. Since different newtypes are allowed to have different type class instances under the overlapping instances rule, there is no longer an issue. This approach is taken in PureScript's standard libraries, for example in `purescript-maybe`, where the `Maybe a` type has multiple valid instances for the `Monoid` type class.
+If it is truly the case that there are two valid type class instances for a type, satisfying the appropriate laws, then a common approach is to define newtypes which wrap the existing type. Since different newtypes are allowed to have different type class instances under the overlapping instances rule, there is no longer an issue. This approach is taken in PureScript's standard libraries, for example in `maybe`, where the `Maybe a` type has multiple valid instances for the `Monoid` type class.
 
 ## Instance Dependencies
 
@@ -396,7 +396,7 @@ instance showEither :: (Show a, Show b) => Show (Either a b) where
   ...
 ```
 
-These two type class instances are provided in the `purescript-prelude` library.
+These two type class instances are provided in the `prelude` library.
 
 When the program is compiled, the correct type class instance for `Show` is chosen based on the inferred type of the argument to `show`. The selected instance might depend on many such instance relationships, but this complexity is not exposed to the developer.
 

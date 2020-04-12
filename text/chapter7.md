@@ -14,8 +14,8 @@ The source code for this chapter is defined in the files `src/Data/AddressBook.p
 
 The project has a number of dependencies, many of which we have seen before. There are two new dependencies:
 
-- `purescript-control`, which defines functions for abstracting control flow using type classes like `Applicative`.
-- `purescript-validation`, which defines a functor for _applicative validation_, the subject of this chapter.
+- `control`, which defines functions for abstracting control flow using type classes like `Applicative`.
+- `validation`, which defines a functor for _applicative validation_, the subject of this chapter.
 
 The `Data.AddressBook` module defines data types and `Show` instances for the types in our project, and the `Data.AddressBook.Validation` module contains validation rules for those types.
 
@@ -476,7 +476,7 @@ This function can be seen to work in PSCi, but has a limitation which we have se
 
 The `Either String` applicative functor only provides the first error encountered. Given the input here, we would prefer to see two errors - one for the missing first name, and a second for the missing last name.
 
-There is another applicative functor which is provided by the `purescript-validation` library. This functor is called `V`, and it provides the ability to return errors in any _semigroup_. For example, we can use `V (Array String)` to return an array of `String`s as errors, concatenating new errors onto the end of the array.
+There is another applicative functor which is provided by the `validation` library. This functor is called `V`, and it provides the ability to return errors in any _semigroup_. For example, we can use `V (Array String)` to return an array of `String`s as errors, concatenating new errors onto the end of the array.
 
 The `Data.AddressBook.Validation` module uses the `V (Array String)` applicative functor to validate the data structures in the `Data.AddressBook` module.
 
@@ -719,7 +719,7 @@ However, in general, applicative functors are more general than this. The applic
 
 For example, the `V` validation functor returned an _array_ of errors, but it would work just as well if we picked the `Set` semigroup, in which case it would not matter what order we ran the various validators. We could even run them in parallel over the data structure!
 
-As a second example, the `purescript-parallel` package provides a type class `Parallel` which supports _parallel computations_. `Parallel` provides a function `parallel` which uses some `Applicative` functor to compute the result of its input computation _in parallel_:
+As a second example, the `parallel` package provides a type class `Parallel` which supports _parallel computations_. `Parallel` provides a function `parallel` which uses some `Applicative` functor to compute the result of its input computation _in parallel_:
 
 ```haskell
 f <$> parallel computation1

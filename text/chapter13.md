@@ -4,17 +4,17 @@
 
 In this chapter, we will see a particularly elegant application of type classes to the problem of testing. Instead of testing our code by telling the compiler _how_ to test, we simply assert _what_ properties our code should have. Test cases can be generated randomly from this specification, using type classes to hide the boilerplate code of random data generation. This is called _generative testing_ (or _property-based testing_), a technique made popular by the [QuickCheck](https://wiki.haskell.org/Introduction_to_QuickCheck1) library in Haskell.
 
-The `purescript-quickcheck` package is a port of Haskell's QuickCheck library to PureScript, and for the most part, it preserves the types and syntax of the original library. We will see how to use `purescript-quickcheck` to test a simple library, using Spago to integrate our test suite into our development process.
+The `quickcheck` package is a port of Haskell's QuickCheck library to PureScript, and for the most part, it preserves the types and syntax of the original library. We will see how to use `quickcheck` to test a simple library, using Spago to integrate our test suite into our development process.
 
 ## Project Setup
 
-This chapter's project adds `purescript-quickcheck` as a dependency.
+This chapter's project adds `quickcheck` as a dependency.
 
 In a Spago project, test sources should be placed in the `test` directory, and the main module for the test suite should be named `Test.Main`. The test suite can be run using the `spago test` command.
 
 ## Writing Properties
 
-The `Merge` module implements a simple function `merge`, which we will use to demonstrate the features of the `purescript-quickcheck` library.
+The `Merge` module implements a simple function `merge`, which we will use to demonstrate the features of the `quickcheck` library.
 
 ```haskell
 merge :: Array Int -> Array Int -> Array Int
@@ -33,7 +33,7 @@ In a typical test suite, we might test `merge` by generating a few small test ca
 
 - If `xs` and `ys` are sorted, then `merge xs ys` is the sorted result of both arrays appended together.
 
-`purescript-quickcheck` allows us to test this property directly, by generating random test cases. We simply state the properties that we want our code to have, as functions. In this case, we have a single property:
+`quickcheck` allows us to test this property directly, by generating random test cases. We simply state the properties that we want our code to have, as functions. In this case, we have a single property:
 
 ```haskell
 main = do
@@ -41,7 +41,7 @@ main = do
     eq (merge (sort xs) (sort ys)) (sort $ xs <> ys)
 ```
 
-When we run this code, `purescript-quickcheck` will attempt to disprove the properties we claimed, by generating random inputs `xs` and `ys`, and passing them to our functions. If our function returns `false` for any inputs, the property will be incorrect, and the library will raise an error. Fortunately, the library is unable to disprove our properties after generating 100 random test cases:
+When we run this code, `quickcheck` will attempt to disprove the properties we claimed, by generating random inputs `xs` and `ys`, and passing them to our functions. If our function returns `false` for any inputs, the property will be incorrect, and the library will raise an error. Fortunately, the library is unable to disprove our properties after generating 100 random test cases:
 
 ```text
 $ spago test
@@ -64,7 +64,7 @@ As we can see, this error message is not very helpful, but it can be improved wi
 
 ## Improving Error Messages
 
-To provide error messages along with our failed test cases, `purescript-quickcheck` provides the `<?>` operator. Simply separate the property definition from the error message using `<?>`, as follows:
+To provide error messages along with our failed test cases, `quickcheck` provides the `<?>` operator. Simply separate the property definition from the error message using `<?>`, as follows:
 
 ```haskell
 quickCheck \xs ys ->
@@ -137,11 +137,11 @@ Here, `xs` and `ys` both have type `Array Int`, since the `ints` function has be
  ## Exercises
 
  1. (Easy) Write a function `bools` which forces the types of `xs` and `ys` to be `Array Boolean`, and add additional properties which test `mergePoly` at that type.
- 1. (Medium) Choose a pure function from the core libraries (for example, from the `purescript-arrays` package), and write a QuickCheck property for it, including an appropriate error message. Your property should use a helper function to fix any polymorphic type arguments to either `Int` or `Boolean`.
+ 1. (Medium) Choose a pure function from the core libraries (for example, from the `arrays` package), and write a QuickCheck property for it, including an appropriate error message. Your property should use a helper function to fix any polymorphic type arguments to either `Int` or `Boolean`.
 
 ## Generating Arbitrary Data
 
-Now we will see how the `purescript-quickcheck` library is able to randomly generate test cases for our properties.
+Now we will see how the `quickcheck` library is able to randomly generate test cases for our properties.
 
 Those types whose values can be randomly generated are captured by the `Arbitrary` type class:
 
@@ -154,7 +154,7 @@ The `Gen` type constructor represents the side-effects of _deterministic random 
 
 `Gen` is also a monad and an applicative functor, so we have the usual collection of combinators at our disposal for creating new instances of the `Arbitrary` type class.
 
-For example, we can use the `Arbitrary` instance for the `Int` type, provided in the `purescript-quickcheck` library, to create a distribution on the 256 byte values, using the `Functor` instance for `Gen` to map a function from integers to bytes over arbitrary integer values:
+For example, we can use the `Arbitrary` instance for the `Int` type, provided in the `quickcheck` library, to create a distribution on the 256 byte values, using the `Functor` instance for `Gen` to map a function from integers to bytes over arbitrary integer values:
 
 ```haskell
 newtype Byte = Byte Int
@@ -395,11 +395,11 @@ Success : Success : ...
      ```
 
      _Hint_: Use the `oneOf` function defined in `Test.QuickCheck.Gen` to define your `Arbitrary` instance.
- 1. (Medium) Use the `all` function to simplify the result of the `quickCheckPure` function - your function should return `true` if every test passes, and `false` otherwise. Try using the `First` monoid, defined in `purescript-monoids` with the `foldMap` function to preserve the first error in case of failure.
+ 1. (Medium) Use the `all` function to simplify the result of the `quickCheckPure` function - your function should return `true` if every test passes, and `false` otherwise. Try using the `First` monoid, defined in `monoids` with the `foldMap` function to preserve the first error in case of failure.
 
 ## Conclusion
 
-In this chapter, we met the `purescript-quickcheck` package, which can be used to write tests in a declarative way using the paradigm of _generative testing_. In particular:
+In this chapter, we met the `quickcheck` package, which can be used to write tests in a declarative way using the paradigm of _generative testing_. In particular:
 
 - We saw how to automate QuickCheck tests using `spago test`.
 - We saw how to write properties as functions, and how to use the `<?>` operator to improve error messages.

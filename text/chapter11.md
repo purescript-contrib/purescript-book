@@ -8,10 +8,10 @@ The goal of this chapter will be to learn about _monad transformers_, which prov
 
 This module's project introduces the following new dependencies:
 
-- `purescript-ordered-collections`, which provides data typs for immutable maps and sets
-- `purescript-transformers`, which provides implementations of standard monad transformers
-- `purescript-node-readline`, which provides FFI bindings to the [`readline`](https://nodejs.org/api/readline.html) interface provided by NodeJS
-- `purescript-yargs`, which provides an applicative interface to the [`yargs`](https://www.npmjs.com/package/yargs) command line argument processing library
+- `ordered-collections`, which provides data typs for immutable maps and sets
+- `transformers`, which provides implementations of standard monad transformers
+- `node-readline`, which provides FFI bindings to the [`readline`](https://nodejs.org/api/readline.html) interface provided by NodeJS
+- `yargs`, which provides an applicative interface to the [`yargs`](https://www.npmjs.com/package/yargs) command line argument processing library
 
 It is also necessary to install the `yargs` module using NPM:
 
@@ -79,11 +79,11 @@ Congratulations, Phil!
 You win!
 ```
 
-The game is very simple, but the aim of the chapter is to use the `purescript-transformers` package to build a library which will enable rapid development of this type of game.
+The game is very simple, but the aim of the chapter is to use the `transformers` package to build a library which will enable rapid development of this type of game.
 
 ## The State Monad
 
-We will start by looking at some of the monads provided by the `purescript-transformers` package.
+We will start by looking at some of the monads provided by the `transformers` package.
 
 The first example is the `State` monad, which provides a way to model _mutable state_ in pure code. We have already seen an approach to mutable state provided by the `Effect` monad. `State` provides an alternative.
 
@@ -167,7 +167,7 @@ Given the `sumArray` function above, we could use `execState` in PSCi to sum the
 
 ## The Reader Monad
 
-Another monad provided by the `purescript-transformers` package is the `Reader` monad. This monad provides the ability to read from a global configuration. Whereas the `State` monad provides the ability to read and write a single piece of mutable state, the `Reader` monad only provides the ability to read a single piece of data.
+Another monad provided by the `transformers` package is the `Reader` monad. This monad provides the ability to read from a global configuration. Whereas the `State` monad provides the ability to read and write a single piece of mutable state, the `Reader` monad only provides the ability to read a single piece of data.
 
 The `Reader` type constructor takes two type arguments: a type `r` which represents the configuration type, and the return type `a`.
 
@@ -339,7 +339,7 @@ Tuple 3 ["gcdLog 21 15","gcdLog 6 15","gcdLog 6 9","gcdLog 6 3","gcdLog 3 3"]
 
  ## Exercises
 
- 1. (Medium) Rewrite the `sumArray` function above using the `Writer` monad and the `Additive Int` monoid from the `purescript-monoid` package.
+ 1. (Medium) Rewrite the `sumArray` function above using the `Writer` monad and the `Additive Int` monoid from the `monoid` package.
  1. (Medium) The _Collatz_ function is defined on natural numbers `n` as `n / 2` when `n` is even, and `3 * n + 1` when `n` is odd. For example, the iterated Collatz sequence starting at `10` is as follows:
 
      ```text
@@ -440,11 +440,11 @@ This is not very remarkable, since we could have implemented this without `State
 (Right (Tuple "te" "st"))
 ```
 
-We can use the `split` function with a handful of other actions to build a basic parsing library. In fact, this is the approach taken by the `purescript-parsing` library. This is the power of monad transformers - we can create custom-built monads for a variety of problems, choosing the side-effects that we need, and keeping the expressiveness of do notation and applicative combinators.
+We can use the `split` function with a handful of other actions to build a basic parsing library. In fact, this is the approach taken by the `parsing` library. This is the power of monad transformers - we can create custom-built monads for a variety of problems, choosing the side-effects that we need, and keeping the expressiveness of do notation and applicative combinators.
 
 ## The ExceptT Monad Transformer
 
-The `purescript-transformers` package also defines the `ExceptT e` monad transformer, which is the transformer corresponding to the `Either e` monad. It provides the following API:
+The `transformers` package also defines the `ExceptT e` monad transformer, which is the transformer corresponding to the `Either e` monad. It provides the following API:
 
 ```haskell
 class MonadError e m where
@@ -460,7 +460,7 @@ The `MonadError` class captures those monads which support throwing and catching
 
 The `runExceptT` handler is used to run a computation of type `ExceptT e m a`.
 
-This API is similar to that provided by the `purescript-exceptions` package and the `Exception` effect. However, there are some important differences:
+This API is similar to that provided by the `exceptions` package and the `Exception` effect. However, there are some important differences:
 
 - `Exception` uses actual JavaScript exceptions, whereas `ExceptT` models errors as a pure data structure.
 - The `Exception` effect only supports exceptions of one type, namely JavaScript's `Error` type, whereas `ExceptT` supports errors of any type. In particular, we are free to define new error types.
@@ -589,9 +589,9 @@ modify :: forall m s. MonadState s m => (s -> s) -> m Unit
 
 The `Control.Monad.State.Class` module defines the `MonadState` (multi-parameter) type class, which allows us to abstract over "monads which support pure mutable state". As one would expect, the `State s` type constructor is an instance of the `MonadState s` type class, but there are many more interesting instances of this class.
 
-In particular, there are instances of `MonadState` for the `WriterT`, `ReaderT` and `ExceptT` monad transformers, provided in the `purescript-transformers` package. Each of these monad transformers has an instance for `MonadState` whenever the underlying `Monad` does. In practice, this means that as long as `StateT` appears _somewhere_ in the monad transformer stack, and everything above `StateT` is an instance of `MonadState`, then we are free to use `get`, `put` and `modify` directly, without the need to use `lift`.
+In particular, there are instances of `MonadState` for the `WriterT`, `ReaderT` and `ExceptT` monad transformers, provided in the `transformers` package. Each of these monad transformers has an instance for `MonadState` whenever the underlying `Monad` does. In practice, this means that as long as `StateT` appears _somewhere_ in the monad transformer stack, and everything above `StateT` is an instance of `MonadState`, then we are free to use `get`, `put` and `modify` directly, without the need to use `lift`.
 
-Indeed, the same is true of the actions we covered for the `ReaderT`, `WriterT`, and `ExceptT` transformers. `purescript-transformers` defines a type class for each of the major transformers, allowing us to abstract over monads which support their operations.
+Indeed, the same is true of the actions we covered for the `ReaderT`, `WriterT`, and `ExceptT` transformers. `transformers` defines a type class for each of the major transformers, allowing us to abstract over monads which support their operations.
 
 In the case of the `split` function above, the monad stack we constructed is an instance of each of the `MonadState`, `MonadWriter` and `MonadError` type classes. This means that we don't need to call `lift` at all! We can just use the actions `get`, `put`, `tell` and `throwError` as if they were defined on the monad stack itself:
 
@@ -611,7 +611,7 @@ This computation really looks like we have extended our programming language to 
 
 ## Alternatives
 
-The `purescript-control` package defines a number of abstractions for working with computations which can fail. One of these is the `Alternative` type class:
+The `control` package defines a number of abstractions for working with computations which can fail. One of these is the `Alternative` type class:
 
 ```haskell
 class Functor f <= Alt f where
@@ -746,7 +746,7 @@ Again, this illustrates the power of reusability that monad transformers bring -
 
 ## The RWS Monad
 
-One particular combination of monad transformers is so common that it is provided as a single monad transformer in the `purescript-transformers` package. The `Reader`, `Writer` and `State` monads are combined into the _reader-writer-state_ monad, or more simply the `RWS` monad. This monad has a corresponding monad transformer called the `RWST` monad transformer.
+One particular combination of monad transformers is so common that it is provided as a single monad transformer in the `transformers` package. The `Reader`, `Writer` and `State` monads are combined into the _reader-writer-state_ monad, or more simply the `RWS` monad. This monad has a corresponding monad transformer called the `RWST` monad transformer.
 
 We will use the `RWS` monad to model the game logic for our text adventure game.
 
@@ -885,7 +885,7 @@ The remainder of the `Game` module defines a set of similar actions, each using 
 
 Since our game logic runs in the `RWS` monad, it is necessary to run the computation in order to respond to the user's commands.
 
-The front-end of our game is built using two packages: `purescript-yargs`, which provides an applicative interface to the `yargs` command line parsing library, and `purescript-node-readline`, which wraps NodeJS' `readline` module, allowing us to write interactive console-based applications.
+The front-end of our game is built using two packages: `yargs`, which provides an applicative interface to the `yargs` command line parsing library, and `node-readline`, which wraps NodeJS' `readline` module, allowing us to write interactive console-based applications.
 
 The interface to our game logic is provided by the function `game` in the `Game` module:
 
@@ -909,9 +909,9 @@ The front-end of our application is defined by a function `runGame`, with the fo
 runGame :: GameEnvironment -> Effect Unit
 ```
 
-This function interacts with the user via the console (using the `purescript-node-readline` and `purescript-console` packages). `runGame` takes the game configuration as a function argument.
+This function interacts with the user via the console (using the `node-readline` and `console` packages). `runGame` takes the game configuration as a function argument.
 
-The `purescript-node-readline` package provides the `LineHandler` type, which represents actions in the `Effect` monad which handle user input from the terminal. Here is the corresponding API:
+The `node-readline` package provides the `LineHandler` type, which represents actions in the `Effect` monad which handle user input from the terminal. Here is the corresponding API:
 
 ```haskell
 type LineHandler a = String -> Effect a
@@ -975,9 +975,9 @@ The `runGame` function finally attaches the initial line handler to the console 
 
 ## Handling Command Line Options
 
-The final piece of the application is responsible for parsing command line options and creating the `GameEnvironment` configuration record. For this, we use the `purescript-yargs` package.
+The final piece of the application is responsible for parsing command line options and creating the `GameEnvironment` configuration record. For this, we use the `yargs` package.
 
-`purescript-yargs` is an example of _applicative command line option parsing_. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the `purescript-yargs` package, the functor we are interested in is the `Y` functor, which adds the side-effect of reading from command line options. It provides the following handler:
+`yargs` is an example of _applicative command line option parsing_. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the `yargs` package, the functor we are interested in is the `Y` functor, which adds the side-effect of reading from command line options. It provides the following handler:
 
 ```haskell
 runY :: forall a. YargsSetup -> Y (Effect a) -> Effect a

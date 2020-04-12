@@ -85,9 +85,9 @@ Next, we will see how to use the techniques we have learned so far to solve thes
 
 ## The Continuation Monad
 
-Let's translate the `copyFile` example above into PureScript by using the FFI. In doing so, the structure of the computation will become apparent, and we will be led naturally to a monad transformer which is defined in the `purescript-transformers` package - the continuation monad transformer `ContT`.
+Let's translate the `copyFile` example above into PureScript by using the FFI. In doing so, the structure of the computation will become apparent, and we will be led naturally to a monad transformer which is defined in the `transformers` package - the continuation monad transformer `ContT`.
 
-_Note_: in practice, it is not necessary to write these functions by hand every time. Asynchronous file IO functions can be found in the `purescript-node-fs` and `purescript-node-fs-aff` libraries.
+_Note_: in practice, it is not necessary to write these functions by hand every time. Asynchronous file IO functions can be found in the `node-fs` and `node-fs-aff` libraries.
 
 First, we need to gives types to `readFile` and `writeFile` using the FFI. Let's start by defining some type synonyms, and a new effect for file IO:
 
@@ -193,7 +193,7 @@ writeFile path text k =
 
 Now we can spot an important pattern. Each of these functions takes a callback which returns a value in some monad (in this case `Eff (fs :: FS | eff)`) and returns a value in _the same monad_. This means that when the first callback returns a result, that monad can be used to bind the result to the input of the next asynchronous function. In fact, that's exactly what we did by hand in the `copyFile` example.
 
-This is the basis of the _continuation monad transformer_, which is defined in the `Control.Monad.Cont.Trans` module in `purescript-transformers`.
+This is the basis of the _continuation monad transformer_, which is defined in the `Control.Monad.Cont.Trans` module in `transformers`.
 
 `ContT` is defined as a newtype as follows:
 
@@ -393,7 +393,7 @@ We've seen how to use the `ContT` monad and do notation to compose asynchronous 
 
 If we are using `ContT` to transform the `Eff` monad, then we can compute in parallel simply by initiating our two computations one after the other.
 
-The `purescript-parallel` package defines a type class `Parallel` for monads like `Async` which support parallel execution. When we met applicative functors earlier in the book, we observed how applicative functors can be useful for combining parallel computations. In fact, an instance for `Parallel` defines a correspondence between a monad `m` (such as `Async`) and an applicative functor `f` which can be used to combine computations in parallel:
+The `parallel` package defines a type class `Parallel` for monads like `Async` which support parallel execution. When we met applicative functors earlier in the book, we observed how applicative functors can be useful for combining parallel computations. In fact, an instance for `Parallel` defines a correspondence between a monad `m` (such as `Async`) and an applicative functor `f` which can be used to combine computations in parallel:
 
 ```haskell
 class (Monad m, Applicative f) <= Parallel f m | m -> f, f -> m where
@@ -406,7 +406,7 @@ The class defines two functions:
 - `parallel`, which takes computations in the monad `m` and turns them into computations in the applicative functor `f`, and
 - `sequential`, which performs a conversion in the opposite direction.
 
-The `purescript-parallel` library provides a `Parallel` instance for the `Async` monad. It uses mutable references to combine `Async` actions in parallel, by keeping track of which of the two continuations has been called. When both results have been returned, we can compute the final result and pass it to the main continuation.
+The `parallel` library provides a `Parallel` instance for the `Async` monad. It uses mutable references to combine `Async` actions in parallel, by keeping track of which of the two continuations has been called. When both results have been returned, we can compute the final result and pass it to the main continuation.
 
 We can use the `parallel` function to create a version of our `readFileCont` action which can be combined in parallel. Here is a simple example which reads two text files in parallel, and concatenates and prints their results:
 
@@ -445,7 +445,7 @@ We can also combine parallel computations with sequential portions of code, by u
      ```
 
      which returns `Nothing` if the specified computation does not provide a result within the given number of milliseconds.
- 1. (Medium) `purescript-parallel` also provides instances of the `Parallel` class for several monad transformers, including `ExceptT`.
+ 1. (Medium) `parallel` also provides instances of the `Parallel` class for several monad transformers, including `ExceptT`.
 
      Rewrite the parallel file IO example to use `ExceptT` for error handling, instead of lifting `append` with `lift2`. Your solution should use the `ExceptT` transformer to transform the `Async` monad.
 
@@ -458,7 +458,7 @@ We can also combine parallel computations with sequential portions of code, by u
      
      Write a utility which takes a single filename as input, and spiders the JSON files on disk referenced transitively by that file, collecting a list of all referenced files.
 
-     Your utility should use the `purescript-foreign` library to parse the JSON documents, and should fetch files referenced by a single file in parallel.
+     Your utility should use the `foreign` library to parse the JSON documents, and should fetch files referenced by a single file in parallel.
 
 ## Conclusion
 

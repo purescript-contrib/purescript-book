@@ -16,8 +16,8 @@ The source code for this chapter is defined in the file `src/Data/Picture.purs`.
 
 The project uses some packages which we have already seen, and adds the following new dependencies:
 
-- `purescript-globals`, which provides access to some common JavaScript values and functions.
-- `purescript-math`, which provides access to the JavaScript `Math` module.
+- `globals`, which provides access to some common JavaScript values and functions.
+- `math`, which provides access to the JavaScript `Math` module.
 
 The `Data.Picture` module defines a data type `Shape` for simple shapes, and a type `Picture` for collections of shapes, along with functions for working with those types.  
 
@@ -385,7 +385,7 @@ This declaration defines `Shape` as a sum of different constructors, and for eac
 
 An algebraic data type is introduced using the `data` keyword, followed by the name of the new type and any type arguments. The type's constructors are defined after the equals symbol, and are separated by pipe characters (`|`).
 
-Let's see another example from PureScript's standard libraries. We saw the `Maybe` type, which is used to define optional values, earlier in the book. Here is its definition from the `purescript-maybe` package:
+Let's see another example from PureScript's standard libraries. We saw the `Maybe` type, which is used to define optional values, earlier in the book. Here is its definition from the `maybe` package:
 
 ```haskell
 data Maybe a = Nothing | Just a
@@ -399,7 +399,7 @@ Data constructors can also be used to define recursive data structures. Here is 
 data List a = Nil | Cons a (List a)
 ```
 
-This example is taken from the `purescript-lists` package. Here, the `Nil` constructor represents an empty list, and `Cons` is used to create non-empty lists from a head element and a tail. Notice how the tail is defined using the data type `List a`, making this a recursive data type.
+This example is taken from the `lists` package. Here, the `Nil` constructor represents an empty list, and `Cons` is used to create non-empty lists from a head element and a tail. Notice how the tail is defined using the data type `List a`, making this a recursive data type.
 
 ## Using ADTs
 

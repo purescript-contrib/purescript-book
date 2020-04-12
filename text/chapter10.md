@@ -8,7 +8,7 @@ This chapter will introduce PureScript's _foreign function interface_ (or _FFI_)
 - How to create new effect types and actions for use with the `Effect` monad, based on existing JavaScript code,
 - How to call PureScript code from JavaScript,
 - How to understand the representation of PureScript values at runtime,
-- How to work with untyped data using the `purescript-foreign` package.
+- How to work with untyped data using the `foreign` package.
 
 Towards the end of this chapter, we will revisit our recurring address book example. The goal of the chapter will be to add the following new functionality to our application using the FFI:
 
@@ -19,7 +19,7 @@ Towards the end of this chapter, we will revisit our recurring address book exam
 
 The source code for this module is a continuation of the source code from chapters 3, 7 and 8. As such, the source tree includes the appropriate source files from those chapters.
 
-This chapter intruduces the `purescript-foreign-generic` library as a dependency. This library adds support for _datatype generic programming_ to the `purescript-foreign` library. The `purescript-foreign` library is a sub-dependency and provides a data type and functions for working with _untyped data_.
+This chapter intruduces the `foreign-generic` library as a dependency. This library adds support for _datatype generic programming_ to the `foreign` library. The `foreign` library is a sub-dependency and provides a data type and functions for working with _untyped data_.
 
 _Note_: to avoid browser-specific issues with local storage when the webpage is served from a local file, it might be necessary to run this chapter's project over HTTP.
 
@@ -259,7 +259,7 @@ shout(require('Data.Show').showNumber)(42);
      ```
 
      What can you say about the expressions which have these types?
- 1. (Medium) Try using the functions defined in the `purescript-arrays` package, calling them from JavaScript, by compiling the library using `spago build` and importing modules using the `require` function in NodeJS. _Hint_: you may need to configure the output path so that the generated CommonJS modules are available on the NodeJS module path.
+ 1. (Medium) Try using the functions defined in the `arrays` package, calling them from JavaScript, by compiling the library using `spago build` and importing modules using the `require` function in NodeJS. _Hint_: you may need to configure the output path so that the generated CommonJS modules are available on the NodeJS module path.
 
 ## Using JavaScript Code From PureScript
 
@@ -417,7 +417,7 @@ foreign import data Fn2 :: Type -> Type -> Type -> Type
 
 This defines the type constructor `Fn2` which takes three type arguments. `Fn2 a b c` is a type representing JavaScript functions of two arguments of types `a` and `b`, and with return type `c`.
 
-The `purescript-functions` package defines similar type constructors for function arities from 0 to 10.
+The `functions` package defines similar type constructors for function arities from 0 to 10.
 
 We can create a function of two arguments by using the `mkFn2` function, as follows:
 
@@ -470,7 +470,7 @@ The definition of the `Effect` type constructor is given in the `Effect` module 
 foreign import data Effect :: Type -> Type
 ```
 
-As a simple example, consider the `random` function defined in the `purescript-random` package. Recall that its type was:
+As a simple example, consider the `random` function defined in the `random` package. Recall that its type was:
 
 ```haskell
 foreign import random :: Effect Number
@@ -484,7 +484,7 @@ exports.random = Math.random;
 
 Notice that the `random` function is represented at runtime as a function of no arguments. It performs the side effect of generating a random number, and returns it, and the return value matches the runtime representation of the `Number` type: it is a non-null JavaScript number.
 
-As a slightly more interesting example, consider the `log` function defined by the `Effect.Console` module in the `purescript-console` package. The `log` function has the following type:
+As a slightly more interesting example, consider the `log` function defined by the `Effect.Console` module in the `console` package. The `log` function has the following type:
 
 ```haskell
 foreign import log :: String -> Effect Unit
@@ -551,7 +551,7 @@ The interested reader can inspect the source code for this module to see the def
 
 `setItem` takes a key and a value (both strings), and returns a computation which stores the value in local storage at the specified key.
 
-The type of `getItem` is more interesting. It takes a key, and attempts to retrieve the associated value from local storage. However, since the `getItem` method on `window.localStorage` can return `null`, the return type is not `String`, but `Foreign` which is defined by the `purescript-foreign` package in the `Foreign` module.
+The type of `getItem` is more interesting. It takes a key, and attempts to retrieve the associated value from local storage. However, since the `getItem` method on `window.localStorage` can return `null`, the return type is not `String`, but `Foreign` which is defined by the `foreign` package in the `Foreign` module.
 
 `Foreign` provides a way to work with _untyped data_, or more generally, data whose runtime representation is uncertain.
 
@@ -575,12 +575,12 @@ newtype FormData = FormData
   }
 ```
 
-The problem is that we have no guarantee that the JSON will have the correct form. Put another way, we don't know that the JSON represents the correct type of data at runtime. This is the sort of problem that is solved by the `purescript-foreign` library. Here are some other examples:
+The problem is that we have no guarantee that the JSON will have the correct form. Put another way, we don't know that the JSON represents the correct type of data at runtime. This is the sort of problem that is solved by the `foreign` library. Here are some other examples:
 
 - A JSON response from a web service
 - A value passed to a function from JavaScript code
 
-Let's try the `purescript-foreign` and `purescript-foreign-generic` libraries in PSCi.
+Let's try the `foreign` and `foreign-generic` libraries in PSCi.
 
 Start by importing some modules:
 
@@ -590,7 +590,7 @@ Start by importing some modules:
 > import Foreign.JSON
 ```
 
-A good way to obtain a `Foreign` value is to parse a JSON document. `purescript-foreign-generic` defines the following two functions:
+A good way to obtain a `Foreign` value is to parse a JSON document. `foreign-generic` defines the following two functions:
 
 ```haskell
 parseJSON :: String -> F Foreign
@@ -605,7 +605,7 @@ type F = Except MultipleErrors
 
 Here, `Except` is a monad for handling exceptions in pure code, much like `Either`. We can convert a value in the `F` monad into a value in the `Either` monad by using the `runExcept` function.
 
-Most of the functions in the `purescript-foreign` and `purescript-foreign-generic` libraries return a value in the `F` monad, which means that we can use do notation and the applicative functor combinators to build typed values.
+Most of the functions in the `foreign` and `foreign-generic` libraries return a value in the `F` monad, which means that we can use do notation and the applicative functor combinators to build typed values.
 
 The `Decode` type class represents those types which can be obtained from untyped data. There are type class instances defined for the primitive types and arrays, and we can define our own instances as well.
 
@@ -631,11 +631,11 @@ Recall that in the `Either` monad, the `Right` data constructor indicates succes
 (Left (NonEmptyList (NonEmpty (ErrorAtIndex 2 (TypeMismatch "Int" "Boolean")) Nil)))
 ```
 
-The `purescript-foreign-generic` library tells us where in the JSON document the type error occurred.
+The `foreign-generic` library tells us where in the JSON document the type error occurred.
 
 ## Handling Null and Undefined Values
 
-Real-world JSON documents contain null and undefined values, so we need to be able to handle those too. `purescript-foreign-generic` solves this problem with the 'Maybe' type constructor to represent missing values.
+Real-world JSON documents contain null and undefined values, so we need to be able to handle those too. `foreign-generic` solves this problem with the 'Maybe' type constructor to represent missing values.
 
 ```text
 > import Prelude
@@ -657,7 +657,7 @@ The type `Maybe Int` represents values which are either integers, or null. What 
 
 ## Generic JSON Serialization
 
-In fact, we rarely need to write instances for the `Decode` class, since the `purescript-foreign-generic` class allows us to _derive_ instances using a technique called _datatype-generic programming_. A full explanation of this technique is beyond the scope of this book, but it allows us to write functions once, and reuse them over many different data types, based on the structure of a the types themselves.
+In fact, we rarely need to write instances for the `Decode` class, since the `foreign-generic` class allows us to _derive_ instances using a technique called _datatype-generic programming_. A full explanation of this technique is beyond the scope of this book, but it allows us to write functions once, and reuse them over many different data types, based on the structure of a the types themselves.
 
 To derive a `Decode` instance for our `FormData` type (so that we may deserialize it from its JSON representation), we first use the `derive` keyword to derive an instance of the `Generic` type class, which looks like this:
 
@@ -729,7 +729,7 @@ _Note_: You may need to serve the HTML and JavaScript files from a HTTP server l
      data Tree a = Leaf a | Branch (Tree a) (Tree a)
      ```
 
-     Derive `Encode` and `Decode` instances for this type using `purescript-foreign-generic`, and verify that encoded values can correctly be decoded in PSCi. Hint: This requires a [Generic Instance](https://github.com/paf31/24-days-of-purescript-2016/blob/master/11.markdown#deriving-generic-instances), also see previous section on "Instance Dependencies", and finally, search the web for "eta-expansion" if you encounter recursion issues during testing.
+     Derive `Encode` and `Decode` instances for this type using `foreign-generic`, and verify that encoded values can correctly be decoded in PSCi. Hint: This requires a [Generic Instance](https://github.com/paf31/24-days-of-purescript-2016/blob/master/11.markdown#deriving-generic-instances), also see previous section on "Instance Dependencies", and finally, search the web for "eta-expansion" if you encounter recursion issues during testing.
  1. (Difficult) The following `data` type should be represented directly in JSON as either an integer or a string:
 
      ```haskell

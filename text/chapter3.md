@@ -25,7 +25,7 @@ import Data.Maybe (Maybe)
 Here, we import several modules:
 
 - The `Control.Plus` module, which defines the `empty` value.
-- The `Data.List` module, which is provided by the `purescript-lists` package which can be installed using Spago. It contains a few functions which we will need for working with linked lists.
+- The `Data.List` module, which is provided by the `lists` package which can be installed using Spago. It contains a few functions which we will need for working with linked lists.
 - The `Data.Maybe` module, which defines data types and functions for working with optional values.
 
 Notice that the imports for these modules are listed explicitly in parentheses. This is generally a good practice, as it helps to avoid conflicting imports.

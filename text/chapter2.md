@@ -164,13 +164,13 @@ The generated modules will be placed in the `output` directory by default. Each 
 
 ## Tracking Dependencies
 
-To write the `diagonal` function (the goal of this chapter), we will need to be able to compute square roots. The `purescript-math` package contains type definitions for functions defined on the JavaScript `Math` object, so let's install it:
+To write the `diagonal` function (the goal of this chapter), we will need to be able to compute square roots. The `math` package contains type definitions for functions defined on the JavaScript `Math` object, so let's install it:
 
 ```text
 $ spago install math
 ```
 
-The `purescript-math` library sources should now be available in the `.spago/math/{version}/` subdirectory, and will be included when you compile your project.
+The `math` library sources should now be available in the `.spago/math/{version}/` subdirectory, and will be included when you compile your project.
 
 ## Computing Diagonals
 

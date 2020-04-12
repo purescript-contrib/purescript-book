@@ -10,9 +10,9 @@ The goal of this chapter is to explain why monads are a useful abstraction, and 
 
 The project adds the following dependencies:
 
-- `purescript-effect`, which defines the `Effect` monad, the subject of the second half of the chapter.
-- `purescript-aff`, an asynchronous effect monad.
-- `purescript-random`, a monadic random number generator.
+- `effect`, which defines the `Effect` monad, the subject of the second half of the chapter.
+- `aff`, an asynchronous effect monad.
+- `random`, a monadic random number generator.
 
 ## Monads and Do Notation
 
@@ -325,7 +325,7 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
 
  ## Exercises
 
- 1. (Easy) Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `purescript-arrays` package. Use do notation with the `Maybe` monad to combine these functions into a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
+ 1. (Easy) Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `arrays` package. Use do notation with the `Maybe` monad to combine these functions into a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
  1. (Medium) Write a function `sums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
 
      ```text
@@ -338,7 +338,7 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
 
      _Hint_: This function can be written as a one-liner using `foldM`. You might want to use the `nub` and `sort` functions to remove duplicates and sort the result respectively.
  1. (Medium) Confirm that the `ap` function and the `apply` operator agree for the `Maybe` monad.
- 1. (Medium) Verify that the monad laws hold for the `Monad` instance for the `Maybe` type, as defined in the `purescript-maybe` package.
+ 1. (Medium) Verify that the monad laws hold for the `Monad` instance for the `Maybe` type, as defined in the `maybe` package.
  1. (Medium) Write a function `filterM` which generalizes the `filter` function on lists. Your function should have the following type signature:
 
      ```haskell
@@ -411,7 +411,7 @@ The Spago build tool (and other tools) provide a shortcut, by generating additio
 
 The goal of the `Effect` monad is to provide a well-typed API for computations with side-effects, while at the same time generating efficient JavaScript. 
 
-Here is an example. It uses the `purescript-random` package, which defines functions for generating random numbers:
+Here is an example. It uses the `random` package, which defines functions for generating random numbers:
 
 ```haskell
 module Main where
@@ -460,7 +460,7 @@ asyncFunction onSuccess onError = ...
 
 But as is true in JavaScript, this can quickly get out of hand and result in "callback hell". 
 
-The `Aff` monad solves this problem similar to how `Promise` solves it in JavaScript, and there is a great library called `purescript-aff-promise` that provides interop with JavaScript `Promise`.
+The `Aff` monad solves this problem similar to how `Promise` solves it in JavaScript, and there is a great library called `aff-promise` that provides interop with JavaScript `Promise`.
 
 ## Effect to Aff and Aff to Effect
 
