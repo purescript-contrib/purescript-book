@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Purescript Book</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/loadjs/4.2.0/loadjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/haskell.min.js"></script>
+
+    <style>
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="markdown-body"></main>
+
+    <script>
+      (async () => {
+        const markdownConverter = new markdownit({
+          highlight: function (str, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+              try {
+                return hljs.highlight(lang, str).value;
+              } catch (e) {
+                console.error(e);
+              }
+            }
+
+            return ""; // use external default escaping
+          },
+        });
+
+        const markdownBody = document.querySelector(".markdown-body");
+
+        const bookChapters = Array.from(
+          { length: 14 },
+          (_, index) => `chapter${++index}.md`
+        );
+
+        const bookChaptersLinks = bookChapters.map((path) => `/text/${path}`);
+
+        const promises = bookChaptersLinks.map(
+          async (page) =>
+            await fetch(page)
+              .then((r) => r.text())
+              .catch((e) => console.error(e))
+        );
+
+        const chaptersMarkdown = await Promise.all(promises);
+        chaptersMarkdown.map((chapter) => {
+          // TODO: Do we need to sanitize?
+          const html = markdownConverter.render(chapter);
+          markdownBody.innerHTML += html;
+        });
+      })();
+    </script>
+  </body>
+</html>
