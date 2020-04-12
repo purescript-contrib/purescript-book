@@ -27,6 +27,10 @@
 
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.6.0/modern-normalize.min.css"
+    />
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css"
     />
     <link
@@ -52,10 +56,20 @@
           padding: 15px;
         }
       }
+
+      header {
+        height: 100px;
+        background-size: contain;
+        background-color: #1d222d;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-image: url(https://www.purescript.org/img/logo.svg);
+      }
     </style>
   </head>
 
   <body>
+    <header></header>
     <main class="markdown-body"></main>
 
     <script>
