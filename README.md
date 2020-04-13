@@ -1,7 +1,15 @@
+# PureScript by Example
+
+This repository contains a community fork of _PureScript by Example_ by Phil Freeman, also known as "the PureScript book". This version differs from the original in that it has been updated so that the code and exercises work with up-to-date versions of the compiler, libraries, and tools.
+
+If you enjoyed the book or found it useful, please consider buying a copy of [the original on Leanpub](https://leanpub.com/purescript).
+
+## Status
+
 This book is being continuously updated as the language evolves, so please report any issues you notice with the material. The following chapters are still being updated for purescript 0.13:
 * Chapter 12
 
-A single-page render of all book chapters can be viewed [here](https://s0kil.github.io/purescript-book/book/):
+A single-page render of all book chapters can be viewed [here](https://s0kil.github.io/purescript-book/book/).
 
 ## About the Book
 
@@ -21,3 +29,11 @@ Each chapter will be motivated by a particular problem, and in the course of sol
 - Working with the DOM
 - JavaScript interoperability
 - Dealing with callback hell
+
+## License
+
+Copyright (c) 2014-2017 Phil Freeman.
+
+The text of this book is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License: <https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US>.
+
+The exercises are licensed under the MIT license.
