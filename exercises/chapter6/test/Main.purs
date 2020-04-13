@@ -6,7 +6,7 @@ import Data.Hashable (hash)
 import Data.List (List(..), (:))
 import Effect (Effect)
 import Partial.Unsafe (unsafePartial)
-import Test.Solutions (Complex(..), Extended(..), Hour(..), Multiply(..), NonEmpty(..), OneMore(..), Self(..), act)
+import Test.Solutions (Complex(..), Extended(..), Hour(..), Multiply(..), NonEmpty(..), OneMore(..), Self(..), act, arrayHasDuplicates, unsafeMaximum)
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -16,8 +16,6 @@ main =
   runTest do
     test "Initial passing test"
       $ Assert.equal true true
-
-{-  Move this block comment starting point to enable more tests
     -- Tests for the first exercise in this chapter (Show Shape)
     -- can be found at the end of the previous chapter (chapter 5).
     suite "Exercise Group 1" do
@@ -186,4 +184,3 @@ main =
           $ Assert.equal (hash $ Hour 1)
           $ hash
           $ Hour 14
--}
