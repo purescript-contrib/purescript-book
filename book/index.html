@@ -27,6 +27,10 @@
 
     <link
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Baskervville&family=Open+Sans&display=swap"
+    />
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/0.6.0/modern-normalize.min.css"
     />
     <link
@@ -41,8 +45,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/haskell.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/scroll-watcher@1.4.0/dist/scroll-watcher.min.js"></script>
 
     <style>
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Baskervville", serif;
+      }
+
+      p {
+        font-family: "Open Sans", sans-serif;
+      }
+
       .markdown-body {
         box-sizing: border-box;
         min-width: 200px;
@@ -65,12 +83,50 @@
         background-position: center center;
         background-image: url(https://www.purescript.org/img/logo.svg);
       }
+
+      #loading {
+        animation: blinkingText 1s infinite;
+      }
+      @keyframes blinkingText {
+        0% {
+          color: #212529;
+        }
+        10% {
+          color: #343a40;
+        }
+        30% {
+          color: #495057;
+        }
+        40% {
+          color: #868e96;
+        }
+        50% {
+          color: #adb5bd;
+        }
+        60% {
+          color: #ced4da;
+        }
+        70% {
+          color: #dee2e6;
+        }
+        80% {
+          color: #e9ecef;
+        }
+        90% {
+          color: #f1f3f5;
+        }
+        100% {
+          color: #f8f9fa;
+        }
+      }
     </style>
   </head>
 
   <body>
     <header></header>
-    <main class="markdown-body"></main>
+    <main class="markdown-body">
+      <div id="loading">Loading...</div>
+    </main>
 
     <script>
       (async () => {
@@ -97,7 +153,7 @@
 
         const bookChaptersLinks = bookChapters.map(
           (path) =>
-            `https://raw.githubusercontent.com/s0kil/purescript-book/master/text/${path}`
+            `https://raw.githubusercontent.com/purescript-contrib/purescript-book/master/text/${path}`
         );
 
         const promises = bookChaptersLinks.map(
@@ -113,6 +169,19 @@
           // TODO: Do we need to sanitize?
           return html + markdownConverter.render(chapter);
         }, "");
+
+        // Restore Scroll Position
+        const previousScrollY = window.localStorage.getItem("bookScrollY") || 0;
+        window.scroll({
+          top: previousScrollY,
+          behavior: "smooth",
+        });
+
+        // Save Scroll Position
+        const scroll = new ScrollWatcher();
+        scroll.on("scrolling", (event) => {
+          window.localStorage.setItem("bookScrollY", event.scrollY);
+        });
       })();
     </script>
   </body>
