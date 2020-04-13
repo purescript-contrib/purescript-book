@@ -41,6 +41,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/incremental-dom/0.6.0/incremental-dom-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it-incremental-dom@2.1.0/dist/markdown-it-incremental-dom.min.js"></script>
 
     <style>
       .markdown-body {
@@ -86,7 +88,7 @@
 
             return ""; // use external default escaping
           },
-        });
+        }).use(markdownitIncrementalDOM);
 
         const markdownBody = document.querySelector(".markdown-body");
 
@@ -108,11 +110,11 @@
         );
 
         const chaptersMarkdown = await Promise.all(promises);
-        chaptersMarkdown.map((chapter) => {
+
+        markdownBody.innerHTML = chaptersMarkdown.reduce((html, chapter) => {
           // TODO: Do we need to sanitize?
-          const html = markdownConverter.render(chapter);
-          markdownBody.innerHTML += html;
-        });
+          return html + markdownConverter.render(chapter);
+        }, "");
       })();
     </script>
   </body>
