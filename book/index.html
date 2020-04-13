@@ -156,9 +156,13 @@
             `https://raw.githubusercontent.com/purescript-contrib/purescript-book/master/text/${path}`
         );
 
+        const requestHeaders = new Headers();
+        requestHeaders.append("pragma", "no-cache");
+        requestHeaders.append("cache-control", "no-cache");
+
         const promises = bookChaptersLinks.map(
           async (page) =>
-            await fetch(page)
+            await fetch(page, { requestHeaders, cache: "reload" })
               .then((r) => r.text())
               .catch((e) => console.error(e))
         );
