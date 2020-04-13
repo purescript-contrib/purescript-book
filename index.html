@@ -68,7 +68,6 @@
         margin: 0 auto;
         padding: 45px;
       }
-
       @media (max-width: 767px) {
         .markdown-body {
           padding: 15px;
@@ -82,6 +81,35 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-image: url(https://www.purescript.org/img/logo.svg);
+      }
+
+      #introduction {
+        margin-bottom: 4rem;
+      }
+
+      #table-of-contents {
+        margin-bottom: 4rem;
+        counter-reset: book-chapters;
+      }
+      #table-of-contents a {
+        display: block;
+        max-width: 300px;
+      }
+      #table-of-contents .indent-H1:before {
+        counter-increment: book-chapters;
+        content: counter(book-chapters) ". ";
+      }
+      #table-of-contents .indent-H1 {
+        font-weight: bold;
+        color: #343a40;
+      }
+      #table-of-contents .indent-H2 {
+        color: #495057;
+        margin-left: 2rem;
+      }
+      #table-of-contents .indent-H3 {
+        color: #868e96;
+        margin-left: 4rem;
       }
 
       #loading {
@@ -125,6 +153,12 @@
   <body>
     <header></header>
     <main class="markdown-body">
+      <div id="introduction"></div>
+
+      <div id="table-of-contents">
+        <p><em>Table Of Contents</em></p>
+      </div>
+
       <div id="loading">Loading...</div>
     </main>
 
@@ -144,48 +178,80 @@
           },
         });
 
-        const markdownBody = document.querySelector(".markdown-body");
+        const introduction = document.querySelector("#introduction");
+        const readme = await fetchRepoFile("README.md");
+        introduction.innerHTML = markdownConverter.render(readme);
 
         const bookChapters = Array.from(
           { length: 14 },
           (_, index) => `chapter${++index}.md`
         );
 
-        const bookChaptersLinks = bookChapters.map(
-          (path) =>
-            `https://raw.githubusercontent.com/purescript-contrib/purescript-book/master/text/${path}`
+        const chaptersMarkdown = await Promise.all(
+          bookChapters.map(async (page) => await fetchRepoFile(`text/${page}`))
         );
 
-        const requestHeaders = new Headers();
-        requestHeaders.append("pragma", "no-cache");
-        requestHeaders.append("cache-control", "no-cache");
+        // Create Fragment In Order To Mutate The Book Chapters As DOM Nodes
+        const chaptersFragment = document
+          .createRange()
+          .createContextualFragment(
+            chaptersMarkdown.reduce(
+              (html, chapter) => html + markdownConverter.render(chapter),
+              ""
+            )
+          );
 
-        const promises = bookChaptersLinks.map(
-          async (page) =>
-            await fetch(page, { requestHeaders, cache: "reload" })
-              .then((r) => r.text())
-              .catch((e) => console.error(e))
+        const headerNodes = [
+          ...chaptersFragment.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+        ].map((chapterSection) => {
+          chapterSection.id = chapterSection.textContent;
+          return chapterSection;
+        });
+
+        const tableOfContents = document.createDocumentFragment();
+        headerNodes.map((node) => {
+          const link = document.createElement("a");
+          link.href = "#" + node.id;
+          link.textContent = node.textContent;
+          link.classList.add("indent-" + node.tagName);
+
+          tableOfContents.appendChild(link);
+        });
+        document
+          .querySelector("#table-of-contents")
+          .appendChild(tableOfContents);
+
+        const markdownBody = document.querySelector(".markdown-body");
+        // Replace Loading Indicator With Book Content
+        markdownBody.replaceChild(
+          chaptersFragment,
+          markdownBody.querySelector("#loading")
         );
 
-        const chaptersMarkdown = await Promise.all(promises);
-
-        markdownBody.innerHTML = chaptersMarkdown.reduce((html, chapter) => {
-          // TODO: Do we need to sanitize?
-          return html + markdownConverter.render(chapter);
-        }, "");
-
-        // Restore Scroll Position
+        // Restore Scroll Position From Storage
         const previousScrollY = window.localStorage.getItem("bookScrollY") || 0;
         window.scroll({
           top: previousScrollY,
           behavior: "smooth",
         });
 
-        // Save Scroll Position
+        // Sync Scroll Position To Storage
         const scroll = new ScrollWatcher();
         scroll.on("scrolling", (event) => {
           window.localStorage.setItem("bookScrollY", event.scrollY);
         });
+
+        async function fetchRepoFile(path) {
+          const URL = `https://raw.githubusercontent.com/purescript-contrib/purescript-book/master/${path}`;
+
+          const requestHeaders = new Headers();
+          requestHeaders.append("pragma", "no-cache");
+          requestHeaders.append("cache-control", "no-cache");
+
+          return await fetch(URL, { requestHeaders, cache: "reload" })
+            .then((r) => r.text())
+            .catch((e) => console.error(e));
+        }
       })();
     </script>
   </body>
