@@ -719,7 +719,7 @@ Try out the code, by running `spago bundle-app --to dist/Main.js`, and then open
 
 _Note_: You may need to serve the HTML and JavaScript files from a HTTP server locally in order to avoid certain browser-specific issues.
 
- ## Exercises
+ ## Chapter 10 Exercises
 
  1. (Easy) Use `decodeJSON` to parse a JSON document representing a two-dimensional JavaScript array of integers, such as `[[1, 2, 3], [4, 5], [6]]`. What if the elements are allowed to be null? What if the arrays themselves are allowed to be null?
  1. (Medium) Convince yourself that the implementation of `savedData` should type-check, and write down the inferred types of each subexpression in the computation.
@@ -740,7 +740,7 @@ _Note_: You may need to serve the HTML and JavaScript files from a HTTP server l
 
      Write instances for `Encode` and `Decode` for the `IntOrString` data type which implement this behavior, and verify that encoded values can correctly be decoded in PSCi.
 
-## Conclusion
+## Chapter 10 Conclusion
 
 In this chapter, we've learned how to work with foreign JavaScript code from PureScript, and vice versa, and we've seen the issues involved with writing trustworthy code using the FFI:
 

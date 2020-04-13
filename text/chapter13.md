@@ -384,7 +384,7 @@ Success : Success : ...
 
 `quickCheckPure` might be useful in other situations, such as generating random input data for performance benchmarks, or generating sample form data for web applications.
 
- ## Exercises
+ ## Chapter 13 Exercises
 
  1. (Easy) Write `Coarbitrary` instances for the `Byte` and `Sorted` type constructors.
  1. (Medium) Write a (higher-order) property which asserts associativity of the `mergeWith f` function for any function `f`. Test your property in PSCi using `quickCheckPure`.
@@ -397,7 +397,7 @@ Success : Success : ...
      _Hint_: Use the `oneOf` function defined in `Test.QuickCheck.Gen` to define your `Arbitrary` instance.
  1. (Medium) Use the `all` function to simplify the result of the `quickCheckPure` function - your function should return `true` if every test passes, and `false` otherwise. Try using the `First` monoid, defined in `monoids` with the `foldMap` function to preserve the first error in case of failure.
 
-## Conclusion
+## Chapter 13 Conclusion
 
 In this chapter, we met the `quickcheck` package, which can be used to write tests in a declarative way using the paradigm of _generative testing_. In particular:
 

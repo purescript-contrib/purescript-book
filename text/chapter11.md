@@ -1011,11 +1011,11 @@ This demonstrates two basic functions defined in the `Node.Yargs.Applicative` mo
 
 Notice how we were able to use the notation afforded by the applicative operators to give a compact, declarative specification of our command line interface. In addition, it is simple to add new command line arguments, simply by adding a new function argument to `runGame`, and then using `<*>` to lift `runGame` over an additional argument in the definition of `env`.
 
- ## Exercises
+ ## Chapter 11 Exercises
 
  1. (Medium) Add a new Boolean-valued property `cheatMode` to the `GameEnvironment` record. Add a new command line flag `-c` to the `yargs` configuration which enables cheat mode. The `cheat` command from the previous exercise should be disallowed if cheat mode is not enabled.
 
-## Conclusion
+## Chapter 11 Conclusion
 
 This chapter was a practical demonstration of the techniques we've learned so far, using monad transformers to build a pure specification of our game, and the `Effect` monad to build a front-end using the console.
 

@@ -641,7 +641,7 @@ allFiles' file = file : do
 
 Try out the new version in PSCi - you should get the same result. I'll let you decide which version you find clearer.
 
- ## Exercises
+ ## Chapter 4 Exercises
 
  1. (Easy) Write a function `onlyFiles` which returns all _files_ (not directories) in all subdirectories of a directory.
  1. (Medium) Write a fold to determine the largest and smallest files in the filesystem.
@@ -650,13 +650,13 @@ Try out the new version in PSCi - you should get the same result. I'll let you d
      ```text
      > whereIs "/bin/ls"
      Just (/bin/)
-     
+
      > whereIs "/bin/cat"
      Nothing
      ```
 
      _Hint_: Try to write this function as an array comprehension using do notation.
 
-## Conclusion
+## Chapter 4 Conclusion
 
 In this chapter, we covered the basics of recursion in PureScript, as a means of expressing algorithms concisely. We also introduced user-defined infix operators, standard functions on arrays such as maps, filters and folds, and array comprehensions which combine these ideas. Finally, we showed the importance of using tail recursion in order to avoid stack overflow errors, and how to use accumulator parameters to convert functions to tail recursive form.

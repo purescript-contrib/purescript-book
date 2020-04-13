@@ -623,7 +623,7 @@ $ spago bundle-app --main Example.LSystem --to dist/Main.js
 
 and open `html/index.html`. You should see the Koch curve rendered to the canvas.
 
- ## Exercises
+ ## Chapter 9 Exercises
 
  1. (Easy) Modify the L-system example above to use `fillPath` instead of `strokePath`. _Hint_: you will need to include a call to `closePath`, and move the call to `moveTo` outside of the `interpret` function.
  1. (Easy) Try changing the various numerical constants in the code, to understand their effect on the rendered system.
@@ -662,7 +662,7 @@ and open `html/index.html`. You should see the Koch curve rendered to the canvas
      Implement this L-system again using this representation of the alphabet.
  1. (Difficult) Use a different monad `m` in the interpretation function. You might try using `Effect.Console` to write the L-system onto the console, or using `Effect.Random` to apply random "mutations" to the state type.
 
-## Conclusion
+## Chapter 9 Conclusion
 
 In this chapter, we learned how to use the HTML5 Canvas API from PureScript by using the `canvas` library. We also saw a practical demonstration of many of the techniques we have learned already: maps and folds, records and row polymorphism, and the `Effect` monad for handling side-effects.
 

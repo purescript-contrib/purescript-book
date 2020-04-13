@@ -47,7 +47,7 @@ We can see that this function works in PSCi:
 > countThrows 10
 [[4,6],[5,5],[6,4]]
 
-> countThrows 12  
+> countThrows 12
 [[6,6]]
 ```
 
@@ -186,7 +186,7 @@ c1 = do
 
 is equivalent to this code:
 
-```haskell  
+```haskell
 c2 = do
   x <- m1
   y <- m2
@@ -203,7 +203,7 @@ The associativity law tells us that it is safe to simplify nested do notation bl
 
 _Note_ that by the definition of how do notation gets desugared into calls to `bind`, both of `c1` and `c2` are also equivalent to this code:
 
-```haskell  
+```haskell
 c3 = do
   x <- m1
   do
@@ -272,7 +272,7 @@ safeDivide _ 0 = Nothing
 safeDivide a b = Just (a / b)
 ```
 
-Then we can use `foldM` to express iterated safe division:  
+Then we can use `foldM` to express iterated safe division:
 
 ```text
 > import Data.List
@@ -323,7 +323,7 @@ Try writing `userCity` using only `pure` and `apply`: you will see that it is im
 
 In the last chapter, we saw that the `Applicative` type class can be used to express parallelism. This was precisely because the function arguments being lifted were independent of one another. Since the `Monad` type class allows computations to depend on the results of previous computations, the same does not apply - a monad has to combine its side-effects in sequence.
 
- ## Exercises
+ ## Chapter 8 Exercises
 
  1. (Easy) Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `arrays` package. Use do notation with the `Maybe` monad to combine these functions into a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
  1. (Medium) Write a function `sums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
@@ -359,9 +359,9 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
      ```haskell
      lift2 f (pure a) (pure b) = pure (f a b)
      ```
-     
+
      where the `Applicative` instance uses the `ap` function defined above. Recall that `lift2` was defined as follows:
-    
+
      ```haskell
      lift2 :: forall f a b c. Applicative f => (a -> b -> c) -> f a -> f b -> f c
      lift2 f a b = f <$> a <*> b
@@ -409,7 +409,7 @@ The Spago build tool (and other tools) provide a shortcut, by generating additio
 
 ## The Effect Monad
 
-The goal of the `Effect` monad is to provide a well-typed API for computations with side-effects, while at the same time generating efficient JavaScript. 
+The goal of the `Effect` monad is to provide a well-typed API for computations with side-effects, while at the same time generating efficient JavaScript.
 
 Here is an example. It uses the `random` package, which defines functions for generating random numbers:
 
@@ -439,26 +439,26 @@ Running this command, you will see a randomly chosen number between `0` and `1` 
 
 This program uses do notation to combine two native effects provided by the JavaScript runtime: random number generation and console IO.
 
-As mentioned previously, the `Effect` monad is of central importance to PureScript. The reason why it's central is because it is the conventional way to interoperate with PureScript's `Foreign Function Interface`, which provides the mechanism to execute a program and perform side effects. While it's desireable to avoid using the `Foreign Function Interface`, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the `Effect` monad is fairly simple. It has a few helper functions, but aside from that it doesn't do much except encapsulate side effects. 
+As mentioned previously, the `Effect` monad is of central importance to PureScript. The reason why it's central is because it is the conventional way to interoperate with PureScript's `Foreign Function Interface`, which provides the mechanism to execute a program and perform side effects. While it's desireable to avoid using the `Foreign Function Interface`, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the `Effect` monad is fairly simple. It has a few helper functions, but aside from that it doesn't do much except encapsulate side effects.
 
 ## The Aff Monad
 
-The `Aff` monad is an asynchronous effect monad and threading model for PureScipt. 
+The `Aff` monad is an asynchronous effect monad and threading model for PureScipt.
 
-Asynchrony is typically achieved in JavaScript with callbacks, for example: 
+Asynchrony is typically achieved in JavaScript with callbacks, for example:
 
 ```javascript
 function asyncFunction(onSuccess, onError){ ... }
 ```
 
-The same thing can be modeled with the `Effect` monad: 
+The same thing can be modeled with the `Effect` monad:
 
 ```haskell
-asyncFunction :: forall success error. (success -> Effect Unit) -> (error -> Effect Unit) -> Effect Unit 
+asyncFunction :: forall success error. (success -> Effect Unit) -> (error -> Effect Unit) -> Effect Unit
 asyncFunction onSuccess onError = ...
 ```
 
-But as is true in JavaScript, this can quickly get out of hand and result in "callback hell". 
+But as is true in JavaScript, this can quickly get out of hand and result in "callback hell".
 
 The `Aff` monad solves this problem similar to how `Promise` solves it in JavaScript, and there is a great library called `aff-promise` that provides interop with JavaScript `Promise`.
 
@@ -481,7 +481,7 @@ printRandomStyle1a :: Aff Unit
 printRandomStyle1a = liftEffect doRandom
   where
     doRandom :: Effect Unit
-    doRandom = do 
+    doRandom = do
       n <- random
       logShow n
 
@@ -510,11 +510,11 @@ main = launchAff_  do
 
 ```
 
-`printRandomStyle1a` and `printRandomStyle1b` are nearly the same, but the types more explicit in `printRandomStyle1a` to add additional clarity. In both, the `do` block results in something with type `Effect Unit` and is lifted to `Aff` outside of the `do` block. In `printRandomStyle2`, both `random` and `logShow` are lifted to `Aff` inside the `do` block, which results in an `Aff`. Often while writing PureScript, you'll encounter cases where `Aff` and `Effect` need to be mixed, so style 2 is the more common case. Finally in `printRandomStyle3`, the `liftEffect` function has been moved to the right with `#`, which applies an argument to a function instead of the regular function call with arguments. The purpose of this style is to make the intent of the statement more clear by moving the *boilerplate* out of the way to the right. 
+`printRandomStyle1a` and `printRandomStyle1b` are nearly the same, but the types more explicit in `printRandomStyle1a` to add additional clarity. In both, the `do` block results in something with type `Effect Unit` and is lifted to `Aff` outside of the `do` block. In `printRandomStyle2`, both `random` and `logShow` are lifted to `Aff` inside the `do` block, which results in an `Aff`. Often while writing PureScript, you'll encounter cases where `Aff` and `Effect` need to be mixed, so style 2 is the more common case. Finally in `printRandomStyle3`, the `liftEffect` function has been moved to the right with `#`, which applies an argument to a function instead of the regular function call with arguments. The purpose of this style is to make the intent of the statement more clear by moving the *boilerplate* out of the way to the right.
 
 # launchAff_ vs launchAff
 
-`Aff` has two similar functions for converting from an `Aff` to an `Effect`: 
+`Aff` has two similar functions for converting from an `Aff` to an `Effect`:
 
 ```haskell
 launchAff_ :: forall a. Aff a -> Effect Unit
@@ -523,11 +523,11 @@ launchAff_ :: forall a. Aff a -> Effect Unit
 launchAff :: forall a. Aff a -> Effect (Fiber a)
 ```
 
-`launchAff` gives back a `Fiber` wrapped in an `Effect`. A `Fiber` is a *forked* computation that can be *joined* back into an `Aff`. You can read more about `Fiber` in Pursuit, PureScript's library and documentation hub. The important thing to note is that there is no direct way to get the contained value in an `Aff` once it's been converted to an `Effect`. For this reason it makes sense to write most of your program in terms of `Aff` instead of `Effect` if you intend to perform asynchronous effects. This may sound limiting, but in practice it is not. Your programs are typically started in the `main` function by wiring up event handlers and listeners, which typically results in a `Unit` and can be run with `launchAff_`. 
+`launchAff` gives back a `Fiber` wrapped in an `Effect`. A `Fiber` is a *forked* computation that can be *joined* back into an `Aff`. You can read more about `Fiber` in Pursuit, PureScript's library and documentation hub. The important thing to note is that there is no direct way to get the contained value in an `Aff` once it's been converted to an `Effect`. For this reason it makes sense to write most of your program in terms of `Aff` instead of `Effect` if you intend to perform asynchronous effects. This may sound limiting, but in practice it is not. Your programs are typically started in the `main` function by wiring up event handlers and listeners, which typically results in a `Unit` and can be run with `launchAff_`.
 
 # MonadError
 
-`Aff` has an instance of `MonadError`, a type class for clean error handling. `MonadError` is covered in more detail in the *Monadic Adventures* chapter, so below is just a motivating example. 
+`Aff` has an instance of `MonadError`, a type class for clean error handling. `MonadError` is covered in more detail in the *Monadic Adventures* chapter, so below is just a motivating example.
 
 Imagine you wished to write a `quickCheckout` function by combining several preexisting functions. Without utilizing `MonadError` the code might look like the following:
 
@@ -575,7 +575,7 @@ quickCheckout item userInfo = do
 
 ```
 
-All of the data types and functions (aside from `quickCheckout`) are stubs, and meant to be ignored aside from their types. Note that `quickCheckout` is pretty ugly and the error checking is deeply nested. This is because there is a monad (`Either`) inside of a monad (`Aff`). Monads don't nicely compose so, we've got to step down into each `Aff` and check each `Either`. It's a bit annoying. This is where `MonadError` can help. 
+All of the data types and functions (aside from `quickCheckout`) are stubs, and meant to be ignored aside from their types. Note that `quickCheckout` is pretty ugly and the error checking is deeply nested. This is because there is a monad (`Either`) inside of a monad (`Aff`). Monads don't nicely compose so, we've got to step down into each `Aff` and check each `Either`. It's a bit annoying. This is where `MonadError` can help.
 
 Take a look at the alternate implementation below.
 
@@ -633,7 +633,4 @@ main = launchAff_ do
 
 ```
 
-Note here that `quickCheckout` is much cleaner and the intent of the code is much clearer. This is made possible by the `rethrow` function, which uses `throwError` from `MonadError` to *eliminate* the `Either` type. Your next question might be, "but what happens to the error?". Notice in the `main` function, `try` is called on the result of `quickCheckout`. `try` will catch the error thrown by `throwError` - if one is thrown - and wrap the result in an `Either`, so you can handle it from there. If one doesn't use `try` as is done in the `main` function, then a runtime exception will be thrown. Because you can't really know if upstream code has made use of `MonadError` it's a good idea to call `try` on an `Aff` before converting it into an `Effect`.  
-
-
-
+Note here that `quickCheckout` is much cleaner and the intent of the code is much clearer. This is made possible by the `rethrow` function, which uses `throwError` from `MonadError` to *eliminate* the `Either` type. Your next question might be, "but what happens to the error?". Notice in the `main` function, `try` is called on the result of `quickCheckout`. `try` will catch the error thrown by `throwError` - if one is thrown - and wrap the result in an `Either`, so you can handle it from there. If one doesn't use `try` as is done in the `main` function, then a runtime exception will be thrown. Because you can't really know if upstream code has made use of `MonadError` it's a good idea to call `try` on an `Aff` before converting it into an `Effect`.

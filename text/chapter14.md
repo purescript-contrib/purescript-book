@@ -702,10 +702,10 @@ unit
 
 You can verify that multiple calls to `newName` do in fact result in unique names.
 
- ## Exercises
+ ## Chapter 14 Exercises
 
  1. (Medium) We can simplify the API further by hiding the `Element` type from its users. Make these changes in the following steps:
-     
+
      - Combine functions like `p` and `img` (with return type `Element`) with the `elem` action to create new actions with return type `Content Unit`.
      - Change the `render` function to accept an argument of type `Content Unit` instead of `Element`.
  1. (Medium) Hide the implementation of the `Content` monad by using a `newtype` instead of a type synonym. You should not export the data
@@ -720,7 +720,7 @@ You can verify that multiple calls to `newName` do in fact result in unique name
 
      _Hint_: use the `ask` action and the `ReaderT` monad transformer to interpret this action. Alternatively, you might prefer to use the `RWS` monad.
 
-## Conclusion
+## Chapter 14 Conclusion
 
 In this chapter, we developed a domain-specific language for creating HTML documents, by incrementally improving a naive implementation using some standard techniques:
 

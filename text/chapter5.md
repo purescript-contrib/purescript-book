@@ -19,7 +19,7 @@ The project uses some packages which we have already seen, and adds the followin
 - `globals`, which provides access to some common JavaScript values and functions.
 - `math`, which provides access to the JavaScript `Math` module.
 
-The `Data.Picture` module defines a data type `Shape` for simple shapes, and a type `Picture` for collections of shapes, along with functions for working with those types.  
+The `Data.Picture` module defines a data type `Shape` for simple shapes, and a type `Picture` for collections of shapes, along with functions for working with those types.
 
 The module imports the `Data.Foldable` module, which provides functions for folding data structures:
 
@@ -550,17 +550,17 @@ In the base case, we need to find the smallest bounding rectangle of an empty `P
 
 The accumulating function `combine` is defined in a `where` block. `combine` takes a bounding rectangle computed from `foldl`'s recursive call, and the next `Shape` in the array, and uses the `union` function to compute the union of the two bounding rectangles. The `shapeBounds` function computes the bounds of a single shape using pattern matching.
 
- ## Exercises
+ ## Chapter 5 Exercises
 
  1. (Medium) Extend the vector graphics library with a new operation `area` which computes the area of a `Shape`. For the purpose of this exercise, the area of a piece of text is assumed to be zero.
  1. (Difficult) Extend the `Shape` type with a new data constructor `Clipped`, which clips another `Picture` to a rectangle. Extend the `shapeBounds` function to compute the bounds of a clipped picture. Note that this makes `Shape` into a recursive data type.
 
-## Conclusion
+## Chapter 5 Conclusion
 
 In this chapter, we covered pattern matching, a basic but powerful technique from functional programming. We saw how to use simple patterns as well as array and record patterns to match parts of deep data structures.
 
 This chapter also introduced algebraic data types, which are closely related to pattern matching. We saw how algebraic data types allow concise descriptions of data structures, and provide a modular way to extend data types with new operations.
 
-Finally, we covered _row polymorphism_, a powerful type of abstraction which allows many idiomatic JavaScript functions to be given a type. 
+Finally, we covered _row polymorphism_, a powerful type of abstraction which allows many idiomatic JavaScript functions to be given a type.
 
 In the rest of the book, we will use ADTs and pattern matching extensively, so it will pay dividends to become familiar with them now. Try creating your own algebraic data types and writing functions to consume them using pattern matching.

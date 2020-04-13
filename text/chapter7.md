@@ -158,7 +158,7 @@ Nothing
 
 Try lifting some other functions of various numbers of arguments over `Maybe` in this way.
 
-Alternatively _applicative do notation_ can be used for the same purpose in a way that looks similar to the familiar _do notation_. Here is `lift3` using _applicative do notation_. Note `ado` is used instead of `do`, and `in` is used on the final line to denote the yielded value: 
+Alternatively _applicative do notation_ can be used for the same purpose in a way that looks similar to the familiar _do notation_. Here is `lift3` using _applicative do notation_. Note `ado` is used instead of `do`, and `in` is used on the final line to denote the yielded value:
 
 ```haskell
 lift3 :: forall a b c d f
@@ -241,7 +241,7 @@ or with _applicative do_
 ```text
 > import Data.Maybe
 
-> :paste… 
+> :paste…
 … ado
 …   f <- Just "Phillip"
 …   m <- Just "A"
@@ -290,7 +290,7 @@ or with _applicative do_
 
 ```text
 > :paste
-… fullNameEither first middle last = ado 
+… fullNameEither first middle last = ado
 …  f <- first  `withError` "First name was missing"
 …  m <- middle `withError` "Middle name was missing"
 …  l <- last   `withError` "Last name was missing"
@@ -435,7 +435,7 @@ Person
                 , number: "555-555-0000"
                 }
             ]
-  }  
+  }
 ```
 
 We saw in a previous section how we could use the `Either String` functor to validate a data structure of type `Person`. For example, provided functions to validate the two names in the structure, we might validate the entire data structure as follows:
@@ -612,12 +612,12 @@ or with _applicative do_
 ```haskell
 validatePersonAdo :: Person -> V Errors Person
 validatePersonAdo (Person o) = ado
-  firstName   <- (nonEmpty "First Name" o.firstName *> 
+  firstName   <- (nonEmpty "First Name" o.firstName *>
                   pure o.firstName)
-  lastName    <- (nonEmpty "Last Name"  o.lastName  *> 
+  lastName    <- (nonEmpty "Last Name"  o.lastName  *>
                   pure o.lastName)
   address     <- validateAddress o.address
-  numbers     <- (arrayNonEmpty "Phone Numbers" o.phones *> 
+  numbers     <- (arrayNonEmpty "Phone Numbers" o.phones *>
                   traverse validatePhoneNumber o.phones)
   in person firstName lastName address numbers
 ```
@@ -698,7 +698,7 @@ These examples show that traversing the `Nothing` value returns `Nothing` with n
 
 Other traversable functors include `Array`, and `Tuple a` and `Either a` for any type `a`. Generally, most "container" data type constructors have `Traversable` instances. As an example, the exercises will include writing a `Traversable` instance for a type of binary trees.
 
- ## Exercises
+ ## Chapter 7 Exercises
 
  1. (Medium) Write a `Traversable` instance for the following binary tree data structure, which combines side-effects from left-to-right:
 
@@ -732,7 +732,7 @@ We will see this idea in more detail when we apply applicative functors to the p
 
 Applicative functors are a natural way to capture side-effects which can be combined in parallel.
 
-## Conclusion
+## Chapter 7 Conclusion
 
 In this chapter, we covered a lot of new ideas:
 

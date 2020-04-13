@@ -208,7 +208,7 @@ A `Monoid` type class instance for a type describes how to _accumulate_ a result
 > import Data.Monoid
 > import Data.Foldable
 
-> foldl append mempty ["Hello", " ", "World"]  
+> foldl append mempty ["Hello", " ", "World"]
 "Hello World"
 
 > foldl append mempty [[1, 2, 3], [4, 5], [6]]
@@ -300,7 +300,7 @@ Many standard type classes come with their own set of similar laws. The laws giv
        , imaginary :: Number
        }
      ```
-       
+
      Define `Show` and `Eq` instances for `Complex`.
 
 ## Type Annotations
@@ -589,14 +589,14 @@ Another reason to define a superclass relationship is in the case where there is
      class Monoid m <= Action m a where
        act :: m -> a -> a
      ```
-           
+
      An _action_ is a function which describes how monoidal values can be used to modify a value of another type. There are two laws for the `Action` type class:
 
      - `act mempty a = a`
      - `act (m1 <> m2) a = act m1 (act m2 a)`
 
      That is, the action respects the operations defined by the `Monoid` class.
-        
+
      For example, the natural numbers form a monoid under multiplication:
 
      ```haskell
@@ -714,7 +714,7 @@ What about some more interesting types? To prove the type class law for the `Arr
 
 The source code for this chapter includes several other examples of `Hashable` instances, such as instances for the `Maybe` and `Tuple` type.
 
- ## Exercises
+ ## Chapter 6 Exercises
 
  1. (Easy) Use PSCi to test the hash functions for each of the defined instances.
  1. (Medium) Use the `hashEqual` function to write a function which tests if an array has any duplicate elements, using hash-equality as an approximation to value equality. Remember to check for value equality using `==` if a duplicate pair is found. _Hint_: the `nubByEq` function in `Data.Array` should make this task much simpler.
@@ -722,15 +722,15 @@ The source code for this chapter includes several other examples of `Hashable` i
 
      ```haskell
      newtype Hour = Hour Int
-     
+
      instance eqHour :: Eq Hour where
        eq (Hour n) (Hour m) = mod n 12 == mod m 12
      ```
-     
+
      The newtype `Hour` and its `Eq` instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.
  1. (Difficult) Prove the type class laws for the `Hashable` instances for `Maybe`, `Either` and `Tuple`.
 
-## Conclusion
+## Chapter 6 Conclusion
 
 In this chapter, we've been introduced to _type classes_, a type-oriented form of abstraction which enables powerful forms of code reuse. We've seen a collection of standard type classes from the PureScript standard libraries, and defined our own library based on a type class for computing hash codes.
 

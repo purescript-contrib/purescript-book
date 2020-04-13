@@ -24,7 +24,7 @@ function readText(onSuccess, onFailure) {
       onFailure(error.code);
     } else {
       onSuccess(data);
-    }   
+    }
   });
 }
 ```
@@ -45,7 +45,7 @@ function copyFile(onSuccess, onFailure) {
           onSuccess();
         }
       });
-    }   
+    }
   });
 }
 ```
@@ -71,7 +71,7 @@ function copyFile(onSuccess, onFailure) {
       onFailure(error.code);
     } else {
       writeCopy(data, onSuccess, onFailure);
-    }   
+    }
   });
 }
 ```
@@ -430,7 +430,7 @@ Because applicative functors support lifting of functions of arbitrary arity, we
 
 We can also combine parallel computations with sequential portions of code, by using applicative combinators in a do notation block, or vice versa, using `parallel` and `sequential` to change type constructors where appropriate.
 
- ## Exercises
+ ## Chapter 12 Exercises
 
  1. (Easy) Use `parallel` and `sequential` to make two HTTP requests and collect their response bodies in parallel. Your combining function should concatenate the two response bodies, and your continuation should use `print` to print the result to the console.
  1. (Medium) The applicative functor which corresponds to `Async` is also an instance of `Alternative`. The `<|>` operator defined by this instance runs two computations in parallel, and returns the result from the computation which completes first.
@@ -455,12 +455,12 @@ We can also combine parallel computations with sequential portions of code, by u
      ```javascript
      { references: ['/tmp/1.json', '/tmp/2.json'] }
      ```
-     
+
      Write a utility which takes a single filename as input, and spiders the JSON files on disk referenced transitively by that file, collecting a list of all referenced files.
 
      Your utility should use the `foreign` library to parse the JSON documents, and should fetch files referenced by a single file in parallel.
 
-## Conclusion
+## Chapter 12 Conclusion
 
 In this chapter, we have seen a practical demonstration of monad transformers:
 
