@@ -68,7 +68,6 @@
         margin: 0 auto;
         padding: 45px;
       }
-
       @media (max-width: 767px) {
         .markdown-body {
           padding: 15px;
@@ -82,6 +81,40 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-image: url(https://www.purescript.org/img/logo.svg);
+      }
+
+      #introduction {
+        margin-bottom: 4rem;
+      }
+
+      #table-of-contents {
+        margin-bottom: 4rem;
+        counter-reset: book-chapters;
+      }
+      #table-of-contents a {
+        display: block;
+        max-width: 300px;
+      }
+      #table-of-contents .indent-H1:before {
+        counter-increment: book-chapters;
+        content: counter(book-chapters) ". ";
+      }
+      #table-of-contents .indent-H1 {
+        font-weight: bold;
+        color: #343a40;
+      }
+
+      #table-of-contents .indent-H2 {
+        color: #495057;
+        margin-left: 2rem;
+        display: inline;
+      }
+      #table-of-contents .indent-H2:nth-child(odd) {
+        display: block;
+      }
+      #table-of-contents .indent-H3 {
+        color: #868e96;
+        margin-left: 4rem;
       }
 
       #loading {
@@ -125,6 +158,47 @@
   <body>
     <header></header>
     <main class="markdown-body">
+      <div id="introduction">
+        <p>
+          PureScript is a small strongly, statically typed programming language
+          with expressive types, written in and inspired by Haskell, and
+          compiling to Javascript.
+        </p>
+        <p>
+          Functional programming in JavaScript has seen quite a lot of
+          popularity recently, but large-scale application development is
+          hindered by the lack of a disciplined environment in which to write
+          code. PureScript aims to solve that problem by bringing the power of
+          strongly-typed functional programming to the world of JavaScript
+          development.
+        </p>
+        <p>
+          This book will show you how to get started with the PureScript
+          programming language, from the basics (setting up a development
+          environment) to the advanced.
+        </p>
+        <p>
+          Each chapter will be motivated by a particular problem, and in the
+          course of solving that problem, new functional programming tools and
+          techniques will be introduced. Here are some examples of problems that
+          will be solved in this book:
+        </p>
+        <ul>
+          <li>Transforming data structures with maps and folds</li>
+          <li>Form field validation using applicative functors</li>
+          <li>Testing code with QuickCheck</li>
+          <li>Using the canvas</li>
+          <li>Domain specific language implementation</li>
+          <li>Working with the DOM</li>
+          <li>JavaScript interoperability</li>
+          <li>Dealing with callback hell</li>
+        </ul>
+      </div>
+
+      <div id="table-of-contents">
+        <p><em>Table Of Contents</em></p>
+      </div>
+
       <div id="loading">Loading...</div>
     </main>
 
@@ -169,19 +243,51 @@
 
         const chaptersMarkdown = await Promise.all(promises);
 
-        markdownBody.innerHTML = chaptersMarkdown.reduce((html, chapter) => {
-          // TODO: Do we need to sanitize?
-          return html + markdownConverter.render(chapter);
-        }, "");
+        // Create Fragment In Order To Mutate The Chapters As DOM Nodes
+        const chaptersFragment = document
+          .createRange()
+          .createContextualFragment(
+            chaptersMarkdown.reduce(
+              // TODO: Do we need to sanitize?
+              (html, chapter) => html + markdownConverter.render(chapter),
+              ""
+            )
+          );
 
-        // Restore Scroll Position
+        const headerNodes = [
+          ...chaptersFragment.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+        ].map((chapterSection) => {
+          chapterSection.id = chapterSection.textContent;
+          return chapterSection;
+        });
+
+        const tableOfContents = document.createDocumentFragment();
+        headerNodes.map((node) => {
+          const link = document.createElement("a");
+          link.href = "#" + node.id;
+          link.textContent = node.textContent;
+          link.classList.add("indent-" + node.tagName);
+
+          tableOfContents.appendChild(link);
+        });
+        document
+          .querySelector("#table-of-contents")
+          .appendChild(tableOfContents);
+
+        // Replace Loading Indicator With Book Content
+        markdownBody.replaceChild(
+          chaptersFragment,
+          markdownBody.querySelector("#loading")
+        );
+
+        // Restore Scroll Position From Storage
         const previousScrollY = window.localStorage.getItem("bookScrollY") || 0;
         window.scroll({
           top: previousScrollY,
           behavior: "smooth",
         });
 
-        // Save Scroll Position
+        // Sync Scroll Position To Storage
         const scroll = new ScrollWatcher();
         scroll.on("scrolling", (event) => {
           window.localStorage.setItem("bookScrollY", event.scrollY);
