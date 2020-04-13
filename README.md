@@ -1,7 +1,6 @@
 This book is being continuously updated as the language evolves, so please report any issues you notice with the material. The following chapters are still being updated for purescript 0.13:
-* Chapter 12
 
-A single-page render of all book chapters can be viewed [here](https://s0kil.github.io/purescript-book/book/):
+- Chapter 12
 
 ## About the Book
 

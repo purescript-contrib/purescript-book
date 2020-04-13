@@ -103,14 +103,9 @@
         font-weight: bold;
         color: #343a40;
       }
-
       #table-of-contents .indent-H2 {
         color: #495057;
         margin-left: 2rem;
-        display: inline;
-      }
-      #table-of-contents .indent-H2:nth-child(odd) {
-        display: block;
       }
       #table-of-contents .indent-H3 {
         color: #868e96;
@@ -158,42 +153,7 @@
   <body>
     <header></header>
     <main class="markdown-body">
-      <div id="introduction">
-        <p>
-          PureScript is a small strongly, statically typed programming language
-          with expressive types, written in and inspired by Haskell, and
-          compiling to Javascript.
-        </p>
-        <p>
-          Functional programming in JavaScript has seen quite a lot of
-          popularity recently, but large-scale application development is
-          hindered by the lack of a disciplined environment in which to write
-          code. PureScript aims to solve that problem by bringing the power of
-          strongly-typed functional programming to the world of JavaScript
-          development.
-        </p>
-        <p>
-          This book will show you how to get started with the PureScript
-          programming language, from the basics (setting up a development
-          environment) to the advanced.
-        </p>
-        <p>
-          Each chapter will be motivated by a particular problem, and in the
-          course of solving that problem, new functional programming tools and
-          techniques will be introduced. Here are some examples of problems that
-          will be solved in this book:
-        </p>
-        <ul>
-          <li>Transforming data structures with maps and folds</li>
-          <li>Form field validation using applicative functors</li>
-          <li>Testing code with QuickCheck</li>
-          <li>Using the canvas</li>
-          <li>Domain specific language implementation</li>
-          <li>Working with the DOM</li>
-          <li>JavaScript interoperability</li>
-          <li>Dealing with callback hell</li>
-        </ul>
-      </div>
+      <div id="introduction"></div>
 
       <div id="table-of-contents">
         <p><em>Table Of Contents</em></p>
@@ -218,37 +178,24 @@
           },
         });
 
-        const markdownBody = document.querySelector(".markdown-body");
+        const introduction = document.querySelector("#introduction");
+        const readme = await fetchRepoFile("README.md");
+        introduction.innerHTML = markdownConverter.render(readme);
 
         const bookChapters = Array.from(
           { length: 14 },
           (_, index) => `chapter${++index}.md`
         );
 
-        const bookChaptersLinks = bookChapters.map(
-          (path) =>
-            `https://raw.githubusercontent.com/purescript-contrib/purescript-book/master/text/${path}`
+        const chaptersMarkdown = await Promise.all(
+          bookChapters.map(async (page) => await fetchRepoFile(`text/${page}`))
         );
 
-        const requestHeaders = new Headers();
-        requestHeaders.append("pragma", "no-cache");
-        requestHeaders.append("cache-control", "no-cache");
-
-        const promises = bookChaptersLinks.map(
-          async (page) =>
-            await fetch(page, { requestHeaders, cache: "reload" })
-              .then((r) => r.text())
-              .catch((e) => console.error(e))
-        );
-
-        const chaptersMarkdown = await Promise.all(promises);
-
-        // Create Fragment In Order To Mutate The Chapters As DOM Nodes
+        // Create Fragment In Order To Mutate The Book Chapters As DOM Nodes
         const chaptersFragment = document
           .createRange()
           .createContextualFragment(
             chaptersMarkdown.reduce(
-              // TODO: Do we need to sanitize?
               (html, chapter) => html + markdownConverter.render(chapter),
               ""
             )
@@ -274,6 +221,7 @@
           .querySelector("#table-of-contents")
           .appendChild(tableOfContents);
 
+        const markdownBody = document.querySelector(".markdown-body");
         // Replace Loading Indicator With Book Content
         markdownBody.replaceChild(
           chaptersFragment,
@@ -292,6 +240,18 @@
         scroll.on("scrolling", (event) => {
           window.localStorage.setItem("bookScrollY", event.scrollY);
         });
+
+        async function fetchRepoFile(path) {
+          const URL = `https://raw.githubusercontent.com/purescript-contrib/purescript-book/master/${path}`;
+
+          const requestHeaders = new Headers();
+          requestHeaders.append("pragma", "no-cache");
+          requestHeaders.append("cache-control", "no-cache");
+
+          return await fetch(URL, { requestHeaders, cache: "reload" })
+            .then((r) => r.text())
+            .catch((e) => console.error(e));
+        }
       })();
     </script>
   </body>
