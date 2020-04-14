@@ -1,0 +1,6 @@
+[book]
+authors = ["Phil Freeman"]
+language = "en"
+multilingual = false
+src = "text"
+title = "PureScript by Example"
