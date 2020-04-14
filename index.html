@@ -201,10 +201,12 @@
             )
           );
 
+        let uniqueSectionID = 0;
         const headerNodes = [
           ...chaptersFragment.querySelectorAll("h1, h2, h3, h4, h5, h6"),
         ].map((chapterSection) => {
-          chapterSection.id = chapterSection.textContent;
+          chapterSection.id =
+            ++uniqueSectionID + "-" + chapterSection.textContent;
           return chapterSection;
         });
 
