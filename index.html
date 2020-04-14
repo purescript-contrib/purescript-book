@@ -230,12 +230,21 @@
           markdownBody.querySelector("#loading")
         );
 
-        // Restore Scroll Position From Storage
-        const previousScrollY = window.localStorage.getItem("bookScrollY") || 0;
-        window.scroll({
-          top: previousScrollY,
-          behavior: "smooth",
-        });
+        // Restore Scroll Position From Location Hash
+        const locationHash = window.location.hash;
+        if (locationHash.length) {
+          try {
+            const elementID = window.decodeURI(locationHash.substring(1));
+            document.getElementById(elementID).scrollIntoView();
+          } catch (e) {
+            console.error(e);
+          }
+        } else {
+          // Restore Scroll Position From Storage
+          window.scroll({
+            top: window.localStorage.getItem("bookScrollY") || 0,
+          });
+        }
 
         // Sync Scroll Position To Storage
         const scroll = new ScrollWatcher();
