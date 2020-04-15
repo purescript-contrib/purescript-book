@@ -9,4 +9,4 @@ deploy:
   edge: true # use Travis-CI dpl v2
   provider: pages
   local_dir: book
-  token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  deploy_key: $GITHUB_REPO_DEPLOY_KEY  # Set in the settings page of your repository, as a secure variable
