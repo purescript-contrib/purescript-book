@@ -153,6 +153,10 @@ The first pattern only matches arrays with five elements, whose first and second
 
 Array literal patterns allow us to match arrays of a fixed length, but PureScript does _not_ provide any means of matching arrays of an unspecified length, since destructuring immutable arrays in these sorts of ways can lead to poor performance. If you need a data structure which supports this sort of matching, the recommended approach is to use `Data.List`. Other data structures exist which provide improved asymptotic performance for different operations.
 
+ ## Exercises
+
+ 1. (Medium) Write a function `fromSingleton` which uses an array literal pattern to extract the sole member of a singleton array. If the array is not a singleton, your function should return a provided default value. Your function should have type `forall a. a -> Array a -> a`
+
 ## Record Patterns and Row Polymorphism
 
 _Record patterns_ are used to match - you guessed it - records.
@@ -241,7 +245,6 @@ This way, we save ourselves from allocating a new array if the pair is already s
 
  1. (Easy) Write a function `sameCity` which uses record patterns to test whether two `Person` records belong to the same city.
  1. (Medium) What is the most general type of the `sameCity` function, taking into account row polymorphism? What about the `livesInLA` function defined above?
- 1. (Medium) Write a function `fromSingleton` which uses an array literal pattern to extract the sole member of a singleton array. If the array is not a singleton, your function should return a provided default value. Your function should have type `forall a. a -> Array a -> a`
 
 ## Case Expressions
 
