@@ -13,13 +13,7 @@ The front-end of our application will be the interactive mode PSCi, but it would
 The source code for this chapter is contained in the file `src/Data/AddressBook.purs`. This file starts with a module declaration and its import list:
 
 ```haskell
-module Data.AddressBook where
-
-import Prelude
-
-import Control.Plus (empty)
-import Data.List (List(..), filter, head)
-import Data.Maybe (Maybe)
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:1:7}}
 ```
 
 Here, we import several modules:
@@ -233,21 +227,13 @@ The only exception to this rule is the `where` keyword in the initial `module` d
 A good first step when tackling a new problem in PureScript is to write out type definitions for any values you will be working with. First, let's define a type for records in our address book:
 
 ```haskell
-type Entry =
-  { firstName :: String
-  , lastName  :: String
-  , address   :: Address
-  }
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:entry}}
 ```
 
 This defines a _type synonym_ called `Entry` - the type `Entry` is equivalent to the type on the right of the equals symbol: a record type with three fields - `firstName`, `lastName` and `address`. The two name fields will have type `String`, and the `address` field will have type `Address`, defined as follows:
 
 ```haskell
-type Address =
-  { street :: String
-  , city   :: String
-  , state  :: String
-  }
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:address}}
 ```
 
 Note that records can contain other records.

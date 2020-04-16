@@ -6,17 +6,21 @@ import Control.Plus (empty)
 import Data.List (List(..), filter, head)
 import Data.Maybe (Maybe)
 
+-- ANCHOR: address
 type Address =
   { street :: String
   , city   :: String
   , state  :: String
   }
+-- ANCHOR_END: address
 
+-- ANCHOR: entry
 type Entry =
   { firstName :: String
   , lastName  :: String
   , address   :: Address
   }
+-- ANCHOR_END: entry
 
 type AddressBook = List Entry
 
