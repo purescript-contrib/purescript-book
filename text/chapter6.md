@@ -614,6 +614,7 @@ Another reason to define a superclass relationship is in the case where there is
      ```haskell
      instance repeatAction :: Action Multiply String
      ```
+     _Hint_: Search Pursuit for a helper-function with the signature `String -> Int -> String`. Note that `String` might appear as a more generic type.
 
      Does this instance satisfy the laws listed above?
  1. (Medium) Write an instance `Action m a => Action m (Array a)`, where the action on arrays is defined by acting on each array element independently.
