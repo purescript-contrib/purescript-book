@@ -441,58 +441,65 @@ This program uses do notation to combine two native effects provided by the Java
 
 As mentioned previously, the `Effect` monad is of central importance to PureScript. The reason why it's central is because it is the conventional way to interoperate with PureScript's `Foreign Function Interface`, which provides the mechanism to execute a program and perform side effects. While it's desireable to avoid using the `Foreign Function Interface`, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the `Effect` monad is fairly simple. It has a few helper functions, but aside from that it doesn't do much except encapsulate side effects.
 
-## Handlers and Actions
+## Exceptions
 
-Functions such as `print` and `random` are called _actions_. Actions have the `Eff` type on the right hand side of their functions, and their purpose is to _introduce_ new effects.
-
-This is in contrast to _handlers_, in which the `Eff` type appears as the type of a function argument. While actions _add_ to the set of required effects, a handler usually _subtracts_ effects from the set.
-
-As an example, consider the `purescript-exceptions` package. It defines two functions, `throwException` and `catchException`:
+Let's examine a function from the `node-fs` package that involves two _native_ side effects: reading mutable state, and exceptions:
 
 ```haskell
-throwException :: forall a eff
-                . Error
-               -> Eff (exception :: EXCEPTION | eff) a
-
-catchException :: forall a eff
-                . (Error -> Eff eff a)
-               -> Eff (exception :: EXCEPTION | eff) a
-               -> Eff eff a
+readTextFile :: Encoding → String → Effect String
 ```
 
-`throwException` is an action. `Eff` appears on the right hand side, and introduces the new `EXCEPTION` effect.
-
-`catchException` is a handler. `Eff` appears as the type of the second function argument, and the overall effect is to _remove_ the `EXCEPTION` effect.
-
-This is useful, because the type system can be used to delimit portions of code which require a particular effect. That code can then be wrapped in a handler, allowing it to be embedded inside a block of code which does not allow that effect.
-
-For example, we can write a piece of code which throws exceptions using the `Exception` effect, then wrap that code using `catchException` to embed the computation in a piece of code which does not allow exceptions.
-
-Suppose we wanted to read our application's configuration from a JSON document. The process of parsing the document might result in an exception. The process of reading and parsing the configuration could be written as a function with this type signature:
-
-``` haskell
-readConfig :: forall eff. Eff (exception :: EXCEPTION | eff) Config
-```
-
-Then, in the `main` function, we could use `catchException` to handle the `EXCEPTION` effect, logging the error and returning a default configuration:
+If we attempt to read a file that does not exist:
 
 ```haskell
+import Node.Encoding (Encoding(..))
+import Node.FS.Sync (readTextFile)
+
+main :: Effect Unit
 main = do
-    config <- catchException printException readConfig
-    runApplication config
-  where
-    printException e = do
-      log (message e)
-      pure defaultConfig
+  lines <- readTextFile UTF8 "iDoNotExist.md"
+  log lines
 ```
 
-The `purescript-eff` package also defines the `runPure` handler, which takes a computation with _no_ side-effects, and safely evaluates it as a pure value:
+We encounter the following exception:
+```
+    throw err;
+    ^
+Error: ENOENT: no such file or directory, open 'iDoNotExist.md'
+...
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: 'iDoNotExist.md'
+```
+
+To manage this exception gracefully, we can wrap the potentially problematic code in `try` to handle either outcome:
 
 ```haskell
-type Pure a = Eff () a
-
-runPure :: forall a. Pure a -> a
+main :: Effect Unit
+main = do
+  result <- try $ readTextFile UTF8 "iDoNotExist.md"
+  case result of
+    Right lines -> log $ "Contents: \n" <> lines
+    Left error -> log $ "Couldn't open file. Error was: " <> message error
 ```
+
+`try` runs an `Effect` and returns eventual exceptions as a `Left` value. If the computation succeeds, the result gets wrapped in a `Right`:
+
+```haskell
+try :: forall a. Effect a -> Effect (Either Error a)
+```
+
+We can also generate our own exceptions. Here is an alternative implementation of `Data.List.head` which throws an exception if the list is empty, rather than returing a `Maybe` value of `Nothing`.
+
+```
+exceptionHead :: List Int -> Effect Int
+exceptionHead l = case l of
+  x : _ -> pure x
+  Nil -> throwException $ error "empty list"
+```
+
+That was a somewhat impractical example, as it is usually better to avoid generating exceptions in PureScript code instead and use non-native effects such as `Either` and `Maybe` to manage errors and missing values.
 
 ## Mutable State
 
@@ -503,37 +510,39 @@ The `ST` effect is used to manipulate mutable state. As pure functional programm
 The `ST` effect is defined in the `Control.Monad.ST` module. To see how it works, we need to look at the types of its actions:
 
 ```haskell
-newSTRef :: forall a h eff. a -> Eff (st :: ST h | eff) (STRef h a)
+new :: forall a r. a -> ST r (STRef r a)
 
-readSTRef :: forall a h eff. STRef h a -> Eff (st :: ST h | eff) a
+read :: forall a r. STRef r a -> ST r a
 
-writeSTRef :: forall a h eff. STRef h a -> a -> Eff (st :: ST h | eff) a
+write :: forall a r. a -> STRef r a -> ST r a
 
-modifySTRef :: forall a h eff. STRef h a -> (a -> a) -> Eff (st :: ST h | eff) a
+modify :: forall r a. (a -> a) -> STRef r a -> ST r a
 ```
 
-`newSTRef` is used to create a new mutable reference cell of type `STRef h a`, which can be read using the `readSTRef` action, and modified using the `writeSTRef` and `modifySTRef` actions. The type `a` is the type of the value stored in the cell, and the type `h` is used to indicate a _memory region_ (or _heap_) in the type system.
+`new` is used to create a new mutable reference cell of type `STRef r a`, which can be read using the `read` action, and modified using the `write` and `modify` actions. The type `a` is the type of the value stored in the cell, and the type `r` is used to indicate a _memory region_ (or _heap_) in the type system.
 
 Here is an example. Suppose we want to simulate the movement of a particle falling under gravity by iterating a simple update function over a large number of small time steps.
 
-We can do this by creating a mutable reference cell to hold the position and velocity of the particle, and then using a for loop (using the `forE` action in `Control.Monad.Eff`) to update the value stored in that cell:
+We can do this by creating a mutable reference cell to hold the position and velocity of the particle, and then using a `for` loop to update the value stored in that cell:
 
 ```haskell
 import Prelude
 
-import Control.Monad.Eff (Eff, forE)
-import Control.Monad.ST (ST, newSTRef, readSTRef, modifySTRef)
+import Control.Monad.ST.Ref (modify, new, read)
+import Control.Monad.ST (ST, for, run)
 
-simulate :: forall eff h. Number -> Number -> Int -> Eff (st :: ST h | eff) Number
+simulate :: forall r. Number -> Number -> Int -> ST r Number
 simulate x0 v0 time = do
-  ref <- newSTRef { x: x0, v: v0 }
-  forE 0 (time * 1000) \_ -> do
-    modifySTRef ref \o ->
-      { v: o.v - 9.81 * 0.001
-      , x: o.x + o.v * 0.001
-      }
-    pure unit
-  final <- readSTRef ref
+  ref <- new { x: x0, v: v0 }
+  for 0 (time * 1000) \_ ->
+    modify
+      ( \o ->
+          { v: o.v - 9.81 * 0.001
+          , x: o.x + o.v * 0.001
+          }
+      )
+      ref
+  final <- read ref
   pure final.x
 ```
 
@@ -541,21 +550,19 @@ At the end of the computation, we read the final value of the reference cell, an
 
 Note that even though this function uses mutable state, it is still a pure function, so long as the reference cell `ref` is not allowed to be used by other parts of the program. We will see that this is exactly what the `ST` effect disallows.
 
-To run a computation with the `ST` effect, we have to use the `runST` function:
+To run a computation with the `ST` effect, we have to use the `run` function:
 
 ```haskell
-runST :: forall a eff. (forall h. Eff (st :: ST h | eff) a) -> Eff eff a
+run :: forall a. (forall r. ST r a) -> a
 ```
 
-The thing to notice here is that the region type `h` is quantified _inside the parentheses_ on the left of the function arrow. That means that whatever action we pass to `runST` has to work with _any region_ `h` whatsoever.
+The thing to notice here is that the region type `r` is quantified _inside the parentheses_ on the left of the function arrow. That means that whatever action we pass to `run` has to work with _any region_ `r` whatsoever.
 
-However, once a reference cell has been created by `newSTRef`, its region type is already fixed, so it would be a type error to try to use the reference cell outside the code delimited by `runST`.  This is what allows `runST` to safely remove the `ST` effect!
-
-In fact, since `ST` is the only effect in our example, we can use `runST` in conjunction with `runPure` to turn `simulate` into a pure function:
+However, once a reference cell has been created by `new`, its region type is already fixed, so it would be a type error to try to use the reference cell outside the code delimited by `run`.  This is what allows `run` to safely remove the `ST` effect, and turn `simulate` into a pure function!
 
 ```haskell
-simulate' :: Number -> Number -> Number -> Number
-simulate' x0 v0 time = runPure (runST (simulate x0 v0 time))
+simulate' :: Number -> Number -> Int -> Number
+simulate' x0 v0 time = run (simulate x0 v0 time)
 ```
 
 You can even try running this function in PSCi:
@@ -563,64 +570,103 @@ You can even try running this function in PSCi:
 ```text
 > import Main
 
-> simulate' 100.0 0.0 0.0
+> simulate' 100.0 0.0 0
 100.00
 
-> simulate' 100.0 0.0 1.0
+> simulate' 100.0 0.0 1
 95.10
 
-> simulate' 100.0 0.0 2.0
+> simulate' 100.0 0.0 2
 80.39
 
-> simulate' 100.0 0.0 3.0
+> simulate' 100.0 0.0 3
 55.87
 
-> simulate' 100.0 0.0 4.0
+> simulate' 100.0 0.0 4
 21.54
 ```
 
-In fact, if we inline the definition of `simulate` at the call to `runST`, as follows:
+In fact, if we inline the definition of `simulate` at the call to `run`, as follows:
 
 ```haskell
 simulate :: Number -> Number -> Int -> Number
-simulate x0 v0 time = runPure $ runST do
-  ref <- newSTRef { x: x0, v: v0 }
-  forE 0 (time * 1000) \_ -> do
-    modifySTRef ref \o ->
-      { v: o.v - 9.81 * 0.001
-      , x: o.x + o.v * 0.001
-      }
-    pure unit
-  final <- readSTRef ref
-  pure final.x
+simulate x0 v0 time =
+  run do
+    ref <- new { x: x0, v: v0 }
+    for 0 (time * 1000) \_ ->
+      modify
+        ( \o ->
+            { v: o.v - 9.81 * 0.001
+            , x: o.x + o.v * 0.001
+            }
+        )
+        ref
+    final <- read ref
+    pure final.x
 ```
 
 then the compiler will notice that the reference cell is not allowed to escape its scope, and can safely turn it into a `var`. Here is the generated JavaScript for the body of the call to `runST`:
 
 ```javascript
-var ref = { x: x0, v: v0 };
-
-Control_Monad_Eff.forE(0)(time * 1000 | 0)(function (i) {
-  return function __do() {
-    ref = (function (o) {
-      return {
-        v: o.v - 9.81 * 1.0e-3,
-        x: o.x + o.v * 1.0e-3
-      };
-    })(ref);
-    return Prelude.unit;
-  };
-})();
-
-return ref.x;
+var simulate = function (x0) {
+    return function (v0) {
+        return function (time) {
+            return (function __do() {
+                var ref = {
+                    value: {
+                        x: x0,
+                        v: v0
+                    }
+                };
+                Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
+                    return Control_Monad_ST_Internal.modify(function (o) {
+                        return {
+                            v: o.v - 9.81 * 1.0e-3,
+                            x: o.x + o.v * 1.0e-3
+                        };
+                    })(ref);
+                })();
+                return ref.value.x;
+            })();
+        };
+    };
+};
 ```
 
-The `ST` effect is a good way to generate short JavaScript when working with locally-scoped mutable state, especially when used together with actions like `forE`, `foreachE`, `whileE` and `untilE` which generate efficient loops in the `Eff` monad.
+For comparison, this is the generated JavaScript of the non-inlined form:
 
-X> ## Exercises
-X>
-X> 1. (Medium) Rewrite the `safeDivide` function to throw an exception using `throwException` if the denominator is zero.
-X> 1. (Difficult) The following is a simple way to estimate pi: randomly choose a large number `N` of points in the unit square, and count the number `n` which lie in the inscribed circle. An estimate for pi is `4n/N`. Use the `RANDOM` and `ST` effects with the `forE` function to write a function which estimates pi in this way.
+```js
+var simulate = function (x0) {
+    return function (v0) {
+        return function (time) {
+            return function __do() {
+                var ref = Control_Monad_ST_Internal["new"]({
+                    x: x0,
+                    v: v0
+                })();
+                Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
+                    return Control_Monad_ST_Internal.modify(function (o) {
+                        return {
+                            v: o.v - 9.81 * 1.0e-3,
+                            x: o.x + o.v * 1.0e-3
+                        };
+                    })(ref);
+                })();
+                var $$final = Control_Monad_ST_Internal.read(ref)();
+                return $$final.x;
+            };
+        };
+    };
+};
+```
+
+The `ST` effect is a good way to generate short JavaScript when working with locally-scoped mutable state, especially when used together with actions like `for`, `foreach`, and `while` which generate efficient loops.
+
+## Exercises
+
+1. (Medium) Rewrite the `safeDivide` function to throw an exception using `throwException` if the denominator is zero.
+1. (Difficult) The following is a simple way to estimate pi: randomly choose a large number `N` of points in the unit square, and count the number `n` which lie in the inscribed circle. An estimate for pi is `4n/N`. Use the `random` and `ST` effects with the `for` function to write a function which estimates pi in this way.
+
 
 ## The Aff Monad
 
