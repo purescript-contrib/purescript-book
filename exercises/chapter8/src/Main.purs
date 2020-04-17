@@ -59,14 +59,14 @@ reducer state@{ person: Person p@{ homeAddress: Address a } } action =
 formField :: String -> String -> String -> (Maybe String -> Action) -> (Action -> Effect Unit) -> R.JSX
 formField name hint value actionConstructor dispatch =
   D.div
-    { className: "form-group"
+    { className: "form-group row"
     , children:
         [ D.label
-            { className: "col-sm-2 control-label"
+            { className: "col-sm col-form-label"
             , children: [ D.text name ]
             }
         , D.div
-            { className: "col-sm-3"
+            { className: "col-sm"
             , children:
                 [ D.input
                     { className: "form-control"
@@ -117,8 +117,7 @@ mkAddressBookApp = do
                   { className: "row"
                   , children:
                       [ D.form
-                          { className: "form-horizontal"
-                          , children:
+                          { children:
                               [ D.h3_ [ D.text "Basic Information" ]
                               , formField "First Name" "First Name" person.firstName UpdateFirstName dispatch
                               , formField "Last Name" "Last Name" person.lastName UpdateLastName dispatch
