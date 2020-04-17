@@ -4,7 +4,7 @@ import Prelude
 import Data.AddressBook (emptyBook, findEntry, insertEntry)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
-import Test.Solutions (findEntryByStreet)
+import Test.Solutions (findEntryByStreet, isInBook, removeDuplicates)
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -54,7 +54,6 @@ main =
         test "Lookup existing"
           $ Assert.equal (Just john)
           $ findEntryByStreet john.address.street book
- {-  Move this block comment starting point to enable more tests
         test "Lookup missing"
           $ Assert.equal Nothing
           $ findEntryByStreet "456 Nothing St." book
@@ -68,4 +67,3 @@ main =
       test "Exercise 4 - Remove duplicates" do
         Assert.equal book
           $ removeDuplicates john.firstName john.lastName bookWithDuplicate
--}
