@@ -15,8 +15,6 @@ main =
   runTest do
     test "Initial passing test"
       $ Assert.equal true true
-
-{-  Move this block comment starting point to enable more tests
     suite "Exercise Group 1" do
       suite "Exercise 1 - Test if integer is even" do
         test "0 is even"
@@ -184,4 +182,3 @@ main =
         test "doesn't locate a file"
           $ Assert.equal (Nothing)
           $ whereIs "lss"
--}
