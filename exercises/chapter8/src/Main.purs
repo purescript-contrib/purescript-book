@@ -3,61 +3,25 @@ module Main where
 import Prelude
 import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), examplePerson)
 import Data.AddressBook.Validation (Errors, validatePerson')
-import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Array ((..), length, modifyAt, zipWith)
-import Effect (Effect)
 import Data.Either (Either(..))
+import Data.Foldable (traverse_)
+import Data.Maybe (Maybe(..), fromMaybe)
+import Effect (Effect)
 import Effect.Exception (throw)
 import React.Basic.DOM (render)
 import React.Basic.DOM as D
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler)
-import React.Basic.Hooks (ReactComponent, component, element, useReducer, (/\))
+import React.Basic.Hooks (ReactComponent, component, element, useState, (/\))
 import React.Basic.Hooks as R
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (toNonElementParentNode)
 import Web.HTML.Window (document)
 
-type State
-  = { person :: Person
-    , errors :: Errors
-    }
-
-initialState :: State
-initialState =
-  { person: examplePerson
-  , errors: []
-  }
-
-data Action
-  = UpdateFirstName (Maybe String)
-  | UpdateLastName (Maybe String)
-  | UpdateStreet (Maybe String)
-  | UpdateCity (Maybe String)
-  | UpdateState (Maybe String)
-  | UpdatePhoneNumber Int (Maybe String)
-
-reducer :: State -> Action -> State
-reducer state@{ person: Person p@{ homeAddress: Address a } } action =
-  let
-    updatePhoneNumber s (PhoneNumber o) = PhoneNumber $ o { number = s }
-
-    newPerson = case action of
-      UpdateFirstName (Just value) -> Person p { firstName = value }
-      UpdateLastName (Just value) -> Person p { lastName = value }
-      UpdateStreet (Just value) -> Person p { homeAddress = Address a { street = value } }
-      UpdateCity (Just value) -> Person p { homeAddress = Address a { city = value } }
-      UpdateState (Just value) -> Person p { homeAddress = Address a { state = value } }
-      UpdatePhoneNumber index (Just value) -> Person p { phones = fromMaybe p.phones $ modifyAt index (updatePhoneNumber value) p.phones }
-      _ -> state.person
-  in
-    case validatePerson' newPerson of
-      Left errors -> state { person = newPerson, errors = errors }
-      Right _ -> state { person = newPerson, errors = [] }
-
-formField :: String -> String -> String -> (Maybe String -> Action) -> (Action -> Effect Unit) -> R.JSX
-formField name hint value actionConstructor dispatch =
+formField :: String -> String -> String -> (String -> Effect Unit) -> R.JSX
+formField name hint value updateFunc =
   D.div
     { className: "form-group row"
     , children:
@@ -72,20 +36,12 @@ formField name hint value actionConstructor dispatch =
                     { className: "form-control"
                     , placeholder: hint
                     , value
-                    , onChange: handler targetValue \v -> dispatch $ actionConstructor v
+                    , onChange: handler targetValue $ traverse_ updateFunc
                     }
                 ]
             }
         ]
     }
-
-renderPhoneNumber :: (Action -> Effect Unit) -> PhoneNumber -> Int -> R.JSX
-renderPhoneNumber dispatch (PhoneNumber phone) index =
-  let
-    actionConstructor :: Maybe String -> Action
-    actionConstructor ms = UpdatePhoneNumber index ms
-  in
-    formField (show phone."type") "XXX-XXX-XXXX" phone.number actionConstructor dispatch
 
 renderValidationError :: String -> R.JSX
 renderValidationError err = D.li_ [ D.text err ]
@@ -103,8 +59,18 @@ renderValidationErrors xs =
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
   component "AddressBookApp" \props -> R.do
-    { person: Person person@{ homeAddress: Address address }, errors } /\ dispatch <-
-      useReducer initialState reducer
+    pp@(Person person@{ homeAddress: Address address }) /\ setPerson <- useState examplePerson
+    let
+      errors = case validatePerson' pp of
+        Left e -> e
+        Right _ -> []
+
+      updatePhoneNumber s (PhoneNumber o) = PhoneNumber o { number = s }
+
+      renderPhoneNumber :: PhoneNumber -> Int -> R.JSX
+      renderPhoneNumber (PhoneNumber phone) index =
+        formField (show phone."type") "XXX-XXX-XXXX" phone.number
+          $ \s -> setPerson \(Person p) -> Person p { phones = fromMaybe p.phones $ modifyAt index (updatePhoneNumber s) p.phones }
     pure
       $ D.div
           { className: "container"
@@ -119,15 +85,20 @@ mkAddressBookApp = do
                       [ D.form
                           { children:
                               [ D.h3_ [ D.text "Basic Information" ]
-                              , formField "First Name" "First Name" person.firstName UpdateFirstName dispatch
-                              , formField "Last Name" "Last Name" person.lastName UpdateLastName dispatch
+                              , formField "First Name" "First Name" person.firstName
+                                  $ \s -> setPerson \(Person p) -> Person p { firstName = s }
+                              , formField "Last Name" "Last Name" person.lastName
+                                  $ \s -> setPerson \(Person p) -> Person p { lastName = s }
                               , D.h3_ [ D.text "Address" ]
-                              , formField "Street" "Street" address.street UpdateStreet dispatch
-                              , formField "City" "City" address.city UpdateCity dispatch
-                              , formField "State" "State" address.state UpdateState dispatch
+                              , formField "Street" "Street" address.street
+                                  $ \s -> setPerson \(Person p@{ homeAddress: Address a }) -> Person p { homeAddress = Address a { street = s } }
+                              , formField "City" "City" address.city
+                                  $ \s -> setPerson \(Person p@{ homeAddress: Address a }) -> Person p { homeAddress = Address a { city = s } }
+                              , formField "State" "State" address.state
+                                  $ \s -> setPerson \(Person p@{ homeAddress: Address a }) -> Person p { homeAddress = Address a { state = s } }
                               , D.h3_ [ D.text "Contact Information" ]
                               ]
-                                <> zipWith (renderPhoneNumber dispatch) person.phones (0 .. length person.phones)
+                                <> zipWith renderPhoneNumber person.phones (0 .. length person.phones)
                           }
                       ]
                   }
