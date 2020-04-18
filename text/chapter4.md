@@ -515,7 +515,7 @@ lengthTailRec arr = length' arr 0
     length' arr' acc =
       if null arr'
         then 0
-        else length' (fromMaybe [] $ tail arr') acc + 1
+        else length' (fromMaybe [] $ tail arr') (acc + 1)
 ```
 
 In this case, we delegate to the helper function `length'`, which is tail recursive - its only recursive call is in the last case, and is in tail position. This means that the generated code will be a _while loop_, and will not blow the stack for large inputs.
