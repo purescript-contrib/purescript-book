@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude
-import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), address, examplePerson, person)
+import Data.AddressBook (PhoneNumber, address, examplePerson, person)
 import Data.AddressBook.Validation (Errors, validatePerson')
 import Data.Array (mapWithIndex, updateAt)
 import Data.Either (Either(..))
@@ -73,21 +73,16 @@ mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
   -- incomming \props are unused
   component "AddressBookApp" \props -> R.do
-    let
-      -- Using "Named Pattern" with `@` so inner records
-      -- of `Person` and `Address` can be more conveniently
-      -- accessed as `p` and `a`.
-      Person p@{ homeAddress: Address a } = examplePerson
     -- Each form field is tracked as a separate piece of state.
     -- `useState` takes a default initial value and returns the
     -- current value and a way to update the value.
     -- Consult react-hooks docs for a more detailed explanation of `useState`.
-    Tuple firstName setFirstName <- useState p.firstName
-    Tuple lastName setLastName <- useState p.lastName
-    Tuple street setStreet <- useState a.street
-    Tuple city setCity <- useState a.city
-    Tuple state setState <- useState a.state
-    Tuple phoneNumbers setPhoneNumbers <- useState p.phones
+    Tuple firstName setFirstName <- useState examplePerson.firstName
+    Tuple lastName setLastName <- useState examplePerson.lastName
+    Tuple street setStreet <- useState examplePerson.homeAddress.street
+    Tuple city setCity <- useState examplePerson.homeAddress.city
+    Tuple state setState <- useState examplePerson.homeAddress.state
+    Tuple phoneNumbers setPhoneNumbers <- useState examplePerson.phones
     let
       unvalidatedPerson =
         person firstName lastName
@@ -103,7 +98,7 @@ mkAddressBookApp =
       updateAt' i x xs = fromMaybe xs (updateAt i x xs)
 
       renderPhoneNumber :: Int -> PhoneNumber -> R.JSX
-      renderPhoneNumber index (PhoneNumber phone) =
+      renderPhoneNumber index phone =
         let
           -- Same signature as the other `set` hooks, but customized to update a specific phone index
           setPhoneNumber :: (String -> String) -> Effect Unit
@@ -114,7 +109,7 @@ mkAddressBookApp =
                 -- Each `set` hook runs a provided `setter` function which describes
                 -- how to determine the new state from the previous state.
                 -- In our case, the formField handler ignores the previous state.
-                (PhoneNumber phone { number = setter "ignore" })
+                (phone { number = setter "ignore" })
                 phoneNumbers
         in
           formField
