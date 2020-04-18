@@ -59,7 +59,7 @@ renderValidationErrors xs =
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
   component "AddressBookApp" \props -> R.do
-    pp@(Person person@{ homeAddress: Address address }) /\ setPerson <- useState examplePerson
+    pp@(Person p@{ homeAddress: Address a }) /\ setPerson <- useState examplePerson
     let
       errors = case validatePerson' pp of
         Left e -> e
@@ -70,7 +70,7 @@ mkAddressBookApp = do
       renderPhoneNumber :: PhoneNumber -> Int -> R.JSX
       renderPhoneNumber (PhoneNumber phone) index =
         formField (show phone."type") "XXX-XXX-XXXX" phone.number
-          $ \s -> setPerson \(Person p) -> Person p { phones = fromMaybe p.phones $ modifyAt index (updatePhoneNumber s) p.phones }
+          $ \s -> setPerson \_ -> Person p { phones = fromMaybe p.phones $ modifyAt index (updatePhoneNumber s) p.phones }
     pure
       $ D.div
           { className: "container"
@@ -85,20 +85,20 @@ mkAddressBookApp = do
                       [ D.form
                           { children:
                               [ D.h3_ [ D.text "Basic Information" ]
-                              , formField "First Name" "First Name" person.firstName
-                                  $ \s -> setPerson \(Person p) -> Person p { firstName = s }
-                              , formField "Last Name" "Last Name" person.lastName
-                                  $ \s -> setPerson \(Person p) -> Person p { lastName = s }
+                              , formField "First Name" "First Name" p.firstName
+                                  $ \s -> setPerson \_ -> Person p { firstName = s }
+                              , formField "Last Name" "Last Name" p.lastName
+                                  $ \s -> setPerson \_ -> Person p { lastName = s }
                               , D.h3_ [ D.text "Address" ]
-                              , formField "Street" "Street" address.street
-                                  $ \s -> setPerson \(Person p@{ homeAddress: Address a }) -> Person p { homeAddress = Address a { street = s } }
-                              , formField "City" "City" address.city
-                                  $ \s -> setPerson \(Person p@{ homeAddress: Address a }) -> Person p { homeAddress = Address a { city = s } }
-                              , formField "State" "State" address.state
-                                  $ \s -> setPerson \(Person p@{ homeAddress: Address a }) -> Person p { homeAddress = Address a { state = s } }
+                              , formField "Street" "Street" a.street
+                                  $ \s -> setPerson \_ -> Person p { homeAddress = Address a { street = s } }
+                              , formField "City" "City" a.city
+                                  $ \s -> setPerson \_ -> Person p { homeAddress = Address a { city = s } }
+                              , formField "State" "State" a.state
+                                  $ \s -> setPerson \_ -> Person p { homeAddress = Address a { state = s } }
                               , D.h3_ [ D.text "Contact Information" ]
                               ]
-                                <> zipWith renderPhoneNumber person.phones (0 .. length person.phones)
+                                <> zipWith renderPhoneNumber p.phones (0 .. length p.phones)
                           }
                       ]
                   }
