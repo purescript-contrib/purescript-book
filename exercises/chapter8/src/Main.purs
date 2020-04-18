@@ -1,11 +1,10 @@
 module Main where
 
 import Prelude
-import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), examplePerson)
+import Data.AddressBook (PhoneNumber(..), PhoneType(..), address, person, phoneNumber)
 import Data.AddressBook.Validation (Errors, validatePerson')
-import Data.Array ((..), length, modifyAt, zipWith)
+import Data.Array (modifyAt, mapWithIndex)
 import Data.Either (Either(..))
-import Data.Foldable (traverse_)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Effect (Effect)
 import Effect.Exception (throw)
@@ -20,23 +19,24 @@ import Web.HTML (window)
 import Web.HTML.HTMLDocument (toNonElementParentNode)
 import Web.HTML.Window (document)
 
-formField :: String -> String -> String -> (String -> Effect Unit) -> R.JSX
-formField name hint value updateFunc =
-  D.div
+formField :: String -> String -> String -> ((String -> String) -> Effect Unit) -> R.JSX
+formField name placeholder value setValue =
+  D.label
     { className: "form-group row"
     , children:
-        [ D.label
-            { className: "col-sm col-form-label"
-            , children: [ D.text name ]
+        [ D.div
+            { className: "col-sm col-form-label", children: [ D.text name ]
             }
         , D.div
             { className: "col-sm"
             , children:
                 [ D.input
                     { className: "form-control"
-                    , placeholder: hint
+                    , placeholder
                     , value
-                    , onChange: handler targetValue $ traverse_ updateFunc
+                    , onChange:
+                        handler targetValue \v ->
+                          setValue \_ -> fromMaybe "" v
                     }
                 ]
             }
@@ -59,18 +59,41 @@ renderValidationErrors xs =
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
   component "AddressBookApp" \props -> R.do
-    pp@(Person p@{ homeAddress: Address a }) /\ setPerson <- useState examplePerson
+    firstName /\ setFirstName <- useState "John"
+    lastName /\ setLastName <- useState "Smith"
+    street /\ setStreet <- useState "123 Fake St."
+    city /\ setCity <- useState "FakeTown"
+    state /\ setState <- useState "CA"
+    phoneNumbers /\ setPhoneNumbers <-
+      useState
+        [ phoneNumber HomePhone "555-555-5555"
+        , phoneNumber CellPhone "555-555-0000"
+        ]
     let
-      errors = case validatePerson' pp of
+      unvalidatedPerson =
+        person firstName lastName
+          (address street city state)
+          phoneNumbers
+
+      errors = case validatePerson' unvalidatedPerson of
         Left e -> e
         Right _ -> []
 
-      updatePhoneNumber s (PhoneNumber o) = PhoneNumber o { number = s }
+      modifyAt' i f as = fromMaybe as (modifyAt i f as)
 
-      renderPhoneNumber :: PhoneNumber -> Int -> R.JSX
-      renderPhoneNumber (PhoneNumber phone) index =
-        formField (show phone."type") "XXX-XXX-XXXX" phone.number
-          $ \s -> setPerson \_ -> Person p { phones = fromMaybe p.phones $ modifyAt index (updatePhoneNumber s) p.phones }
+      renderPhoneNumber :: Int -> PhoneNumber -> R.JSX
+      renderPhoneNumber index (PhoneNumber phone) =
+        formField
+          (show phone."type")
+          "XXX-XXX-XXXX"
+          phone.number
+          ( \setPhoneNumber ->
+              setPhoneNumbers \_ ->
+                modifyAt'
+                  index
+                  (\(PhoneNumber n) -> PhoneNumber (n { number = setPhoneNumber n.number }))
+                  phoneNumbers
+          )
     pure
       $ D.div
           { className: "container"
@@ -85,20 +108,15 @@ mkAddressBookApp = do
                       [ D.form
                           { children:
                               [ D.h3_ [ D.text "Basic Information" ]
-                              , formField "First Name" "First Name" p.firstName
-                                  $ \s -> setPerson \_ -> Person p { firstName = s }
-                              , formField "Last Name" "Last Name" p.lastName
-                                  $ \s -> setPerson \_ -> Person p { lastName = s }
+                              , formField "First Name" "First Name" firstName setFirstName
+                              , formField "Last Name" "Last Name" lastName setLastName
                               , D.h3_ [ D.text "Address" ]
-                              , formField "Street" "Street" a.street
-                                  $ \s -> setPerson \_ -> Person p { homeAddress = Address a { street = s } }
-                              , formField "City" "City" a.city
-                                  $ \s -> setPerson \_ -> Person p { homeAddress = Address a { city = s } }
-                              , formField "State" "State" a.state
-                                  $ \s -> setPerson \_ -> Person p { homeAddress = Address a { state = s } }
+                              , formField "Street" "Street" street setStreet
+                              , formField "City" "City" city setCity
+                              , formField "State" "State" state setState
                               , D.h3_ [ D.text "Contact Information" ]
                               ]
-                                <> zipWith renderPhoneNumber p.phones (0 .. length p.phones)
+                                <> mapWithIndex renderPhoneNumber phoneNumbers
                           }
                       ]
                   }
