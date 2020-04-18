@@ -303,7 +303,7 @@ Many standard type classes come with their own set of similar laws. The laws giv
        
      Define `Show` and `Eq` instances for `Complex`.
 
-## Type Annotations
+## Type Class Constraints
 
 Types of functions can be constrained by using type classes. Here is an example: suppose we want to write a function which tests if three values are equal, by using equality defined using an `Eq` type class instance.
 
