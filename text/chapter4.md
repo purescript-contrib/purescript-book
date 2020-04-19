@@ -10,11 +10,13 @@ The motivating example for this chapter is a library of functions for working wi
 
 ## Project Setup
 
-The source code for this chapter is contained in the two files `src/Data/Path.purs` and `src/FileOperations.purs`.
+For this chapter, switch to branch `ch4-tests`.
+The source code for this chapter is contained in the two files `src/Data/Path.purs` and `test/Solutions.purs`.
 
 The `Data.Path` module contains a model of a virtual filesystem. You do not need to modify the contents of this module.
 
-The `FileOperations` module contains functions which use the `Data.Path` API. Solutions to the exercises can be completed in this file.
+As in the previous chapters, the `Test.Solutions` module contains functions which use the `Data.Path` API.
+Implement your solutions to the exercises in this file.
 
 The project has the following dependencies:
 
@@ -193,7 +195,7 @@ For example, suppose we wanted to compute an array of all numbers between 1 and 
 
  1. (Easy) Use the `map` or `<$>` function to write a function which calculates the squares of an array of numbers.
  1. (Easy) Use the `filter` function to write a function which removes the negative numbers from an array of numbers.
- 1. (Medium) Define an infix synonym `<$?>` for `filter`. Rewrite your answer to the previous question to use your new operator. Experiment with the precedence level and associativity of your operator in PSCi.
+ 1. (Medium) Define an infix synonym `<$?>` for `filter`. Rewrite your answer to the previous question to use your new operator. Experiment with the precedence level and associativity of your operator in PSCi.  NOTE: no unit tests for this.
 
 ## Flattening Arrays
 
