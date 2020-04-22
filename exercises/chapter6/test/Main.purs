@@ -14,13 +14,9 @@ import Test.Unit.Main (runTest)
 main :: Effect Unit
 main =
   runTest do
+    -- Tests for the first exercise in this chapter (Show Shape)
+    -- can be found at the end of the previous chapter (chapter 5).
     suite "Exercise Group 1" do
-      suite "Exercise 1 - Show Shape" do
-        -- This should probably be added as an exercise to the end of chapter 5
-        -- with a note to revisit as first exercise in chapter 6
-        test "Show Shape todo"
-          $ Assert.equal "todo" "todo" -- (show myShape)
-    suite "Exercise Group 2" do
       suite "Exercise 1 - Show and Eq for Complex" do
         test "Show Complex"
           $ Assert.equal "1.0+2.0i"
@@ -38,7 +34,7 @@ main =
           $ Assert.expectFailure "should not be equal"
           $ Assert.equal (Complex { real: 5.0, imaginary: 2.0 })
           $ Complex { real: 1.0, imaginary: 2.0 }
-    suite "Exercise Group 3" do
+    suite "Exercise Group 2" do
       suite "Exercise 1 - Eq for NonEmpty" do
         test "NonEmpty equals"
           $ Assert.equal (NonEmpty 1 [ 2, 3 ])
@@ -107,7 +103,7 @@ main =
           $ Assert.equal "123"
           $ foldMap (\x -> show x)
           $ OneMore 1 (2 : 3 : Nil)
-    suite "Exercise Group 4" do
+    suite "Exercise Group 3" do
       suite "Exercise 1 - Partial maximum" do
         test "unsafeMaximum"
           $ Assert.equal 42
@@ -166,7 +162,7 @@ main =
         test "Multiply Self append"
           $ Assert.equal (act m1 (act m2 a))
           $ act (m1 <> m2) a
-    suite "Exercise Group 5" do
+    suite "Exercise Group 4" do
       suite "Exercise 2 - Array Duplicates" do
         test "No dupe"
           $ Assert.equal false

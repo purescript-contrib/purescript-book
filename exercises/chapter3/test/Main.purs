@@ -12,7 +12,7 @@ import Test.Unit.Main (runTest)
 main :: Effect Unit
 main =
   runTest do
-    suite "Exercise Group 1" do
+    suite "Exercise Group 0" do
       let
         john =
           { firstName: "John"
