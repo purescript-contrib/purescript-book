@@ -31,10 +31,13 @@ evenCount ints = evenCount' ints 0
 squared :: Array Number -> Array Number
 squared arr = map (\n -> n * n) arr
 
+keepNonNegative :: Array Number -> Array Number
+keepNonNegative arr = filter (\n -> n >= 0.0) arr
+
 infix 4 filter as <$?>
 
-keepNonNegative :: Array Number -> Array Number
-keepNonNegative arr = (\n -> n >= 0.0) <$?> arr
+keepNonNegativeRewrite :: Array Number -> Array Number
+keepNonNegativeRewrite arr = (\n -> n >= 0.0) <$?> arr
 
 factors :: Int -> Array (Array Int)
 factors n = do

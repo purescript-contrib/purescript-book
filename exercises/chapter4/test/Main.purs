@@ -15,12 +15,14 @@ import Test.Solutions
   , isEven
   , isPrime
   , keepNonNegative
+  , keepNonNegativeRewrite
   , largestSmallest
   , onlyFiles
   , reverse
   , squared
   , triples
   , whereIs
+  , (<$?>)
   )
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
