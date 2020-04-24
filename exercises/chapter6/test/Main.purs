@@ -14,6 +14,10 @@ import Test.Unit.Main (runTest)
 main :: Effect Unit
 main =
   runTest do
+    test "Initial passing test"
+      $ Assert.equal true true
+
+{-  Move this block comment starting point to enable more tests
     -- Tests for the first exercise in this chapter (Show Shape)
     -- can be found at the end of the previous chapter (chapter 5).
     suite "Exercise Group 1" do
@@ -22,7 +26,6 @@ main =
           $ Assert.equal "1.0+2.0i"
           $ show
           $ Complex { real: 1.0, imaginary: 2.0 }
- {-  Move this block comment starting point to enable more tests
         test "Show Negative Complex"
           $ Assert.equal "1.0-2.0i"
           $ show
