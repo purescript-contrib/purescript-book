@@ -58,11 +58,14 @@ main =
         test "Filter negative numbers"
           $ Assert.equal [ 0.0, 2.0, 3.0 ]
           $ keepNonNegative [ -1.5, -1.0, 0.0, -0.1, 2.0, 3.0, -4.0 ]
-      -- Unable to find any combination of precedence and associativity
-      -- that changes above output.
-      suite "Exercise 3 - Experiment with precedence and associativity of <$?> operator" do
-        test "No tests for this"
-          $ Assert.assert "(arbitrarily pass)" true
+      suite "Exercise 3 - <$?> operator for filter" do
+        test "Define <$?> operator for filter"
+          $ Assert.equal [ 1, 1 ]
+          $ (_ == 1)
+          <$?> [ 1, 2, 3, 1, 2, 3 ]
+        test "Rewrite previous filtering solution using new operator"
+          $ Assert.equal [ 0.0, 2.0, 3.0 ]
+          $ keepNonNegativeRewrite [ -1.5, -1.0, 0.0, -0.1, 2.0, 3.0, -4.0 ]
     suite "Exercise Group 3" do
       suite "Exercise 1 - Identify prime integer" do
         test "0 is not prime"
