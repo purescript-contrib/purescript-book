@@ -1,27 +1,10 @@
 module Test.Main where
 
 import Prelude
--- import Data.Maybe (Maybe(..))
--- import Data.Path (Path(), filename, root)
--- import Data.Tuple (fst)
+import Data.Maybe (Maybe(..))
+import Data.Path (filename, root)
+import Data.Tuple (fst)
 import Effect (Effect)
-import Test.Solutions
--- ( allTrue
--- , cartesianProduct
--- , evenCount
--- , exclusiveOrThenTrue
--- , factorizations
--- , fib
--- , isEven
--- , isPrime
--- , keepNonNegative
--- , largestSmallest
--- , onlyFiles
--- , reverse
--- , squared
--- , triples
--- , whereIs
--- )
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -29,6 +12,10 @@ import Test.Unit.Main (runTest)
 main :: Effect Unit
 main =
   runTest do
+    test "Initial passing test"
+      $ Assert.equal true true
+
+{-  Move this block comment starting point to enable more tests
     suite "Exercise Group 1" do
       suite "Exercise 1 - Test if integer is even" do
         test "0 is even"
@@ -43,8 +30,6 @@ main =
         test "19 is odd"
           $ Assert.assertFalse "19"
           $ isEven 19
-
-{-  Move this block comment starting point to enable more tests
       suite "Exercise 2 - Count even integers in Array" do
         test "[] has none"
           $ Assert.equal 0
