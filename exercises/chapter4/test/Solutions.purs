@@ -10,10 +10,9 @@ factors n = do
   i <- 1 .. n
   j <- i .. n
   guard $ i * j == n
-  pure [i, j]
+  pure [ i, j ]
 
 -- Section for : A Virtual Filesystem exercise
-
 allFiles :: Path -> Array Path
 allFiles file =
   file
