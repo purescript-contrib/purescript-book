@@ -1,14 +1,14 @@
 module Main where
 
 import Prelude
-import Data.AddressBook (PhoneNumber(..), PhoneType(..), address, person, phoneNumber)
+import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), address, examplePerson, person)
 import Data.AddressBook.Validation (Errors, validatePerson')
-import Data.Array (modifyAt, mapWithIndex)
+import Data.Array (mapWithIndex, updateAt)
 import Data.Either (Either(..))
+import Data.Foldable (traverse_)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Effect (Effect)
 import Effect.Exception (throw)
-import React.Basic.DOM (render)
 import React.Basic.DOM as D
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler)
@@ -35,8 +35,9 @@ formField name placeholder value setValue =
                     , placeholder
                     , value
                     , onChange:
-                        handler targetValue \v ->
-                          setValue \_ -> fromMaybe "" v
+                        -- Equivalent to:
+                        -- handler targetValue $ traverse_ \v -> setValue \_ -> v
+                        handler targetValue $ traverse_ $ setValue <<< const
                     }
                 ]
             }
@@ -59,16 +60,14 @@ renderValidationErrors xs =
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
   component "AddressBookApp" \props -> R.do
-    firstName /\ setFirstName <- useState "John"
-    lastName /\ setLastName <- useState "Smith"
-    street /\ setStreet <- useState "123 Fake St."
-    city /\ setCity <- useState "FakeTown"
-    state /\ setState <- useState "CA"
-    phoneNumbers /\ setPhoneNumbers <-
-      useState
-        [ phoneNumber HomePhone "555-555-5555"
-        , phoneNumber CellPhone "555-555-0000"
-        ]
+    let
+      Person p@{ homeAddress: Address a } = examplePerson
+    firstName /\ setFirstName <- useState p.firstName
+    lastName /\ setLastName <- useState p.lastName
+    street /\ setStreet <- useState a.street
+    city /\ setCity <- useState a.city
+    state /\ setState <- useState a.state
+    phoneNumbers /\ setPhoneNumbers <- useState p.phones
     let
       unvalidatedPerson =
         person firstName lastName
@@ -79,21 +78,30 @@ mkAddressBookApp = do
         Left e -> e
         Right _ -> []
 
-      modifyAt' i f as = fromMaybe as (modifyAt i f as)
+      -- helper-function to return array unchanged instead of Nothing if index is out of bounds
+      updateAt' :: forall a. Int -> a -> Array a -> Array a
+      updateAt' i x xs = fromMaybe xs (updateAt i x xs)
 
       renderPhoneNumber :: Int -> PhoneNumber -> R.JSX
       renderPhoneNumber index (PhoneNumber phone) =
-        formField
-          (show phone."type")
-          "XXX-XXX-XXXX"
-          phone.number
-          ( \setPhoneNumber ->
-              setPhoneNumbers \_ ->
-                modifyAt'
-                  index
-                  (\(PhoneNumber n) -> PhoneNumber (n { number = setPhoneNumber n.number }))
-                  phoneNumbers
-          )
+        let
+          -- Same signature as the other `set` hooks, but customized to update a specific phone index
+          setPhoneNumber :: (String -> String) -> Effect Unit
+          setPhoneNumber setter =
+            setPhoneNumbers \_ ->
+              updateAt'
+                index
+                -- Each `set` hook runs a provided `setter` function which describes
+                -- how to determine the new state from the previous state.
+                -- In our case, the formField handler ignores the previous state.
+                (PhoneNumber phone { number = setter "ignore" })
+                phoneNumbers
+        in
+          formField
+            (show phone."type")
+            "XXX-XXX-XXXX"
+            phone.number
+            setPhoneNumber
     pure
       $ D.div
           { className: "container"
@@ -132,4 +140,4 @@ main = do
       addressBookApp <- mkAddressBookApp
       let
         app = element addressBookApp {}
-      render app c
+      D.render app c
