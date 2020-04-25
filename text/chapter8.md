@@ -605,58 +605,59 @@ simulate x0 v0 time =
     pure final.x
 ```
 
-then the compiler will notice that the reference cell is not allowed to escape its scope, and can safely turn it into a `var`. Here is the generated JavaScript for the body of the call to `runST`:
+then the compiler will notice that the reference cell is not allowed to escape its scope, and can safely turn `ref` into a `var`. Here is the generated JavaScript for `simulate` inlined with `run`:
 
 ```javascript
 var simulate = function (x0) {
-    return function (v0) {
-        return function (time) {
-            return (function __do() {
-                var ref = {
-                    value: {
-                        x: x0,
-                        v: v0
-                    }
-                };
-                Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
-                    return Control_Monad_ST_Internal.modify(function (o) {
-                        return {
-                            v: o.v - 9.81 * 1.0e-3,
-                            x: o.x + o.v * 1.0e-3
-                        };
-                    })(ref);
-                })();
-                return ref.value.x;
-            })();
-        };
+  return function (v0) {
+    return function (time) {
+      return (function __do() {
+
+        var ref = { value: { x: x0, v: v0 } };
+
+        Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
+          return Control_Monad_ST_Internal.modify(function (o) {
+            return {
+              v: o.v - 9.81 * 1.0e-3,
+              x: o.x + o.v * 1.0e-3
+            };
+          })(ref);
+        })();
+
+        return ref.value.x;
+
+      })();
     };
+  };
 };
 ```
+
+Note that this resulting JavaScript is not as optimal as it could be. See [this issue](https://github.com/purescript/purescript-st/issues/33) for more details. The above snippet should be updated once that issue is resolved.
 
 For comparison, this is the generated JavaScript of the non-inlined form:
 
 ```js
 var simulate = function (x0) {
-    return function (v0) {
-        return function (time) {
-            return function __do() {
-                var ref = Control_Monad_ST_Internal["new"]({
-                    x: x0,
-                    v: v0
-                })();
-                Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
-                    return Control_Monad_ST_Internal.modify(function (o) {
-                        return {
-                            v: o.v - 9.81 * 1.0e-3,
-                            x: o.x + o.v * 1.0e-3
-                        };
-                    })(ref);
-                })();
-                var $$final = Control_Monad_ST_Internal.read(ref)();
-                return $$final.x;
+  return function (v0) {
+    return function (time) {
+      return function __do() {
+
+        var ref = Control_Monad_ST_Internal["new"]({ x: x0, v: v0 })();
+
+        Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
+          return Control_Monad_ST_Internal.modify(function (o) {
+            return {
+              v: o.v - 9.81 * 1.0e-3,
+              x: o.x + o.v * 1.0e-3
             };
-        };
+          })(ref);
+        })();
+
+        var $$final = Control_Monad_ST_Internal.read(ref)();
+        return $$final.x;
+      };
     };
+  };
 };
 ```
 
@@ -665,7 +666,7 @@ The `ST` effect is a good way to generate short JavaScript when working with loc
 ## Exercises
 
 1. (Medium) Rewrite the `safeDivide` function to throw an exception using `throwException` if the denominator is zero.
-1. (Difficult) The following is a simple way to estimate pi: randomly choose a large number `N` of points in the unit square, and count the number `n` which lie in the inscribed circle. An estimate for pi is `4n/N`. Use the `random` and `ST` effects with the `for` function to write a function which estimates pi in this way.
+1. (Skip) There is no exercise for `ST` yet. Feel free to propose one.
 
 
 ## The Aff Monad
