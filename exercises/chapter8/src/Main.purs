@@ -5,27 +5,48 @@ import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), address, exam
 import Data.AddressBook.Validation (Errors, validatePerson')
 import Data.Array (mapWithIndex, updateAt)
 import Data.Either (Either(..))
-import Data.Foldable (traverse_)
 import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Tuple (Tuple(..))
 import Effect (Effect)
+import Effect.Console (log)
 import Effect.Exception (throw)
 import React.Basic.DOM as D
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler)
-import React.Basic.Hooks (ReactComponent, component, element, useState, (/\))
+import React.Basic.Hooks (ReactComponent, component, element, useState)
 import React.Basic.Hooks as R
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (toNonElementParentNode)
 import Web.HTML.Window (document)
 
+-- Note that there's a Purty formmating bug that
+-- adds an unwanted blank line
+-- https://gitlab.com/joneshf/purty/issues/77
+renderValidationErrors :: Errors -> Array R.JSX
+renderValidationErrors [] = []
+
+renderValidationErrors xs =
+  let
+    rendererror :: String -> R.JSX
+    rendererror err = D.li_ [ D.text err ]
+  in
+    [ D.div
+        { className: "alert alert-danger row"
+        , children: [ D.ul_ (map rendererror xs) ]
+        }
+    ]
+
+-- Helper function to render a single form field with an
+-- event handler to update
 formField :: String -> String -> String -> ((String -> String) -> Effect Unit) -> R.JSX
 formField name placeholder value setValue =
   D.label
     { className: "form-group row"
     , children:
         [ D.div
-            { className: "col-sm col-form-label", children: [ D.text name ]
+            { className: "col-sm col-form-label"
+            , children: [ D.text name ]
             }
         , D.div
             { className: "col-sm"
@@ -35,39 +56,44 @@ formField name placeholder value setValue =
                     , placeholder
                     , value
                     , onChange:
-                        -- Equivalent to:
-                        -- handler targetValue $ traverse_ \v -> setValue \_ -> v
-                        handler targetValue $ traverse_ $ setValue <<< const
+                        let
+                          handleValue :: Maybe String -> Effect Unit
+                          handleValue (Just v) = setValue (\_ -> v)
+
+                          handleValue Nothing = pure unit
+                        in
+                          handler targetValue handleValue
                     }
                 ]
             }
         ]
     }
 
-renderValidationError :: String -> R.JSX
-renderValidationError err = D.li_ [ D.text err ]
-
-renderValidationErrors :: Errors -> Array R.JSX
-renderValidationErrors [] = []
-
-renderValidationErrors xs =
-  [ D.div
-      { className: "alert alert-danger"
-      , children: [ D.ul_ (map renderValidationError xs) ]
-      }
-  ]
+mkAddressBookApp2 :: Effect (ReactComponent {})
+mkAddressBookApp2 =
+  component
+    "AddressBookApp"
+    (\props -> pure $ D.text "Hi! I'm an address book")
 
 mkAddressBookApp :: Effect (ReactComponent {})
-mkAddressBookApp = do
+mkAddressBookApp =
+  -- incomming \props are unused
   component "AddressBookApp" \props -> R.do
     let
+      -- Using "Named Pattern" with `@` so inner records
+      -- of `Person` and `Address` can be more conveniently
+      -- accessed as `p` and `a`.
       Person p@{ homeAddress: Address a } = examplePerson
-    firstName /\ setFirstName <- useState p.firstName
-    lastName /\ setLastName <- useState p.lastName
-    street /\ setStreet <- useState a.street
-    city /\ setCity <- useState a.city
-    state /\ setState <- useState a.state
-    phoneNumbers /\ setPhoneNumbers <- useState p.phones
+    -- Each form field is tracked as a separate piece of state.
+    -- `useState` takes a default initial value and returns the
+    -- current value and a way to update the value.
+    -- Consult react-hooks docs for a more detailed explanation of `useState`.
+    Tuple firstName setFirstName <- useState p.firstName
+    Tuple lastName setLastName <- useState p.lastName
+    Tuple street setStreet <- useState a.street
+    Tuple city setCity <- useState a.city
+    Tuple state setState <- useState a.state
+    Tuple phoneNumbers setPhoneNumbers <- useState p.phones
     let
       unvalidatedPerson =
         person firstName lastName
@@ -106,38 +132,42 @@ mkAddressBookApp = do
       $ D.div
           { className: "container"
           , children:
-              [ D.div
-                  { className: "row"
-                  , children: renderValidationErrors errors
-                  }
-              , D.div
-                  { className: "row"
-                  , children:
-                      [ D.form
-                          { children:
-                              [ D.h3_ [ D.text "Basic Information" ]
-                              , formField "First Name" "First Name" firstName setFirstName
-                              , formField "Last Name" "Last Name" lastName setLastName
-                              , D.h3_ [ D.text "Address" ]
-                              , formField "Street" "Street" street setStreet
-                              , formField "City" "City" city setCity
-                              , formField "State" "State" state setState
-                              , D.h3_ [ D.text "Contact Information" ]
-                              ]
-                                <> mapWithIndex renderPhoneNumber phoneNumbers
-                          }
-                      ]
-                  }
-              ]
+              renderValidationErrors errors
+                <> [ D.div
+                      { className: "row"
+                      , children:
+                          [ D.form_
+                              $ [ D.h3_ [ D.text "Basic Information" ]
+                                , formField "First Name" "First Name" firstName setFirstName
+                                , formField "Last Name" "Last Name" lastName setLastName
+                                , D.h3_ [ D.text "Address" ]
+                                , formField "Street" "Street" street setStreet
+                                , formField "City" "City" city setCity
+                                , formField "State" "State" state setState
+                                , D.h3_ [ D.text "Contact Information" ]
+                                ]
+                              <> mapWithIndex renderPhoneNumber phoneNumbers
+                          ]
+                      }
+                  ]
           }
 
 main :: Effect Unit
 main = do
-  container <- getElementById "container" =<< (map toNonElementParentNode $ document =<< window)
-  case container of
+  log "Rendering address book component"
+  -- Get window object
+  w <- window
+  -- Get window's HTML document
+  doc <- document w
+  -- Get "container" element in HTML
+  ctr <- getElementById "container" $ toNonElementParentNode doc
+  case ctr of
     Nothing -> throw "Container element not found."
     Just c -> do
+      -- Create AddressBook react component
       addressBookApp <- mkAddressBookApp
       let
+        -- Create JSX node from react component. Pass-in empty props
         app = element addressBookApp {}
+      -- Render AddressBook JSX node in DOM "container" element
       D.render app c
