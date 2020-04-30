@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude
-import Data.AddressBook (PhoneNumber, address, examplePerson, person)
+import Data.AddressBook (PhoneNumber, examplePerson)
 import Data.AddressBook.Validation (Errors, validatePerson')
 import Data.Array (mapWithIndex, updateAt)
 import Data.Either (Either(..))
@@ -39,7 +39,7 @@ renderValidationErrors xs =
 
 -- Helper function to render a single form field with an
 -- event handler to update
-formField :: String -> String -> String -> ((String -> String) -> Effect Unit) -> R.JSX
+formField :: String -> String -> String -> (String -> Effect Unit) -> R.JSX
 formField name placeholder value setValue =
   D.label
     { className: "form-group row"
@@ -58,7 +58,7 @@ formField name placeholder value setValue =
                     , onChange:
                         let
                           handleValue :: Maybe String -> Effect Unit
-                          handleValue (Just v) = setValue (\_ -> v)
+                          handleValue (Just v) = setValue v
 
                           handleValue Nothing = pure unit
                         in
@@ -73,23 +73,12 @@ mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
   -- incomming \props are unused
   component "AddressBookApp" \props -> R.do
-    -- Each form field is tracked as a separate piece of state.
     -- `useState` takes a default initial value and returns the
     -- current value and a way to update the value.
     -- Consult react-hooks docs for a more detailed explanation of `useState`.
-    Tuple firstName setFirstName <- useState examplePerson.firstName
-    Tuple lastName setLastName <- useState examplePerson.lastName
-    Tuple street setStreet <- useState examplePerson.homeAddress.street
-    Tuple city setCity <- useState examplePerson.homeAddress.city
-    Tuple state setState <- useState examplePerson.homeAddress.state
-    Tuple phoneNumbers setPhoneNumbers <- useState examplePerson.phones
+    Tuple person setPerson <- useState examplePerson
     let
-      unvalidatedPerson =
-        person firstName lastName
-          (address street city state)
-          phoneNumbers
-
-      errors = case validatePerson' unvalidatedPerson of
+      errors = case validatePerson' person of
         Left e -> e
         Right _ -> []
 
@@ -97,26 +86,18 @@ mkAddressBookApp =
       updateAt' :: forall a. Int -> a -> Array a -> Array a
       updateAt' i x xs = fromMaybe xs (updateAt i x xs)
 
+      -- helper-function to render a single phone number at a given index
       renderPhoneNumber :: Int -> PhoneNumber -> R.JSX
       renderPhoneNumber index phone =
-        let
-          -- Same signature as the other `set` hooks, but customized to update a specific phone index
-          setPhoneNumber :: (String -> String) -> Effect Unit
-          setPhoneNumber setter =
-            setPhoneNumbers \_ ->
-              updateAt'
-                index
-                -- Each `set` hook runs a provided `setter` function which describes
-                -- how to determine the new state from the previous state.
-                -- In our case, the formField handler ignores the previous state.
-                (phone { number = setter "ignore" })
-                phoneNumbers
-        in
-          formField
-            (show phone."type")
-            "XXX-XXX-XXXX"
-            phone.number
-            setPhoneNumber
+        formField
+          (show phone."type")
+          "XXX-XXX-XXXX"
+          phone.number
+          (\s -> setPerson _ { phones = updateAt' index phone { number = s } person.phones })
+
+      -- helper-function to render all phone numbers
+      renderPhoneNumbers :: Array R.JSX
+      renderPhoneNumbers = mapWithIndex renderPhoneNumber person.phones
     pure
       $ D.div
           { className: "container"
@@ -127,15 +108,20 @@ mkAddressBookApp =
                       , children:
                           [ D.form_
                               $ [ D.h3_ [ D.text "Basic Information" ]
-                                , formField "First Name" "First Name" firstName setFirstName
-                                , formField "Last Name" "Last Name" lastName setLastName
+                                , formField "First Name" "First Name" person.firstName \s ->
+                                    setPerson _ { firstName = s }
+                                , formField "Last Name" "Last Name" person.lastName \s ->
+                                    setPerson _ { lastName = s }
                                 , D.h3_ [ D.text "Address" ]
-                                , formField "Street" "Street" street setStreet
-                                , formField "City" "City" city setCity
-                                , formField "State" "State" state setState
+                                , formField "Street" "Street" person.homeAddress.street \s ->
+                                    setPerson _ { homeAddress { street = s } }
+                                , formField "City" "City" person.homeAddress.city \s ->
+                                    setPerson _ { homeAddress { city = s } }
+                                , formField "State" "State" person.homeAddress.state \s ->
+                                    setPerson _ { homeAddress { state = s } }
                                 , D.h3_ [ D.text "Contact Information" ]
                                 ]
-                              <> mapWithIndex renderPhoneNumber phoneNumbers
+                              <> renderPhoneNumbers
                           ]
                       }
                   ]
