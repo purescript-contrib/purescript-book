@@ -530,7 +530,6 @@ exports.alert = function(msg) {
         window.alert(msg);
     };
 };
-
 ```
 
 The `alert` action is very similar to the `log` action from the `Effect.Console` module. The only difference is that the `alert` action uses the `window.alert` method, whereas the `log` action uses the `console.log` method. As such, `alert` can only be used in environments where `window.alert` is defined, such as a web browser.
@@ -547,13 +546,68 @@ foreign import getItem :: String -> Effect Foreign
 foreign import setItem :: String -> String -> Effect Unit
 ```
 
-The interested reader can inspect the source code for this module to see the definitions of these actions.
+Here is the corresponding JavaScript implementation of these functions in `Effect/Storage.js`:
+
+```js
+exports.setItem = function(key) {
+    return function(value) {
+        return function() {
+            window.localStorage.setItem(key, value);
+        };
+    };
+};
+
+exports.getItem = function(key) {
+    return function() {
+        return window.localStorage.getItem(key);
+    }
+};
+```
 
 `setItem` takes a key and a value (both strings), and returns a computation which stores the value in local storage at the specified key.
 
 The type of `getItem` is more interesting. It takes a key, and attempts to retrieve the associated value from local storage. However, since the `getItem` method on `window.localStorage` can return `null`, the return type is not `String`, but `Foreign` which is defined by the `foreign` package in the `Foreign` module.
 
 `Foreign` provides a way to work with _untyped data_, or more generally, data whose runtime representation is uncertain.
+
+## Modern JavaScript for Curried Functions
+
+We may rewrite our `setItem` and `getItem` functions in ES6 style as follows:
+
+```js
+exports.setItem = key => value => () => {
+    window.localStorage.setItem(key, value);
+};
+
+exports.getItem = key => () =>
+    window.localStorage.getItem(key);
+```
+Note that in the original `setItem`, there is no inner `return` statement, which means the function returns nothing (technically it returns `undefined`). We preserve this lack of returned value in the new ES6 version by surrounding the expression to the right of the last arrow (`=>`) with curly braces (`{}`).
+Contrast this with `getItem` where we return a value, and so that expression is simply placed directly after the last arrow.
+In practice however, writing `setItem` in the style of `getItem` (without curly braces) will still work for two reasons:
+1. The return value of `window.localStorage.setItem` also happens to be `undefined`.
+2. If PureScript expects an `undefined` value to be returned, then an erroneously-returned non-`undefined` value will simply be ignored.
+
+Also, recall the generated `curriedAdd` function from earlier:
+```js
+var curriedAdd = function (n) {
+    return function (m) {
+        return m + n | 0;
+    };
+};
+```
+
+Here's its ES6 representation:
+```js
+var curriedAdd = n => m => m + n | 0;
+```
+
+The PureScript compiler generates the more verbose ES5-style curried functions, but if you find the ES6-style arrow-notation more readable, you may transform the `output` directory with a tool like [lebab](https://github.com/lebab/lebab):
+
+```sh
+npm i -g lebab
+lebab --replace output/ --transform arrow,arrow-return
+```
 
  ## Exercises
 
