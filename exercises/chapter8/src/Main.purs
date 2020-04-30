@@ -69,12 +69,6 @@ formField name placeholder value setValue =
         ]
     }
 
-mkAddressBookApp2 :: Effect (ReactComponent {})
-mkAddressBookApp2 =
-  component
-    "AddressBookApp"
-    (\props -> pure $ D.text "Hi! I'm an address book")
-
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
   -- incomming \props are unused
