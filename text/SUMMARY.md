@@ -8,7 +8,7 @@
 * [Pattern Matching](chapter5.md)
 * [Type Classes](chapter6.md)
 * [Applicative Validation](chapter7.md)
-* [The Effect and Aff Monads](chapter8.md)
+* [The Effect Monad](chapter8.md)
 * [Canvas Graphics](chapter9.md)
 * [The Foreign Function Interface](chapter10.md)
 * [Monadic Adventures](chapter11.md)
