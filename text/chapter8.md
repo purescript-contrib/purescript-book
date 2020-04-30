@@ -818,31 +818,22 @@ These are the first few lines of our full component:
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
   component "AddressBookApp" \props -> R.do
-    let
-      Person p@{ homeAddress: Address a } = examplePerson
-    Tuple firstName setFirstName <- useState p.firstName
-    Tuple lastName setLastName <- useState p.lastName
+    Tuple person setPerson <- useState examplePerson
 ```
 
-Recall from Chapter 5 that the `@` symbol describes "Named Patterns". This allows use to more conveniently access the `examplePerson`'s inner records of `Person` and `Address` as `p` and `a`:
-```hs
-Person p@{ homeAddress: Address a } = examplePerson
-```
-
-Another way to structure this app is by just using records for `Person` and `Address`, rather than wrapping with `newtype`. This provides more convenient record updates, but, comes at the cost of type safety. This simplification is up for [consideration](https://github.com/purescript-contrib/purescript-book/issues/118).
-
-
-Each form field is tracked as a separate piece of state with the `useState` hook. For example:
+We track `person` as a piece of state with the `useState` hook.
 ```haskell
-Tuple firstName setFirstName <- useState p.firstName
+Tuple person setPerson <- useState examplePerson
 ```
+
+Note that you are free to break-up component state into multiple pieces of state with multiple calls to `useState`. For example, we could rewrite this app to use a separate piece of state for each record field of `Person`, but than happens to result in a slightly less convenient architecture in this case.
 
 In other examples, you may encounter the `/\` infix operator for `Tuple`. This is equivalent to the above line:
 ```hs
 firstName /\ setFirstName <- useState p.firstName
 ```
 
-`useState` takes a default initial value and returns the current value and a way to update the value. We can check the type of `useState` to gain more insight the types of `firstName` and `setFirstName`:
+`useState` takes a default initial value and returns the current value and a way to update the value. We can check the type of `useState` to gain more insight the types of `person` and `setPerson`:
 ```hs
 useState ::
   forall state.
@@ -854,30 +845,24 @@ We can strip the `Hook (UseState state)` wrapper off of the return value because
 
 So now we can observe the following signatures:
 ```hs
-firstName :: state
-setFirstName :: (state -> state) -> Effect Unit
+person :: state
+setPerson :: (state -> state) -> Effect Unit
 ```
 
-The specific type of `state` is determined by our initial default value. For this first `useState` hook, we pass in `p.firstName` which is `"John"` (a `String`) from our `examplePerson`.
+The specific type of `state` is determined by our initial default value. `Person` `Record` in this case because that is the type of `examplePerson`.
 
-`firstName` is how we access the current state at each rerender.
+`person` is how we access the current state at each rerender.
 
-`setFirstName` is how we update the state. We simply provide a function that describes how to transform the current state to the new state. In many situations we can write an update function which ignores the state input argument as we either:
-  * Completely overwrite the state, e.g.:
+`setPerson` is how we update the state. We simply provide a function that describes how to transform the current state to the new state. The record update syntax is perfect for this when the type of `state` happens to be a `Record`, for example:
 ```hs
-setFirstName (\_ -> "Natasha")
+setPerson (\currentPerson -> currentPerson {firstName = "NewName"})
 ```
-  * Already have access to the current state via the first `Tuple` value, e.g.:
+or as shorthand:
 ```hs
-setFirstName (\_ -> "The Honerable " <> firstName)
+setPerson _ {firstName = "NewName"}
 ```
 
-In other situations where we want to modify the state, but don't have access to the latest value (such as with a timed event), we need to use the state input.
-```hs
-setCount (c -> c + 1)
--- equivalent to:
-setCount (_ + 1)
-```
+Non-`Record` states can also follow this update pattern. See [this guide](https://github.com/spicydonuts/purescript-react-basic-hooks/pull/24#issuecomment-620300541) for more details on best practices.
 
 Recall that `useState` is used within an `R.do` block. `R.do` is a special react hooks variant of `do`. The `R.` prefix "qualifies" this as coming from `React.Basic.Hooks`, and means we use their hooks-compatible version of `bind` in the `R.do` block. This is known as a "qualified do". It lets us ignore the `Hook (UseState state)` wrapping and bind the inner `Tuple` of values to variables.
 
@@ -895,15 +880,20 @@ pure
                   , children:
                       [ D.form_
                           $ [ D.h3_ [ D.text "Basic Information" ]
-                            , formField "First Name" "First Name" firstName setFirstName
-                            , formField "Last Name" "Last Name" lastName setLastName
+                            , formField "First Name" "First Name" person.firstName \s ->
+                                setPerson _ { firstName = s }
+                            , formField "Last Name" "Last Name" person.lastName \s ->
+                                setPerson _ { lastName = s }
                             , D.h3_ [ D.text "Address" ]
-                            , formField "Street" "Street" street setStreet
-                            , formField "City" "City" city setCity
-                            , formField "State" "State" state setState
+                            , formField "Street" "Street" person.homeAddress.street \s ->
+                                setPerson _ { homeAddress { street = s } }
+                            , formField "City" "City" person.homeAddress.city \s ->
+                                setPerson _ { homeAddress { city = s } }
+                            , formField "State" "State" person.homeAddress.state \s ->
+                                setPerson _ { homeAddress { state = s } }
                             , D.h3_ [ D.text "Contact Information" ]
                             ]
-                          <> mapWithIndex renderPhoneNumber phoneNumbers
+                          <> renderPhoneNumbers
                       ]
                   }
               ]
@@ -945,7 +935,7 @@ className: "alert alert-danger row"
 A second helper function is `formField`, which creates a text input for a single form field:
 
 ```hs
-formField :: String -> String -> String -> ((String -> String) -> Effect Unit) -> R.JSX
+formField :: String -> String -> String -> (String -> Effect Unit) -> R.JSX
 formField name placeholder value setValue =
   D.label
     { className: "form-group row"
@@ -964,7 +954,8 @@ formField name placeholder value setValue =
                     , onChange:
                         let
                           handleValue :: Maybe String -> Effect Unit
-                          handleValue (Just v) = setValue (\_ -> v)
+                          handleValue (Just v) = setValue v
+
                           handleValue Nothing = pure unit
                         in
                           handler targetValue handleValue
@@ -997,25 +988,20 @@ It is a function that describes how to convert this `Maybe String` value into ou
 onChange:
   let
     handleValue :: Maybe String -> Effect Unit
-    handleValue (Just v) = setValue (\_ -> v)
+    handleValue (Just v) = setValue v
     handleValue Nothing = pure unit
   in
     handler targetValue handleValue
 ```
 
-`setValue` is a function that has the same signature as the second tuple value returned by `useState` hook. In most cases we pass that function through to `formField` from the hook as-is. For phone numbers, a custom `setPhoneNumber` function is used to update the phone number at a particular index.
+`setValue` is a provided function that takes a string and makes the appropriate record-update call to the `setPerson` hook.
 
-Note that `handleValue` can be substituted as this:
+Note that `handleValue` can be substituted as:
 ```hs
-onChange: handler targetValue $ traverse_ \v -> setValue \_ -> v
+onChange: handler targetValue $ traverse_ setValue
 ```
 
-Or even this:
-```hs
-onChange: handler targetValue $ traverse_ $ setValue <<< const
-```
-
-Feel free to investigate the definitions of `traverse_` and `const` to see how these three forms are indeed equivalent.
+Feel free to investigate the definition of `traverse_` to see how both forms are indeed equivalent.
 
 That covers the basics of our component implementation. However, you should read the source accompanying this chapter in order to get a full understanding of the way the component works.
 
