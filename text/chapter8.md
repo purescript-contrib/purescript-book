@@ -826,7 +826,7 @@ We track `person` as a piece of state with the `useState` hook.
 Tuple person setPerson <- useState examplePerson
 ```
 
-Note that you are free to break-up component state into multiple pieces of state with multiple calls to `useState`. For example, we could rewrite this app to use a separate piece of state for each record field of `Person`, but than happens to result in a slightly less convenient architecture in this case.
+Note that you are free to break-up component state into multiple pieces of state with multiple calls to `useState`. For example, we could rewrite this app to use a separate piece of state for each record field of `Person`, but that happens to result in a slightly less convenient architecture in this case.
 
 In other examples, you may encounter the `/\` infix operator for `Tuple`. This is equivalent to the above line:
 ```hs
@@ -972,17 +972,18 @@ The `onChange` attribute allows us to describe how to respond to user input. We 
 handler :: forall a. EventFn SyntheticEvent a -> (a -> Effect Unit) -> EventHandler
 ```
 
-For the first argument (`EventFn SyntheticEvent a`) we use `targetValue`. The type variable `a` in this case is `Maybe String`.
+For the first argument to `hander` we use we use `targetValue`, which provides the value of the text within the HTML `input` element. It matches the signature expected by `handler` where the type variable `a` in this case is `Maybe String`:
 ```hs
 targetValue :: EventFn SyntheticEvent (Maybe String)
 ```
+
 In JavaScript, the `input` element's `onChange` event is actually accompanied by a `String` value, but since strings in JavaScript can be null, `Maybe` is used for safety.
 
 The second argument to `handler`, `(a -> Effect Unit)`, must therefore have this signature:
 ```hs
 Maybe String -> Effect Unit
 ```
-It is a function that describes how to convert this `Maybe String` value into our desired effect. We create this `handleValue` function and pass it to `handler` as follows:
+It is a function that describes how to convert this `Maybe String` value into our desired effect. We define a custom `handleValue` function for this purpose and pass it to `handler` as follows:
 
 ```haskell
 onChange:
@@ -994,7 +995,7 @@ onChange:
     handler targetValue handleValue
 ```
 
-`setValue` is a provided function that takes a string and makes the appropriate record-update call to the `setPerson` hook.
+`setValue` is the function we provided to each `formField` call that takes a string and makes the appropriate record-update call to the `setPerson` hook.
 
 Note that `handleValue` can be substituted as:
 ```hs
