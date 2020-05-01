@@ -37,7 +37,7 @@ We can apply this function easily and see the result in PSCi:
 > import Data.AddressBook
 
 > address "123 Fake St." "Faketown" "CA"
-Address { street: "123 Fake St.", city: "Faketown", state: "CA" }
+{ street: "123 Fake St.", city: "Faketown", state: "CA" }
 ```
 
 However, suppose we did not necessarily have a street, city, or state, and wanted to use the `Maybe` type to indicate a missing value in each of the three cases.
@@ -73,7 +73,7 @@ In this case, the result is `Nothing`, because one of the arguments (the city) w
 ```text
 > lift3 address (Just "123 Fake St.") (Just "Faketown") (Just "CA")
 
-Just (Address { street: "123 Fake St.", city: "Faketown", state: "CA" })
+Just ({ street: "123 Fake St.", city: "Faketown", state: "CA" })
 ```
 
 The name of the function `lift3` indicates that it can be used to lift functions of 3 arguments. There are similar functions defined in `Control.Apply` for functions of other numbers of arguments.
@@ -150,7 +150,7 @@ As an example, we can try lifting the address function over `Maybe`, directly us
 
 ```text
 > address <$> Just "123 Fake St." <*> Just "Faketown" <*> Just "CA"
-Just (Address { street: "123 Fake St.", city: "Faketown", state: "CA" })
+Just ({ street: "123 Fake St.", city: "Faketown", state: "CA" })
 
 > address <$> Just "123 Fake St." <*> Nothing <*> Just "CA"
 Nothing
@@ -158,7 +158,7 @@ Nothing
 
 Try lifting some other functions of various numbers of arguments over `Maybe` in this way.
 
-Alternatively _applicative do notation_ can be used for the same purpose in a way that looks similar to the familiar _do notation_. Here is `lift3` using _applicative do notation_. Note `ado` is used instead of `do`, and `in` is used on the final line to denote the yielded value: 
+Alternatively _applicative do notation_ can be used for the same purpose in a way that looks similar to the familiar _do notation_. Here is `lift3` using _applicative do notation_. Note `ado` is used instead of `do`, and `in` is used on the final line to denote the yielded value:
 
 ```haskell
 lift3 :: forall a b c d f
@@ -241,7 +241,7 @@ or with _applicative do_
 ```text
 > import Data.Maybe
 
-> :paste… 
+> :paste…
 … ado
 …   f <- Just "Phillip"
 …   m <- Just "A"
@@ -290,7 +290,7 @@ or with _applicative do_
 
 ```text
 > :paste
-… fullNameEither first middle last = ado 
+… fullNameEither first middle last = ado
 …  f <- first  `withError` "First name was missing"
 …  m <- middle `withError` "Middle name was missing"
 …  l <- last   `withError` "Last name was missing"
@@ -418,24 +418,22 @@ Test this value in PSCi (this result has been formatted):
 > import Data.AddressBook
 
 > examplePerson
-Person
-  { firstName: "John",
-  , lastName: "Smith",
-  , address: Address
-      { street: "123 Fake St."
-      , city: "FakeTown"
-      , state: "CA"
-      },
-  , phones: [ PhoneNumber
-                { type: HomePhone
-                , number: "555-555-5555"
-                }
-            , PhoneNumber
-                { type: CellPhone
-                , number: "555-555-0000"
-                }
-            ]
-  }  
+{ firstName: "John"
+, lastName: "Smith"
+, address:
+    { street: "123 Fake St."
+    , city: "FakeTown"
+    , state: "CA"
+    }
+, phones:
+    [ { type: HomePhone
+      , number: "555-555-5555"
+      }
+    , { type: CellPhone
+      , number: "555-555-0000"
+      }
+    ]
+}
 ```
 
 We saw in a previous section how we could use the `Either String` functor to validate a data structure of type `Person`. For example, provided functions to validate the two names in the structure, we might validate the entire data structure as follows:
@@ -446,21 +444,21 @@ nonEmpty "" = Left "Field cannot be empty"
 nonEmpty _  = Right unit
 
 validatePerson :: Person -> Either String Person
-validatePerson (Person o) =
-  person <$> (nonEmpty o.firstName *> pure o.firstName)
-         <*> (nonEmpty o.lastName  *> pure o.lastName)
-         <*> pure o.address
-         <*> pure o.phones
+validatePerson p =
+  person <$> (nonEmpty p.firstName *> pure p.firstName)
+         <*> (nonEmpty p.lastName  *> pure p.lastName)
+         <*> pure p.address
+         <*> pure p.phones
 ```
 
 or with _applicative do_
 
 ```haskell
 validatePersonAdo :: Person -> Either String Person
-validatePersonAdo (Person o) = ado
-  f <- nonEmpty o.firstName *> pure o.firstName
-  l <- nonEmpty o.lastName *> pure o.firstName
-  in person f l o.address o.phones
+validatePersonAdo p = ado
+  f <- nonEmpty p.firstName *> pure p.firstName
+  l <- nonEmpty p.lastName *> pure p.firstName
+  in person f l p.address p.phones
 ```
 
 In the first two lines, we use the `nonEmpty` function to validate a non-empty string. `nonEmpty` returns an error (indicated with the `Left` constructor) if its input is empty, or a successful empty value (`unit`) using the `Right` constructor otherwise. We use the sequencing operator `*>` to indicate that we want to perform two validations, returning the result from the validator on the right. In this case, the validator on the right simply uses `pure` to return the input unchanged.
@@ -496,20 +494,20 @@ lengthIs _     _   _     =
   pure unit
 
 validateAddress :: Address -> V Errors Address
-validateAddress (Address o) =
-  address <$> (nonEmpty "Street" o.street *> pure o.street)
-          <*> (nonEmpty "City"   o.city   *> pure o.city)
-          <*> (lengthIs "State" 2 o.state *> pure o.state)
+validateAddress a =
+  address <$> (nonEmpty "Street" a.street *> pure a.street)
+          <*> (nonEmpty "City"   a.city   *> pure a.city)
+          <*> (lengthIs "State" 2 a.state *> pure a.state)
 ```
 
 or with _applicative do_
 
 ```haskell
 validateAddressAdo :: Address -> V Errors Address
-validateAddressAdo (Address o) = ado
-  street  <- (nonEmpty "Street" o.street *> pure o.street)
-  city    <- (nonEmpty "City"   o.city   *> pure o.city)
-  state   <- (lengthIs "State" 2 o.state *> pure o.state)
+validateAddressAdo a = ado
+  street  <- (nonEmpty "Street" a.street *> pure a.street)
+  city    <- (nonEmpty "City"   a.city   *> pure a.city)
+  state   <- (lengthIs "State" 2 a.state *> pure a.state)
   in address street city state
 ```
 
@@ -555,18 +553,18 @@ Again, notice how `pure` is used to indicate successful validation, and `invalid
 
 ```haskell
 validatePhoneNumber :: PhoneNumber -> V Errors PhoneNumber
-validatePhoneNumber (PhoneNumber o) =
-  phoneNumber <$> pure o."type"
-              <*> (matches "Number" phoneNumberRegex o.number *> pure o.number)
+validatePhoneNumber pn =
+  phoneNumber <$> pure pn."type"
+              <*> (matches "Number" phoneNumberRegex pn.number *> pure pn.number)
 ```
 
 or with _applicative do_
 
 ```haskell
 validatePhoneNumberAdo :: PhoneNumber -> V Errors PhoneNumber
-validatePhoneNumberAdo (PhoneNumber o) = ado
-  tpe     <-  pure o."type"
-  number  <-  (matches "Number" phoneNumberRegex o.number *> pure o.number)
+validatePhoneNumberAdo pn = ado
+  tpe     <-  pure pn."type"
+  number  <-  (matches "Number" phoneNumberRegex pn.number *> pure pn.number)
   in phoneNumber tpe number
 ```
 
@@ -574,7 +572,7 @@ Again, try running this validator against some valid and invalid inputs in PSCi:
 
 ```text
 > validatePhoneNumber $ phoneNumber HomePhone "555-555-5555"
-Valid (PhoneNumber { type: HomePhone, number: "555-555-5555" })
+Valid ({ type: HomePhone, number: "555-555-5555" })
 
 > validatePhoneNumber $ phoneNumber HomePhone "555.555.5555"
 Invalid (["Field 'Number' did not match the required format"])
@@ -597,28 +595,24 @@ arrayNonEmpty _     _  =
   pure unit
 
 validatePerson :: Person -> V Errors Person
-validatePerson (Person o) =
-  person <$> (nonEmpty "First Name" o.firstName *>
-              pure o.firstName)
-         <*> (nonEmpty "Last Name"  o.lastName  *>
-              pure o.lastName)
-	       <*> validateAddress o.address
-         <*> (arrayNonEmpty "Phone Numbers" o.phones *>
-              traverse validatePhoneNumber o.phones)
+validatePerson p =
+  person <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
+         <*> (nonEmpty "Last Name"  p.lastName  *> pure p.lastName)
+         <*> validateAddress p.address
+         <*> (arrayNonEmpty "Phone Numbers" p.phones *>
+              traverse validatePhoneNumber p.phones)
 ```
 
 or with _applicative do_
 
 ```haskell
 validatePersonAdo :: Person -> V Errors Person
-validatePersonAdo (Person o) = ado
-  firstName   <- (nonEmpty "First Name" o.firstName *> 
-                  pure o.firstName)
-  lastName    <- (nonEmpty "Last Name"  o.lastName  *> 
-                  pure o.lastName)
-  address     <- validateAddress o.address
-  numbers     <- (arrayNonEmpty "Phone Numbers" o.phones *> 
-                  traverse validatePhoneNumber o.phones)
+validatePersonAdo p = ado
+  firstName   <- (nonEmpty "First Name" p.firstName *> pure p.firstName)
+  lastName    <- (nonEmpty "Last Name"  p.lastName  *> pure p.lastName)
+  address     <- validateAddress p.address
+  numbers     <- (arrayNonEmpty "Phone Numbers" p.phones *>
+                  traverse validatePhoneNumber p.phones)
   in person firstName lastName address numbers
 ```
 
