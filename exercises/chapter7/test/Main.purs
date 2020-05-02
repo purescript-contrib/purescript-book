@@ -1,10 +1,12 @@
 module Test.Main where
 
 import Prelude
+import Data.AddressBook (address)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
+import Data.Validation.Semigroup as Semigroup
 import Effect (Effect)
-import Test.Solutions (combineMaybe, example)
+import Test.Solutions (combineMaybe, example, validateAddressRegex)
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -97,3 +99,25 @@ main =
           test "Nothing"
             $ Assert.equal (Nothing : Nil)
             $ combineMaybe (Nothing :: Maybe (List Char))
+    suite "Exercise Group 2" do
+      suite "Regex validator for state code to be two alphabetic chars" do
+        test "Passes validation" do
+          let
+            addr = address "22 Fake St" "Fake City" "CA"
+          Assert.equal (pure addr)
+            $ validateAddressRegex addr
+        suite "Fails validation" do
+          let
+            fail = Semigroup.invalid ([ "Field 'State' did not match the required format" ])
+          test "Too few letters"
+            $ Assert.equal (fail)
+            $ validateAddressRegex (address "22 Fake St" "Fake City" "C")
+          test "Too many letters"
+            $ Assert.equal (fail)
+            $ validateAddressRegex (address "22 Fake St" "Fake City" "CAA")
+          test "Contains non-letters"
+            $ Assert.equal (fail)
+            $ validateAddressRegex (address "22 Fake St" "Fake City" "C3")
+          test "Not all caps"
+            $ Assert.equal (fail)
+            $ validateAddressRegex (address "22 Fake St" "Fake City" "Ca")

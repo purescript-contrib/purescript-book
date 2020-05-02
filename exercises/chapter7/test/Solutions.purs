@@ -1,7 +1,14 @@
 module Test.Solutions where
 
 import Prelude
+import Data.AddressBook (Address, address)
+import Data.AddressBook.Validation (Errors, matches, nonEmpty)
+import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
+import Data.Validation.Semigroup as Semigroup
+import Data.String.Regex (Regex(), regex)
+import Data.String.Regex.Flags (noFlags)
+import Partial.Unsafe (unsafePartial)
 
 -- Just to prove continuous integration can be set up
 example :: Boolean -> Boolean -> Boolean
@@ -24,3 +31,15 @@ combineMaybe :: ∀ a f. Applicative f => Maybe (f a) -> f (Maybe a)
 combineMaybe (Just x) = map Just x
 
 combineMaybe _ = pure Nothing
+
+{-| Exercise Group 2 -}
+validateAddressRegex :: Address -> Semigroup.V Errors Address
+validateAddressRegex a =
+  address <$> (nonEmpty "Street" a.street *> pure a.street)
+    <*> (nonEmpty "City" a.city *> pure a.city)
+    <*> (matches "State" stateAbbreviationRegex a.state *> pure a.state)
+
+stateAbbreviationRegex :: Regex
+stateAbbreviationRegex =
+  unsafePartial case regex "^[A-Z]{2}$" noFlags of
+    Right r -> r
