@@ -674,7 +674,7 @@ In the case of an empty list, we can simply return an empty list using `pure`. I
 
 But there are more examples of traversable functors than just arrays and lists. The `Maybe` type constructor we saw earlier also has an instance for `Traversable`. We can try it in PSCi:
 
-```haskell
+```text
 > import Data.Maybe
 > import Data.Traversable
 > import Data.AddressBook.Validation
