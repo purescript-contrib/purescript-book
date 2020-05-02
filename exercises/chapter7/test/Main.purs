@@ -110,14 +110,14 @@ main =
           let
             fail = Semigroup.invalid ([ "Field 'State' did not match the required format" ])
           test "Too few letters"
-            $ Assert.equal (fail)
+            $ Assert.equal fail
             $ validateAddressRegex (address "22 Fake St" "Fake City" "C")
           test "Too many letters"
-            $ Assert.equal (fail)
+            $ Assert.equal fail
             $ validateAddressRegex (address "22 Fake St" "Fake City" "CAA")
           test "Contains non-letters"
-            $ Assert.equal (fail)
+            $ Assert.equal fail
             $ validateAddressRegex (address "22 Fake St" "Fake City" "C3")
           test "Not all caps"
-            $ Assert.equal (fail)
+            $ Assert.equal fail
             $ validateAddressRegex (address "22 Fake St" "Fake City" "Ca")
