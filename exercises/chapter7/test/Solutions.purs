@@ -43,3 +43,14 @@ stateAbbreviationRegex :: Regex
 stateAbbreviationRegex =
   unsafePartial case regex "^[A-Z]{2}$" noFlags of
     Right r -> r
+
+validateAddressRegex' :: Address -> Semigroup.V Errors Address
+validateAddressRegex' a =
+  address <$> (nonEmpty "Street" a.street *> pure a.street)
+    <*> (matches "City" notOnlyWhitespaceRegex a.city *> pure a.city)
+    <*> (matches "State" stateAbbreviationRegex a.state *> pure a.state)
+
+notOnlyWhitespaceRegex :: Regex
+notOnlyWhitespaceRegex =
+  unsafePartial case regex "[0-9A-Za-z]" noFlags of
+    Right r -> r

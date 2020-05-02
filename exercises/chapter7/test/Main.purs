@@ -6,7 +6,7 @@ import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Validation.Semigroup as Semigroup
 import Effect (Effect)
-import Test.Solutions (combineMaybe, example, validateAddressRegex)
+import Test.Solutions (combineMaybe, example, validateAddressRegex, validateAddressRegex')
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -100,10 +100,10 @@ main =
             $ Assert.equal (Nothing : Nil)
             $ combineMaybe (Nothing :: Maybe (List Char))
     suite "Exercise Group 2" do
+      let
+        addr = address "22 Fake St" "Fake City" "CA"
       suite "Regex validator for state code to be two alphabetic chars" do
         test "Passes validation" do
-          let
-            addr = address "22 Fake St" "Fake City" "CA"
           Assert.equal (pure addr)
             $ validateAddressRegex addr
         suite "Fails validation" do
@@ -121,3 +121,25 @@ main =
           test "Not all caps"
             $ Assert.equal fail
             $ validateAddressRegex (address "22 Fake St" "Fake City" "Ca")
+      suite "Regex validator to not allow only whitespace" do
+        test "Passes validation with no leading or trailing whitespace" do
+          Assert.equal (pure addr)
+            $ validateAddressRegex' addr
+        suite "Passes validation with leading and trailing whitespace" do
+          let
+            addr' = address "22 Fake St" " Fake City " "CA"
+          test "Leading and trailing whitespace"
+            $ Assert.equal (pure addr')
+            $ validateAddressRegex' addr'
+        suite "Fails validation" do
+          let
+            fail = Semigroup.invalid ([ "Field 'City' did not match the required format" ])
+          test "Empty string"
+            $ Assert.equal fail
+            $ validateAddressRegex' (address "22 Fake St" "" "CA")
+          test "One space character"
+            $ Assert.equal fail
+            $ validateAddressRegex' (address "22 Fake St" " " "CA")
+          test "One tab character"
+            $ Assert.equal fail
+            $ validateAddressRegex' (address "22 Fake St" "\t" "CA")
