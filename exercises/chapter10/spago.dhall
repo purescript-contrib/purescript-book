@@ -4,10 +4,15 @@ You can edit this file as you like.
 -}
 { name = "my-project"
 , dependencies =
-  [ "console"
+  [ "aff-promise"
+  , "argonaut"
+  , "argonaut-generic"
+  , "console"
   , "effect"
-  , "foreign-generic"
+  , "pairs"
   , "psci-support"
+  , "react-basic-hooks"
+  , "test-unit"
   , "validation"
   ]
 , packages = ./packages.dhall
