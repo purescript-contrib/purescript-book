@@ -6,7 +6,15 @@ import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Validation.Semigroup as Semigroup
 import Effect (Effect)
-import Test.Solutions (combineMaybe, example, validateAddressRegex, validateAddressRegex')
+-- import Effect.Console (logShow)
+import Test.Solutions
+  ( combineMaybe
+  , example
+  , sampleTree
+  , traverseInOrder
+  , validateAddressRegex
+  , validateAddressRegex'
+  )
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -143,3 +151,8 @@ main =
           test "One tab character"
             $ Assert.equal fail
             $ validateAddressRegex' (address "22 Fake St" "\t" "CA")
+    suite "Exercise Group 3" do
+      suite "Exercise 1: Traverse Tree" do
+        test "traversInOrder"
+          $ Assert.equal (pure sampleTree)
+          $ traverseInOrder sampleTree
