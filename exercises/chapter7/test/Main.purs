@@ -6,11 +6,12 @@ import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Validation.Semigroup as Semigroup
 import Effect (Effect)
--- import Effect.Console (logShow)
+import Effect.Console (logShow)
 import Test.Solutions
-  ( combineMaybe
+  ( Tree(..)
+  , combineMaybe
   , example
-  , sampleTree
+  -- , sampleTree
   , traverseInOrder
   , validateAddressRegex
   , validateAddressRegex'
@@ -154,5 +155,5 @@ main =
     suite "Exercise Group 3" do
       suite "Exercise 1: Traverse Tree" do
         test "traversInOrder"
-          $ Assert.equal (pure sampleTree)
-          $ traverseInOrder sampleTree
+          $ Assert.equal (pure (Branch (Branch Leaf 1 Leaf) 2 (Branch Leaf 3 Leaf)))
+          $ traverseInOrder logShow (Branch (Branch Leaf 1 Leaf) 2 (Branch Leaf 3 Leaf))
