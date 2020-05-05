@@ -8,6 +8,8 @@ import Data.Maybe (Maybe(..))
 import Data.Validation.Semigroup as Semigroup
 import Data.String.Regex (Regex(), regex)
 import Data.String.Regex.Flags (noFlags)
+import Effect (Effect)
+import Effect.Console (logShow)
 import Partial.Unsafe (unsafePartial)
 
 -- Just to prove continuous integration can be set up
@@ -56,7 +58,32 @@ notOnlyWhitespaceRegex =
     Right r -> r
 
 {-| Exercise Group 3 -}
-{-| Exercise 1: Write a Traversable instance for a binary tree data structure -}
+{-| Exercise 1: Write a Traversable instance for a binary tree data structure.
+
+Acknowledgeent: this solution presented by hrk at
+https://discourse.purescript.org/t/purescript-by-example-tree-traversal-question/981/2
+Run as follows:
+
+spago repl
+> import Test.Solutions
+> runTraversableExercise
+1
+2
+3
+2
+1
+3
+1
+3
+2
+unit
+
+> 
+
+The numbers above illustrate different traversal orders.
+
+TODO: Incorporate this in unit tests.
+-}
 data Tree a
   = Leaf
   | Branch (Tree a) a (Tree a)
@@ -64,8 +91,37 @@ data Tree a
 sampleTree :: Tree Int
 sampleTree = Branch (Branch Leaf 1 Leaf) 2 (Branch Leaf 3 Leaf)
 
--- sequence :: ∀ a f t. Applicative f => Traversable t => t (f a) -> f (t a)
-traverseInOrder :: ∀ f a b. Applicative f => (a -> f b) -> Tree a -> f (Tree b)
+traverseInOrder :: forall f a b. Applicative f => (a -> f b) -> Tree a -> f (Tree b)
 traverseInOrder _ Leaf = pure Leaf
 
-traverseInOrder f (Branch l c r) = Branch <$> traverseInOrder f l <*> f c <*> traverseInOrder f r
+-- first evaluate left branch, then node, then right branch
+traverseInOrder f (Branch l x r) = Branch <$> traverseInOrder f l <*> f x <*> traverseInOrder f r
+
+traversePreOrder :: forall f a b. Applicative f => (a -> f b) -> Tree a -> f (Tree b)
+traversePreOrder _ Leaf = pure Leaf
+
+-- first evaluate node, then left branch and then right branch. Notice the lambda function shuffles the arguments where they need to be
+traversePreOrder f (Branch l x r) = (\x' l' r' -> Branch l' x' r') <$> f x <*> traversePreOrder f l <*> traversePreOrder f r
+
+traversePostOrder :: forall f a b. Applicative f => (a -> f b) -> Tree a -> f (Tree b)
+traversePostOrder _ Leaf = pure Leaf
+
+traversePostOrder f (Branch l x r) = (\l' r' x' -> Branch l' x' r') <$> traversePostOrder f l <*> traversePostOrder f r <*> f x
+
+runTraversableExercise :: Effect Unit
+runTraversableExercise = do
+  t1 <- traverseInOrder logShow sampleTree -- 1 2 3
+  t2 <- traversePreOrder logShow sampleTree -- 2 1 3
+  t3 <- traversePostOrder logShow sampleTree -- 1 3 2  
+  pure unit
+
+{-| Exercise 2: Modify the code to make the address field of the Person type optional
+
+TODO
+
+-}
+{- Exercise 3: Try to write sequence in terms of traverse and vice-versa
+
+TODO
+
+-}
