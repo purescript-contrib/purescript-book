@@ -18,7 +18,7 @@ The rest of the chapter will guide you through installing and configuring these 
 
 ## Installing PureScript
 
-You'll need [Node.js and npm](https://docs.npmjs.com/getting-started/installing-node) and to be [able to install global packages](https://docs.npmjs.com/getting-started/fixing-npm-permissions#option-1-change-the-permission-to-npm-s-default-directory) to proceed.
+You will need to install `Node.js` and `npm`. We recommend installing [Node.js and npm via a "node version manager"](https://docs.npmjs.com/getting-started/installing-node) to avoid issues with installing packages gloablly. If you choose to install it manually, you might experience the [`EACCES` error when installing packages globally](https://docs.npmjs.com/getting-started/fixing-npm-permissions#option-1-change-the-permission-to-npm-s-default-directory).
 
 Install the Purescript compiler (`purs`) with npm:
 
