@@ -373,18 +373,18 @@ This module will not compile. The overlapping instances rule will be enforced, r
 Overlapping type class instances found for Data.Show.Show T
 ```
 
-Furthermore, PureScript forbids _orphan instances_.  An _orphan instance_ is an instance that is defined outside of both the module which defined the class and the module which defined the type. Orphan instances might not be obviously problematic at first, but we will see how allowing them can lead to undesirable outcomes.
+Furthermore, PureScript forbids _orphan instances_.  An _orphan instance_ is an instance that is defined outside of both the module which defined the class and the module which defined the type. A problem with orphan instances is that they let library creators evade explicit violations of the overlapping instances rule, while potentially setting-up their users for instance collisions.
 
-In the following code, we'll demonstrate two orphan `Show` instances for the type `T`:
-
+For example, consider our original type `T`:
 ```hs
 module T where
 
 data T = T
 ```
 
+And a library that defines an orphan `Show` instance for `T`:
 ```hs
-module ShowT1 where
+module LibA where
 
 import T
 import Prelude
@@ -393,8 +393,9 @@ instance showT1 :: Show T where
   show _ = "Instance 1"
 ```
 
+If we were to include `LibA` in our project, there would be no overlap issues. But let's say we later include `LibB`, which has the following implementation with another orphan instance:
 ```hs
-module ShowT2 where
+module LibB where
 
 import T
 import Prelude
@@ -403,19 +404,14 @@ instance showT2 :: Show T where
   show _ = "Instance 2"
 ```
 
-Attempting compilation produces the following error:
-
+Now we're faced with an overlapping instance dilemma. To address this problem head-on, PureScript simply bans orphan instances, and would present the creator of `LibA` (and `LibB`) with the following error:
 ```text
   Orphan instance showT1 found for Data.Show.Show T
-
-  Orphan instance showT2 found for Data.Show.Show T
 
   This problem can be resolved by declaring the instance in Data.Show or T, or by defining the instance on a newtype wrapper.
 ```
 
-If PureScript were to allow orphan instances, we could encounter the following problems:
-* Instances `showT1` and `show2T` do not break the overlapping instances rule, as they are in separate modules, but then an overlap would occur if both of these modules are imported in another module. This is a potential problem when importing separate libraries that define the conflicting orphan instances.
-* Even if overlaps are avoided, the lack of global uniques of instances would allow operating on data with incompatible instances in different sections of code. For example, in Ord-based maps and sets, if it were possible to insert some values into a map using one `Ord` instance, and then try to retrieve them using a different `Ord` instance, you'd have keys disappear from your map. Another example is if you had a type class which defined serialization and deserialization operations, you'd be able to serialize something with one instance and then try to deserialize it with a different incompatible instance.
+By forcing instances to be defined in either the module which defined the class or the module which defined the type, PureScript guarantees that all instances are globally unique across the entire ecosystem.
 
 If it is truly the case that there are two valid type class instances for a type, satisfying the appropriate laws, then a common approach is to define newtypes which wrap the existing type. Since different newtypes are allowed to have different type class instances under the overlapping instances rule, there is no longer an issue. This approach is taken in PureScript's standard libraries, for example in the `maybe` package, the `Maybe a` type has multiple valid instances for the `Monoid` type class via `newtype` wrappers `First` and `Last`.
 
