@@ -2,22 +2,9 @@
 Welcome to a Spago project!
 You can edit this file as you like.
 -}
-{ name =
-    "my-project"
+{ name = "my-project"
 , dependencies =
-    [ "aff"
-    , "affjax"
-    , "argonaut-core"
-    , "console"
-    , "debug"
-    , "effect"
-    , "foreign"
-    , "psci-support"
-    , "random"
-    , "web-html"
-    ]
-, packages =
-    ./packages.dhall
-, sources =
-    [ "src/**/*.purs", "test/**/*.purs" ]
+  [ "console", "effect", "psci-support", "react-basic-hooks", "validation" ]
+, packages = ./packages.dhall
+, sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }

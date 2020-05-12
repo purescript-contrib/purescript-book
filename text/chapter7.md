@@ -677,15 +677,16 @@ But there are more examples of traversable functors than just arrays and lists. 
 ```text
 > import Data.Maybe
 > import Data.Traversable
+> import Data.AddressBook.Validation
 
 > traverse (nonEmpty "Example") Nothing
-(Valid Nothing)
+pure (Nothing)
 
 > traverse (nonEmpty "Example") (Just "")
-(Invalid ["Field 'Example' cannot be empty"])
+invalid (["Field 'Example' cannot be empty"])
 
 > traverse (nonEmpty "Example") (Just "Testing")
-(Valid (Just unit))
+pure ((Just unit))
 ```
 
 These examples show that traversing the `Nothing` value returns `Nothing` with no validation, and traversing `Just x` uses the validation function to validate `x`. That is, `traverse` takes a validation function for type `a` and returns a validation function for `Maybe a`, i.e. a validation function for optional values of type `a`.
