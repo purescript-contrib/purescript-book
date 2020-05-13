@@ -1,9 +1,9 @@
 module Test.Solutions where
 
 import Prelude
-import Data.Array ((:), (..))
-import Data.Path (Path, ls)
 import Control.MonadZero (guard)
+import Data.Array (concatMap, (..), (:))
+import Data.Path (Path, ls)
 
 factors :: Int -> Array (Array Int)
 factors n = do
@@ -14,7 +14,10 @@ factors n = do
 
 -- Section for : A Virtual Filesystem exercise
 allFiles :: Path -> Array Path
-allFiles file =
+allFiles root = root : concatMap allFiles (ls root)
+
+allFiles' :: Path -> Array Path
+allFiles' file =
   file
     : do
         child <- ls file
