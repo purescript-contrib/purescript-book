@@ -76,6 +76,20 @@ These examples demonstrate how to `show` values of various primitive types, but 
 "(Just \"testing\")"
 ```
 
+The output of `show` should be a string that you can paste back into the repl (or `.purs` file) to recreate the item being shown. Here we'll use `logShow`, which just calls `show` then `log`, to render the string without quotes. Ignore the `unit` print - that will covered in Chapter 8 when we examine `Effect`s, like `log`.
+
+```text
+> import Effect.Console
+
+> logShow (Tuple 1 true)
+(Tuple 1 true)
+unit
+
+> logShow (Just "testing")
+(Just "testing")
+unit
+```
+
 If we try to show a value of type `Data.Either`, we get an interesting error message:
 
 ```text
