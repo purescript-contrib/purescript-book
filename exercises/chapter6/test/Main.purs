@@ -89,7 +89,7 @@ Note to reader: Delete this line to expand comment block -}
             $ NonEmpty 1 [ 2, 3 ]
             <> NonEmpty 4 [ 5, 6 ]
       suite "Exercise - Functor for NonEmpty" do
-        test "NonEmpty append" do
+        test "NonEmpty map" do
           Assert.equal (NonEmpty 10 [ 20, 30 ])
             $ map (_ * 10)
             $ NonEmpty 1 [ 2, 3 ]
