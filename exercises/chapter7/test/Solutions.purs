@@ -1,11 +1,25 @@
 module Test.Solutions where
 
 import Prelude
-import Data.AddressBook (Address, address)
-import Data.AddressBook.Validation (Errors, matches, nonEmpty)
+import Data.AddressBook
+  ( Address
+  , Person
+  , address
+  , examplePerson
+  , person
+  )
+import Data.AddressBook.Validation
+  ( Errors
+  , arrayNonEmpty
+  , matches
+  , nonEmpty
+  , validateAddress
+  , validatePhoneNumber
+  )
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Data.Validation.Semigroup as Semigroup
+import Data.Traversable (traverse)
+import Data.Validation.Semigroup (V, invalid)
 import Data.String.Regex (Regex(), regex)
 import Data.String.Regex.Flags (noFlags)
 import Effect (Effect)
@@ -35,7 +49,7 @@ combineMaybe (Just x) = map Just x
 combineMaybe _ = pure Nothing
 
 {-| Exercise Group 2 -}
-validateAddressRegex :: Address -> Semigroup.V Errors Address
+validateAddressRegex :: Address -> V Errors Address
 validateAddressRegex a =
   address <$> (nonEmpty "Street" a.street *> pure a.street)
     <*> (nonEmpty "City" a.city *> pure a.city)
@@ -46,7 +60,7 @@ stateAbbreviationRegex =
   unsafePartial case regex "^[A-Z]{2}$" noFlags of
     Right r -> r
 
-validateAddressRegex' :: Address -> Semigroup.V Errors Address
+validateAddressRegex' :: Address -> V Errors Address
 validateAddressRegex' a =
   address <$> (nonEmpty "Street" a.street *> pure a.street)
     <*> (matches "City" notOnlyWhitespaceRegex a.city *> pure a.city)
@@ -115,12 +129,13 @@ runTraversableExercise = do
   t3 <- traversePostOrder logShow sampleTree -- 1 3 2  
   pure unit
 
-{-| Exercise 2: Modify the code to make the address field of the Person type optional
-
-TODO
-
--}
-{- Exercise 3: Try to write sequence in terms of traverse and vice-versa
+-- validatePersonWithMaybeAddress :: Person -> V Errors Person
+-- validatePersonWithMaybeAddress p =
+--   person <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
+--     <*> (nonEmpty "Last Name" p.lastName *> pure p.lastName)
+--     <*> (traverse validateAddress p.homeAddress)
+--     <*> (arrayNonEmpty "Phone Numbers" p.phones *> traverse validatePhoneNumber p.phones)
+{-| Exercise 3: Try to write sequence in terms of traverse and vice-versa
 
 TODO
 

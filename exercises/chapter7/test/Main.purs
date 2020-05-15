@@ -1,7 +1,7 @@
 module Test.Main where
 
 import Prelude
-import Data.AddressBook (address)
+import Data.AddressBook (PhoneType(..), address, examplePerson, person, phoneNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Validation.Semigroup as Semigroup
@@ -11,6 +11,7 @@ import Test.Solutions
   , example
   , validateAddressRegex
   , validateAddressRegex'
+  -- , validatePersonWithMaybeAddress
   )
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
@@ -148,3 +149,31 @@ main =
           test "One tab character"
             $ Assert.equal fail
             $ validateAddressRegex' (address "22 Fake St" "\t" "CA")
+    suite "Exercise Group 3" do
+      suite "Exercise 1 - Write a Traversable instance for a binary tree structure" do
+        test "TODO - 'empty' test which passes"
+          $ Assert.equal true
+          $ true
+      suite "Exercise 2 - Verify possible maybe for person's address field" do
+        let
+          addr = address "22 Fake St" "Fake City" "CA"
+        -- test "Test 'Just Address'"
+        --   $ Assert.equal examplePerson
+        --   $ validatePersonWithMaybeAddress
+        --       ( person <$> Just "John" <*> Just "Smith"
+        --           <*> address Just "123 Fake St." Just "FakeTown" Just "CA"
+        --           <*> [ phoneNumber HomePhone "555-555-5555"
+        --             , phoneNumber CellPhone "555-555-0000"
+        --             ]
+        --       )
+        test "Test 'Nothing'"
+          $ Assert.equal true
+          $ true
+
+{-|
+person "John" "Smith"
+  (address "123 Fake St." "FakeTown" "CA")
+    [ phoneNumber HomePhone "555-555-5555"
+    , phoneNumber CellPhone "555-555-0000"
+    ]
+-}
