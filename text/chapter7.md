@@ -638,7 +638,7 @@ traverse :: forall a b f. Applicative f => (a -> f b) -> Array a -> f (Array b)
 
 Intuitively, given any applicative functor `f`, and a function which takes a value of type `a` and returns a value of type `b` (with side-effects tracked by `f`), we can apply the function to each element of an array of type `Array a` to obtain a result of type `Array b` (with side-effects tracked by `f`).
 
-Still not clear? Let's specialize further to the case where `m` is the `V Errors` applicative functor above. Now, we have a function of type
+Still not clear? Let's specialize further to the case where `f` is the `V Errors` applicative functor above. Now, we have a function of type
 
 ```haskell
 traverse :: forall a b. (a -> V Errors b) -> Array a -> V Errors (Array b)
