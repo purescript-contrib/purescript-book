@@ -19,7 +19,7 @@ import Data.AddressBook.Validation
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Traversable (traverse)
-import Data.Validation.Semigroup (V, invalid)
+import Data.Validation.Semigroup (V)
 import Data.String.Regex (Regex(), regex)
 import Data.String.Regex.Flags (noFlags)
 import Effect (Effect)
@@ -129,12 +129,13 @@ runTraversableExercise = do
   t3 <- traversePostOrder logShow sampleTree -- 1 3 2  
   pure unit
 
--- validatePersonWithMaybeAddress :: Person -> V Errors Person
--- validatePersonWithMaybeAddress p =
---   person <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
---     <*> (nonEmpty "Last Name" p.lastName *> pure p.lastName)
---     <*> (traverse validateAddress p.homeAddress)
---     <*> (arrayNonEmpty "Phone Numbers" p.phones *> traverse validatePhoneNumber p.phones)
+validatePersonWithMaybeAddress :: Person -> V Errors Person
+validatePersonWithMaybeAddress p =
+  person <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
+    <*> (nonEmpty "Last Name" p.lastName *> pure p.lastName)
+    <*> (validateAddress p.homeAddress *> pure p.homeAddress)
+    <*> (arrayNonEmpty "Phone Numbers" p.phones *> traverse validatePhoneNumber p.phones)
+
 {-| Exercise 3: Try to write sequence in terms of traverse and vice-versa
 
 TODO

@@ -11,7 +11,7 @@ import Test.Solutions
   , example
   , validateAddressRegex
   , validateAddressRegex'
-  -- , validatePersonWithMaybeAddress
+  , validatePersonWithMaybeAddress
   )
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
@@ -157,15 +157,15 @@ main =
       suite "Exercise 2 - Verify possible maybe for person's address field" do
         let
           addr = address "22 Fake St" "Fake City" "CA"
-        -- test "Test 'Just Address'"
-        --   $ Assert.equal examplePerson
-        --   $ validatePersonWithMaybeAddress
-        --       ( person <$> Just "John" <*> Just "Smith"
-        --           <*> address Just "123 Fake St." Just "FakeTown" Just "CA"
-        --           <*> [ phoneNumber HomePhone "555-555-5555"
-        --             , phoneNumber CellPhone "555-555-0000"
-        --             ]
-        --       )
+        test "Test 'Just Address'"
+          $ Assert.equal examplePerson
+          $ validatePersonWithMaybeAddress
+              ( person <$> Just "John" <*> Just "Smith"
+                  <*> (address <$> Just "123 Fake St." <*> Just "FakeTown" <*> Just "CA")
+                  <*> [ (phoneNumber <$> HomePhone <*> "555-555-5555")
+                    , (phoneNumber <$> CellPhone <*> "555-555-0000")
+                    ]
+              )
         test "Test 'Nothing'"
           $ Assert.equal true
           $ true
