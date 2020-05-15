@@ -57,14 +57,18 @@ type Quadratic
 
 foreign import boldImpl :: forall a. (a -> String) -> a -> String
 
-boldWrap :: forall a. Show a => a -> String
-boldWrap x = boldImpl show x
+bold :: forall a. Show a => a -> String
+bold = boldImpl show
 
-foreign import boldConstraint :: forall a. Show a => a -> String
+foreign import showEqualityImpl :: forall a. (a -> a -> Boolean) -> (a -> String) -> a -> a -> String
 
-foreign import showEquality :: forall a. Eq a => Show a => a -> a -> String
+showEquality :: forall a. Eq a => Show a => a -> a -> String
+showEquality = showEqualityImpl eq show
 
-foreign import yell :: forall a. Show a => a -> Effect Unit
+foreign import yellImpl :: forall a. (a -> String) -> a -> Effect Unit
+
+yell :: forall a. Show a => a -> Effect Unit
+yell = yellImpl show
 
 foreign import diagonalLog :: EffectFn2 Number Number Number
 

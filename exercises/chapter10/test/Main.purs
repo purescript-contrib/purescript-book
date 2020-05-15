@@ -259,13 +259,9 @@ runChapterExamples =
     test "unsafeHead - value" do
       Assert.equal 1
         $ unsafeHead [ 1, 2, 3 ]
-    test "boldWrap" do
+    test "bold" do
       Assert.equal "(TUPLE 1 \"HAT\")!!!"
-        $ boldWrap
-        $ Tuple 1 "Hat"
-    test "boldConstraint" do
-      Assert.equal "(TUPLE 1 \"HAT\")!!!"
-        $ boldConstraint
+        $ bold
         $ Tuple 1 "Hat"
     test "showEquality - not equal" do
       Assert.equal "Nothing is not equal to (Just 5)"
