@@ -1,13 +1,14 @@
 module Test.Examples where
 
 import Prelude
-import Control.Promise (Promise)
+import Control.Promise (Promise, toAffE)
 import Data.Argonaut (Json, decodeJson, encodeJson)
 import Data.Either (Either)
 import Data.Function.Uncurried (Fn2, mkFn2)
 import Data.Map (Map)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
+import Effect.Aff (Aff)
 import Effect.Uncurried (EffectFn2)
 
 foreign import square :: Number -> Number
@@ -72,11 +73,15 @@ yell = yellImpl show
 
 foreign import diagonalLog :: EffectFn2 Number Number Number
 
-foreign import sleep :: Int -> Promise Unit
+foreign import sleepImpl :: Int -> Effect (Promise Unit)
 
-foreign import diagonalAsync :: Int -> Number -> Number -> Promise Number
+sleep :: Int -> Aff Unit
+sleep = sleepImpl >>> toAffE
 
-foreign import diagonalAsyncEffect :: Int -> Number -> Number -> Effect (Promise Number)
+foreign import diagonalAsyncImpl :: Int -> Number -> Number -> Effect (Promise Number)
+
+diagonalAsync :: Int -> Number -> Number -> Aff Number
+diagonalAsync i x y = toAffE $ diagonalAsyncImpl i x y
 
 foreign import cumulativeSumsBroken :: Array Int -> Array Int
 

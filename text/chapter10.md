@@ -607,35 +607,52 @@ Diagonal is 5
 
 ## Asynchronous Functions
 
-Promises in JavaScript translate directly to asynchronous effects in PureScript with the help of the `Control.Promise` module.
+Promises in JavaScript translate directly to asynchronous effects in PureScript with the help of the `aff-promise` library. See that library's [documentation](https://pursuit.purescript.org/packages/purescript-aff-promise) for more information. We'll just go through a few examples.
 
-Take this `sleep` `Promise` as an example:
+Suppose we want to use this JavaScript `wait` promise (or asynchronous function) in our PureScript project. It may bo used to delay execution for `ms` milliseconds.
 ```js
-exports.sleep = ms =>
-  new Promise(resolve => setTimeout(resolve, ms));
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 ```
 
-It delays execution for `ms` milliseconds, and is represented by this PureScript signature:
+We just need to export it wrapped as an `Effect` (function of zero arguments):
+```js
+exports.sleepImpl = ms => () =>
+  wait(ms);
+```
+
+Then import it as follows:
 ```hs
-foreign import sleep :: Int -> Promise Unit
+foreign import sleepImpl :: Int -> Effect (Promise Unit)
+
+sleep :: Int -> Aff Unit
+sleep ms = do
+  promise <- liftEffect $ sleepImpl ms
+  toAff promise
 ```
 
-We can then convert this `Promise` to an `Aff` with `toAff`.
+In the above `Aff` `do` block, we "peel away" the `Effect` wrapper to expose the inner `Promise`, then convert it to `Aff`.
+
+We can also rewrite `sleep` more succinctly as:
+```hs
+sleep :: Int -> Aff Unit
+sleep ms = liftEffect (sleepImpl ms) >>= toAff
+```
+
+We can then run this `Promise` in an `Aff` block like so:
 
 ```text
 $ spago repl
 
 > import Prelude
 > import Test.Examples
-> import Control.Promise
 > import Effect.Class.Console
 > import Effect.Aff
 > :pa
 … launchAff_ do
 …   log "waiting"
-…   toAff $ sleep 300
+…   sleep 300
 …   log "done waiting"
-
+…
 waiting
 unit
 done waiting
@@ -643,19 +660,25 @@ done waiting
 
 Note that asynchronous logging in the repl just waits to print until the entire block has finished executing. This code behaves more predictably when run with `spago test` where there is a slight delay *between* prints.
 
-PureScript's `Promise` type also represents `async`/`await` functions, which are just syntactic sugar for promises. Here we use the `async` keyword for the last parameter:
+Let's look at another example where we return a value from a promise. This function is written with `async` and `await`, which is just syntactic sugar for promises.
 
 ```js
-exports.diagonalAsync = delay => w => async h => {
-  await exports.sleep(delay);
+async function diagonalWait(delay, w, h) {
+  await wait(delay);
   return Math.sqrt(w * w + h * h);
-};
+}
+
+exports.diagonalAsyncImpl = delay => w => h => () =>
+  diagonalWait(delay, w, h);
 ```
 
-Since we're returning a `Number` we represent this type in the `Promise`:
+Since we're returning a `Number`, we represent this type in the `Promise` and `Aff` wrappers:
 
 ```hs
-foreign import diagonalAsync :: Int -> Number -> Number -> Promise Number
+foreign import diagonalAsyncImpl :: Int -> Number -> Number -> Effect (Promise Number)
+
+diagonalAsync :: Int -> Number -> Number -> Aff Number
+diagonalAsync i x y = toAffE $ diagonalAsyncImpl i x y
 ```
 
 ```text
@@ -663,45 +686,11 @@ $ spago repl
 
 import Prelude
 import Test.Examples
-import Control.Promise
 import Effect.Class.Console
 import Effect.Aff
 > :pa
 … launchAff_ do
-…   res <- toAff $ diagonalAsync 300 3.0 4.0
-…   logShow res
-…
-unit
-5.0
-```
-
-We can also wrap `Promise` with `Effect`:
-
-```hs
-foreign import diagonalAsyncEffect :: Int -> Number -> Number -> Effect (Promise Number)
-```
-
-The corresponding JavaScript needs to return a function of zero arguments to represent the `Effect`:
-
-```js
-exports.diagonalAsyncEffect = delay => w => h => async function() {
-  await exports.sleep(delay);
-  return Math.sqrt(w * w + h * h);
-};
-```
-
-And `toAffE` is used instead of `toAff` to convert to an `Aff`:
-```text
-$ spago repl
-
-import Prelude
-import Test.Examples
-import Control.Promise
-import Effect.Class.Console
-import Effect.Aff
-> :pa
-… launchAff_ do
-…   res <- toAffE $ diagonalAsyncEffect 300 3.0 4.0
+…   res <- diagonalAsync 300 3.0 4.0
 …   logShow res
 …
 unit

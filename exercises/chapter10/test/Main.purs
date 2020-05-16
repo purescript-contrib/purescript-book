@@ -4,7 +4,6 @@ import Prelude
 import Test.Examples
 import Test.Solutions
 import Control.Monad.Free (Free)
-import Control.Promise (toAff, toAffE)
 import Data.Argonaut (decodeJson, encodeJson)
 import Data.Either (Either(..), isLeft)
 import Data.Function.Uncurried (runFn2, runFn3)
@@ -277,13 +276,10 @@ runChapterExamples =
       result <- liftEffect $ runEffectFn2 diagonalLog 3.0 4.0
       Assert.equal 5.0 result
     test "sleep" do
-      result <- toAff $ sleep 1
+      result <- sleep 1
       Assert.equal unit result
     test "diagonalAsync" do
-      result <- toAff $ diagonalAsync 1 3.0 4.0
-      Assert.equal 5.0 result
-    test "diagonalAsyncEffect" do
-      result <- toAffE $ diagonalAsyncEffect 1 3.0 4.0
+      result <- diagonalAsync 1 3.0 4.0
       Assert.equal 5.0 result
     suite "cumulativeSums Json" do
       test "broken" do

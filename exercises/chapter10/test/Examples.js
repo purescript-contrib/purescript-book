@@ -80,19 +80,18 @@ exports.diagonalLog = function (w, h) {
   return result;
 };
 
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-exports.sleep = ms =>
-  new Promise(resolve => setTimeout(resolve, ms));
+exports.sleepImpl = ms => () =>
+  wait(ms);
 
-exports.diagonalAsync = delay => w => async h => {
-  await exports.sleep(delay);
+async function diagonalWait(delay, w, h) {
+  await wait(delay);
   return Math.sqrt(w * w + h * h);
-};
+}
 
-exports.diagonalAsyncEffect = delay => w => h => async function () {
-  await exports.sleep(delay);
-  return Math.sqrt(w * w + h * h);
-};
+exports.diagonalAsyncImpl = delay => w => h => () =>
+  diagonalWait(delay, w, h);
 
 
 exports.cumulativeSumsBroken = arr => {
