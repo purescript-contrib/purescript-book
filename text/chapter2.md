@@ -2,303 +2,115 @@
 
 ## Chapter Goals
 
-In this chapter, the goal will be to set up a working PureScript development environment and to write our first PureScript program.
+In this chapter, we'll set up a working PureScript development environment, solve some exercises, and use the tests provided with this book to check our answers.
 
-Our first project will be a very simple PureScript library, which will provide a single function that can compute the length of the diagonal in a right-angled triangle.
+## Environment Setup
 
-## Introduction
+First, work through this [Getting Started Guide](https://github.com/purescript/documentation/blob/master/guides/Getting-Started.md) in the Documentation Repo to setup your environment and learn a few basics about the language. Don't worry if the code in the example solution to the [Project Euler](http://projecteuler.net/problem=1) problem is confusing or contains unfamiliar syntax. We'll cover all of this in great detail in the upcoming chapters.
 
-Here are the tools we will be using to set up our PureScript development environment:
+## Solving Exercises
 
-- [`purs`](https://www.purescript.org) - The PureScript compiler itself.
-- [`npm`](https://www.npmjs.com) - The Node Package Manager, which will allow us to install the rest of our development tools.
-- [`spago`](https://github.com/purescript/spago) - A command-line tool that automates many of the tasks associated with managing PureScript projects.
-
-The rest of the chapter will guide you through installing and configuring these tools.
-
-## Installing PureScript
-
-You will need to install `Node.js` and `npm`. We recommend installing [Node.js and npm via a "node version manager"](https://docs.npmjs.com/getting-started/installing-node) to avoid issues with installing packages gloablly. If you choose to install it manually, you might experience the [`EACCES` error when installing packages globally](https://docs.npmjs.com/getting-started/fixing-npm-permissions#option-1-change-the-permission-to-npm-s-default-directory).
-
-Install the Purescript compiler (`purs`) with npm:
-
-    npm install -g purescript
-
-Try running the PureScript compiler on the command line to verify that the PureScript compiler executables are available on your path:
-
-```text
-$ purs
+Now that you've installed the necessary development tools, clone this book's repo.
+```
+git clone https://github.com/purescript-contrib/purescript-book.git
 ```
 
-## Installing Tools
+The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter.
 
-Spago is a PureScript build tool and package manager. You will need to install it using `npm`, as follows:
-
-```text
-$ npm install -g spago
+Now run the tests for this chapter:
+```
+cd purescript-book/exercises/chapter2
+spago test
 ```
 
-This will place the `spago` command-line tools on your path. At this point, you will have all the necessary tools to create your first PureScript project.
+You should see the following successful test output:
+```
+→ Suite: Euler - Sum of Multiples
+  ✓ Passed: below 10
+  ✓ Passed: below 1000
 
-## Hello, PureScript!
-
-Let's start out simple. We'll use Spago to compile and run a simple Hello World! program.
-
-Begin by creating a project in an empty directory and use the `spago init` command to initialize the project:
-
-```text
-$ mkdir my-project
-$ cd my-project
-$ spago init
-Initializing a sample project or migrating an existing one..
-
-$ ls
-packages.dhall	spago.dhall	src		test
+All 2 tests passed! 🎉
 ```
 
-Spago has created a number of directories and configuration files. The `src` directory will contain our source files and the `test` directory will contain any tests we write. The `spago.dhall` file contains the project configuration.
+The test suite (found in `test/Main.purs`) for this `answer` function is more comprehensive than the test in the earlier getting-started guide. We also modified the `answer` function (found in `src/Euler.purs`) to find the multiples of 3 and 5 below any integer.
 
-<!-- XXX packages.dhall -->
+The remainder of the book contains lots of exercises. If you write your solutions in the `Test.Solutions` module (`test/Solutions.purs`), you can check your work against the provided test suite.
 
-Modify the `src/Main.purs` file to contain the following content:
+Let's work through this next exercise together in test-driven-development style.
 
-```haskell
-module Main where
+## Exercise:
+1. (Medium) Write a `diagonal` function to compute the length of the diagonal (or hypotenuse) of a right-angled triangle when given the lengths of the two other sides.
 
-import Effect.Console
+## Solution
 
-main = log "Hello, World!"
+We'll start by enabling the tests for this exercise. Move the start of the block-comment down a few lines as shown below. Block comments start with `{-` and end with `-}`:
+```hs
+    suite "diagonal" do
+      test "3 4 5" do
+        Assert.equal 5 (diagonal 3 4)
+      test "5 12 13" do
+        Assert.equal 13 (diagonal 5 12)
+{-  Move this block comment starting point to enable more tests
 ```
 
-This small sample illustrates a few key ideas:
+If we attempt to run the test now, we'll encounter a compilation error because we have not yet implemented our `diagonal` function.
 
-- Every file begins with a module header. A module name consists of one or more capitalized words separated by dots. In this case, only a single word is used, but `My.First.Module` would be an equally valid module name.
-- Modules are imported using their full names, including dots to separate the parts of the module name. Here, we import the `Effect.Console` module, which provides the `log` function.
-- The `main` program is defined as a function application. In PureScript, function application is indicated with whitespace separating the function name from its arguments.
+```
+$ spago test
 
-Let's build and run this code using the following command:
+Error found:
+in module Test.Main
+at test/Main.purs:21:27 - 21:35 (line 21, column 27 - line 21, column 35)
 
-```text
-$ spago run
-...
-Build succeeded.
-Hello, World!
+  Unknown value diagonal
 ```
 
-Congratulations! You just compiled and executed your first PureScript program.
-
-## Compiling for the Browser
-
-Spago can be used to turn our PureScript code into JavaScript suitable for use in the web browser by using the `spago bundle-app` command:
-
-```text
-$ spago bundle-app
-...
-Build succeeded.
-Bundle succeeded and output file to index.js
-```
-
-All the code in the `src` directory, a standard PureScript library known as the _Prelude_ and any project dependencies have been compiled to JavaScript. The resulting code is bundled as `index.js` and has also had any unused code removed, a process known as dead-code-elimination. This `index.js` file can now be included in an HTML document. If you try this, you should see the words "Hello, World!" printed to your browser's console.
-
-If you open `index.js`, you should see a few compiled modules which look like this:
-
-```javascript
-// Generated by purs bundle 0.13.3
-var PS = {};
-(function(exports) {
-  "use strict";
-
-  exports.log = function (s) {
-    return function () {
-      console.log(s);
-      return {};
-    };
-  };
-})(PS["Effect.Console"] = PS["Effect.Console"] || {});
-(function($PS) {
-  // Generated by purs version 0.13.3
-  "use strict";
-  $PS["Effect.Console"] = $PS["Effect.Console"] || {};
-  var exports = $PS["Effect.Console"];
-  var $foreign = $PS["Effect.Console"];
-  exports["log"] = $foreign.log;
-})(PS);
-(function($PS) {
-  // Generated by purs version 0.13.3
-  "use strict";
-  $PS["Main"] = $PS["Main"] || {};
-  var exports = $PS["Main"];
-  var Effect_Console = $PS["Effect.Console"];
-  var main = Effect_Console.log("Hello, World!");
-  exports["main"] = main;
-})(PS);
-PS["Main"].main();
-```
-
-This illustrates a few points about the way the PureScript compiler generates JavaScript code:
-
-- Every module gets turned into an object, created by a wrapper function, which contains the module's exported members.
-- PureScript tries to preserve the names of variables wherever possible.
-- Function applications in PureScript get turned into function applications in JavaScript.
-- The main method is run after all modules have been defined and is generated as a simple method call with no arguments.
-- PureScript code does not rely on any runtime libraries. All of the code that is generated by the compiler originated in a PureScript module somewhere which your code depended on.
-
-These points are important since they mean that PureScript generates simple, understandable code. The code generation process, in general, is quite a shallow transformation. It takes relatively little understanding of the language to predict what JavaScript code will be generated for a particular input.
-
-## Compiling CommonJS Modules
-
-Spago can also be used to generate CommonJS modules from PureScript code. This can be useful when using NodeJS, or just when developing a larger project which uses CommonJS modules to break code into smaller components.
-
-To build CommonJS modules, use the `spago build` command:
-
-```text
-$ spago build
-...
-Build succeeded.
-```
-
-The generated modules will be placed in the `output` directory by default. Each PureScript module will be compiled to its own CommonJS module, in its own subdirectory.
-
-## Tracking Dependencies
-
-To write the `diagonal` function (the goal of this chapter), we will need to be able to compute square roots. The `math` package contains type definitions for functions defined on the JavaScript `Math` object, so let's install it:
-
-```text
-$ spago install math
-```
-
-The `math` library sources should now be available in the `.spago/math/{version}/` subdirectory, and will be included when you compile your project.
-
-## Computing Diagonals
-
-Let's write the `diagonal` function, which will be an example of using a function from an external library.
-
-First, import the `Math` module by adding the following line at the top of the `src/Main.purs` file:
-
-```haskell
+Let's first take a look at what happens with a faulty version of this function. Add the following code to `test/Solutions.purs`:
+```hs
 import Math (sqrt)
+
+diagonal w h = sqrt (w * w + h)
 ```
 
-It's also necessary to import the `Prelude` module, which defines very basic operations such as numeric addition and multiplication:
+And check our work by running `spago test`:
+```hs
+→ Suite: diagonal
+  ☠ Failed: 3 4 5 because expected 5.0, got 3.605551275463989
+  ☠ Failed: 5 12 13 because expected 13.0, got 6.082762530298219
 
-```haskell
-import Prelude
+2 tests failed:
+
+< There will also be some JavaScript stack traces here that can be ignored >
 ```
 
-Now define the `diagonal` function as follows:
-
-```haskell
+Uh-oh, that's not quite right. Let's fix this with the correct application of the pythagorean formula by changing the function to:
+```hs
 diagonal w h = sqrt (w * w + h * h)
 ```
 
-Note that there is no need to define a type for our function. The compiler can infer that `diagonal` is a function that takes two numbers and returns a number. In general, however, it is a good practice to provide type annotations as a form of documentation.
+Trying `spago test` again now shows all tests are passing:
+```hs
+→ Suite: Euler - Sum of Multiples
+  ✓ Passed: below 10
+  ✓ Passed: below 1000
+→ Suite: diagonal
+  ✓ Passed: 3 4 5
+  ✓ Passed: 5 12 13
 
-Let's also modify the `main` function to use the new `diagonal` function:
-
-```haskell
-main = logShow (diagonal 3.0 4.0)
+All 4 tests passed! 🎉
 ```
 
-Now compile and run the project again, using `spago run`:
-
-```text
-$ spago run
-...
-Build succeeded.
-5.0
-```
-
-## Testing Code Using the Interactive Mode
-
-The PureScript compiler also ships with an interactive REPL called PSCi. This can be very useful for testing your code and experimenting with new ideas. Let's use PSCi to test the `diagonal` function.
-
-Spago can load source modules into PSCi automatically, via the `spago repl` command:
-
-```text
-$ spago repl
->
-```
-
-You can type `:?` to see a list of commands:
-
-```text
-> :?
-The following commands are available:
-
-    :?                        Show this help menu
-    :quit                     Quit PSCi
-    :reload                   Reload all imported modules while discarding bindings
-    :clear                    Discard all imported modules and declared bindings
-    :browse      <module>     See all functions in <module>
-    :type        <expr>       Show the type of <expr>
-    :kind        <type>       Show the kind of <type>
-    :show        import       Show all imported modules
-    :show        loaded       Show all loaded modules
-    :show        print        Show the repl's current printing function
-    :paste       paste        Enter multiple lines, terminated by ^D
-    :complete    <prefix>     Show completions for <prefix> as if pressing tab
-    :print       <fn>         Set the repl's printing function to <fn> (which must be fully qualified)
-```
-
-By pressing the Tab key, you should be able to see a list of all functions available in your own code, as well as any project dependencies and the Prelude modules.
-
-Start by importing the `Prelude` module:
-
-```text
-> import Prelude
-```
-
-Try evaluating a few expressions now:
-
-```text
-> 1 + 2
-3
-
-> "Hello, " <> "World!"
-"Hello, World!"
-```
-
-Let's try out our new `diagonal` function in PSCi:
-
-```text
-> import Main
-> diagonal 5.0 12.0
-
-13.0
-```
-
-You can also use PSCi to define functions:
-
-```text
-> double x = x * 2
-
-> double 10
-20
-```
-
-Don't worry if the syntax of these examples is unclear right now - it will make more sense as you read through the book.
-
-Finally, you can check the type of an expression by using the `:type` command:
-
-```text
-> :type true
-Boolean
-
-> :type [1, 2, 3]
-Array Int
-```
-
-Try out the interactive mode now. If you get stuck at any point, simply use the Clear command `:clear` to unload any modules which may be compiled in memory.
+Now try these next exercises on your own.
 
 ## Exercises
 
- 1. (Easy) Use the `pi` constant, which is defined in the `Math` module, to write a function `circleArea` which computes the area of a circle with a given radius. Test your function using PSCi (_Hint_: don't forget to import `pi` by modifying the `import Math` statement).
- 1. (Medium) Use `spago install` to install the `globals` package as a dependency. Test out its functions in PSCi (_Hint_: you can use the `:browse` command in PSCi to browse the contents of a module; try `:browse Global` and compare what PSCi tells you to what you find in **[Pursuit](https://pursuit.purescript.org/packages/purescript-globals/4.1.0/docs/Global)**).
+ 1. (Easy) Write a function `circleArea` which computes the area of a circle with a given radius. Use the `pi` constant, which is defined in the `Math` module. _Hint_: don't forget to import `pi` by modifying the `import Math` statement.
+ 1. (Medium) The `readFloat` function converts a String to a floating-point Number. Calling `readFloat "1.23"` produces `1.23`. Write a function `addE` which takes a `String`, converts it to a `Number` with `readFloat`, and then adds the mathematical constant `e` to it. _Hint_: You should first search [Pursuit](https://pursuit.purescript.org/) to find the module that contains the `readFloat` function, and install that module with `spago install`. Don't forget to add the necessary imports.
 
 ## Conclusion
 
-In this chapter, we set up a simple PureScript project using the Spago tool.
+In this chapter, we installed the PureScript compiler and the Spago tool. We also learned how to write solutions to exercises and check these for correctness.
 
-We also wrote our first PureScript function and a JavaScript program which could be compiled and executed either in the browser or in NodeJS.
+There will be many more exercises in the chapters ahead, and working through those really helps with learning the material. If you're stumped by any of the exercises, please reach out to any of the community resources listed in the [Getting Help](https://book.purescript.org/chapter1.html#getting-help) section of this book, or even file an issue in this [book's repo](https://github.com/purescript-contrib/purescript-book/issues).
 
-We will use this development setup in the following chapters to compile, debug and test our code, so you should make sure that you are comfortable with the tools and techniques involved.
+Once you solve all the exercises in a chapter, you may compare your answers against those in the [solutions branch](https://github.com/purescript-contrib/purescript-book/tree/solutions). No peaking please without putting in an honest effort to solve these yourself though. And even if you are stuck, try asking a community member for help first, as we would rather give you a small hint than spoil the exercise. If you found a more elegant solution (that still only requires knowledge of covered content), please send us a PR.
