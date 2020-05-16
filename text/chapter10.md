@@ -261,11 +261,14 @@ The remaining examples in this book will use arrow functions instead of nested f
 ## Passing Simple Types
 
 The following data types may be passed between PureScript and JavaScript as-is:
-* Boolean
-* String
-* Int and Number (PureScript) / Number (JavaScript)
-* Array
-* Record (PureScript) / Object (JavaScript)
+
+PureScript | JavaScript
+--- | ---
+Boolean | Boolean
+String | String
+Int, Number | Number
+Array | Array
+Record | Object
 
 We've already seen examples with the primitive types `String` and `Number`. We'll now take a look at the structural types `Array` and `Record` (`Object` in JavaScript).
 
@@ -345,6 +348,7 @@ We can instead return a `Maybe` value to handle this corner case.
 
 It is tempting to write the following:
 ```js
+// Don't do this
 exports.maybeHead = arr => {
   if (arr.length) {
     return Data_Maybe.Just.create(arr[0]);
@@ -609,7 +613,7 @@ Diagonal is 5
 
 Promises in JavaScript translate directly to asynchronous effects in PureScript with the help of the `aff-promise` library. See that library's [documentation](https://pursuit.purescript.org/packages/purescript-aff-promise) for more information. We'll just go through a few examples.
 
-Suppose we want to use this JavaScript `wait` promise (or asynchronous function) in our PureScript project. It may bo used to delay execution for `ms` milliseconds.
+Suppose we want to use this JavaScript `wait` promise (or asynchronous function) in our PureScript project. It may be used to delay execution for `ms` milliseconds.
 ```js
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 ```
@@ -625,17 +629,7 @@ Then import it as follows:
 foreign import sleepImpl :: Int -> Effect (Promise Unit)
 
 sleep :: Int -> Aff Unit
-sleep ms = do
-  promise <- liftEffect $ sleepImpl ms
-  toAff promise
-```
-
-In the above `Aff` `do` block, we "peel away" the `Effect` wrapper to expose the inner `Promise`, then convert it to `Aff`.
-
-We can also rewrite `sleep` more succinctly as:
-```hs
-sleep :: Int -> Aff Unit
-sleep ms = liftEffect (sleepImpl ms) >>= toAff
+sleep = sleepImpl >>> toAffE
 ```
 
 We can then run this `Promise` in an `Aff` block like so:
