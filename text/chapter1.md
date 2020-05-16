@@ -134,6 +134,7 @@ This book aims to provide an introduction to the PureScript language for beginne
 If you get stuck at any point, there are a number of resources available online for learning PureScript:
 
 - The `#purescript` and `#purescript-beginners` FP Slack channels are a great place to chat about issues you may be having. [Use this link](https://fpchat-invite.herokuapp.com/) to gain access the Slack chatrooms.
+- The [Purescript Discourse Forum](https://discourse.purescript.org/) is another good place to search for solutions to common problems. If you ask your questions here, they will be available to help future readers (whereas on Slack they will be deleted).
 - [PureScript: Jordan's Reference](https://github.com/jordanmartinez/purescript-jordans-reference)  is an alternative learning resource that goes into great depth. If a concept in this book is difficult to understand, consider reading the corresponding section in that reference.
 - [Pursuit](https://pursuit.purescript.org) is a searchable database of PureScript types and functions. Read Pursuit's help page to [learn what kinds of searches you can do](https://pursuit.purescript.org/help/users).
 - The [PureScript documentation repository](https://github.com/purescript/documentation) collects articles and examples on a wide variety of topics, written by PureScript developers and users.
