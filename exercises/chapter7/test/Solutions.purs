@@ -5,7 +5,6 @@ import Data.AddressBook
   ( Address
   , Person
   , address
-  , examplePerson
   , person
   )
 import Data.AddressBook.Validation
@@ -130,11 +129,11 @@ runTraversableExercise = do
   pure unit
 
 validatePersonWithMaybeAddress :: Person -> V Errors Person
-validatePersonWithMaybeAddress p =
-  person <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
-    <*> (nonEmpty "Last Name" p.lastName *> pure p.lastName)
-    <*> (validateAddress p.homeAddress *> pure p.homeAddress)
-    <*> (arrayNonEmpty "Phone Numbers" p.phones *> traverse validatePhoneNumber p.phones)
+validatePersonWithMaybeAddress o =
+  person <$> (nonEmpty "First Name" o.firstName *> pure o.firstName)
+    <*> (nonEmpty "Last Name" o.lastName *> pure o.lastName)
+    <*> (validateAddress o.homeAddress *> pure o.homeAddress)
+    <*> (arrayNonEmpty "Phone Numbers" o.phones *> traverse validatePhoneNumber o.phones)
 
 {-| Exercise 3: Try to write sequence in terms of traverse and vice-versa
 
