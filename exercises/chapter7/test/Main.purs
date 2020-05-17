@@ -1,7 +1,7 @@
 module Test.Main where
 
 import Prelude
-import Data.AddressBook (PhoneType(..), address, examplePerson, person, phoneNumber)
+import Data.AddressBook (PhoneType(..), address, person, phoneNumber)
 -- import Data.AddressBook.Validation (arrayNonEmpty, validatePhoneNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
