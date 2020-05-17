@@ -17,6 +17,13 @@ data PhoneType
   | CellPhone
   | OtherPhone
 
+instance eqPhoneType :: Eq PhoneType where
+  eq HomePhone HomePhone = true
+  eq WorkPhone WorkPhone = true
+  eq CellPhone CellPhone = true
+  eq OtherPhone OtherPhone = true
+  eq _ _ = false
+
 instance showPhoneType :: Show PhoneType where
   show HomePhone = "HomePhone"
   show WorkPhone = "WorkPhone"
