@@ -4,6 +4,7 @@ import Prelude
 import Data.AddressBook
   ( Address
   , Person
+  , PhoneNumber
   , address
   , person
   )
@@ -128,11 +129,21 @@ runTraversableExercise = do
   t3 <- traversePostOrder logShow sampleTree -- 1 3 2  
   pure unit
 
-validatePersonWithMaybeAddress :: Person -> V Errors Person
+type Person'
+  = { firstName :: String
+    , lastName :: String
+    , homeAddress :: Maybe Address
+    , phones :: Array PhoneNumber
+    }
+
+person' :: String -> String -> Maybe Address -> Array PhoneNumber -> Person'
+person' firstName lastName homeAddress phones = { firstName, lastName, homeAddress, phones }
+
+validatePersonWithMaybeAddress :: Person' -> V Errors Person'
 validatePersonWithMaybeAddress p =
-  person <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
+  person' <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
     <*> (nonEmpty "Last Name" p.lastName *> pure p.lastName)
-    <*> (validateAddress p.homeAddress *> pure p.homeAddress)
+    <*> (traverse validateAddress p.homeAddress *> pure p.homeAddress)
     <*> (arrayNonEmpty "Phone Numbers" p.phones *> traverse validatePhoneNumber p.phones)
 
 {-| Exercise 3: Try to write sequence in terms of traverse and vice-versa
