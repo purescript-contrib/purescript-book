@@ -1,7 +1,7 @@
 module Test.Main where
 
 import Prelude
-import Data.AddressBook (address, examplePerson)
+import Data.AddressBook (PhoneType(..), address, examplePerson, person, phoneNumber)
 -- import Data.AddressBook.Validation (arrayNonEmpty, validatePhoneNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
@@ -157,16 +157,16 @@ main =
           $ Assert.equal true
           $ true
       suite "Exercise 2 - Verify possible maybe for person's address field" do
-        -- let
-        --   examplePerson =
-        --     person "John" "Smith"
-        --       (address "123 Fake St." "FakeTown" "CA")
-        --       [ (phoneNumber HomePhone "555-555-5555")
-        --       , (phoneNumber CellPhone "555-555-0000")
-        --       ]
+        let
+          examplePerson' =
+            person "John" "Smith"
+              (address "123 Fake St." "FakeTown" "CA")
+              [ phoneNumber HomePhone "555-555-5555"
+              , phoneNumber CellPhone "555-555-0000"
+              ]
         test "Test 'Just Address'"
-          $ Assert.equal (pure examplePerson)
-          $ validatePersonWithMaybeAddress examplePerson
+          $ Assert.equal (pure examplePerson')
+          $ validatePersonWithMaybeAddress examplePerson'
         test "Test 'Nothing'"
           $ Assert.equal true
           $ true
