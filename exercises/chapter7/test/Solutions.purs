@@ -3,10 +3,8 @@ module Test.Solutions where
 import Prelude
 import Data.AddressBook
   ( Address
-  , Person
   , PhoneNumber
   , address
-  , person
   )
 import Data.AddressBook.Validation
   ( Errors
@@ -129,6 +127,7 @@ runTraversableExercise = do
   t3 <- traversePostOrder logShow sampleTree -- 1 3 2  
   pure unit
 
+{-| Exercise 2: Test when 'address' field is a Maybe -}
 type Person'
   = { firstName :: String
     , lastName :: String

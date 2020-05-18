@@ -2,11 +2,10 @@ module Test.Main where
 
 import Prelude
 import Data.AddressBook (PhoneType(..), address, phoneNumber)
--- import Data.AddressBook.Validation (arrayNonEmpty, validatePhoneNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 -- import Data.Traversable (traverse)
-import Data.Validation.Semigroup as Semigroup
+import Data.Validation.Semigroup (invalid)
 import Effect (Effect)
 import Test.Solutions
   ( combineMaybe
@@ -117,7 +116,7 @@ main =
             $ validateAddressRegex addr
         suite "Fails validation" do
           let
-            fail = Semigroup.invalid ([ "Field 'State' did not match the required format" ])
+            fail = invalid ([ "Field 'State' did not match the required format" ])
           test "Too few letters"
             $ Assert.equal fail
             $ validateAddressRegex (address "22 Fake St" "Fake City" "C")
@@ -142,7 +141,7 @@ main =
             $ validateAddressRegex' addr'
         suite "Fails validation" do
           let
-            fail = Semigroup.invalid ([ "Field 'City' did not match the required format" ])
+            fail = invalid ([ "Field 'City' did not match the required format" ])
           test "Empty string"
             $ Assert.equal fail
             $ validateAddressRegex' (address "22 Fake St" "" "CA")
@@ -165,9 +164,26 @@ main =
               [ phoneNumber HomePhone "555-555-5555"
               , phoneNumber CellPhone "555-555-0000"
               ]
+
+          examplePerson'' =
+            person' "John" "Smith"
+              Nothing
+              [ phoneNumber HomePhone "555-555-5555"
+              , phoneNumber CellPhone "555-555-0000"
+              ]
+
+          examplePersonEmptyCity =
+            person' "John" "Smith"
+              (Just $ address "123 Fake St." "" "CA")
+              [ phoneNumber HomePhone "555-555-5555"
+              , phoneNumber CellPhone "555-555-0000"
+              ]
         test "Test 'Just Address'"
           $ Assert.equal (pure examplePerson')
           $ validatePersonWithMaybeAddress examplePerson'
         test "Test 'Nothing'"
-          $ Assert.equal true
-          $ true
+          $ Assert.equal (pure examplePerson'')
+          $ validatePersonWithMaybeAddress examplePerson''
+        test "Test 'Just Address' when city is empty"
+          $ Assert.equal (invalid ([ "Field 'City' cannot be empty" ]))
+          $ validatePersonWithMaybeAddress examplePersonEmptyCity
