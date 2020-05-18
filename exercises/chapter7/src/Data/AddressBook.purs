@@ -17,6 +17,8 @@ data PhoneType
   | CellPhone
   | OtherPhone
 
+derive instance eqPhoneType :: Eq PhoneType
+
 instance showPhoneType :: Show PhoneType where
   show HomePhone = "HomePhone"
   show WorkPhone = "WorkPhone"
