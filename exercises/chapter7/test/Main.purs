@@ -179,11 +179,11 @@ main =
             $ validatePersonWithMaybeAddress examplePerson
         test "Test 'Just Address' when city is empty" do
           let
-            examplePersonEmptyCity =
+            examplePerson =
               person' "John" "Smith"
                 (Just $ address "123 Fake St." "" "CA")
                 [ phoneNumber HomePhone "555-555-5555"
                 , phoneNumber CellPhone "555-555-0000"
                 ]
           Assert.equal (invalid ([ "Field 'City' cannot be empty" ]))
-            $ validatePersonWithMaybeAddress examplePersonEmptyCity
+            $ validatePersonWithMaybeAddress examplePerson
