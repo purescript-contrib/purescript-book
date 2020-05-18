@@ -157,33 +157,33 @@ main =
           $ Assert.equal true
           $ true
       suite "Exercise 2 - Verify possible maybe for person's address field" do
-        let
-          examplePerson' =
-            person' "John" "Smith"
-              (Just $ address "123 Fake St." "FakeTown" "CA")
-              [ phoneNumber HomePhone "555-555-5555"
-              , phoneNumber CellPhone "555-555-0000"
-              ]
-
-          examplePerson'' =
-            person' "John" "Smith"
-              Nothing
-              [ phoneNumber HomePhone "555-555-5555"
-              , phoneNumber CellPhone "555-555-0000"
-              ]
-
-          examplePersonEmptyCity =
-            person' "John" "Smith"
-              (Just $ address "123 Fake St." "" "CA")
-              [ phoneNumber HomePhone "555-555-5555"
-              , phoneNumber CellPhone "555-555-0000"
-              ]
-        test "Test 'Just Address'"
-          $ Assert.equal (pure examplePerson')
-          $ validatePersonWithMaybeAddress examplePerson'
-        test "Test 'Nothing'"
-          $ Assert.equal (pure examplePerson'')
-          $ validatePersonWithMaybeAddress examplePerson''
-        test "Test 'Just Address' when city is empty"
-          $ Assert.equal (invalid ([ "Field 'City' cannot be empty" ]))
-          $ validatePersonWithMaybeAddress examplePersonEmptyCity
+        test "Test 'Just Address'" do
+          let
+            examplePerson =
+              person' "John" "Smith"
+                (Just $ address "123 Fake St." "FakeTown" "CA")
+                [ phoneNumber HomePhone "555-555-5555"
+                , phoneNumber CellPhone "555-555-0000"
+                ]
+          Assert.equal (pure examplePerson)
+            $ validatePersonWithMaybeAddress examplePerson
+        test "Test 'Nothing'" do
+          let
+            examplePerson =
+              person' "John" "Smith"
+                Nothing
+                [ phoneNumber HomePhone "555-555-5555"
+                , phoneNumber CellPhone "555-555-0000"
+                ]
+          Assert.equal (pure examplePerson)
+            $ validatePersonWithMaybeAddress examplePerson
+        test "Test 'Just Address' when city is empty" do
+          let
+            examplePersonEmptyCity =
+              person' "John" "Smith"
+                (Just $ address "123 Fake St." "" "CA")
+                [ phoneNumber HomePhone "555-555-5555"
+                , phoneNumber CellPhone "555-555-0000"
+                ]
+          Assert.equal (invalid ([ "Field 'City' cannot be empty" ]))
+            $ validatePersonWithMaybeAddress examplePersonEmptyCity
