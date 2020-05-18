@@ -157,7 +157,7 @@ main =
           $ Assert.equal true
           $ true
       suite "Exercise 2 - Verify possible maybe for person's address field" do
-        test "Test 'Just Address'" do
+        test "Just Address" do
           let
             examplePerson =
               person' "John" "Smith"
@@ -167,7 +167,7 @@ main =
                 ]
           Assert.equal (pure examplePerson)
             $ validatePersonWithMaybeAddress examplePerson
-        test "Test 'Nothing'" do
+        test "Nothing" do
           let
             examplePerson =
               person' "John" "Smith"
@@ -177,7 +177,7 @@ main =
                 ]
           Assert.equal (pure examplePerson)
             $ validatePersonWithMaybeAddress examplePerson
-        test "Test 'Just Address' when city is empty" do
+        test "'Just Address' when city is empty" do
           Assert.equal (invalid ([ "Field 'City' cannot be empty" ]))
             $ validatePersonWithMaybeAddress
             $ person' "John" "Smith"
