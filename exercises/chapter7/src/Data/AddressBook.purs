@@ -17,6 +17,11 @@ data PhoneType
   | CellPhone
   | OtherPhone
 
+{-| derive has not been discussed yet but will be
+covered in Ch 10.  Here it is needed by the unit
+tests to define how to compare the PhoneType values
+(HomePhone, WorkPhone, etc).
+-}
 derive instance eqPhoneType :: Eq PhoneType
 
 instance showPhoneType :: Show PhoneType where
