@@ -110,7 +110,7 @@ main =
     suite "Exercise Group 2" do
       let
         addr = address "22 Fake St" "Fake City" "CA"
-      suite "Regex validator for state code to be two alphabetic chars" do
+      suite "Regex validator for state code to be two all-caps letters" do
         test "Passes validation" do
           Assert.equal (pure addr)
             $ validateAddressRegex addr
@@ -185,3 +185,11 @@ main =
                 [ phoneNumber HomePhone "555-555-5555"
                 , phoneNumber CellPhone "555-555-0000"
                 ]
+      suite "Exercise 3a - Write 'sequence' in terms of 'traverse'" do
+        test "TODO - 'empty' test which passes"
+          $ Assert.equal true
+          $ true
+      suite "Exercise 3b - Write 'traverse' in terms of 'sequence'" do
+        test "TODO - 'empty' test which passes"
+          $ Assert.equal true
+          $ true
