@@ -3,24 +3,8 @@ module Test.Main where
 import Prelude
 import Data.AddressBook
   ( PhoneType(..)
-  -- , address
-  -- , phoneNumber
   )
--- import Data.List
---   ( List(..)
---   , (:)
---   )
--- import Data.Maybe (Maybe(..))
--- import Data.Traversable (traverse)
--- import Data.Validation.Semigroup (invalid)
 import Effect (Effect)
--- import Test.Solutions
---   ( combineMaybe
---   , person'
---   , validateAddressRegex
---   , validateAddressRegex'
---   , validatePersonWithMaybeAddress
---   )
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
