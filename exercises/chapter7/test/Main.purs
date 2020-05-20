@@ -1,9 +1,6 @@
 module Test.Main where
 
 import Prelude
-import Data.AddressBook
-  ( PhoneType(..)
-  )
 import Effect (Effect)
 import Test.Unit (suite, test)
 import Test.Unit.Assert as Assert
@@ -12,13 +9,10 @@ import Test.Unit.Main (runTest)
 main :: Effect Unit
 main =
   runTest do
-    suite "Verify eqPhoneType in AddressBook to verify initial passing solutions tests" do
-      test "HomePhone and HomePhone are equal"
+    suite "Verify unit tests are set up" do
+      test "true eq true"
         $ Assert.equal true
-        $ eq HomePhone HomePhone
-      test "HomePhone and WorkPhone are not equal"
-        $ Assert.equal false
-        $ eq HomePhone OtherPhone
+        $ true
 
 {-  Move this block comment starting point to enable more tests
     suite "Exercise Group 1" do

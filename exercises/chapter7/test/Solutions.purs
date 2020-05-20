@@ -1,4 +1,7 @@
 module Test.Solutions where
 
 import Prelude
-import Test.Starter
+
+data Tree a
+  = Leaf
+  | Branch (Tree a) a (Tree a)
