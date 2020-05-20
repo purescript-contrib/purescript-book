@@ -10,6 +10,14 @@ import Data.Maybe (Maybe(..), fromMaybe, maybe)
 import Data.String.Common (split)
 import Data.Tuple (Tuple(..), snd)
 import Control.MonadZero (guard)
+import Data.Array (cons, filter, head, last, length, tail, (..))
+import Data.Foldable (foldl)
+import Data.Int (rem, quot)
+import Data.Maybe (Maybe(..), fromMaybe, maybe)
+import Data.Path (Path(), filename, isDirectory, ls, root, size)
+import Data.String.Common (split)
+import Data.String.Pattern (Pattern(..))
+import Data.Tuple (Tuple(..), snd)
 
 isEven :: Int -> Boolean
 isEven n = case n of

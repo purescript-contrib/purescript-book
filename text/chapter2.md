@@ -18,22 +18,19 @@ The rest of the chapter will guide you through installing and configuring these 
 
 ## Installing PureScript
 
-The recommended approach to installing the PureScript compiler is to download a binary release for your platform from the [PureScript website](https://www.purescript.org).
+You will need to install `Node.js` and `npm`. We recommend installing [Node.js and npm via a "node version manager"](https://docs.npmjs.com/getting-started/installing-node) to avoid issues with installing packages gloablly. If you choose to install it manually, you might experience the [`EACCES` error when installing packages globally](https://docs.npmjs.com/getting-started/fixing-npm-permissions#option-1-change-the-permission-to-npm-s-default-directory).
 
-You should verify that the PureScript compiler executables are available on your path. Try running the PureScript compiler on the command line to verify this:
+Install the Purescript compiler (`purs`) with npm:
+
+    npm install -g purescript
+
+Try running the PureScript compiler on the command line to verify that the PureScript compiler executables are available on your path:
 
 ```text
 $ purs
 ```
 
-Other options for installing the PureScript compiler include:
-
-- Via NPM: `npm install -g purescript`.
-- Building the compiler from source. Instructions can be found on the PureScript website.
-
 ## Installing Tools
-
-If you do not have a working installation of [NodeJS](https://nodejs.org), you should install it. This should also install the `npm` package manager on your system. Make sure you have `npm` installed and available on your path.
 
 Spago is a PureScript build tool and package manager. You will need to install it using `npm`, as follows:
 

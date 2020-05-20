@@ -1,6 +1,7 @@
 module Test.Main where
 
 import Prelude
+import Test.Solutions
 import Data.Maybe (Maybe(..))
 import Data.Path (filename, root)
 import Data.Tuple (fst)

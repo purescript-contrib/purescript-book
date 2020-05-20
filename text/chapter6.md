@@ -76,6 +76,20 @@ These examples demonstrate how to `show` values of various primitive types, but 
 "(Just \"testing\")"
 ```
 
+The output of `show` should be a string that you can paste back into the repl (or `.purs` file) to recreate the item being shown. Here we'll use `logShow`, which just calls `show` then `log`, to render the string without quotes. Ignore the `unit` print - that will covered in Chapter 8 when we examine `Effect`s, like `log`.
+
+```text
+> import Effect.Console
+
+> logShow (Tuple 1 true)
+(Tuple 1 true)
+unit
+
+> logShow (Just "testing")
+(Just "testing")
+unit
+```
+
 If we try to show a value of type `Data.Either`, we get an interesting error message:
 
 ```text
@@ -208,7 +222,7 @@ A `Monoid` type class instance for a type describes how to _accumulate_ a result
 > import Data.Monoid
 > import Data.Foldable
 
-> foldl append mempty ["Hello", " ", "World"]  
+> foldl append mempty ["Hello", " ", "World"]
 "Hello World"
 
 > foldl append mempty [[1, 2, 3], [4, 5], [6]]
@@ -300,7 +314,7 @@ Many standard type classes come with their own set of similar laws. The laws giv
        , imaginary :: Number
        }
      ```
-       
+
      Define `Show` and `Eq` instances for `Complex`.
 
 ## Type Class Constraints
@@ -347,9 +361,9 @@ forall a. Semiring a => a -> a
 
 Here, we might have annotated this function as `Int -> Int`, or `Number -> Number`, but PSCi shows us that the most general type works for any `Semiring`, allowing us to use our function with both `Int`s and `Number`s.
 
-## Overlapping Instances
+## Overlapping and Orphan Instances
 
-PureScript has another rule regarding type class instances, called the _overlapping instances rule_. Whenever a type class instance is required at a function call site, PureScript will use the information inferred by the type checker to choose the correct instance. At that time, there should be exactly one appropriate instance for that type. If there are multiple valid instances, the compiler will issue a error.
+PureScript has another rule regarding type class instances, called the _overlapping instances rule_. Whenever a type class instance is required at a function call site, PureScript will use the information inferred by the type checker to choose the correct instance. At that time, there should be exactly one appropriate instance for that type. If there are multiple valid instances, then it is unclear which instance to select, and the compiler will issue a error.
 
 To demonstrate this, we can try creating two conflicting type class instances for an example type. In the following code, we create two overlapping `Show` instances for the type `T`:
 
@@ -373,9 +387,47 @@ This module will not compile. The overlapping instances rule will be enforced, r
 Overlapping type class instances found for Data.Show.Show T
 ```
 
-The overlapping instances rule is enforced so that automatic selection of type class instances is a predictable process. If we allowed two type class instances for a type to exist, then either could be chosen depending on the order of module imports, and that could lead to unpredictable behavior of the program at runtime, which is undesirable.
+Furthermore, PureScript forbids _orphan instances_.  An _orphan instance_ is an instance that is defined outside of both the module which defined the class and the module which defined the type. A problem with orphan instances is that they let library creators evade explicit violations of the overlapping instances rule, while potentially setting-up their users for instance collisions.
 
-If it is truly the case that there are two valid type class instances for a type, satisfying the appropriate laws, then a common approach is to define newtypes which wrap the existing type. Since different newtypes are allowed to have different type class instances under the overlapping instances rule, there is no longer an issue. This approach is taken in PureScript's standard libraries, for example in `maybe`, where the `Maybe a` type has multiple valid instances for the `Monoid` type class.
+For example, consider our original type `T`:
+```hs
+module T where
+
+data T = T
+```
+
+And a library that defines an orphan `Show` instance for `T`:
+```hs
+module LibA where
+
+import T
+import Prelude
+
+instance showT1 :: Show T where
+  show _ = "Instance 1"
+```
+
+If we were to include `LibA` in our project, there would be no overlap issues. But let's say we later include `LibB`, which has the following implementation with another orphan instance:
+```hs
+module LibB where
+
+import T
+import Prelude
+
+instance showT2 :: Show T where
+  show _ = "Instance 2"
+```
+
+Now we're faced with an overlapping instance dilemma. To address this problem head-on, PureScript simply bans orphan instances, and would present the creator of `LibA` (and `LibB`) with the following error:
+```text
+  Orphan instance showT1 found for Data.Show.Show T
+
+  This problem can be resolved by declaring the instance in Data.Show or T, or by defining the instance on a newtype wrapper.
+```
+
+By forcing instances to be defined in either the module which defined the class or the module which defined the type, PureScript guarantees that all instances are globally unique across the entire ecosystem.
+
+If it is truly the case that there are two valid type class instances for a type, satisfying the appropriate laws, then a common approach is to define newtypes which wrap the existing type. Since different newtypes are allowed to have different type class instances under the overlapping instances rule, there is no longer an issue. This approach is taken in PureScript's standard libraries, for example in the `maybe` package, the `Maybe a` type has multiple valid instances for the `Monoid` type class via `newtype` wrappers `First` and `Last`.
 
 ## Instance Dependencies
 
@@ -589,14 +641,14 @@ Another reason to define a superclass relationship is in the case where there is
      class Monoid m <= Action m a where
        act :: m -> a -> a
      ```
-           
+
      An _action_ is a function which describes how monoidal values can be used to modify a value of another type. There are two laws for the `Action` type class:
 
      - `act mempty a = a`
      - `act (m1 <> m2) a = act m1 (act m2 a)`
 
      That is, the action respects the operations defined by the `Monoid` class.
-        
+
      For example, the natural numbers form a monoid under multiplication:
 
      ```haskell
@@ -723,11 +775,11 @@ The source code for this chapter includes several other examples of `Hashable` i
 
      ```haskell
      newtype Hour = Hour Int
-     
+
      instance eqHour :: Eq Hour where
        eq (Hour n) (Hour m) = mod n 12 == mod m 12
      ```
-     
+
      The newtype `Hour` and its `Eq` instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.
  1. (Difficult) Prove the type class laws for the `Hashable` instances for `Maybe`, `Either` and `Tuple`.
 

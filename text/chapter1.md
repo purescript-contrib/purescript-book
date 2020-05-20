@@ -134,11 +134,12 @@ This book aims to provide an introduction to the PureScript language for beginne
 If you get stuck at any point, there are a number of resources available online for learning PureScript:
 
 - The `#purescript` and `#purescript-beginners` FP Slack channels are a great place to chat about issues you may be having. [Use this link](https://fpchat-invite.herokuapp.com/) to gain access the Slack chatrooms.
+- The [Purescript Discourse Forum](https://discourse.purescript.org/) is another good place to search for solutions to common problems. Questions you ask here will be available to help future readers, whereas on Slack, message history is only kept for approximately 2 weeks.
 - [PureScript: Jordan's Reference](https://github.com/jordanmartinez/purescript-jordans-reference)  is an alternative learning resource that goes into great depth. If a concept in this book is difficult to understand, consider reading the corresponding section in that reference.
 - [Pursuit](https://pursuit.purescript.org) is a searchable database of PureScript types and functions. Read Pursuit's help page to [learn what kinds of searches you can do](https://pursuit.purescript.org/help/users).
 - The [PureScript documentation repository](https://github.com/purescript/documentation) collects articles and examples on a wide variety of topics, written by PureScript developers and users.
 - The [PureScript website](https://www.purescript.org) contains links to several learning resources, including code samples, videos and other resources for beginners.
-- **Note:** this resource is currently being updated to the latest `v0.13.x` PureScript release. We do not advise using it until it has been updated. [Try PureScript!](https://try.purescript.org) is a website which allows users to compile `v0.11.x` PureScript code in the web browser, and contains several simple examples of code.
+- [Try PureScript!](https://try.purescript.org) is a website which allows users to compile PureScript code in the web browser, and contains several simple examples of code.
 
 If you prefer to learn by reading examples, the `purescript`, `purescript-node` and `purescript-contrib` GitHub organizations contain plenty of examples of PureScript code.
 
