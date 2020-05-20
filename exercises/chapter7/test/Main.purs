@@ -21,13 +21,10 @@ import Test.Unit.Main (runTest)
 main :: Effect Unit
 main =
   runTest do
-    suite "Verify eqPhoneType in AddressBook to verify initial passing solutions tests" do
-      test "HomePhone and HomePhone are equal"
+    suite "Verify unit tests are set up" do
+      test "true eq true"
         $ Assert.equal true
-        $ eq HomePhone HomePhone
-      test "HomePhone and WorkPhone are not equal"
-        $ Assert.equal false
-        $ eq HomePhone OtherPhone
+        $ true
     suite "Exercise Group 1" do
       suite "Exercise 1: Use lift2 to write lifted versions of numeric operators" do
         test "+ (Just)"
