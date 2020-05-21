@@ -672,6 +672,8 @@ traverse _ Nil = pure Nil
 traverse f (Cons x xs) = Cons <$> f x <*> traverse f xs
 ```
 
+(The actual definition was later modified to improve stack safety. You can read more about that change [here](https://github.com/purescript/purescript-lists/pull/87).)
+
 In the case of an empty list, we can simply return an empty list using `pure`. If the list is non-empty, we can use the function `f` to create a computation of type `f b` from the head element. We can also call `traverse` recursively on the tail. Finally, we can lift the `Cons` constructor over the applicative functor `m` to combine the two results.
 
 But there are more examples of traversable functors than just arrays and lists. The `Maybe` type constructor we saw earlier also has an instance for `Traversable`. We can try it in PSCi:
