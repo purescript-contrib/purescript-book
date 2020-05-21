@@ -378,8 +378,8 @@ We will see the `combineList` function again later, when we consider `Traversabl
 
  ## Exercises
 
- 1. (Easy) Use `lift2` to write lifted versions of the numeric operators `+`, `-`, `*` and `/` which work with optional arguments.
- 1. (Medium) Convince yourself that the definition of `lift3` given above in terms of `<$>` and `<*>` does type check.
+ 1. (Medium) Write versions of the numeric operators `+`, `-`, `*` and `/` which work with optional arguments (i.e. arguments wrapped in `Maybe`) and return a value wrapped in `Maybe`. Name these functions `addMaybe`, `subMaybe`, `mulMaybe`, and `divMaybe`. _Hint_: Use `lift2`.
+ 1. (Medium) Extend the above exercise to work with all `Apply` types (not just `Maybe`). Name these new functions `addApply`, `subApply`, `mulApply`, and `divApply`.
  1. (Difficult) Write a function `combineMaybe` which has type `forall a f. Applicative f => Maybe (f a) -> f (Maybe a)`. This function takes an optional computation with side-effects, and returns a side-effecting computation which has an optional result.
 
 ## Applicative Validation
@@ -580,8 +580,9 @@ Invalid (["Field 'Number' did not match the required format"])
 
  ## Exercises
 
- 1. (Easy) Use a regular expression validator to ensure that the `state` field of the `Address` type contains two alphabetic characters. _Hint_: see the source code for `phoneNumberRegex`.
- 1. (Medium) Using the `matches` validator, write a validation function which checks that a string is not entirely whitespace. Use it to replace `nonEmpty` where appropriate.
+ 1. (Easy) Write a regular expression `stateRegex :: Regex` to check that a string only contains two alphabetic characters. _Hint_: see the source code for `phoneNumberRegex`.
+ 1. (Medium) Write a regular expression `nonEmptyRegex :: Regex` to check that a string is not entirely whitespace. _Hint_: If you need help developing this regex expression, check out [RegExr](https://regexr.com) which has a great cheatsheet and interactive test environment.
+ 1. (Medium) Write a function `validateAddressImproved` that is similar to `validateAddress`, but uses the above `stateRegex` to validate the `state` field and `nonEmptyRegex` to validate the `street` and `city` fields. _Hint_: see the source for `validatePhoneNumber` for an example of how to use `matches`.
 
 ## Traversable Functors
 
@@ -622,8 +623,8 @@ There is one more interesting function here, which we haven't seen yet - `traver
 
 ```haskell
 class (Functor t, Foldable t) <= Traversable t where
-  traverse :: forall a b f. Applicative f => (a -> f b) -> t a -> f (t b)
-  sequence :: forall a f. Applicative f => t (f a) -> f (t a)
+  traverse :: forall a b m. Applicative m => (a -> m b) -> t a -> m (t b)
+  sequence :: forall a m. Applicative m => t (m a) -> m (t a)
 ```
 
 `Traversable` defines the class of _traversable functors_. The types of its functions might look a little intimidating, but `validatePerson` provides a good motivating example.
@@ -633,25 +634,25 @@ Every traversable functor is both a `Functor` and `Foldable` (recall that a _fol
 This may sound complicated, but let's simplify things by specializing to the case of arrays. The array type constructor is traversable, which means that there is a function:
 
 ```haskell
-traverse :: forall a b f. Applicative f => (a -> f b) -> Array a -> f (Array b)
+traverse :: forall a b m. Applicative m => (a -> m b) -> Array a -> m (Array b)
 ```
 
-Intuitively, given any applicative functor `f`, and a function which takes a value of type `a` and returns a value of type `b` (with side-effects tracked by `f`), we can apply the function to each element of an array of type `Array a` to obtain a result of type `Array b` (with side-effects tracked by `f`).
+Intuitively, given any applicative functor `m`, and a function which takes a value of type `a` and returns a value of type `b` (with side-effects tracked by `m`), we can apply the function to each element of an array of type `Array a` to obtain a result of type `Array b` (with side-effects tracked by `m`).
 
-Still not clear? Let's specialize further to the case where `f` is the `V Errors` applicative functor above. Now, we have a function of type
+Still not clear? Let's specialize further to the case where `m` is the `V Errors` applicative functor above. Now, we have a function of type
 
 ```haskell
 traverse :: forall a b. (a -> V Errors b) -> Array a -> V Errors (Array b)
 ```
 
-This type signature says that if we have a validation function `f` for a type `a`, then `traverse f` is a validation function for arrays of type `Array a`. But that's exactly what we need to be able to validate the `phones` field of the `Person` data structure! We pass `validatePhoneNumber` to `traverse` to create a validation function which validates each element successively.
+This type signature says that if we have a validation function `m` for a type `a`, then `traverse m` is a validation function for arrays of type `Array a`. But that's exactly what we need to be able to validate the `phones` field of the `Person` data structure! We pass `validatePhoneNumber` to `traverse` to create a validation function which validates each element successively.
 
 In general, `traverse` walks over the elements of a data structure, performing computations with side-effects and accumulating a result.
 
 The type signature for `Traversable`'s other function `sequence` might look more familiar:
 
 ```haskell
-sequence :: forall a f. Applicative f => t (f a) -> f (t a)
+sequence :: forall a m. Applicative m => t (m a) -> m (t a)
 ```
 
 In fact, the `combineList` function that we wrote earlier is just a special case of the `sequence` function from the `Traversable` type class. Setting `t` to be the type constructor `List`, we recover the type of the `combineList` function:
@@ -665,12 +666,13 @@ Traversable functors capture the idea of traversing a data structure, collecting
 The `Traversable` instance for lists is given in the `Data.List` module. The definition of `traverse` is given here:
 
 ```haskell
--- traverse :: forall a b f. Applicative f => (a -> f b) -> List a -> f (List b)
+instance traversableList :: Traversable List where
+-- traverse :: forall a b m. Applicative m => (a -> m b) -> List a -> m (List b)
 traverse _ Nil = pure Nil
 traverse f (Cons x xs) = Cons <$> f x <*> traverse f xs
 ```
 
-In the case of an empty list, we can simply return an empty list using `pure`. If the list is non-empty, we can use the function `f` to create a computation of type `f b` from the head element. We can also call `traverse` recursively on the tail. Finally, we can lift the `Cons` constructor over the applicative functor `f` to combine the two results.
+In the case of an empty list, we can simply return an empty list using `pure`. If the list is non-empty, we can use the function `f` to create a computation of type `f b` from the head element. We can also call `traverse` recursively on the tail. Finally, we can lift the `Cons` constructor over the applicative functor `m` to combine the two results.
 
 But there are more examples of traversable functors than just arrays and lists. The `Maybe` type constructor we saw earlier also has an instance for `Traversable`. We can try it in PSCi:
 
@@ -694,17 +696,23 @@ These examples show that traversing the `Nothing` value returns `Nothing` with n
 Other traversable functors include `Array`, and `Tuple a` and `Either a` for any type `a`. Generally, most "container" data type constructors have `Traversable` instances. As an example, the exercises will include writing a `Traversable` instance for a type of binary trees.
 
  ## Exercises
-
- 1. (Medium) Write a `Traversable` instance for the following binary tree data structure, which combines side-effects from left-to-right:
+ 1. (Easy) Write `Eq` and `Show` instances for the following binary tree data structure:
 
      ```haskell
      data Tree a = Leaf | Branch (Tree a) a (Tree a)
      ```
 
-     This corresponds to an in-order traversal of the tree. What about a preorder traversal? What about reverse order?
+ 1. (Medium) Write a `Traversable` instance for `Tree a`, which combines side-effects from left-to-right. _Hint_: There are some additional instance dependencies that need to be defined for `Traversable`.
 
- 1. (Medium) Modify the code to make the `address` field of the `Person` type optional using `Data.Maybe`. _Hint_: Use `traverse` to validate a field of type `Maybe a`.
- 1. (Difficult) Try to write `sequence` in terms of `traverse`. Can you write `traverse` in terms of `sequence`?
+ 1. (Medium) Write a function `traversePreOrder :: forall a m b. Applicative m => (a -> m b) -> Tree a -> m (Tree b)` that performs a pre-order traversal of the tree. This means the order of effect execution is root-left-right, instead of left-root-right as was done for the previous in-order traverse exercise. _Hint_: No additional instances need to be defined, and you don't need to call any of the the functions defined earlier. Applicative do notation (`ado`) is the easiest way to write this function.
+
+ 1. (Medium) Write a function `traversePostOrder` that performs a post-order traversal of the tree where effects are executed left-right-root.
+
+ 1. (Medium) Create a new version of the `Person` type where the `homeAddress` field is optional (using `Maybe`). Then write a new version of `validatePerson` (renamed as `validatePersonOptionalAddress`) to validate this new `Person`. _Hint_: Use `traverse` to validate a field of type `Maybe a`.
+
+ 1. (Difficult) Write a function `sequenceUsingTraverse` which behaves like `sequence`, but is written in terms of `traverse`.
+
+ 1. (Difficult) Write a function `traverseUsingSequence` which behaves like `traverse`, but is written in terms of `sequence`.
 
 ## Applicative Functors for Parallelism
 
