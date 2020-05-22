@@ -522,13 +522,13 @@ We can try this function in PSCi:
 > import Data.AddressBook.Validation
 
 > validateAddress $ address "" "" ""
-(Invalid [ "Field 'Street' cannot be empty"
+(invalid [ "Field 'Street' cannot be empty"
          , "Field 'City' cannot be empty"
          , "Field 'State' must have length 2"
          ])
 
 > validateAddress $ address "" "" "CA"
-(Invalid [ "Field 'Street' cannot be empty"
+(invalid [ "Field 'Street' cannot be empty"
          , "Field 'City' cannot be empty"
          ])
 ```
