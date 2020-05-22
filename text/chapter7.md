@@ -572,10 +572,10 @@ Again, try running this validator against some valid and invalid inputs in PSCi:
 
 ```text
 > validatePhoneNumber $ phoneNumber HomePhone "555-555-5555"
-Valid ({ type: HomePhone, number: "555-555-5555" })
+pure ({ type: HomePhone, number: "555-555-5555" })
 
 > validatePhoneNumber $ phoneNumber HomePhone "555.555.5555"
-Invalid (["Field 'Number' did not match the required format"])
+invalid (["Field 'Number' did not match the required format"])
 ```
 
  ## Exercises
