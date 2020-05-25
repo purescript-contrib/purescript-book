@@ -218,6 +218,9 @@ As an example of working with monads abstractly, this section will present a fun
 The function we will write is called `foldM`. It generalizes the `foldl` function that we met earlier to a monadic context. Here is its type signature:
 
 ```haskell
+import Prelude
+import Data.List
+
 foldM :: forall m a b
        . Monad m
       => (a -> b -> m a)
@@ -267,6 +270,8 @@ Note that this implementation is almost identical to that of `foldl` on lists, w
 We can define and test this function in PSCi. Here is an example - suppose we defined a "safe division" function on integers, which tested for division by zero and used the `Maybe` type constructor to indicate failure:
 
 ```haskell
+import Data.Maybe
+
 safeDivide :: Int -> Int -> Maybe Int
 safeDivide _ 0 = Nothing
 safeDivide a b = Just (a / b)
