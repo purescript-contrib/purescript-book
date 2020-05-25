@@ -217,7 +217,7 @@ As an example of working with monads abstractly, this section will present a fun
 
 The function we will write is called `foldM`. It generalizes the `foldl` function that we met earlier to a monadic context. Here is its type signature:
 
-```haskell
+```text
 import Prelude
 import Data.List
 
@@ -249,7 +249,7 @@ To write `foldM`, we can simply break the input list into cases.
 
 If the list is empty, then to produce the result of type `a`, we only have one option: we have to return the second argument:
 
-```haskell
+```text
 foldM _ a Nil = pure a
 ```
 
@@ -259,7 +259,7 @@ What if the list is non-empty? In that case, we have a value of type `a`, a valu
 
 It only remains to recurse on the tail of the list. The implementation is simple:
 
-```haskell
+```text
 foldM f a (b : bs) = do
   a' <- f a b
   foldM f a' bs
@@ -269,7 +269,7 @@ Note that this implementation is almost identical to that of `foldl` on lists, w
 
 We can define and test this function in PSCi. Here is an example - suppose we defined a "safe division" function on integers, which tested for division by zero and used the `Maybe` type constructor to indicate failure:
 
-```haskell
+```text
 import Data.Maybe
 
 safeDivide :: Int -> Int -> Maybe Int
