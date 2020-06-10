@@ -5,7 +5,7 @@ import Data.AddressBook (Address, Person, PhoneNumber, address, person, phoneNum
 import Data.Either (Either(..))
 import Data.String (length)
 import Data.String.Regex (Regex, test)
-import Data.String.VerEx (digit, exactly, find, toRegex)
+import Data.String.VerEx (digit, endOfLine, exactly, find, startOfLine, toRegex)
 import Data.Traversable (traverse)
 import Data.Validation.Semigroup (V, unV, invalid)
 
@@ -31,11 +31,13 @@ lengthIs _ _ _ = pure unit
 phoneNumberRegex :: Regex
 phoneNumberRegex =
   toRegex do
+    startOfLine
     exactly 3 digit
     find "-"
     exactly 3 digit
     find "-"
     exactly 4 digit
+    endOfLine
 
 matches :: String -> Regex -> String -> V Errors Unit
 matches _ regex value
