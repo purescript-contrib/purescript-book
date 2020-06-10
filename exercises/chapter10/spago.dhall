@@ -14,6 +14,7 @@ You can edit this file as you like.
   , "react-basic-hooks"
   , "test-unit"
   , "validation"
+  , "verbal-expressions"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

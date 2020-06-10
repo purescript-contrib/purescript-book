@@ -123,6 +123,19 @@ let upstream =
 
 let overrides = {=}
 
-let additions = {=}
+let additions =
+  { verbal-expressions =
+      { dependencies =
+          [ "free"
+          , "strings"
+          , "transformers"
+          , "tuples"
+          ]
+      , repo =
+          "https://github.com/VerbalExpressions/purescript-verbal-expressions.git"
+      , version =
+          "v4.0.0"
+      }
+  }
 
 in  upstream // overrides // additions
