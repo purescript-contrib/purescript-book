@@ -1,7 +1,8 @@
 module Test.Main where
 
 import Prelude
-import Test.Solutions
+import Test.MySolutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Control.Monad.Writer (runWriter, tell)
 import Data.AddressBook (PhoneType(..), address, phoneNumber)
 import Data.Array ((..))
@@ -14,18 +15,17 @@ import Data.Traversable (traverse)
 import Data.Tuple (snd)
 import Data.Validation.Semigroup (invalid)
 import Effect (Effect)
-import Test.Unit (suite, test)
+import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
 main :: Effect Unit
 main =
   runTest do
-    test "Dummy test" do
-      Assert.equal true true
-
-{-  Move this block comment starting point to enable more tests
-    suite "Exercise Group 1" do
+    runChapterExamples
+    {-  Move this block comment starting point to enable more tests
+Note to reader: Delete this line to expand comment block -}
+    suite "Exercise Group - Applicative and Effects" do
       suite "Exercise - Numeric operators that work with Maybe" do
         suite "addMaybe" do
           test "Just" do
@@ -90,13 +90,13 @@ main =
             Assert.equal ([ Nothing ])
               $ combineMaybe (Nothing :: Maybe (Array Int))
         suite "List Char" do
-          test "Just"
-            $ Assert.equal (Just 'a' : Just 'b' : Just 'c' : Nil)
-            $ combineMaybe (Just $ 'a' : 'b' : 'c' : Nil)
-          test "Nothing"
-            $ Assert.equal (Nothing : Nil)
-            $ combineMaybe (Nothing :: Maybe (List Char))
-    suite "Exercise Group 2" do
+          test "Just" do
+            Assert.equal (Just 'a' : Just 'b' : Just 'c' : Nil)
+              $ combineMaybe (Just $ 'a' : 'b' : 'c' : Nil)
+          test "Nothing" do
+            Assert.equal (Nothing : Nil)
+              $ combineMaybe (Nothing :: Maybe (List Char))
+    suite "Exercise Group - Applicative Validation" do
       suite "Exercise - stateRegex" do
         let
           stateTest str exp =
@@ -138,7 +138,7 @@ main =
           Assert.equal (invalid [ "Field 'State' did not match the required format" ])
             $ validateAddressImproved
             $ address "22 Fake St" "Fake City" "C3"
-    suite "Exercise Group 3" do
+    suite "Exercise Group - Traversable Functors" do
       suite "Exercise - Tree Show and Eq" do
         let
           tree :: Tree Int
@@ -160,10 +160,10 @@ main =
             Assert.equal (Just $ Branch (leaf 1) 2 (leaf 3))
               $ traverse fromNumber
               $ Branch (leaf 1.0) 2.0 (leaf 3.0)
-          test "Nothing"
-            $ Assert.equal Nothing
-            $ traverse fromNumber
-            $ Branch (leaf 1.0) 2.0 (leaf 3.7)
+          test "Nothing" do
+            Assert.equal Nothing
+              $ traverse fromNumber
+              $ Branch (leaf 1.0) 2.0 (leaf 3.7)
         test "Array side-effect - check traversal order" do
           Assert.equal (1 .. 7)
             $ snd
@@ -206,17 +206,23 @@ main =
             $ validatePersonOptionalAddress
             $ examplePerson { homeAddress = (Just $ address "123 Fake St." "" "CA") }
       suite "Exercise - sequenceUsingTraverse" do
-        test "Just"
-          $ Assert.equal (Just [ 1, 2 ])
-          $ sequenceUsingTraverse [ Just 1, Just 2 ]
-        test "Nothing"
-          $ Assert.equal Nothing
-          $ sequenceUsingTraverse [ Just 1, Nothing ]
+        test "Just" do
+          Assert.equal (Just [ 1, 2 ])
+            $ sequenceUsingTraverse [ Just 1, Just 2 ]
+        test "Nothing" do
+          Assert.equal Nothing
+            $ sequenceUsingTraverse [ Just 1, Nothing ]
       suite "Exercise - traverseUsingSequence" do
-        test "Just"
-          $ Assert.equal (Just [ 1, 2 ])
-          $ traverseUsingSequence fromNumber [ 1.0, 2.0 ]
-        test "Nothing"
-          $ Assert.equal Nothing
-          $ traverseUsingSequence fromNumber [ 1.0, 2.7 ]
+        test "Just" do
+          Assert.equal (Just [ 1, 2 ])
+            $ traverseUsingSequence fromNumber [ 1.0, 2.0 ]
+        test "Nothing" do
+          Assert.equal Nothing
+            $ traverseUsingSequence fromNumber [ 1.0, 2.7 ]
+
+{- Note to reader: Delete this line to expand comment block
 -}
+runChapterExamples :: TestSuite
+runChapterExamples =
+  test "Todo for book maintainers - Add tests for chapter examples" do
+    Assert.equal true true
