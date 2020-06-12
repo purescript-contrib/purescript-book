@@ -10,7 +10,7 @@ The motivating example for this chapter is a library of functions for working wi
 
 ## Project Setup
 
-The source code for this chapter is contained in `src/Data/Path.purs` and `test/Solutions.purs`. The `Data.Path` module contains a model of a virtual filesystem. You do not need to modify the contents of this module. Implement your solutions to the exercises in the `Test.Solutions` module. Enable accompanying tests in the `Test.Main` module as you complete each exercise and check your work by running `spago test`.
+The source code for this chapter is contained in `src/Data/Path.purs` and `test/Examples.purs`. The `Data.Path` module contains a model of a virtual filesystem. You do not need to modify the contents of this module. Implement your solutions to the exercises in the `Test.MySolutions` module. Enable accompanying tests in the `Test.Main` module as you complete each exercise and check your work by running `spago test`.
 
 The project has the following dependencies:
 
@@ -76,8 +76,8 @@ This example is obviously a very impractical way to find the length of an array 
 
  ## Exercises
 
- 1. (Easy) Write a recursive function which returns `true` if and only if its input is an even integer.
- 2. (Medium) Write a recursive function which counts the number of even integers in an array. _Hint_: the function `head` (also available in `Data.Array`) can be used to find the first element in a non-empty array.
+ 1. (Easy) Write a recursive function `isEven` which returns `true` if and only if its input is an even integer.
+ 2. (Medium) Write a recursive function `countEven` which counts the number of even integers in an array. _Hint_: the function `head` (also available in `Data.Array`) can be used to find the first element in a non-empty array.
 
 ## Maps
 
@@ -187,11 +187,11 @@ For example, suppose we wanted to compute an array of all numbers between 1 and 
 
  ## Exercises
 
- 1. (Easy) Use the `map` or `<$>` function to write a function which calculates the squares of an array of numbers.
- 1. (Easy) Use the `filter` function to write a function which removes the negative numbers from an array of numbers.
+ 1. (Easy) Write a function `squared` which calculates the squares of an array of numbers. _Hint_: Use the `map` or `<$>` function.
+ 1. (Easy) Write a function `keepNonNegative` which removes the negative numbers from an array of numbers. _Hint_: Use the `filter` function.
  1. (Medium)
     * Define an infix synonym `<$?>` for `filter`.
-    * Rewrite your answer to the previous question to use your new operator.
+    * Write a `keepNonNegativeRewrite` function, which is the same as `keepNonNegative`, but replaces `filter` with the new infix operator `<$?>`.
     * Experiment with the precedence level and associativity of your operator in PSCi. NOTE: no unit tests for this.
 
 ## Flattening Arrays
@@ -325,8 +325,8 @@ In the last line, we use the `pure` function. This function can be evaluated in 
 In the case of arrays, `pure` simply constructs a singleton array. In fact, we could modify our `factors` function to use this form, instead of using `pure`:
 
 ```haskell
-factors :: Int -> Array (Array Int)
-factors n = filter (\xs -> product xs == n) $ do
+factorsV2 :: Int -> Array (Array Int)
+factorsV2 n = filter (\xs -> product xs == n) $ do
   i <- 1 .. n
   j <- i .. n
   [[i, j]]
@@ -341,8 +341,8 @@ One further change we can make to the `factors` function is to move the filter i
 ```haskell
 import Control.MonadZero (guard)
 
-factors :: Int -> Array (Array Int)
-factors n = do
+factorsV3 :: Int -> Array (Array Int)
+factorsV3 n = do
   i <- 1 .. n
   j <- i .. n
   guard $ i * j == n
@@ -382,9 +382,9 @@ This means that if the guard fails, then the current branch of the array compreh
 
  ## Exercises
 
- 1. (Easy) Use the `factors` function to define a function `isPrime` which tests if its integer argument is prime or not.
- 1. (Medium) Write a function which uses do notation to find the _cartesian product_ of two arrays, i.e. the set of all pairs of elements `a`, `b`, where `a` is an element of the first array, and `b` is an element of the second.
- 1. (Medium) A _Pythagorean triple_ is an array of numbers `[a, b, c]` such that `a² + b² = c²`. Use the `guard` function in an array comprehension to write a function `triples` which takes a number `n` and calculates all Pythagorean triples whose components are less than `n`. Your function should have type `Int -> Array (Array Int)`.
+ 1. (Easy) Write a function `isPrime` which tests if its integer argument is prime or not. _Hint_: Use the `factors` function.
+ 1. (Medium) Write a function `cartesianProduct` which uses do notation to find the _cartesian product_ of two arrays, i.e. the set of all pairs of elements `a`, `b`, where `a` is an element of the first array, and `b` is an element of the second.
+ 1. (Medium) Write a function `triples :: Int -> Array (Array Int)` which takes a number `n` and calculates all Pythagorean triples whose components are less than `n`. A _Pythagorean triple_ is an array of numbers `[a, b, c]` such that `a² + b² = c²`. _Hint_: Use the `guard` function in an array comprehension.
  1. (Difficult) Write a function `factorizations` which produces all _factorizations_ of an integer `n`, i.e. arrays of integers whose product is `n`. _Hint_: for an integer greater than 1, break the problem down into two subproblems: finding the first factor, and finding the remaining factors.
 
 ## Folds
@@ -483,12 +483,12 @@ In practice, the PureScript compiler does not replace the recursive call with a 
 Here is an example of a recursive function with all recursive calls in tail position:
 
 ```haskell
-fact :: Int -> Int -> Int
-fact 0 acc = acc
-fact n acc = fact (n - 1) (acc * n)
+factTailRec :: Int -> Int -> Int
+factTailRec 0 acc = acc
+factTailRec n acc = factTailRec (n - 1) (acc * n)
 ```
 
-Notice that the recursive call to `fact` is the last thing that happens in this function - it is in tail position.
+Notice that the recursive call to `factTailRec` is the last thing that happens in this function - it is in tail position.
 
 ## Accumulators
 
@@ -545,9 +545,9 @@ Writing `reverse` in terms of `foldl` will be left as an exercise for the reader
 
  ## Exercises
 
- 1. (Easy) Use `foldl` to test whether an array of boolean values are all true.
- 2. (Medium) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns true.
- 3. (Medium) Rewrite the `fib` function in tail recursive form using an accumulator parameter.
+ 1. (Easy) Write a function `allTrue` which uses `foldl` to test whether an array of boolean values are all true.
+ 2. (Medium - No Test) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns `true`. In other words, complete the sentence: "That function returns `true` when `xs` contains ..."
+ 3. (Medium) Write a function `fibTailRec` which is the same as `fib` but in tail recursive form. _Hint_: Use an accumulator parameter.
  4. (Medium) Write `reverse` in terms of `foldl`.
 
 ## A Virtual Filesystem
@@ -643,7 +643,7 @@ Try out the new version in PSCi - you should get the same result. I'll let you d
  ## Exercises
 
  1. (Easy) Write a function `onlyFiles` which returns all _files_ (not directories) in all subdirectories of a directory.
- 1. (Medium) Write a fold to determine the largest and smallest files in the filesystem.
+ 1. (Medium) Write a function `largestSmallest` which returns an array containing the single largest and single smallest files in the filesystem.
  1. (Difficult) Write a function `whereIs` to search for a file by name. The function should return a value of type `Maybe Path`, indicating the directory containing the file, if it exists. It should behave as follows:
 
      ```text
