@@ -634,7 +634,7 @@ Another reason to define a superclass relationship is in the case where there is
 
  ## Exercises
 
- 1. (Medium) Define a partial function which finds the maximum of a non-empty array of integers. Your function should have type `Partial => Array Int -> Int`. Test out your function in PSCi using `unsafePartial`. _Hint_: Use the `maximum` function from `Data.Foldable`.
+ 1. (Medium) Define a partial function `unsafeMaximum :: Partial => Array Int -> Int` which finds the maximum of a non-empty array of integers. Test out your function in PSCi using `unsafePartial`. _Hint_: Use the `maximum` function from `Data.Foldable`.
  1. (Medium) The `Action` class is a multi-parameter type class which defines an action of one type on another:
 
      ```haskell
@@ -675,7 +675,7 @@ Another reason to define a superclass relationship is in the case where there is
      ```haskell
      newtype Self m = Self m
      ```
- 1. (Difficult) Should the arguments of the multi-parameter type class `Action` be related by some functional dependency? Why or why not?
+ 1. (Difficult) Should the arguments of the multi-parameter type class `Action` be related by some functional dependency? Why or why not? _Note_: There is no test for this exercise.
 
 ## A Type Class for Hashes
 
@@ -769,8 +769,8 @@ The source code for this chapter includes several other examples of `Hashable` i
 
  ## Exercises
 
- 1. (Easy) Use PSCi to test the hash functions for each of the defined instances.
- 1. (Medium) Use the `hashEqual` function to write a function which tests if an array has any duplicate elements, using hash-equality as an approximation to value equality. Remember to check for value equality using `==` if a duplicate pair is found. _Hint_: the `nubByEq` function in `Data.Array` should make this task much simpler.
+ 1. (Easy) Use PSCi to test the hash functions for each of the defined instances. _Note_: There is no automated unit test for this exercise.
+ 1. (Medium) Write a function `arrayHasDuplicates` which tests if an array has any duplicate elements. Use hash-equality from the `hashEqual` function as an approximation to value equality. Remember to check for value equality using `==` if a duplicate pair is found. _Hint_: the `nubByEq` function in `Data.Array` should make this task much simpler.
  1. (Medium) Write a `Hashable` instance for the following newtype which satisfies the type class law:
 
      ```haskell
@@ -781,7 +781,7 @@ The source code for this chapter includes several other examples of `Hashable` i
      ```
 
      The newtype `Hour` and its `Eq` instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.
- 1. (Difficult) Prove the type class laws for the `Hashable` instances for `Maybe`, `Either` and `Tuple`.
+ 1. (Difficult) Prove the type class laws for the `Hashable` instances for `Maybe`, `Either` and `Tuple`. _Note_: There is no test for this exercise.
 
 ## Conclusion
 
