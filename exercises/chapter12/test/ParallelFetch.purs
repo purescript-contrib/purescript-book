@@ -9,9 +9,8 @@ import Test.HTTP (getUrl)
 
 fetchPar :: Effect Unit
 fetchPar =
-  launchAff_
-    $ do
-        let
-          urls = map (\n -> "https://reqres.in/api/users/" <> show n) [ 1, 2 ]
-        res <- parTraverse getUrl urls
-        logShow res
+  launchAff_ do
+    let
+      urls = map (\n -> "https://reqres.in/api/users/" <> show n) [ 1, 2 ]
+    res <- parTraverse getUrl urls
+    logShow res

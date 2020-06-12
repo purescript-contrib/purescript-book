@@ -13,7 +13,7 @@ New PureScript libraries introduced in this chapter are:
 - `affjax` - HTTP requests with AJAX and `Aff`.
 - `parallel` - parallel execution of `Aff`.
 
-The `affjax` library requires the `xhr2` NPM module, which you need to install by running:
+When running outside of the browser (such as in our Node.js environment) the `affjax` library requires the `xhr2` NPM module. Install that by running:
 
 ```shell
 $ npm install
@@ -26,8 +26,9 @@ A convenient way to work with asynchronous code in JavaScript is with [`async` a
 Here is an example of using this technique to copy the contents of one file to another file:
 
 ``` js
+var fs = require('fs');
+
 async function copyFile(file1, file2) {
-  var fs = require('fs');
   let data = await fs.readFile(file1, { encoding: 'utf-8' })
   fs.writeFile(file2, data, { encoding: 'utf-8' })
 }

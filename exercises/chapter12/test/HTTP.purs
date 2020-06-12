@@ -9,7 +9,6 @@ import Effect.Aff (Aff)
 getUrl :: String -> Aff String
 getUrl url = do
   result <- AX.get ResponseFormat.string url
-  pure
-    $ case result of
-        Left err -> "GET /api response failed to decode: " <> AX.printError err
-        Right response -> response.body
+  pure case result of
+    Left err -> "GET /api response failed to decode: " <> AX.printError err
+    Right response -> response.body

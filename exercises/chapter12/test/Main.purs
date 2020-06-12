@@ -22,24 +22,30 @@ import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
+inDir :: FilePath
+inDir = Path.concat [ "test", "data" ]
+
+outDir :: FilePath
+outDir = Path.concat [ "test", "data-out" ]
+
 main :: Effect Unit
 main =
   runTest do
     test "setup" do
       -- Clear test output directory
       files <- readdir outDir
-      for_ files \f -> unlink $ fp [ outDir, f ]
+      for_ files \f -> unlink $ Path.concat [ outDir, f ]
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
 -}
     -- Note to reader: Delete this line to expand comment block
     test "concatenateFiles" do
       let
-        inFoo = fp [ inDir, "foo.txt" ]
+        inFoo = Path.concat [ inDir, "foo.txt" ]
 
-        inBar = fp [ inDir, "bar.txt" ]
+        inBar = Path.concat [ inDir, "bar.txt" ]
 
-        outFooBar = fp [ outDir, "foobar.txt" ]
+        outFooBar = Path.concat [ outDir, "foobar.txt" ]
       concatenateFiles inFoo inBar outFooBar
       -- Check for valid concat
       inFooTxt <- readTextFile UTF8 inFoo
@@ -48,11 +54,11 @@ main =
       Assert.equal (inFooTxt <> inBarTxt) outFooBarTxt
     test "concatenateMany" do
       let
-        inFiles = map (\i -> fp [ inDir, "many", "file" <> show i <> ".txt" ]) $ 1 .. 9
+        inFiles = map (\i -> Path.concat [ inDir, "many", "file" <> show i <> ".txt" ]) $ 1 .. 9
 
-        outFile = fp [ outDir, "manyConcat.txt" ]
+        outFile = Path.concat [ outDir, "manyConcat.txt" ]
 
-        expectedOutFile = fp [ inDir, "manyConcat.txt" ]
+        expectedOutFile = Path.concat [ inDir, "manyConcat.txt" ]
       concatenateMany inFiles outFile
       -- Check for valid concat
       actualOutTxt <- readTextFile UTF8 outFile
@@ -60,16 +66,16 @@ main =
       Assert.equal expectedOutTxt actualOutTxt
     suite "countCharacters" do
       test "exists" do
-        chars <- countCharacters $ fp [ inDir, "foo.txt" ]
+        chars <- countCharacters $ Path.concat [ inDir, "foo.txt" ]
         Assert.equal (Right 41) $ lmap message chars
       test "missing" do
-        chars <- countCharacters $ fp [ inDir, "foof.txt" ]
+        chars <- countCharacters $ Path.concat [ inDir, "foof.txt" ]
         Assert.equal (Left "ENOENT: no such file or directory, open 'test/data/foof.txt'") $ lmap message chars
     test "writeGet" do
       let
-        outFile = fp [ outDir, "user.txt" ]
+        outFile = Path.concat [ outDir, "user.txt" ]
 
-        expectedOutFile = fp [ inDir, "user.txt" ]
+        expectedOutFile = Path.concat [ inDir, "user.txt" ]
       writeGet "https://reqres.in/api/users/1" outFile
       -- Check for valid write
       actualOutTxt <- readTextFile UTF8 outFile
@@ -77,11 +83,11 @@ main =
       Assert.equal expectedOutTxt actualOutTxt
     test "concatenateManyParallel" do
       let
-        inFiles = map (\i -> fp [ inDir, "many", "file" <> show i <> ".txt" ]) $ 1 .. 9
+        inFiles = map (\i -> Path.concat [ inDir, "many", "file" <> show i <> ".txt" ]) $ 1 .. 9
 
-        outFile = fp [ outDir, "manyConcatParallel.txt" ]
+        outFile = Path.concat [ outDir, "manyConcatParallel.txt" ]
 
-        expectedOutFile = fp [ inDir, "manyConcat.txt" ]
+        expectedOutFile = Path.concat [ inDir, "manyConcat.txt" ]
       concatenateManyParallel inFiles outFile
       -- Check for valid concat
       actualOutTxt <- readTextFile UTF8 outFile
@@ -90,7 +96,7 @@ main =
     suite "getWithTimeout" do
       test "valid site" do
         let
-          expectedOutFile = fp [ inDir, "user.txt" ]
+          expectedOutFile = Path.concat [ inDir, "user.txt" ]
         actual <- getWithTimeout 1000.0 "https://reqres.in/api/users/1"
         expected <- Just <$> readTextFile UTF8 expectedOutFile
         Assert.equal expected actual
@@ -99,18 +105,18 @@ main =
         Assert.equal Nothing actual
     suite "recurseFiles" do
       let
-        recurseDir = fp [ inDir, "tree" ]
+        recurseDir = Path.concat [ inDir, "tree" ]
       test "many files" do
-        expectedTxt <- readTextFile UTF8 $ fp [ recurseDir, "expected.txt" ]
+        expectedTxt <- readTextFile UTF8 $ Path.concat [ recurseDir, "expected.txt" ]
         let
           expected = Path.normalize <$> split (Pattern "\n") expectedTxt
-        actual <- recurseFiles $ fp [ recurseDir, "root.txt" ]
+        actual <- recurseFiles $ Path.concat [ recurseDir, "root.txt" ]
         let
           actualRelative = map (\f -> Path.relative recurseDir f) actual
         Assert.equal (Set.fromFoldable expected) $ Set.fromFoldable actualRelative
       test "one file" do
         let
-          file = fp [ recurseDir, "c/unused.txt" ]
+          file = Path.concat [ recurseDir, "c/unused.txt" ]
 
           expected = [ file ]
         actual <- recurseFiles file
@@ -122,9 +128,9 @@ runChapterExamples :: TestSuite
 runChapterExamples = do
   test "copyFile" do
     let
-      inFoo = fp [ inDir, "foo.txt" ]
+      inFoo = Path.concat [ inDir, "foo.txt" ]
 
-      outFoo = fp [ outDir, "foo.txt" ]
+      outFoo = Path.concat [ outDir, "foo.txt" ]
     copyFile inFoo outFoo
     -- Check for valid copy
     inFooTxt <- readTextFile UTF8 inFoo
@@ -132,17 +138,8 @@ runChapterExamples = do
     Assert.equal inFooTxt outFooTxt
   test "getUrl" do
     let
-      expectedOutFile = fp [ inDir, "user.txt" ]
+      expectedOutFile = Path.concat [ inDir, "user.txt" ]
     str <- getUrl "https://reqres.in/api/users/1"
     -- Check for valid read
     expectedOutTxt <- readTextFile UTF8 expectedOutFile
     Assert.equal expectedOutTxt str
-
-fp :: Array FilePath -> FilePath
-fp = Path.concat
-
-inDir :: FilePath
-inDir = fp [ "test", "data" ]
-
-outDir :: FilePath
-outDir = fp [ "test", "data-out" ]

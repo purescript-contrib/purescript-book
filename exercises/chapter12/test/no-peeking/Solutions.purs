@@ -29,10 +29,9 @@ concatenateMany arr out = do
 
 countCharacters :: FilePath -> Aff (Either Error Int)
 countCharacters file =
-  attempt
-    $ do
-        contents <- readTextFile UTF8 file
-        pure $ length contents
+  attempt do
+    contents <- readTextFile UTF8 file
+    pure $ length contents
 
 -- Group: HTTP
 writeGet :: String -> FilePath -> Aff Unit
