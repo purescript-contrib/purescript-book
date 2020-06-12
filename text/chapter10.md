@@ -1004,7 +1004,7 @@ And pick it up on the other side to use in our state hook:
 ```hs
 mkAddressBookApp :: Effect (ReactComponent { initialPerson :: Person })
 mkAddressBookApp =
-  component "AddressBookApp" \props -> R.do
+  reactComponent "AddressBookApp" \props -> R.do
     Tuple person setPerson <- useState props.initialPerson
 ```
 

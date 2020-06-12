@@ -490,7 +490,7 @@ main = do
 try :: forall a. Effect a -> Effect (Either Error a)
 ```
 
-We can also generate our own exceptions. Here is an alternative implementation of `Data.List.head` which throws an exception if the list is empty, rather than returing a `Maybe` value of `Nothing`.
+We can also generate our own exceptions. Here is an alternative implementation of `Data.List.head` which throws an exception if the list is empty, rather than returning a `Maybe` value of `Nothing`.
 
 ```
 exceptionHead :: List Int -> Effect Int
@@ -780,29 +780,30 @@ ctr <- getElementById "container" =<< (map toNonElementParentNode $ document =<<
 It is a matter of personal preference whether the intermediate `w` and `doc` variables aid in readability.
 
 
-Let's dig into our AddressBook `component`. We'll start with a simplified component, and then build up to the actual code in `Main.purs`.
+Let's dig into our AddressBook `reactComponent`. We'll start with a simplified component, and then build up to the actual code in `Main.purs`.
 
 Take a look at this minimal component. Feel free to substitute the full component with this one to see it run:
 ```haskell
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
-  component
+  reactComponent
     "AddressBookApp"
     (\props -> pure $ D.text "Hi! I'm an address book")
 ```
 
-`component` has this intimidating signature:
+`reactComponent` has this intimidating signature:
 ```haskell
-component :: forall hooks props.
+reactComponent ::
+  forall hooks props.
   Lacks "children" props =>
   Lacks "key" props =>
   Lacks "ref" props =>
   String ->
-  (Record props -> Render Unit hooks JSX) ->
-  Effect (ReactComponent (Record props))
+  ({ | props } -> Render Unit hooks JSX) ->
+  Effect (ReactComponent { | props })
 ```
 
-The important points to note are the arguments after all the type class constraints. It takes a `String` (an arbritrary component name), a function that describes how to convert `props` into rendered `JSX`, and returns our `ReactComponent` wrapped in an `Effect`.
+The important points to note are the arguments after all the type class constraints. It takes a `String` (an arbitrary component name), a function that describes how to convert `props` into rendered `JSX`, and returns our `ReactComponent` wrapped in an `Effect`.
 
 The props-to-JSX function is simply:
 ```haskell
@@ -817,7 +818,7 @@ These are the first few lines of our full component:
 ```haskell
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
-  component "AddressBookApp" \props -> R.do
+  reactComponent "AddressBookApp" \props -> R.do
     Tuple person setPerson <- useState examplePerson
 ```
 
@@ -912,19 +913,19 @@ renderValidationErrors :: Errors -> Array R.JSX
 renderValidationErrors [] = []
 renderValidationErrors xs =
   let
-    rendererror :: String -> R.JSX
-    rendererror err = D.li_ [ D.text err ]
+    renderError :: String -> R.JSX
+    renderError err = D.li_ [ D.text err ]
   in
     [ D.div
         { className: "alert alert-danger row"
-        , children: [ D.ul_ (map rendererror xs) ]
+        , children: [ D.ul_ (map renderError xs) ]
         }
     ]
 ```
 
 Note that since we are simply manipulating regular data structures here, we can use functions like `map` to build up more interesting elements:
 ```hs
-children: [ D.ul_ (map rendererror xs)]
+children: [ D.ul_ (map renderError xs)]
 ```
 
 We use the `className` property to define classes for CSS styling. We're using the [Bootstrap](https://getbootstrap.com/) `stylesheet` for this project, which is imported in `index.html`. For example, we want items in our form arranged as `row`s, and validation errors to be emphasized with `alert-danger` styling:
@@ -972,7 +973,7 @@ The `onChange` attribute allows us to describe how to respond to user input. We 
 handler :: forall a. EventFn SyntheticEvent a -> (a -> Effect Unit) -> EventHandler
 ```
 
-For the first argument to `hander` we use we use `targetValue`, which provides the value of the text within the HTML `input` element. It matches the signature expected by `handler` where the type variable `a` in this case is `Maybe String`:
+For the first argument to `handler` we use we use `targetValue`, which provides the value of the text within the HTML `input` element. It matches the signature expected by `handler` where the type variable `a` in this case is `Maybe String`:
 ```hs
 targetValue :: EventFn SyntheticEvent (Maybe String)
 ```

@@ -11,21 +11,20 @@ import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Alert (alert)
-import Effect.Class.Console (logShow)
 import Effect.Console (log)
 import Effect.Exception (throw)
 import Effect.Storage (getItem, setItem)
 import React.Basic.DOM as D
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler, handler_)
-import React.Basic.Hooks (ReactComponent, component, element, useState)
+import React.Basic.Hooks (ReactComponent, element, reactComponent, useState)
 import React.Basic.Hooks as R
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (toNonElementParentNode)
 import Web.HTML.Window (document)
 
--- Note that there's a Purty formmating bug that
+-- Note that there's a Purty formatting bug that
 -- adds an unwanted blank line
 -- https://gitlab.com/joneshf/purty/issues/77
 renderValidationErrors :: Errors -> Array R.JSX
@@ -33,12 +32,12 @@ renderValidationErrors [] = []
 
 renderValidationErrors xs =
   let
-    rendererror :: String -> R.JSX
-    rendererror err = D.li_ [ D.text err ]
+    renderError :: String -> R.JSX
+    renderError err = D.li_ [ D.text err ]
   in
     [ D.div
         { className: "alert alert-danger row"
-        , children: [ D.ul_ (map rendererror xs) ]
+        , children: [ D.ul_ (map renderError xs) ]
         }
     ]
 
@@ -76,7 +75,7 @@ formField name placeholder value setValue =
 
 mkAddressBookApp :: Effect (ReactComponent { initialPerson :: Person })
 mkAddressBookApp =
-  component "AddressBookApp" \props -> R.do
+  reactComponent "AddressBookApp" \props -> R.do
     -- `useState` takes a default initial value and returns the
     -- current value and a way to update the value.
     -- Consult react-hooks docs for a more detailed explanation of `useState`.

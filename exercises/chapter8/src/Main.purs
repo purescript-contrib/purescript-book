@@ -13,14 +13,14 @@ import Effect.Exception (throw)
 import React.Basic.DOM as D
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler)
-import React.Basic.Hooks (ReactComponent, component, element, useState)
+import React.Basic.Hooks (ReactComponent, element, reactComponent, useState)
 import React.Basic.Hooks as R
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (toNonElementParentNode)
 import Web.HTML.Window (document)
 
--- Note that there's a Purty formmating bug that
+-- Note that there's a Purty formatting bug that
 -- adds an unwanted blank line
 -- https://gitlab.com/joneshf/purty/issues/77
 renderValidationErrors :: Errors -> Array R.JSX
@@ -28,12 +28,12 @@ renderValidationErrors [] = []
 
 renderValidationErrors xs =
   let
-    rendererror :: String -> R.JSX
-    rendererror err = D.li_ [ D.text err ]
+    renderError :: String -> R.JSX
+    renderError err = D.li_ [ D.text err ]
   in
     [ D.div
         { className: "alert alert-danger row"
-        , children: [ D.ul_ (map rendererror xs) ]
+        , children: [ D.ul_ (map renderError xs) ]
         }
     ]
 
@@ -71,8 +71,8 @@ formField name placeholder value setValue =
 
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
-  -- incomming \props are unused
-  component "AddressBookApp" \props -> R.do
+  -- incoming \props are unused
+  reactComponent "AddressBookApp" \props -> R.do
     -- `useState` takes a default initial value and returns the
     -- current value and a way to update the value.
     -- Consult react-hooks docs for a more detailed explanation of `useState`.
