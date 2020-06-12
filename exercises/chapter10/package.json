@@ -1,4 +1,11 @@
 {
+  "name": "purescript-book-chapter10",
+  "version": "0.1.0",
+  "description": "The Foreign Function Interface",
+  "main": "",
+  "private": true,
+  "author": "Phil Freeman",
+  "license": "Creative,Commons,Attribution-NonCommercial-ShareAlike,4.0,International,License",
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

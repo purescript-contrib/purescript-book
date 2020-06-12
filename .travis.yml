@@ -1,9 +1,14 @@
 os: linux
-language: shell
+dist: bionic
+language: node_js
+node_js: 12
 install:
+  - npm install -g purescript spago
   - wget https://github.com/rust-lang/mdBook/releases/download/v0.3.7/mdbook-v0.3.7-x86_64-unknown-linux-gnu.tar.gz
   - tar -xzvf mdbook-*.tar.gz
 script:
+  - ./scripts/buildAll.sh
+  - ./scripts/testAll.sh
   - ./mdbook build
   - cp CNAME book/
 before_deploy:
