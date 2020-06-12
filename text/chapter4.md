@@ -191,7 +191,7 @@ For example, suppose we wanted to compute an array of all numbers between 1 and 
  1. (Easy) Write a function `keepNonNegative` which removes the negative numbers from an array of numbers. _Hint_: Use the `filter` function.
  1. (Medium)
     * Define an infix synonym `<$?>` for `filter`.
-    * Write a `keepNonNegativeRewrite` function, which is the same as `keepNonNegative`, but replaces `filter` with the new infix operator `<$?>`.
+    * Write a `keepNonNegativeRewrite` function, which is the same as `keepNonNegative`, but replaces `filter` with your new infix operator `<$?>`.
     * Experiment with the precedence level and associativity of your operator in PSCi. NOTE: no unit tests for this.
 
 ## Flattening Arrays
@@ -546,7 +546,7 @@ Writing `reverse` in terms of `foldl` will be left as an exercise for the reader
  ## Exercises
 
  1. (Easy) Write a function `allTrue` which uses `foldl` to test whether an array of boolean values are all true.
- 2. (Medium - No Test) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns `true`. In other words, complete the sentence: "That function returns `true` when `xs` contains ..."
+ 2. (Medium - No Test) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns `true`. In other words, complete the sentence: "The function returns `true` when `xs` contains ..."
  3. (Medium) Write a function `fibTailRec` which is the same as `fib` but in tail recursive form. _Hint_: Use an accumulator parameter.
  4. (Medium) Write `reverse` in terms of `foldl`.
 
