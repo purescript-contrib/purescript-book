@@ -7,8 +7,12 @@ install:
   - wget https://github.com/rust-lang/mdBook/releases/download/v0.3.7/mdbook-v0.3.7-x86_64-unknown-linux-gnu.tar.gz
   - tar -xzvf mdbook-*.tar.gz
 script:
+  - travis_fold start "build"
   - ./scripts/buildAll.sh
+  - travis_fold end "build"
+  - travis_fold start "test"
   - ./scripts/testAll.sh
+  - travis_fold end "test"
   - ./mdbook build
   - cp CNAME book/
 before_deploy:
