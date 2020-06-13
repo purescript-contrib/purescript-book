@@ -1,7 +1,8 @@
 module Test.Main where
 
 import Prelude
-import Test.Solutions
+import Test.MySolutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Effect (Effect)
 import Euler (answer)
 import Test.Unit (suite, test)
@@ -16,8 +17,8 @@ main = do
         Assert.equal 23 (answer 10)
       test "below 1000" do
         Assert.equal 233168 (answer 1000)
-
-{-  Move this block comment starting point to enable more tests
+    {-  Move this block comment starting point to enable more tests
+Note to reader: Delete this line to expand comment block -}
     suite "diagonal" do
       test "3 4 5" do
         Assert.equal 5.0 (diagonal 3.0 4.0)
@@ -33,4 +34,6 @@ main = do
         Assert.equal 3.948281828459045 (addE "1.23")
       test "4.56" do
         Assert.equal 7.278281828459045 (addE "4.56")
+
+{- Note to reader: Delete this line to expand comment block
 -}
