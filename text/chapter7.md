@@ -537,7 +537,11 @@ This time, we receive an array of all validation errors.
 
 ## Regular Expression Validators
 
-The `validatePhoneNumber` function uses a regular expression to validate the form of its argument. The key is a `matches` validation function, which uses a `Regex` from the `Data.String.Regex` module to validate its input:
+The `validatePhoneNumber` function uses a function uses a _verbal expression_ (similar to _regular expressions_) to validate the form of its argument.
+
+Todo:
+
+The key is a `matches` validation function, which uses a `Regex` from the `Data.String.Regex` module to validate its input:
 
 ```haskell
 matches :: String -> R.Regex -> String -> V Errors Unit

@@ -9,8 +9,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Eq (genericEq)
 import Data.Generic.Rep.Show (genericShow)
 import Data.Maybe (Maybe(..))
-import Data.String.Regex (Regex, regex)
-import Data.String.Regex.Flags (noFlags)
+import Data.String.VerEx (VerEx, anythingBut, endOfLine, exactly, lower, startOfLine, whitespace, withAnyCase)
 import Data.Traversable (class Foldable, class Traversable, foldMap, foldl, foldr, sequence, traverse)
 import Data.Validation.Semigroup (V)
 import Partial.Unsafe (unsafePartial)
@@ -50,24 +49,29 @@ combineMaybe _ = pure Nothing
 
 {-| Exercise Group 2 -}
 -- Exercise 1
-stateRegex :: Regex
-stateRegex =
-  unsafePartial case regex "^[a-zA-Z]{2}$" noFlags of
-    Right r -> r
+stateVerEx :: VerEx
+stateVerEx = do
+  startOfLine
+  withAnyCase
+  exactly 2 lower
+  endOfLine
 
 -- Exercise 2
-nonEmptyRegex :: Regex
-nonEmptyRegex =
-  unsafePartial case regex "[^\\s]$" noFlags of
-    Right r -> r
+nonEmptyVerEx :: VerEx
+nonEmptyVerEx = do
+  --startOfLine
+  --anythingBut whitespace
+  --endOfLine
+  -- Todo - not checking for other whitespace chars yet
+  anythingBut " "
 
 -- Exercise 3
 validateAddressImproved :: Address -> V Errors Address
 validateAddressImproved a =
   address
-    <$> (matches "Street" nonEmptyRegex a.street *> pure a.street)
-    <*> (matches "City" nonEmptyRegex a.city *> pure a.city)
-    <*> (matches "State" stateRegex a.state *> pure a.state)
+    <$> (matches "Street" nonEmptyVerEx a.street *> pure a.street)
+    <*> (matches "City" nonEmptyVerEx a.city *> pure a.city)
+    <*> (matches "State" stateVerEx a.state *> pure a.state)
 
 {-| Exercise Group 3 -}
 -- Exercise 1

@@ -10,7 +10,7 @@ import Data.Either (Either(..))
 import Data.Int (fromNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
-import Data.String.Regex as R
+import Data.String.VerEx as VerEx
 import Data.Traversable (traverse)
 import Data.Tuple (snd)
 import Data.Validation.Semigroup (invalid)
@@ -97,23 +97,27 @@ Note to reader: Delete this line to expand comment block -}
             Assert.equal (Nothing : Nil)
               $ combineMaybe (Nothing :: Maybe (List Char))
     suite "Exercise Group - Applicative Validation" do
-      suite "Exercise - stateRegex" do
+      suite "Exercise - stateVerEx" do
         let
           stateTest str exp =
             test (show str) do
               Assert.equal exp
-                $ R.test stateRegex str
+                $ VerEx.test stateVerEx str
         stateTest "CA" true
         stateTest "Ca" true
+        stateTest "ca" true
+        stateTest "cA" true
         stateTest "C" false
         stateTest "CAA" false
+        stateTest "CA " false
         stateTest "C3" false
-      suite "Exercise - nonEmptyRegex" do
+        stateTest "C@" false
+      suite "Exercise - nonEmptyVerEx" do
         let
           nonEmptyTest str exp =
             test (show str) do
               Assert.equal exp
-                $ R.test nonEmptyRegex str
+                $ VerEx.test nonEmptyVerEx str
         nonEmptyTest "Houston" true
         nonEmptyTest "My Street" true
         nonEmptyTest "Ñóñá" true

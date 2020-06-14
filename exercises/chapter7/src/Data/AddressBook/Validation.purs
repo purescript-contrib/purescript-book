@@ -4,8 +4,7 @@ import Prelude
 import Data.AddressBook (Address, Person, PhoneNumber, address, person, phoneNumber)
 import Data.Either (Either(..))
 import Data.String (length)
-import Data.String.Regex (Regex, test)
-import Data.String.VerEx (digit, endOfLine, exactly, find, startOfLine, toRegex)
+import Data.String.VerEx (VerEx, digit, endOfLine, exactly, find, startOfLine, test)
 import Data.Traversable (traverse)
 import Data.Validation.Semigroup (V, unV, invalid)
 
@@ -28,20 +27,19 @@ lengthIs field len value
 
 lengthIs _ _ _ = pure unit
 
-phoneNumberRegex :: Regex
-phoneNumberRegex =
-  toRegex do
-    startOfLine
-    exactly 3 digit
-    find "-"
-    exactly 3 digit
-    find "-"
-    exactly 4 digit
-    endOfLine
+phoneNumberVerEx :: VerEx
+phoneNumberVerEx = do
+  startOfLine
+  exactly 3 digit
+  find "-"
+  exactly 3 digit
+  find "-"
+  exactly 4 digit
+  endOfLine
 
-matches :: String -> Regex -> String -> V Errors Unit
-matches _ regex value
-  | test regex value = pure unit
+matches :: String -> VerEx -> String -> V Errors Unit
+matches _ verex value
+  | test verex value = pure unit
 
 matches field _ _ = invalid [ "Field '" <> field <> "' did not match the required format" ]
 
@@ -61,12 +59,12 @@ validateAddressAdo a = ado
 validatePhoneNumber :: PhoneNumber -> V Errors PhoneNumber
 validatePhoneNumber pn =
   phoneNumber <$> pure pn."type"
-    <*> (matches "Number" phoneNumberRegex pn.number *> pure pn.number)
+    <*> (matches "Number" phoneNumberVerEx pn.number *> pure pn.number)
 
 validatePhoneNumberAdo :: PhoneNumber -> V Errors PhoneNumber
 validatePhoneNumberAdo pn = ado
   tpe <- pure pn."type"
-  number <- (matches "Number" phoneNumberRegex pn.number *> pure pn.number)
+  number <- (matches "Number" phoneNumberVerEx pn.number *> pure pn.number)
   in phoneNumber tpe number
 
 validatePerson :: Person -> V Errors Person
