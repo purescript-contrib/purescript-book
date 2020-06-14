@@ -4,10 +4,11 @@ import Prelude
 import Data.AddressBook (Address, Person, PhoneNumber, address, person, phoneNumber)
 import Data.Either (Either(..))
 import Data.String (length)
-import Data.String.Regex (Regex, test)
-import Data.String.VerEx (digit, endOfLine, exactly, find, startOfLine, toRegex)
+import Data.String.Regex (Regex, test, regex)
+import Data.String.Regex.Flags (noFlags)
 import Data.Traversable (traverse)
 import Data.Validation.Semigroup (V, unV, invalid)
+import Partial.Unsafe (unsafePartial)
 
 type Errors
   = Array String
@@ -30,14 +31,8 @@ lengthIs _ _ _ = pure unit
 
 phoneNumberRegex :: Regex
 phoneNumberRegex =
-  toRegex do
-    startOfLine
-    exactly 3 digit
-    find "-"
-    exactly 3 digit
-    find "-"
-    exactly 4 digit
-    endOfLine
+  unsafePartial case regex "^\\d{3}-\\d{3}-\\d{4}$" noFlags of
+    Right r -> r
 
 matches :: String -> Regex -> String -> V Errors Unit
 matches _ regex value

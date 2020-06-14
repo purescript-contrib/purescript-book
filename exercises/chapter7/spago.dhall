@@ -10,7 +10,6 @@ You can edit this file as you like.
   , "strings"
   , "test-unit"
   , "validation"
-  , "verbal-expressions"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
