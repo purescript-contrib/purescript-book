@@ -41,8 +41,20 @@ book =
     $ insertEntry ned
         emptyBook
 
+otherJohn :: Entry
+otherJohn =
+  { firstName: "John"
+  , lastName: "Smith"
+  , address:
+      { street: "678 Fake Rd.", city: "Fakeville", state: "NY" }
+  }
+
+
 bookWithDuplicate :: AddressBook
-bookWithDuplicate = insertEntry john book
+bookWithDuplicate = 
+  insertEntry john
+    $ insertEntry otherJohn
+      book
 
 main :: Effect Unit
 main =
