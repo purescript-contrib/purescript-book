@@ -66,7 +66,7 @@ Note to reader: Delete this line to expand comment block -}
           $ isInBook "unknown" "person" book
     test "Exercise - removeDuplicates" do
       Assert.equal book
-        $ removeDuplicates john.firstName john.lastName bookWithDuplicate
+        $ removeDuplicates bookWithDuplicate
 
 {- Note to reader: Delete this line to expand comment block
 -}
