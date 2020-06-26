@@ -19,7 +19,7 @@ isInBook firstName lastName book = not null $ filter filterEntry book
   filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
 
 removeDuplicates :: AddressBook -> AddressBook
-removeDuplicates = nubBy <<< filterEntry
+removeDuplicates book = nubBy filterEntry book
   where
   filterEntry :: Entry -> Entry -> Boolean
   filterEntry e1 e2 = e1.firstName == e2.firstName && e1.lastName == e2.lastName
