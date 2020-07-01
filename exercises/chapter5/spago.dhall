@@ -11,6 +11,7 @@ You can edit this file as you like.
     , "globals"
     , "math"
     , "psci-support"
+    , "test-unit"
     ]
 , packages =
     ./packages.dhall
