@@ -26,6 +26,19 @@ binomial n m
   | n == m = 1
   | otherwise = factorial n / (factorial m * (factorial (n - m)))
 
+{-
+Most general type for sameCity and livesInLA functions taking into account row polymorphism:
+
+sameCity 
+  :: forall r1 s1. { address :: { city :: String | s1 } | r1 } 
+  -> forall r2 s2. { address :: { city :: String | s2 } | r2 }
+  -> Boolean
+
+livesInLA 
+  :: forall r s. { address :: { city :: String | s } | r } 
+  -> Boolean
+-}
+
 sameCity :: Person -> Person -> Boolean
 sameCity { address: { city: c1 } } { address: { city: c2 } }
   | c1 == c2 = true
