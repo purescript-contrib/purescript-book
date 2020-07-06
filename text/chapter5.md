@@ -241,7 +241,7 @@ This way, we save ourselves from allocating a new array if the pair is already s
 ## Exercises
 
 1. (Easy) Write a function `sameCity` which uses record patterns to test whether two `Person` records belong to the same city.
-1. (Medium) What is the most general type of the `sameCity` function, taking into account row polymorphism? What about the `livesInLA` function defined above? Note: There is no test for this exercise. _Note_: There is no test for this exercise.
+1. (Medium) What is the most general type of the `sameCity` function, taking into account row polymorphism? What about the `livesInLA` function defined above? _Note_: There is no test for this exercise.
 1. (Medium) Write a function `fromSingleton` which uses an array literal pattern to extract the sole member of a singleton array. If the array is not a singleton, your function should return a provided default value. Your function should have type `forall a. a -> Array a -> a`
 
 ## Case Expressions
