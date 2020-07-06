@@ -11,12 +11,6 @@ data Point = Point
   , y :: Number
   }
 
-instance pointEq :: Eq Point where
-  eq (Point p1) (Point p2) = p1.x == p2.x && p1.y == p2.y 
-
-instance pointShow :: Show Point where
-  show p = showPoint p
-
 showPoint :: Point -> String
 showPoint (Point { x, y }) =
   "(" <> show x <> ", " <> show y <> ")"
@@ -26,16 +20,6 @@ data Shape
   | Rectangle Point Number Number
   | Line Point Point
   | Text Point String
-
-instance shapeEq :: Eq Shape where
-  eq (Circle c1 r1) (Circle c2 r2) = c1 == c2 && r1 == r2 
-  eq (Rectangle c1 w1 h1) (Rectangle c2 w2 h2) = c1 == c2 && w1 == w2 && h1 == h2
-  eq (Line s1 e1) (Line s2 e2) = s1 == s2 && e1 == e2
-  eq (Text loc1 text1) (Text loc2 text2) = loc1 == loc2 && text1 == text2
-  eq _ _ = false
-
-instance shapeShow :: Show Shape where
-  show shape = showShape shape
 
 showShape :: Shape -> String
 showShape (Circle c r) =
@@ -67,15 +51,6 @@ data Bounds = Bounds
   , bottom :: Number
   , right  :: Number
   }
-
-instance boundsEq :: Eq Bounds where
-  eq (Bounds b1) (Bounds b2) = b1.left == b2.left
-    && b1.top == b2.top
-    && b1.right == b2.right
-    && b1.bottom == b2.bottom
-
-instance boundsShow :: Show Bounds where
-  show b = showBounds b
 
 showBounds :: Bounds -> String
 showBounds (Bounds b) =
@@ -148,3 +123,23 @@ bounds = foldl combine emptyBounds
   where
   combine :: Bounds -> Shape -> Bounds
   combine b shape = union (shapeBounds shape) b
+
+{-
+These `instance`s are to enable testing.
+Feel free to ignore these.
+They'll make more sense in the next chapter.
+-}
+derive instance boundsEq :: Eq Bounds
+
+instance boundsShow :: Show Bounds where
+  show b = showBounds b
+
+derive instance pointEq :: Eq Point
+
+instance pointShow :: Show Point where
+  show p = showPoint p
+
+derive instance shapeEq :: Eq Shape
+
+instance shapeShow :: Show Shape where
+  show shape = showShape shape

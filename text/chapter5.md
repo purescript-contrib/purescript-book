@@ -19,7 +19,7 @@ The project uses some packages which we have already seen, and adds the followin
 - `globals`, which provides access to some common JavaScript values and functions.
 - `math`, which provides access to the JavaScript `Math` module.
 
-The `Data.Picture` module defines a data type `Shape` for simple shapes, and a type `Picture` for collections of shapes, along with functions for working with those types.  
+The `Data.Picture` module defines a data type `Shape` for simple shapes, and a type `Picture` for collections of shapes, along with functions for working with those types.
 
 The module imports the `Data.Foldable` module, which provides functions for folding data structures:
 
@@ -110,10 +110,11 @@ In this case, the third line uses a guard to impose the extra condition that the
 
 As this example demonstrates, guards appear on the left of the equals symbol, separated from the list of patterns by a pipe character (`|`).
 
- ## Exercises
+## Exercises
 
- 1. (Easy) Write the factorial function using pattern matching. _Hint_. Consider the two cases zero and non-zero inputs.
- 1. (Medium) Look up _Pascal's Rule_ for computing binomial coefficients. Use it to write a function which computes binomial coefficients using pattern matching.
+1. (Easy) Write the `factorial` function using pattern matching. _Hint_: Consider the two corner cases of zero and non-zero inputs. _Note_: This is a repeat of an example from the previous chapter, but see if you can rewrite it here on your own.
+1. (Medium) Write a function `binomial` which finds the coefficient of the x^`k`th term in the polynomial expansion of (1 + x)^`n`. This is the same as the number of ways to choose a subset of `k` elements from a set of `n` elements. Use the formula `n! / k! (n - k)!`, where `!` is the factorial function written earlier. _Hint_: Use pattern matching to handle corner cases.
+1. (Medium) Write a function `pascal` which uses [_Pascal`s Rule_](https://en.wikipedia.org/wiki/Pascal%27s_rule) for computing the same binomial coefficients as the previous exercise.
 
 ## Array Patterns
 
@@ -237,11 +238,11 @@ sortPair arr = arr
 
 This way, we save ourselves from allocating a new array if the pair is already sorted.
 
- ## Exercises
+## Exercises
 
- 1. (Easy) Write a function `sameCity` which uses record patterns to test whether two `Person` records belong to the same city.
- 1. (Medium) What is the most general type of the `sameCity` function, taking into account row polymorphism? What about the `livesInLA` function defined above? Note: There is no test for this exercise.
- 1. (Medium) Write a function `fromSingleton` which uses an array literal pattern to extract the sole member of a singleton array. If the array is not a singleton, your function should return a provided default value. Your function should have type `forall a. a -> Array a -> a`
+1. (Easy) Write a function `sameCity` which uses record patterns to test whether two `Person` records belong to the same city.
+1. (Medium) What is the most general type of the `sameCity` function, taking into account row polymorphism? What about the `livesInLA` function defined above? Note: There is no test for this exercise. _Note_: There is no test for this exercise.
+1. (Medium) Write a function `fromSingleton` which uses an array literal pattern to extract the sole member of a singleton array. If the array is not a singleton, your function should return a provided default value. Your function should have type `forall a. a -> Array a -> a`
 
 ## Case Expressions
 
@@ -463,11 +464,11 @@ origin = Point { x, y }
 
 This can be useful for improving readability of code in some circumstances.
 
- ## Exercises
+## Exercises
 
- 1. (Easy) Construct a value of type `Shape` which represents a circle centered at the origin with radius `10.0`.
- 1. (Medium) Write a function from `Shape`s to `Shape`s, which scales its argument by a factor of `2.0`, and centers it at the origin.
- 1. (Medium) Write a function which extracts the text from a `Shape`. It should return `Maybe String`, and use the `Nothing` constructor if the input is not constructed using `Text`.
+1. (Easy) Write a function `circleAtOrigin` which constructs a `Circle` (of type `Shape`) centered at the origin with radius `10.0`.
+1. (Medium) Write a function `doubleScaleAndCenter` which scales the size of a `Shape` by a factor of `2.0` and centers it at the origin.
+1. (Medium) Write a function `shapeText` which extracts the text from a `Shape`. It should return `Maybe String`, and use the `Nothing` constructor if the input is not constructed using `Text`.
 
 ## Newtypes
 
@@ -550,10 +551,10 @@ In the base case, we need to find the smallest bounding rectangle of an empty `P
 
 The accumulating function `combine` is defined in a `where` block. `combine` takes a bounding rectangle computed from `foldl`'s recursive call, and the next `Shape` in the array, and uses the `union` function to compute the union of the two bounding rectangles. The `shapeBounds` function computes the bounds of a single shape using pattern matching.
 
- ## Exercises
+## Exercises
 
- 1. (Medium) Extend the vector graphics library with a new operation `area` which computes the area of a `Shape`. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.
- 1. (Difficult) Extend the `Shape` type with a new data constructor `Clipped`, which clips another `Picture` to a rectangle. Extend the `shapeBounds` function to compute the bounds of a clipped picture. Note that this makes `Shape` into a recursive data type.
+1. (Medium) Extend the vector graphics library with a new operation `area` which computes the area of a `Shape`. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.
+1. (Difficult) Extend the `Shape` type with a new data constructor `Clipped`, which clips another `Picture` to a rectangle. Extend the `shapeBounds` function to compute the bounds of a clipped picture. Note that this makes `Shape` into a recursive data type.
 
 ## Conclusion
 
@@ -561,6 +562,6 @@ In this chapter, we covered pattern matching, a basic but powerful technique fro
 
 This chapter also introduced algebraic data types, which are closely related to pattern matching. We saw how algebraic data types allow concise descriptions of data structures, and provide a modular way to extend data types with new operations.
 
-Finally, we covered _row polymorphism_, a powerful type of abstraction which allows many idiomatic JavaScript functions to be given a type. 
+Finally, we covered _row polymorphism_, a powerful type of abstraction which allows many idiomatic JavaScript functions to be given a type.
 
 In the rest of the book, we will use ADTs and pattern matching extensively, so it will pay dividends to become familiar with them now. Try creating your own algebraic data types and writing functions to consume them using pattern matching.
