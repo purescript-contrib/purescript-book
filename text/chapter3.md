@@ -502,7 +502,7 @@ forall a. List a -> Maybe a
 
 Let's pick apart these two types to understand their meaning.
 
-`filter` is a curried function of two arguments. Its first argument is a function, which takes a list element and returns a `Boolean` value as a result. Its second argument is a list of elements, and the return value is another list.
+`filter` is a curried function of two arguments. Its first argument is a function, which takes an element of the list and returns a `Boolean` value as a result. Its second argument is a list of elements, and the return value is another list.
 
 `head` takes a list as its argument, and returns a type we haven't seen before: `Maybe a`. `Maybe a` represents an optional value of type `a`, and provides a type-safe alternative to using `null` to indicate a missing value in languages like JavaScript. We will see it again in more detail in later chapters.
 
