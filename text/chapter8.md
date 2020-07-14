@@ -360,10 +360,10 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
      lift2 f (pure a) (pure b) = pure (f a b)
      ```
 
-     where the `Applicative` instance uses the `ap` function defined above. Recall that `lift2` was defined as follows:
+     where the `Apply` instance uses the `ap` function defined above. Recall that `lift2` was defined as follows:
 
      ```haskell
-     lift2 :: forall f a b c. Applicative f => (a -> b -> c) -> f a -> f b -> f c
+     lift2 :: forall f a b c. Apply f => (a -> b -> c) -> f a -> f b -> f c
      lift2 f a b = f <$> a <*> b
      ```
 
