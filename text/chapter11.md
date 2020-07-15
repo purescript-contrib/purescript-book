@@ -482,7 +482,7 @@ writerAndExceptT = do
   pure "Return value"
 ```
 
-If we test this function in PSCi, we can see how the two effects of accumulating a log and throwing an error interact. First, we can run the outer `ExceptT` computation of type by using `runExceptT`, leaving a result of type `Writer String (Either String String)`. We can then use `runWriter` to run the inner `Writer` computation:
+If we test this function in PSCi, we can see how the two effects of accumulating a log and throwing an error interact. First, we can run the outer `ExceptT` computation of type by using `runExceptT`, leaving a result of type `Writer (Array String) (Either String String)`. We can then use `runWriter` to run the inner `Writer` computation:
 
 ```text
 > runWriter $ runExceptT writerAndExceptT
