@@ -1,10 +1,10 @@
 module Test.Main where
 
 import Prelude
-import Test.Copy (copyFile)
-import Test.HTTP (getUrl)
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Test.MySolutions
+import Test.NoPeeking.Solutions
+
+import CheckPlatform (currentPlatform)
 import Data.Array ((..))
 import Data.Bifunctor (lmap)
 import Data.Either (Either(..))
@@ -18,6 +18,8 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Aff (readTextFile, readdir, unlink)
 import Node.Path (FilePath)
 import Node.Path as Path
+import Test.Copy (copyFile)
+import Test.HTTP (getUrl)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -67,10 +69,16 @@ main =
     suite "countCharacters" do
       test "exists" do
         chars <- countCharacters $ Path.concat [ inDir, "foo.txt" ]
-        Assert.equal (Right 41) $ lmap message chars
+        let
+          expectedResult = case currentPlatform of
+            "win32" -> Right 42
+            _       -> Right 41
+        Assert.equal expectedResult $ lmap message chars
       test "missing" do
-        chars <- countCharacters $ Path.concat [ inDir, "foof.txt" ]
-        Assert.equal (Left "ENOENT: no such file or directory, open 'test/data/foof.txt'") $ lmap message chars
+        absolutePath <- Path.resolve [ inDir, "foof.txt" ]
+        --chars <- countCharacters $ Path.concat [ inDir, "foof.txt" ]
+        chars <- countCharacters absolutePath
+        Assert.equal (Left "ENOENT: no such file or directory, open '" <> absolutePath <> "'") $ lmap message chars
     test "writeGet" do
       let
         outFile = Path.concat [ outDir, "user.txt" ]
