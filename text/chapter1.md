@@ -144,7 +144,7 @@ If you get stuck at any point, there are a number of resources available online 
 - The [PureScript website](https://www.purescript.org) contains links to several learning resources, including code samples, videos, and other resources for beginners.
 - [Try PureScript!](https://try.purescript.org) is a website that allows users to compile PureScript code in the web browser and contains several simple examples of code.
 
-If you prefer to learn by reading examples, the `purescript`, `purescript-node`, and `purescript-contrib` GitHub organizations contain plenty of examples of PureScript code.
+If you prefer to learn by reading examples, the [purescript](https://github.com/purescript), [purescript-node](https://github.com/purescript-node), and [purescript-contrib](https://github.com/purescript-contrib) GitHub organizations contain plenty of examples of PureScript code.
 
 ## About the Author
 
