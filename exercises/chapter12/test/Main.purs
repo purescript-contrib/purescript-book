@@ -15,7 +15,7 @@ import Data.String (Pattern(..), split)
 import Effect (Effect)
 import Effect.Exception (message)
 import Node.Encoding (Encoding(..))
-import Node.FS.Aff (readTextFile, readdir, unlink)
+import Node.FS.Aff (readTextFile, readdir, realpath, unlink)
 import Node.Path (FilePath)
 import Node.Path as Path
 import Test.Copy (copyFile)
@@ -75,10 +75,9 @@ main =
             _       -> Right 41
         Assert.equal expectedResult $ lmap message chars
       test "missing" do
-        absolutePath <- Path.resolve [ inDir, "foof.txt" ]
-        --chars <- countCharacters $ Path.concat [ inDir, "foof.txt" ]
+        absolutePath <- realpath $ Path.concat [ inDir, "foof.txt" ]
         chars <- countCharacters absolutePath
-        Assert.equal (Left "ENOENT: no such file or directory, open '" <> absolutePath <> "'") $ lmap message chars
+        Assert.equal (Left ("ENOENT: no such file or directory, open '" <> absolutePath <> "'")) $ lmap message chars
     test "writeGet" do
       let
         outFile = Path.concat [ outDir, "user.txt" ]
