@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions
+import Test.NoPeeking.Solutions -- Note to reader: delete this line
 
 import CheckPlatform (currentPlatform)
 import Data.Array ((..))
@@ -29,6 +29,15 @@ inDir = Path.concat [ "test", "data" ]
 
 outDir :: FilePath
 outDir = Path.concat [ "test", "data-out" ]
+
+-- If you're behind an http-only proxy, the call to https://reqres.in won't work.
+-- A work around is to install http-server (npm i -g http-server) and run it
+-- locally in the "test/data" directory (http-server -p 42524).
+reqUrl :: String
+reqUrl =
+  "https://reqres.in/api/users/1"
+  -- If you use the http-server solution, comment the previous line, and uncomment the next one
+  --"http://localhost:42524/user.txt"
 
 main :: Effect Unit
 main =
@@ -75,15 +84,15 @@ main =
             _       -> Right 41
         Assert.equal expectedResult $ lmap message chars
       test "missing" do
-        absolutePath <- realpath $ Path.concat [ inDir, "foof.txt" ]
-        chars <- countCharacters absolutePath
-        Assert.equal (Left ("ENOENT: no such file or directory, open '" <> absolutePath <> "'")) $ lmap message chars
+        absolutePath <- realpath $ Path.concat [ inDir ]
+        chars <- countCharacters $ Path.concat [ absolutePath, "foof.txt" ]
+        Assert.equal (Left ("ENOENT: no such file or directory, open '" <> absolutePath <> "/foof.txt'")) $ lmap message chars
     test "writeGet" do
       let
         outFile = Path.concat [ outDir, "user.txt" ]
 
         expectedOutFile = Path.concat [ inDir, "user.txt" ]
-      writeGet "https://reqres.in/api/users/1" outFile
+      writeGet reqUrl outFile
       -- Check for valid write
       actualOutTxt <- readTextFile UTF8 outFile
       expectedOutTxt <- readTextFile UTF8 expectedOutFile
@@ -104,7 +113,7 @@ main =
       test "valid site" do
         let
           expectedOutFile = Path.concat [ inDir, "user.txt" ]
-        actual <- getWithTimeout 1000.0 "https://reqres.in/api/users/1"
+        actual <- getWithTimeout 1000.0 reqUrl
         expected <- Just <$> readTextFile UTF8 expectedOutFile
         Assert.equal expected actual
       test "no response" do
@@ -146,7 +155,7 @@ runChapterExamples = do
   test "getUrl" do
     let
       expectedOutFile = Path.concat [ inDir, "user.txt" ]
-    str <- getUrl "https://reqres.in/api/users/1"
+    str <- getUrl reqUrl
     -- Check for valid read
     expectedOutTxt <- readTextFile UTF8 expectedOutFile
     Assert.equal expectedOutTxt str
