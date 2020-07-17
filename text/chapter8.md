@@ -6,6 +6,52 @@ In the last chapter, we introduced applicative functors, an abstraction which we
 
 The goal of this chapter is to explain why monads are a useful abstraction, and their connection with _do notation_.
 
+## Expose Only Unit Tests for Exercise You Are Implementing
+
+Per [chapter 2 explanation on how to implement solution](https://github.com/purescript-contrib/purescript-book/blob/master/text/chapter2.md#solution), in your terminal:
+
+1.  `cd <projects>/purescript-book/exercises/chapter8`
+1.  In the `test/Main.purs` file, comment out the `import OfficialSolutions` line.
+1.  Block-comment all tests except the first one.  Your `Main.purs` tests section should look like:
+    ```haskell
+    main :: Effect Unit
+    main =
+      runTest do
+        suite "Verifying unit test environment" do
+          test "Initial test"
+            $ Assert.equal true
+            $ answerTrue
+    {-  Move this block comment starting point to enable more tests
+        suite "Exercises Group 1" do
+          suite "Exercise 1 - function third" do
+            test "No elements"
+              $ Assert.equal Nothing
+              $ third ([] :: Array Int)
+        ... (lots of test steps)
+          test "[5, 0, 2] has a Nothing answer"
+            $ Assert.equal (Nothing)
+            $ foldM safeDivide 100 (5 : 0 : 2 : Nil)
+    -}
+    ```
+1.  When you run `spago test` now, you should see:
+    ```
+    → Suite: Verifying unit test environment
+      ✓ Passed: Initial test
+
+    All 1 tests passed! 🎉
+    [info] Tests succeeded.
+    ```
+    _Note_: You will also see warnings complaining about redundant imports.  It's up to you whether to comment out the imports to suppress the warnings and re-add them as your implementation steps require, or just leave them alone and tolerate the warnings.
+1.  Proceed through this chapter by
+    1.  Before adding your solution to an exercise
+        1. Uncomment the tests for that exercise.
+        1. Run `spago test`.
+        1. Verify that the newly uncommented tests fail because you have not added your solution.
+    1.  Add your solution to `test/MySolutions.purs`.
+    1.  Keep correcting your code until the tests pass.  _Note_: some exercises have no unit tests.
+    1.  Rinse and repeat for each exercise until you have finished the chapter.
+
+
 ## Project Setup
 
 The project adds the following dependencies:
@@ -44,6 +90,8 @@ countThrows n = do
 We can see that this function works in PSCi:
 
 ```text
+> import Test.Examples
+
 > countThrows 10
 [[4,6],[5,5],[6,4]]
 
@@ -275,7 +323,8 @@ safeDivide a b = Just (a / b)
 Then we can use `foldM` to express iterated safe division:
 
 ```text
-> import Data.List
+> import Test.Examples
+> import Data.List (fromFoldable)
 
 > foldM safeDivide 100 (fromFoldable [5, 2, 2])
 (Just 5)
@@ -325,14 +374,16 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
 
  ## Exercises
 
- 1. (Easy) Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `arrays` package. Use do notation with the `Maybe` monad to combine these functions into a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
- 1. (Medium) Write a function `sums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
+ 1. (Easy) Write a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
+
+    You should use do notation with the `Maybe` monad to combine the `head` and `tail` functions from the `Data.Array` module in the `arrays` package.
+ 1. (Medium) Write a function `possibleSums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
 
      ```text
-     > sums []
+     > possibleSums []
      [0]
 
-     > sums [1, 2, 10]
+     > possibleSums [1, 2, 10]
      [0,1,2,3,10,11,12,13]
      ```
 
@@ -435,9 +486,34 @@ If this file is saved as `src/Main.purs`, then it can be compiled and run using 
 $ spago run
 ```
 
-Running this command, you will see a randomly chosen number between `0` and `1` printed to the console.
+> However, this will write over an exercise file by the same name needed in a later exercise so don't do the above.
+> Instead...
 
-This program uses do notation to combine two native effects provided by the JavaScript runtime: random number generation and console IO.
+You can run any PureScript file as follows:
+
+1.  Presume you have written the following file...
+    ```haskell
+    module Random.Main where
+
+    import Prelude
+    import Effect (Effect)
+    import Effect.Random (random)
+    import Effect.Console (logShow)
+
+    main :: Effect Unit
+    main = do
+      n <- random
+      logShow n
+    ```
+    into location `<project>/exercises/chapter8/test/random/Main.purs` *(indeed, this has been done for you)*.
+1.  Observe the only difference between the two files above is the second has a namespace, `Random`, in front of `Main` in the **module declaration**.
+1.  You can run this version using the following command:
+    ```bash
+    spago run --main Random.Main
+    ```
+Running either command above, you will see a randomly chosen number between `0` and `1` printed to the console.
+
+These two programs use `do` notation to combine two native effects provided by the JavaScript runtime: random number generation and console IO.
 
 As mentioned previously, the `Effect` monad is of central importance to PureScript. The reason why it's central is because it is the conventional way to interoperate with PureScript's `Foreign Function Interface`, which provides the mechanism to execute a program and perform side effects. While it's desireable to avoid using the `Foreign Function Interface`, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the `Effect` monad is fairly simple. It has a few helper functions, but aside from that it doesn't do much except encapsulate side effects.
 
@@ -1011,26 +1087,31 @@ Obviously, this user interface can be improved in a number of ways. The exercise
 
 ## Exercises
 
+Modify `src/Main.purs` in the following exercises:
+
 1. (Easy) Modify the application to include a work phone number text box.
-1. (Medium) Instead of using a `ul` element to show the validation errors in a list, modify the code to create one `div` with the `alert` style for each error.
+   _Hint_: a unit test for this exercise verifies you did what was required.
+1. (Medium) Right now the application shows validation errors collected in a single "pink-alert" background.  Modify to give each validation error its own pink-alert background by separating them  with blank lines.
+
+   _Hint_: Instead of using a `ul` element to show the validation errors in a list, modify the code to create one `div` with the `alert` and `alert-danger` styles for each error.
 1. (Difficult, Extended) One problem with this user interface is that the validation errors are not displayed next to the form fields they originated from. Modify the code to fix this problem.
 
-  _Hint_: the error type returned by the validator should be extended to indicate which field caused the error. You might want to use the following modified `Errors` type:
+    _Hint_: the error type returned by the validator should be extended to indicate which field caused the error. You might want to use the following modified `Errors` type:
 
-  ```haskell
-  data Field = FirstNameField
+    ```haskell
+    data Field = FirstNameField
              | LastNameField
              | StreetField
              | CityField
              | StateField
              | PhoneField PhoneType
 
-  data ValidationError = ValidationError String Field
+    data ValidationError = ValidationError String Field
 
-  type Errors = Array ValidationError
-  ```
+    type Errors = Array ValidationError
+    ```
 
-  You will need to write a function which extracts the validation error for a particular `Field` from the `Errors` structure.
+    You will need to write a function which extracts the validation error for a particular `Field` from the `Errors` structure.
 
 ## Conclusion
 
