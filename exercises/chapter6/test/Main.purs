@@ -7,55 +7,57 @@ import Data.Hashable (hash)
 import Data.List (List(..), (:))
 import Effect (Effect)
 import Partial.Unsafe (unsafePartial)
-import Test.Solutions (Complex(..), Extended(..), Hour(..), Multiply(..), NonEmpty(..), OneMore(..), Self(..), act, arrayHasDuplicates, unsafeMaximum)
-import Test.Unit (suite, test)
+import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
 main :: Effect Unit
 main =
   runTest do
-    test "Initial passing test"
-      $ Assert.equal true true
-    -- Tests for the first exercise in this chapter (Show Shape)
-    -- can be found at the end of the previous chapter (chapter 5).
-    suite "Exercise Group 1" do
-      suite "Exercise 1 - Show and Eq for Complex" do
-        test "Show Complex"
-          $ Assert.equal "1.0+2.0i"
-          $ show
-          $ Complex { real: 1.0, imaginary: 2.0 }
-        test "Show Negative Complex"
-          $ Assert.equal "1.0-2.0i"
-          $ show
-          $ Complex { real: 1.0, imaginary: -2.0 }
-        test "Eq Complex"
-          $ Assert.equal (Complex { real: 1.0, imaginary: 2.0 })
-          $ Complex { real: 1.0, imaginary: 2.0 }
-        test "Eq Complex - not equal"
-          $ Assert.expectFailure "should not be equal"
-          $ Assert.equal (Complex { real: 5.0, imaginary: 2.0 })
-          $ Complex { real: 1.0, imaginary: 2.0 }
-    suite "Exercise Group 2" do
-      suite "Exercise 1 - Eq for NonEmpty" do
-        test "NonEmpty equals"
-          $ Assert.equal (NonEmpty 1 [ 2, 3 ])
-          $ NonEmpty 1 [ 2, 3 ]
-        test "NonEmpty not equals"
-          $ Assert.expectFailure "should not be equal"
-          $ Assert.equal (NonEmpty 1 [ 2, 3 ])
-          $ NonEmpty 2 [ 2, 3 ]
-      suite "Exercise 2 - Semigroup for NonEmpty" do
-        test "NonEmpty append"
-          $ Assert.equal (NonEmpty 1 [ 2, 3, 4, 5, 6 ])
-          $ NonEmpty 1 [ 2, 3 ]
-          <> NonEmpty 4 [ 5, 6 ]
-      suite "Exercise 3 - Functor for NonEmpty" do
-        test "NonEmpty append"
-          $ Assert.equal (NonEmpty 10 [ 20, 30 ])
-          $ map (_ * 10)
-          $ NonEmpty 1 [ 2, 3 ]
-      suite "Exercise 4 - Ord for Extended" do
+    runChapterExamples
+    {-  Move this block comment starting point to enable more tests
+Note to reader: Delete this line to expand comment block -}
+    test "Exercise Group - Show Me" do
+      -- Tests for the first exercise in this chapter (Show Shape)
+      -- can be found at the end of the previous chapter (chapter 5).
+      Assert.equal true true
+    suite "Exercise Group - Common Type Classes" do
+      suite "Exercise - Show and Eq for Complex" do
+        test "Show Complex" do
+          Assert.equal "1.0+2.0i"
+            $ show
+            $ Complex { real: 1.0, imaginary: 2.0 }
+        test "Show Negative Complex" do
+          Assert.equal "1.0-2.0i"
+            $ show
+            $ Complex { real: 1.0, imaginary: -2.0 }
+        test "Eq Complex" do
+          Assert.equal (Complex { real: 1.0, imaginary: 2.0 })
+            $ Complex { real: 1.0, imaginary: 2.0 }
+        test "Eq Complex - not equal" do
+          Assert.expectFailure "should not be equal"
+            $ Assert.equal (Complex { real: 5.0, imaginary: 2.0 })
+            $ Complex { real: 1.0, imaginary: 2.0 }
+    suite "Exercise Group - Constraints and Dependencies" do
+      suite "Exercise - Eq for NonEmpty" do
+        test "NonEmpty equals" do
+          Assert.equal (NonEmpty 1 [ 2, 3 ])
+            $ NonEmpty 1 [ 2, 3 ]
+        test "NonEmpty not equals" do
+          Assert.expectFailure "should not be equal"
+            $ Assert.equal (NonEmpty 1 [ 2, 3 ])
+            $ NonEmpty 2 [ 2, 3 ]
+      suite "Exercise - Semigroup for NonEmpty" do
+        test "NonEmpty append" do
+          Assert.equal (NonEmpty 1 [ 2, 3, 4, 5, 6 ])
+            $ NonEmpty 1 [ 2, 3 ]
+            <> NonEmpty 4 [ 5, 6 ]
+      suite "Exercise - Functor for NonEmpty" do
+        test "NonEmpty append" do
+          Assert.equal (NonEmpty 10 [ 20, 30 ])
+            $ map (_ * 10)
+            $ NonEmpty 1 [ 2, 3 ]
+      suite "Exercise - Ord for Extended" do
         -- Type annotation necessary to ensure there is an Ord instance for inner type (Int in this case)
         test "Extended compare inf inf" do
           Assert.equal EQ
@@ -157,30 +159,37 @@ main =
       suite "Exercise - Action Class - actionSelf instance" do
         let
           a = Self m1
-        test "Multiply Self mempty"
-          $ Assert.equal a
-          $ act (mempty :: Multiply) a
-        test "Multiply Self append"
-          $ Assert.equal (act m1 (act m2 a))
-          $ act (m1 <> m2) a
-    suite "Exercise Group 4" do
-      suite "Exercise 2 - Array Duplicates" do
-        test "No dupe"
-          $ Assert.equal false
-          $ arrayHasDuplicates [ 1, 2, 3 ]
-        test "Dupe"
-          $ Assert.equal true
-          $ arrayHasDuplicates [ 1, 1, 3 ]
-        test "Only hash dupe"
-          $ Assert.equal false
-          $ arrayHasDuplicates [ 65536, 1, 2, 3 ]
-      suite "Exercise 3 - Hash Hour" do
-        test "Match"
-          $ Assert.equal (hash $ Hour 1)
-          $ hash
-          $ Hour 13
-        test "Mismatch"
-          $ Assert.expectFailure "should not be equal"
-          $ Assert.equal (hash $ Hour 1)
-          $ hash
-          $ Hour 14
+        test "Multiply Self mempty" do
+          Assert.equal a
+            $ act (mempty :: Multiply) a
+        test "Multiply Self append" do
+          Assert.equal (act m1 (act m2 a))
+            $ act (m1 <> m2) a
+    suite "Exercise Group - Hashes" do
+      suite "Exercise - arrayHasDuplicates" do
+        test "No dupe" do
+          Assert.equal false
+            $ arrayHasDuplicates [ 1, 2, 3 ]
+        test "Dupe" do
+          Assert.equal true
+            $ arrayHasDuplicates [ 1, 1, 3 ]
+        test "Only hash dupe" do
+          Assert.equal false
+            $ arrayHasDuplicates [ 65536, 1, 2, 3 ]
+      suite "Exercise - hashHour instance" do
+        test "Match" do
+          Assert.equal (hash $ Hour 1)
+            $ hash
+            $ Hour 13
+        test "Mismatch" do
+          Assert.expectFailure "should not be equal"
+            $ Assert.equal (hash $ Hour 1)
+            $ hash
+            $ Hour 14
+
+{- Note to reader: Delete this line to expand comment block
+-}
+runChapterExamples :: TestSuite
+runChapterExamples =
+  test "Todo for book maintainers - Add tests for chapter examples" do
+    Assert.equal true true
