@@ -52,9 +52,9 @@ We'll start by enabling the tests for this exercise. Move the start of the block
 ```hs
     suite "diagonal" do
       test "3 4 5" do
-        Assert.equal 5 (diagonal 3 4)
+        Assert.equal 5.0 (diagonal 3.0 4.0)
       test "5 12 13" do
-        Assert.equal 13 (diagonal 5 12)
+        Assert.equal 13.0 (diagonal 5.0 12.0)
 {-  Move this block comment starting point to enable more tests
 ```
 
