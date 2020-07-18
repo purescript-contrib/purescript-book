@@ -6,58 +6,11 @@ In the last chapter, we introduced applicative functors, an abstraction which we
 
 The goal of this chapter is to explain why monads are a useful abstraction, and their connection with _do notation_.
 
-## Expose Only Unit Tests for Exercise You Are Implementing
-
-Per [chapter 2 explanation on how to implement solution](https://github.com/purescript-contrib/purescript-book/blob/master/text/chapter2.md#solution), in your terminal:
-
-1.  `cd <projects>/purescript-book/exercises/chapter8`
-1.  In the `test/Main.purs` file, comment out the `import OfficialSolutions` line.
-1.  Block-comment all tests except the first one.  Your `Main.purs` tests section should look like:
-    ```haskell
-    main :: Effect Unit
-    main =
-      runTest do
-        suite "Verifying unit test environment" do
-          test "Initial test"
-            $ Assert.equal true
-            $ answerTrue
-    {-  Move this block comment starting point to enable more tests
-        suite "Exercises Group 1" do
-          suite "Exercise 1 - function third" do
-            test "No elements"
-              $ Assert.equal Nothing
-              $ third ([] :: Array Int)
-        ... (lots of test steps)
-          test "[5, 0, 2] has a Nothing answer"
-            $ Assert.equal (Nothing)
-            $ foldM safeDivide 100 (5 : 0 : 2 : Nil)
-    -}
-    ```
-1.  When you run `spago test` now, you should see:
-    ```
-    → Suite: Verifying unit test environment
-      ✓ Passed: Initial test
-
-    All 1 tests passed! 🎉
-    [info] Tests succeeded.
-    ```
-    _Note_: You will also see warnings complaining about redundant imports.  It's up to you whether to comment out the imports to suppress the warnings and re-add them as your implementation steps require, or just leave them alone and tolerate the warnings.
-1.  Proceed through this chapter by
-    1.  Before adding your solution to an exercise
-        1. Uncomment the tests for that exercise.
-        1. Run `spago test`.
-        1. Verify that the newly uncommented tests fail because you have not added your solution.
-    1.  Add your solution to `test/MySolutions.purs`.
-    1.  Keep correcting your code until the tests pass.  _Note_: some exercises have no unit tests.
-    1.  Rinse and repeat for each exercise until you have finished the chapter.
-
-
 ## Project Setup
 
 The project adds the following dependencies:
 
 - `effect` - defines the `Effect` monad, the subject of the second half of the chapter. This dependency is often listed in every starter project (it's been a dependency of every chapter so far), so you'll rarely have to explicitly install it.
-- `random` - a monadic random number generator.
 - `react-basic-hooks` - a web framework that we will use for our Address Book app.
 
 ## Monads and Do Notation
@@ -72,7 +25,7 @@ Consider the following example. Suppose we throw two dice and want to count the 
 
 Array comprehensions allow us to write this non-deterministic algorithm in a natural way:
 
-```haskell
+```hs
 import Prelude
 
 import Control.Plus (empty)
@@ -105,7 +58,7 @@ In general, a _monad_ for some type constructor `m` provides a way to use do not
 
 Here is another example of do notation, this type applied to the type constructor `Maybe`. Suppose we have some type `XML` representing XML nodes, and a function
 
-```haskell
+```hs
 child :: XML -> String -> Maybe XML
 ```
 
@@ -113,7 +66,7 @@ which looks for a child element of a node, and returns `Nothing` if no such elem
 
 In this case, we can look for a deeply-nested element by using do notation. Suppose we wanted to read a user's city from a user profile which had been encoded as an XML document:
 
-```haskell
+```hs
 userCity :: XML -> Maybe XML
 userCity root = do
   prof <- child root "profile"
@@ -130,7 +83,7 @@ Remember, the `pure` function in the last line is defined for every `Applicative
 
 The `Monad` type class is defined as follows:
 
-```haskell
+```hs
 class Apply m <= Bind m where
   bind :: forall a b. m a -> (a -> m b) -> m b
 
@@ -143,7 +96,7 @@ The `Monad` type class extends `Bind` with the operations of the `Applicative` t
 
 It will be useful to see some examples of the `Bind` type class. A sensible definition for `Bind` on arrays can be given as follows:
 
-```haskell
+```hs
 instance bindArray :: Bind Array where
   bind xs f = concatMap f xs
 ```
@@ -152,7 +105,7 @@ This explains the connection between array comprehensions and the `concatMap` fu
 
 Here is an implementation of `Bind` for the `Maybe` type constructor:
 
-```haskell
+```hs
 instance bindMaybe :: Bind Maybe where
   bind Nothing  _ = Nothing
   bind (Just a) f = f a
@@ -162,20 +115,20 @@ This definition confirms the intuition that missing values are propagated throug
 
 Let's see how the `Bind` type class is related to do notation. Consider a simple do notation block which starts by binding a value from the result of some computation:
 
-```haskell
+```hs
 do value <- someComputation
    whatToDoNext
 ```
 
 Every time the PureScript compiler sees this pattern, it replaces the code with this:
 
-```haskell
+```hs
 bind someComputation \value -> whatToDoNext
 ```
 
 or, written infix:
 
-```haskell
+```hs
 someComputation >>= \value -> whatToDoNext
 ```
 
@@ -183,7 +136,7 @@ The computation `whatToDoNext` is allowed to depend on `value`.
 
 If there are multiple binds involved, this rule is applied multiple times, starting from the top. For example, the `userCity` example that we saw earlier gets desugared as follows:
 
-```haskell
+```hs
 userCity :: XML -> Maybe XML
 userCity root =
   child root "profile" >>= \prof ->
@@ -204,7 +157,7 @@ It is simplest to explain these laws using do notation.
 
 The _right-identity_ law is the simplest of the three laws. It tells us that we can eliminate a call to `pure` if it is the last expression in a do notation block:
 
-```haskell
+```hs
 do
   x <- expr
   pure x
@@ -214,7 +167,7 @@ The right-identity law says that this is equivalent to just `expr`.
 
 The _left-identity_ law states that we can eliminate a call to `pure` if it is the first expression in a do notation block:
 
-```haskell
+```hs
 do
   x <- pure y
   next
@@ -224,7 +177,7 @@ This code is equivalent to `next`, after the name `x` has been replaced with the
 
 The last law is the _associativity law_. It tells us how to deal with nested do notation blocks. It states that the following piece of code:
 
-```haskell
+```hs
 c1 = do
   y <- do
     x <- m1
@@ -234,7 +187,7 @@ c1 = do
 
 is equivalent to this code:
 
-```haskell
+```hs
 c2 = do
   x <- m1
   y <- m2
@@ -251,7 +204,7 @@ The associativity law tells us that it is safe to simplify nested do notation bl
 
 _Note_ that by the definition of how do notation gets desugared into calls to `bind`, both of `c1` and `c2` are also equivalent to this code:
 
-```haskell
+```hs
 c3 = do
   x <- m1
   do
@@ -265,7 +218,7 @@ As an example of working with monads abstractly, this section will present a fun
 
 The function we will write is called `foldM`. It generalizes the `foldl` function that we met earlier to a monadic context. Here is its type signature:
 
-```haskell
+```hs
 foldM :: forall m a b
        . Monad m
       => (a -> b -> m a)
@@ -276,7 +229,7 @@ foldM :: forall m a b
 
 Notice that this is the same as the type of `foldl`, except for the appearance of the monad `m`:
 
-```haskell
+```hs
 foldl :: forall a b
        . (a -> b -> a)
       -> a
@@ -294,7 +247,7 @@ To write `foldM`, we can simply break the input list into cases.
 
 If the list is empty, then to produce the result of type `a`, we only have one option: we have to return the second argument:
 
-```haskell
+```hs
 foldM _ a Nil = pure a
 ```
 
@@ -304,7 +257,7 @@ What if the list is non-empty? In that case, we have a value of type `a`, a valu
 
 It only remains to recurse on the tail of the list. The implementation is simple:
 
-```haskell
+```hs
 foldM f a (b : bs) = do
   a' <- f a b
   foldM f a' bs
@@ -314,7 +267,7 @@ Note that this implementation is almost identical to that of `foldl` on lists, w
 
 We can define and test this function in PSCi. Here is an example - suppose we defined a "safe division" function on integers, which tested for division by zero and used the `Maybe` type constructor to indicate failure:
 
-```haskell
+```hs
 safeDivide :: Int -> Int -> Maybe Int
 safeDivide _ 0 = Nothing
 safeDivide a b = Just (a / b)
@@ -341,7 +294,7 @@ Every instance of the `Monad` type class is also an instance of the `Apply` type
 
 However, there is also an implementation of the `Apply` type class which comes "for free" for any instance of `Monad`, given by the `ap` function:
 
-```haskell
+```hs
 ap :: forall m a b. Monad m => m (a -> b) -> m a -> m b
 ap mf ma = do
   f <- mf
@@ -357,7 +310,7 @@ If every monad is also an applicative functor, then we should be able to apply o
 
 But monads allow us to do more than we could do with just applicative functors, and the key difference is highlighted by the syntax of do notation. Consider the `userCity` example again, in which we looked for a user's city in an XML document which encoded their user profile:
 
-```haskell
+```hs
 userCity :: XML -> Maybe XML
 userCity root = do
   prof <- child root "profile"
@@ -374,9 +327,7 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
 
  ## Exercises
 
- 1. (Easy) Write a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
-
-    You should use do notation with the `Maybe` monad to combine the `head` and `tail` functions from the `Data.Array` module in the `arrays` package.
+ 1. (Easy) Write a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type. _Hint:_ Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `arrays` package. Use do notation with the `Maybe` monad to combine these functions.
  1. (Medium) Write a function `possibleSums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
 
      ```text
@@ -388,18 +339,16 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
      ```
 
      _Hint_: This function can be written as a one-liner using `foldM`. You might want to use the `nub` and `sort` functions to remove duplicates and sort the result respectively.
- 1. (Medium) Confirm that the `ap` function and the `apply` operator agree for the `Maybe` monad.
- 1. (Medium) Verify that the monad laws hold for the `Monad` instance for the `Maybe` type, as defined in the `maybe` package.
+ 1. (Medium) Confirm that the `ap` function and the `apply` operator agree for the `Maybe` monad. _Note:_ There are no tests for this exercise.
+ 1. (Medium) Verify that the monad laws hold for the `Monad` instance for the `Maybe` type, as defined in the `maybe` package. _Note:_ There are no tests for this exercise.
  1. (Medium) Write a function `filterM` which generalizes the `filter` function on lists. Your function should have the following type signature:
 
-     ```haskell
+     ```hs
      filterM :: forall m a. Monad m => (a -> m Boolean) -> List a -> m (List a)
      ```
-
-     Test your function in PSCi using the `Maybe` and `Array` monads.
  1. (Difficult) Every monad has a default `Functor` instance given by:
 
-     ```haskell
+     ```hs
      map f a = do
        x <- a
        pure (f x)
@@ -407,16 +356,17 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
 
      Use the monad laws to prove that for any monad, the following holds:
 
-     ```haskell
+     ```hs
      lift2 f (pure a) (pure b) = pure (f a b)
      ```
 
      where the `Apply` instance uses the `ap` function defined above. Recall that `lift2` was defined as follows:
 
-     ```haskell
+     ```hs
      lift2 :: forall f a b c. Apply f => (a -> b -> c) -> f a -> f b -> f c
      lift2 f a b = f <$> a <*> b
      ```
+    _Note:_ There are no tests for this exercise.
 
 ## Native Effects
 
@@ -460,15 +410,29 @@ The Spago build tool (and other tools) provide a shortcut, by generating additio
 
 ## The Effect Monad
 
-The goal of the `Effect` monad is to provide a well-typed API for computations with side-effects, while at the same time generating efficient JavaScript.
+The `Effect` monad provides a well-typed API for computations with side-effects, while at the same time generating efficient JavaScript.
 
-Here is an example. It uses the `random` package, which defines functions for generating random numbers:
+Let's take a closer look at the return type of the familiar `log` function. `Effect` indicates that this function produces a native effect, console IO in this case.
+`Unit` indicates that no _meaningful_ data is returned. You can think of `Unit` as being analogous to the `void` keyword in other languages, such as C, Java, etc.
+```hs
+log :: String -> Effect Unit
+```
 
-```haskell
-module Main where
+> _Aside:_ You may encounter IDE suggestions for the more general (and more elaborately typed) `log` function from `Effect.Class.Console`. This is interchangeable with the one from `Effect.Console` when dealing with the basic `Effect` monad. Reasons for the more general version will become clearer after reading about "Monad Transformers" in the "Monadic Adventures" chapter. For the curious (and impatient), this works because there's a `MonadEffect` instance for `Effect`.
+>```hs
+>log :: forall m. MonadEffect m => String -> m Unit
+>```
+
+Now let's now consider an `Effect` that returns meaningful data. The `random` function from `Effect.Random` produces a random `Number`.
+```hs
+random :: Effect Number
+```
+
+Here's a full example program (found in `test/Random.purs` of this chapter's exercises folder).
+```hs
+module Test.Random where
 
 import Prelude
-
 import Effect (Effect)
 import Effect.Random (random)
 import Effect.Console (logShow)
@@ -477,43 +441,22 @@ main :: Effect Unit
 main = do
   n <- random
   logShow n
-
+```
+Because `Effect` is a monad, we use do notation to _unwrap_ the data it contains before passing this data on to the effectful `logShow` function. As a refresher, here's the equivalent code written using the `bind` operator:
+```hs
+main :: Effect Unit
+main = random >>= logShow
 ```
 
-If this file is saved as `src/Main.purs`, then it can be compiled and run using Spago:
-
-```text
-$ spago run
+Try running this yourself with:
 ```
+spago run --main Test.Random
+```
+You should see a randomly chosen number between `0.0` and `1.0` printed to the console.
 
-> However, this will write over an exercise file by the same name needed in a later exercise so don't do the above.
-> Instead...
+> _Aside:_ `spago run` defaults to searching in the `Main` module for a `main` function. You may also specify an alternate module as an entry point with the `--main` flag, as is done in the above example. Just be sure that this alternate module also contains a `main` function.
 
-You can run any PureScript file as follows:
-
-1.  Presume you have written the following file...
-    ```haskell
-    module Random.Main where
-
-    import Prelude
-    import Effect (Effect)
-    import Effect.Random (random)
-    import Effect.Console (logShow)
-
-    main :: Effect Unit
-    main = do
-      n <- random
-      logShow n
-    ```
-    into location `<project>/exercises/chapter8/test/random/Main.purs` *(indeed, this has been done for you)*.
-1.  Observe the only difference between the two files above is the second has a namespace, `Random`, in front of `Main` in the **module declaration**.
-1.  You can run this version using the following command:
-    ```bash
-    spago run --main Random.Main
-    ```
-Running either command above, you will see a randomly chosen number between `0` and `1` printed to the console.
-
-These two programs use `do` notation to combine two native effects provided by the JavaScript runtime: random number generation and console IO.
+Note that it's also possible to generate "random" (technically pseudorandom) data without resorting to impure effectful code. We'll cover these techniques in the "Generative Testing" chapter.
 
 As mentioned previously, the `Effect` monad is of central importance to PureScript. The reason why it's central is because it is the conventional way to interoperate with PureScript's `Foreign Function Interface`, which provides the mechanism to execute a program and perform side effects. While it's desireable to avoid using the `Foreign Function Interface`, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the `Effect` monad is fairly simple. It has a few helper functions, but aside from that it doesn't do much except encapsulate side effects.
 
@@ -521,13 +464,13 @@ As mentioned previously, the `Effect` monad is of central importance to PureScri
 
 Let's examine a function from the `node-fs` package that involves two _native_ side effects: reading mutable state, and exceptions:
 
-```haskell
+```hs
 readTextFile :: Encoding → String → Effect String
 ```
 
 If we attempt to read a file that does not exist:
 
-```haskell
+```hs
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync (readTextFile)
 
@@ -551,7 +494,7 @@ Error: ENOENT: no such file or directory, open 'iDoNotExist.md'
 
 To manage this exception gracefully, we can wrap the potentially problematic code in `try` to handle either outcome:
 
-```haskell
+```hs
 main :: Effect Unit
 main = do
   result <- try $ readTextFile UTF8 "iDoNotExist.md"
@@ -562,20 +505,20 @@ main = do
 
 `try` runs an `Effect` and returns eventual exceptions as a `Left` value. If the computation succeeds, the result gets wrapped in a `Right`:
 
-```haskell
+```hs
 try :: forall a. Effect a -> Effect (Either Error a)
 ```
 
 We can also generate our own exceptions. Here is an alternative implementation of `Data.List.head` which throws an exception if the list is empty, rather than returning a `Maybe` value of `Nothing`.
 
-```
+```hs
 exceptionHead :: List Int -> Effect Int
 exceptionHead l = case l of
   x : _ -> pure x
   Nil -> throwException $ error "empty list"
 ```
 
-That was a somewhat impractical example, as it is usually better to avoid generating exceptions in PureScript code instead and use non-native effects such as `Either` and `Maybe` to manage errors and missing values.
+Note that the `exceptionHead` function is a somewhat impractical example, as it is best to avoid generating exceptions in PureScript code and instead use non-native effects such as `Either` and `Maybe` to manage errors and missing values.
 
 ## Mutable State
 
@@ -585,7 +528,7 @@ The `ST` effect is used to manipulate mutable state. As pure functional programm
 
 The `ST` effect is defined in the `Control.Monad.ST` module. To see how it works, we need to look at the types of its actions:
 
-```haskell
+```hs
 new :: forall a r. a -> ST r (STRef r a)
 
 read :: forall a r. STRef r a -> ST r a
@@ -601,7 +544,7 @@ Here is an example. Suppose we want to simulate the movement of a particle falli
 
 We can do this by creating a mutable reference cell to hold the position and velocity of the particle, and then using a `for` loop to update the value stored in that cell:
 
-```haskell
+```hs
 import Prelude
 
 import Control.Monad.ST.Ref (modify, new, read)
@@ -628,7 +571,7 @@ Note that even though this function uses mutable state, it is still a pure funct
 
 To run a computation with the `ST` effect, we have to use the `run` function:
 
-```haskell
+```hs
 run :: forall a. (forall r. ST r a) -> a
 ```
 
@@ -636,7 +579,7 @@ The thing to notice here is that the region type `r` is quantified _inside the p
 
 However, once a reference cell has been created by `new`, its region type is already fixed, so it would be a type error to try to use the reference cell outside the code delimited by `run`.  This is what allows `run` to safely remove the `ST` effect, and turn `simulate` into a pure function!
 
-```haskell
+```hs
 simulate' :: Number -> Number -> Int -> Number
 simulate' x0 v0 time = run (simulate x0 v0 time)
 ```
@@ -664,7 +607,7 @@ You can even try running this function in PSCi:
 
 In fact, if we inline the definition of `simulate` at the call to `run`, as follows:
 
-```haskell
+```hs
 simulate :: Number -> Number -> Int -> Number
 simulate x0 v0 time =
   run do
@@ -741,7 +684,7 @@ The `ST` effect is a good way to generate short JavaScript when working with loc
 
 ## Exercises
 
-1. (Medium) Rewrite the `safeDivide` function to throw an exception using `throwException` if the denominator is zero.
+1. (Medium) Rewrite the `safeDivide` function as `exceptionDivide` and throw an exception using `throwException` if the denominator is zero. _Note:_ There is no unit test for this exercise because it's tricky to check for an expected exception within our unit test framework. Feel free to work on adding this test.
 1. (Skip) There is no exercise for `ST` yet. Feel free to propose one. See [this issue](https://github.com/purescript-contrib/purescript-book/issues/120) for more details.
 
 ## DOM Effects
@@ -813,7 +756,7 @@ It calls our generated JavaScript equivalent of the `main` function of `module M
 
 The `main` function uses the DOM and HTML APIs to render our address book component within the `container` element we defined in `index.html`:
 
-```haskell
+```hs
 main :: Effect Unit
 main = do
   log "Rendering address book component"
@@ -836,20 +779,20 @@ main = do
 ```
 
 Note that these three lines:
-```haskell
+```hs
 w <- window
 doc <- document w
 ctr <- getElementById "container" $ toNonElementParentNode doc
 ```
 
 Can be consolidated to:
-```haskell
+```hs
 doc <- document =<< window
 ctr <- getElementById "container" $ toNonElementParentNode doc
 ```
 
 Or consolidated even further to:
-```haskell
+```hs
 ctr <- getElementById "container" =<< (map toNonElementParentNode $ document =<< window)
 ```
 
@@ -859,7 +802,7 @@ It is a matter of personal preference whether the intermediate `w` and `doc` var
 Let's dig into our AddressBook `reactComponent`. We'll start with a simplified component, and then build up to the actual code in `Main.purs`.
 
 Take a look at this minimal component. Feel free to substitute the full component with this one to see it run:
-```haskell
+```hs
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
   reactComponent
@@ -868,7 +811,7 @@ mkAddressBookApp =
 ```
 
 `reactComponent` has this intimidating signature:
-```haskell
+```hs
 reactComponent ::
   forall hooks props.
   Lacks "children" props =>
@@ -882,7 +825,7 @@ reactComponent ::
 The important points to note are the arguments after all the type class constraints. It takes a `String` (an arbitrary component name), a function that describes how to convert `props` into rendered `JSX`, and returns our `ReactComponent` wrapped in an `Effect`.
 
 The props-to-JSX function is simply:
-```haskell
+```hs
 \props -> pure $ D.text "Hi! I'm an address book"
 ```
 
@@ -891,7 +834,7 @@ The props-to-JSX function is simply:
 Next we'll examine some of the additional complexities of the full Address Book component.
 
 These are the first few lines of our full component:
-```haskell
+```hs
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
   reactComponent "AddressBookApp" \props -> R.do
@@ -899,7 +842,7 @@ mkAddressBookApp = do
 ```
 
 We track `person` as a piece of state with the `useState` hook.
-```haskell
+```hs
 Tuple person setPerson <- useState examplePerson
 ```
 
@@ -984,7 +927,7 @@ Here we produce `JSX` which represents the intended state of the DOM. This JSX i
 
 To display validation errors (if any) at the top of our form, we create a `renderValidationErrors` helper function that turns the `Errors` structure into an array of JSX. This array is prepended to the rest of our form.
 
-```haskell
+```hs
 renderValidationErrors :: Errors -> Array R.JSX
 renderValidationErrors [] = []
 renderValidationErrors xs =
@@ -1045,7 +988,7 @@ formField name placeholder value setValue =
 Putting the `input` and display `text` in a `label` aids in accessibility for screen readers.
 
 The `onChange` attribute allows us to describe how to respond to user input. We use the `handler` function, which has the following type:
-```haskell
+```hs
 handler :: forall a. EventFn SyntheticEvent a -> (a -> Effect Unit) -> EventHandler
 ```
 
@@ -1062,7 +1005,7 @@ Maybe String -> Effect Unit
 ```
 It is a function that describes how to convert this `Maybe String` value into our desired effect. We define a custom `handleValue` function for this purpose and pass it to `handler` as follows:
 
-```haskell
+```hs
 onChange:
   let
     handleValue :: Maybe String -> Effect Unit
@@ -1087,24 +1030,23 @@ Obviously, this user interface can be improved in a number of ways. The exercise
 
 ## Exercises
 
-Modify `src/Main.purs` in the following exercises:
+Modify `src/Main.purs` in the following exercises. There are no unit tests for these exercises.
 
 1. (Easy) Modify the application to include a work phone number text box.
-   _Hint_: a unit test for this exercise verifies you did what was required.
 1. (Medium) Right now the application shows validation errors collected in a single "pink-alert" background.  Modify to give each validation error its own pink-alert background by separating them  with blank lines.
 
-   _Hint_: Instead of using a `ul` element to show the validation errors in a list, modify the code to create one `div` with the `alert` and `alert-danger` styles for each error.
+    _Hint_: Instead of using a `ul` element to show the validation errors in a list, modify the code to create one `div` with the `alert` and `alert-danger` styles for each error.
 1. (Difficult, Extended) One problem with this user interface is that the validation errors are not displayed next to the form fields they originated from. Modify the code to fix this problem.
 
     _Hint_: the error type returned by the validator should be extended to indicate which field caused the error. You might want to use the following modified `Errors` type:
 
-    ```haskell
+    ```hs
     data Field = FirstNameField
-             | LastNameField
-             | StreetField
-             | CityField
-             | StateField
-             | PhoneField PhoneType
+               | LastNameField
+               | StreetField
+               | CityField
+               | StateField
+               | PhoneField PhoneType
 
     data ValidationError = ValidationError String Field
 

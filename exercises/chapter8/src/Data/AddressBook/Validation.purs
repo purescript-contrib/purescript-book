@@ -1,14 +1,7 @@
 module Data.AddressBook.Validation where
 
 import Prelude
-import Data.AddressBook
-  ( Address
-  , Person
-  , PhoneNumber
-  , address
-  , person
-  , phoneNumber
-  )
+import Data.AddressBook (Address, Person, PhoneNumber, address, person, phoneNumber)
 import Data.Either (Either(..))
 import Data.String (length)
 import Data.String.Regex (Regex, test, regex)

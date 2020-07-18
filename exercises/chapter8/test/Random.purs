@@ -1,4 +1,4 @@
-module Random.Main where
+module Test.Random where
 
 import Prelude
 import Effect (Effect)
