@@ -51,7 +51,7 @@ main =
         $ Assert.equal true
         $ answerTrue
     suite "Exercises Group 1" do
-      suite "Exercise 1 - function third" do
+      suite "third" do
         test "No elements"
           $ Assert.equal Nothing
           $ third ([] :: Array Int)
@@ -67,20 +67,20 @@ main =
         test "4 elements"
           $ Assert.equal (Just 4)
           $ third [ 1, 2, 4, 3 ]
-      suite "Exercise 2 - function possibleSums" do
+      suite "possibleSums" do
         test "[]"
           $ Assert.equal [ 0 ]
           $ possibleSums []
         test "[1, 2, 10]"
           $ Assert.equal [ 0, 1, 2, 3, 10, 11, 12, 13 ]
           $ possibleSums [ 1, 2, 10 ]
-      suite "Exercise 3 - ap and apply" do
+      suite "ap and apply" do
         test "NO UNIT TESTS"
           $ Assert.equal true true
-      suite "Exercise 4 - Monad laws for Maybe" do
+      suite "Monad laws for Maybe" do
         test "NO UNIT TESTS"
           $ Assert.equal true true
-      suite "Exercise 5 - function filterM" do
+      suite "filterM" do
         suite "Array Monad" do
           let
             onlyPositives :: Int -> Array Boolean
@@ -109,26 +109,26 @@ main =
             $ filterM
                 onlyPositiveEvenIntegers
                 (2 : 3 : 4 : Nil)
-      suite "Exercise 6 - Prove lift2 property" do
+      suite "Prove lift2 property" do
         test "NO UNIT TESTS"
           $ Assert.equal true true
     suite "Exercises Group 2" do
-      suite "Exercise 1 - Rewrite 'safeDivide' to use 'throwException'" do
+      suite "Rewrite 'safeDivide' to use 'throwException'" do
         test "TODO"
           $ Assert.equal true true
-      suite "Exercise 2 - ST exercise" do
+      suite "ST exercise" do
         test "TODO"
           $ Assert.equal true true
     suite "Exercises Group 3" do
-      suite "Exercise 1 - Add a work phone" do
+      suite "Add a work phone" do
         test "Work phone included"
           $ Assert.assert "Work phone missing"
           $ not null
           $ filter (\p -> p.type == WorkPhone) examplePerson.phones
-      suite "Exercise 2 - Validation errors separated by blank line" do
+      suite "Validation errors separated by blank line" do
         test "NO UNIT TESTS"
           $ Assert.equal true true
-      suite "Exercise 3 - Validation error associated with field" do
+      suite "Validation error associated with field" do
         test "NO UNIT TESTS"
           $ Assert.equal true true
     -- Testing chapter examples in book - for reader reference only
