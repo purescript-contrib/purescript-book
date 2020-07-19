@@ -1,6 +1,7 @@
 module Test.Main where
 
 import Prelude
+<<<<<<< HEAD
 import Data.AddressBook
   ( examplePerson
   , PhoneType(..)
@@ -40,17 +41,36 @@ import Test.Unit
   ( suite
   , test
   )
+=======
+import Test.MySolutions
+import Test.NoPeeking.Solutions
+
+import Data.AddressBook (examplePerson, PhoneType(..))
+import Data.Array (filter, null)
+import Data.List (List(..), foldM, (:))
+import Data.Maybe (Maybe(..))
+import Effect (Effect)
+import Test.Examples (countThrows, safeDivide)
+import Test.Unit (TestSuite, suite, test)
+>>>>>>> f0e6189bcf24bc0984acc4e69c51464031465e6c
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
 main :: Effect Unit
 main =
   runTest do
+<<<<<<< HEAD
     suite "Verifying unit test environment" do
       test "Initial test"
         $ Assert.equal true
         $ answerTrue
     suite "Exercises Group 1" do
+=======
+    runChapterExamples
+    {-  Move this block comment starting point to enable more tests
+Note to reader: Delete this line to expand comment block -}
+    suite "Exercises Group - Monads and Applicatives" do
+>>>>>>> f0e6189bcf24bc0984acc4e69c51464031465e6c
       suite "third" do
         test "No elements"
           $ Assert.equal Nothing
@@ -74,12 +94,6 @@ main =
         test "[1, 2, 10]"
           $ Assert.equal [ 0, 1, 2, 3, 10, 11, 12, 13 ]
           $ possibleSums [ 1, 2, 10 ]
-      suite "ap and apply" do
-        test "NO UNIT TESTS"
-          $ Assert.equal true true
-      suite "Monad laws for Maybe" do
-        test "NO UNIT TESTS"
-          $ Assert.equal true true
       suite "filterM" do
         suite "Array Monad" do
           let
@@ -97,6 +111,9 @@ main =
                 (2 : (-1) : 4 : Nil)
         suite "Maybe Monad" do
           let
+            -- This is an impractical filtering function,
+            -- and could be simplified, but it's fine for
+            -- testing purposes.
             onlyPositiveEvenIntegers :: Int -> Maybe Boolean
             onlyPositiveEvenIntegers i = if i < 0 then Nothing else Just $ 0 == i `mod` 2
           test "Nothing"
@@ -109,41 +126,31 @@ main =
             $ filterM
                 onlyPositiveEvenIntegers
                 (2 : 3 : 4 : Nil)
-      suite "Prove lift2 property" do
-        test "NO UNIT TESTS"
-          $ Assert.equal true true
-    suite "Exercises Group 2" do
-      suite "Rewrite 'safeDivide' to use 'throwException'" do
-        test "TODO"
-          $ Assert.equal true true
-      suite "ST exercise" do
-        test "TODO"
-          $ Assert.equal true true
-    suite "Exercises Group 3" do
-      suite "Add a work phone" do
-        test "Work phone included"
-          $ Assert.assert "Work phone missing"
-          $ not null
-          $ filter (\p -> p.type == WorkPhone) examplePerson.phones
-      suite "Validation errors separated by blank line" do
-        test "NO UNIT TESTS"
-          $ Assert.equal true true
-      suite "Validation error associated with field" do
-        test "NO UNIT TESTS"
-          $ Assert.equal true true
-    -- Testing chapter examples in book - for reader reference only
-    suite "Chapter Examples" do
-      suite "Testing countThrows" do
-        test "10"
-          $ Assert.equal [ [ 4, 6 ], [ 5, 5 ], [ 6, 4 ] ]
+
+{- Note to reader: Delete this line to expand comment block
+-}
+runChapterExamples :: TestSuite
+runChapterExamples =
+  -- Testing chapter examples in book - for reader reference only
+  suite "Chapter Examples" do
+    suite "countThrows" do
+      test "10" do
+        Assert.equal [ [ 4, 6 ], [ 5, 5 ], [ 6, 4 ] ]
           $ countThrows 10
-        test "12"
-          $ Assert.equal [ [ 6, 6 ] ]
+      test "12" do
+        Assert.equal [ [ 6, 6 ] ]
           $ countThrows 12
-      suite "Testing foldM and safeDivide" do
-        test "[5, 2, 2] has a Just answer"
-          $ Assert.equal (Just 5)
+    suite "safeDivide" do
+      test "Just" do
+        Assert.equal (Just 5)
+          $ safeDivide 10 2
+      test "Nothing" do
+        Assert.equal Nothing
+          $ safeDivide 10 0
+    suite "foldM with safeDivide" do
+      test "[5, 2, 2] has a Just answer" do
+        Assert.equal (Just 5)
           $ foldM safeDivide 100 (5 : 2 : 2 : Nil)
-        test "[5, 0, 2] has a Nothing answer"
-          $ Assert.equal (Nothing)
+      test "[5, 0, 2] has a Nothing answer" do
+        Assert.equal (Nothing)
           $ foldM safeDivide 100 (5 : 0 : 2 : Nil)

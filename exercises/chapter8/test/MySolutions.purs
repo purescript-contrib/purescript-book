@@ -1,5 +1,5 @@
-module MySolutions where
+module Test.MySolutions where
 
--- Verifying unit tests
-answerTrue :: Boolean
-answerTrue = true
+import Prelude
+
+-- Note to reader: Add your solutions to this file
