@@ -6,52 +6,6 @@ In the last chapter, we introduced applicative functors, an abstraction which we
 
 The goal of this chapter is to explain why monads are a useful abstraction, and their connection with _do notation_.
 
-## Expose Only Unit Tests for Exercise You Are Implementing
-
-Per [chapter 2 explanation on how to implement solution](https://github.com/purescript-contrib/purescript-book/blob/master/text/chapter2.md#solution), in your terminal:
-
-1.  `cd <projects>/purescript-book/exercises/chapter8`
-1.  In the `test/Main.purs` file, comment out the `import OfficialSolutions` line.
-1.  Block-comment all tests except the first one.  Your `Main.purs` tests section should look like:
-    ```haskell
-    main :: Effect Unit
-    main =
-      runTest do
-        suite "Verifying unit test environment" do
-          test "Initial test"
-            $ Assert.equal true
-            $ answerTrue
-    {-  Move this block comment starting point to enable more tests
-        suite "Exercises Group 1" do
-          suite "Exercise 1 - function third" do
-            test "No elements"
-              $ Assert.equal Nothing
-              $ third ([] :: Array Int)
-        ... (lots of test steps)
-          test "[5, 0, 2] has a Nothing answer"
-            $ Assert.equal (Nothing)
-            $ foldM safeDivide 100 (5 : 0 : 2 : Nil)
-    -}
-    ```
-1.  When you run `spago test` now, you should see:
-    ```
-    → Suite: Verifying unit test environment
-      ✓ Passed: Initial test
-
-    All 1 tests passed! 🎉
-    [info] Tests succeeded.
-    ```
-    _Note_: You will also see warnings complaining about redundant imports.  It's up to you whether to comment out the imports to suppress the warnings and re-add them as your implementation steps require, or just leave them alone and tolerate the warnings.
-1.  Proceed through this chapter by
-    1.  Before adding your solution to an exercise
-        1. Uncomment the tests for that exercise.
-        1. Run `spago test`.
-        1. Verify that the newly uncommented tests fail because you have not added your solution.
-    1.  Add your solution to `test/MySolutions.purs`.
-    1.  Keep correcting your code until the tests pass.  _Note_: some exercises have no unit tests.
-    1.  Rinse and repeat for each exercise until you have finished the chapter.
-
-
 ## Project Setup
 
 The project adds the following dependencies:
