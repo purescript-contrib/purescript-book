@@ -1,50 +1,8 @@
 module Test.Main where
 
 import Prelude
-<<<<<<< HEAD
-import Data.AddressBook
-  ( examplePerson
-  , PhoneType(..)
-  )
-import Data.Array
-  ( filter
-  , null
-  )
-import Data.List
-  ( List(..)
-  , foldM
-  , (:)
-  )
-import Data.Maybe (Maybe(..))
-import Effect (Effect)
-{- | Your own code is included -}
-import MySolutions
-  ( answerTrue
-  -- , filterM
-  -- , possibleSums
-  -- , third
-  )
-{- -}
-{- | Comment out the following import to instead apply the unit tests to your MySolutions above -}
-import OfficialSolutions
-  ( filterM
-  , possibleSums
-  , third
-  )
-{- -}
-import Test.Examples
-  ( countThrows
-  , safeDivide
-  )
-import Test.Unit
-  -- ( TestF
-  ( suite
-  , test
-  )
-=======
 import Test.MySolutions
 import Test.NoPeeking.Solutions
-
 import Data.AddressBook (examplePerson, PhoneType(..))
 import Data.Array (filter, null)
 import Data.List (List(..), foldM, (:))
@@ -52,25 +10,16 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Test.Examples (countThrows, safeDivide)
 import Test.Unit (TestSuite, suite, test)
->>>>>>> f0e6189bcf24bc0984acc4e69c51464031465e6c
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
 main :: Effect Unit
 main =
   runTest do
-<<<<<<< HEAD
-    suite "Verifying unit test environment" do
-      test "Initial test"
-        $ Assert.equal true
-        $ answerTrue
-    suite "Exercises Group 1" do
-=======
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
 Note to reader: Delete this line to expand comment block -}
     suite "Exercises Group - Monads and Applicatives" do
->>>>>>> f0e6189bcf24bc0984acc4e69c51464031465e6c
       suite "third" do
         test "No elements"
           $ Assert.equal Nothing
