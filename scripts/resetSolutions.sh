@@ -7,6 +7,6 @@
 for d in exercises/*; do
   # if directory (excludes LICENSE file)
   if [ -d $d ]; then
-    sed -i '/Note to reader: Delete this line/d' $d/test/Main.purs
+    perl -ni -e 'print if !/Note to reader: Delete this line/' $d/test/Main.purs
   fi
 done
