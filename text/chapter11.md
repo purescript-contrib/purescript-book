@@ -468,21 +468,18 @@ This API is similar to that provided by the `exceptions` package and the `Except
 Let's try out `ExceptT` by using it to wrap the `Writer` monad. Again, we are free to use actions from the monad transformer `ExceptT e` directly, but computations in the `Writer` monad should be lifted using `lift`:
 
 ```haskell
-import Control.Monad.Trans
+import Control.Monad.Except
 import Control.Monad.Writer
-import Control.Monad.Writer.Class
-import Control.Monad.Error.Class
-import Control.Monad.Except.Trans
 
 writerAndExceptT :: ExceptT String (Writer (Array String)) String
 writerAndExceptT = do
   lift $ tell ["Before the error"]
-  throwError "Error!"
+  _ <- throwError "Error!"
   lift $ tell ["After the error"]
   pure "Return value"
 ```
 
-If we test this function in PSCi, we can see how the two effects of accumulating a log and throwing an error interact. First, we can run the outer `ExceptT` computation of type by using `runExceptT`, leaving a result of type `Writer String (Either String String)`. We can then use `runWriter` to run the inner `Writer` computation:
+If we test this function in PSCi, we can see how the two effects of accumulating a log and throwing an error interact. First, we can run the outer `ExceptT` computation of type by using `runExceptT`, leaving a result of type `Writer (Array String) (Either String String)`. We can then use `runWriter` to run the inner `Writer` computation:
 
 ```text
 > runWriter $ runExceptT writerAndExceptT
