@@ -1,5 +1,7 @@
 # PureScript by Example
 
+Demo PR - do not merge
+
 This repository contains a community fork of _PureScript by Example_ by Phil Freeman, also known as "the PureScript book". This version differs from the original in that it has been updated so that the code and exercises work with up-to-date versions of the compiler, libraries, and tools.
 
 If you enjoyed the book or found it useful, please consider buying a copy of [the original on Leanpub](https://leanpub.com/purescript).
