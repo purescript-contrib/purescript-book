@@ -119,6 +119,15 @@ instance eqSelf :: Eq m => Eq (Self m) where
 instance showSelf :: Show m => Show (Self m) where
   show (Self m) = "Self " <> show m
 
+instance semigroupSelf :: Semigroup m => Semigroup (Self m) where
+  append (Self a) (Self b) = Self (a <> b)
+
+instance monoidSelf :: Monoid m => Monoid (Self m) where
+  mempty = Self mempty
+
+instance repeatActionMultSelf :: Action (Self Multiply) Int where
+  act (Self (Multiply m)) s = m * s
+
 arrayHasDuplicates :: forall a. Hashable a => Array a -> Boolean
 arrayHasDuplicates arr =
   let

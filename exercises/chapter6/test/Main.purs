@@ -181,6 +181,9 @@ Note to reader: Delete this line to expand comment block -}
         test "Multiply Self append" do
           Assert.equal (act m1 (act m2 a))
             $ act (m1 <> m2) a
+        test "Multiply Self append concrete" do
+          Assert.equal 72
+            $ act (act (m1 <> m2) a) 2
     suite "Exercise Group - Hashes" do
       suite "Exercise - arrayHasDuplicates" do
         test "No dupe" do
