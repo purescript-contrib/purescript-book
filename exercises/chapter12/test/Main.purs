@@ -4,7 +4,6 @@ import Prelude
 import Test.MySolutions
 import Test.NoPeeking.Solutions -- Note to reader: delete this line
 
-import CheckPlatform (currentPlatform)
 import Data.Array ((..))
 import Data.Bifunctor (lmap)
 import Data.Either (Either(..))
@@ -30,13 +29,17 @@ inDir = Path.concat [ "test", "data" ]
 outDir :: FilePath
 outDir = Path.concat [ "test", "data-out" ]
 
--- If you're behind an http-only proxy, the call to https://reqres.in won't work.
--- A work around is to install http-server (npm i -g http-server) and run it
--- locally in the "test/data" directory (http-server -p 42524).
+-- If, for any reason, you want or need to run this test offline, or without
+-- full internet access, you can create this API endpoint locally by installing
+-- http-server (npm i -g http-server) and running it in the "/test/data"
+-- directory (http-server -p 42524)
 reqUrl :: String
 reqUrl =
+  -- If you want or need to use the http version (not the https), you just
+  -- have to remove the 's' both http and https work for this API endpoint
   "https://reqres.in/api/users/1"
-  -- If you use the http-server solution, comment the previous line, and uncomment the next one
+  -- If you use the http-server solution, comment the previous line, and
+  -- uncomment the next one
   --"http://localhost:42524/user.txt"
 
 main :: Effect Unit
@@ -77,12 +80,8 @@ main =
       Assert.equal expectedOutTxt actualOutTxt
     suite "countCharacters" do
       test "exists" do
-        chars <- countCharacters $ Path.concat [ inDir, "foo.txt" ]
-        let
-          expectedResult = case currentPlatform of
-            "win32" -> Right 42
-            _       -> Right 41
-        Assert.equal expectedResult $ lmap message chars
+        chars <- countCharacters $ Path.concat [ inDir, "nbChars.txt" ]
+        Assert.equal (Right 42) $ lmap message chars
       test "missing" do
         absolutePath <- realpath $ Path.concat [ inDir ]
         chars <- countCharacters $ Path.concat [ absolutePath, "foof.txt" ]
