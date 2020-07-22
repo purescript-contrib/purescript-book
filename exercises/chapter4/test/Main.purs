@@ -3,7 +3,7 @@ module Test.Main where
 import Prelude
 import Test.Examples
 import Test.MySolutions
-import Test.NoPeeking.Solutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Data.Array (sort)
 import Data.Maybe (Maybe(..))
 import Data.Path (filename, root)

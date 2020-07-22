@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Data.AddressBook (examplePerson, PhoneType(..))
 import Data.Array (filter, null)
 import Data.List (List(..), foldM, (:))

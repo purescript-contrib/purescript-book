@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
 import Data.Int(round)
 import Data.Maybe(Maybe(Just, Nothing))
