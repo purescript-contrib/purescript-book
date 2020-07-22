@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions -- Note to reader: delete this line
+import Test.NoPeeking.Solutions -- Note to reader: Delete this line
 
 import Data.Array ((..))
 import Data.Bifunctor (lmap)
@@ -35,11 +35,12 @@ outDir = Path.concat [ "test", "data-out" ]
 -- directory (http-server -p 42524)
 reqUrl :: String
 reqUrl =
-  -- If you want or need to use the http version (not the https), you just
-  -- have to remove the 's' both http and https work for this API endpoint
+  -- Both http and https work for this API endpoint.
   "https://reqres.in/api/users/1"
-  -- If you use the http-server solution, comment the previous line, and
-  -- uncomment the next one
+  -- If you want or need to use the http version (not the https), just
+  -- remove the 's' from `https://`:
+  --"http://reqres.in/api/users/1"
+  -- Use this url for the http-server solution:
   --"http://localhost:42524/user.txt"
 
 main :: Effect Unit
@@ -51,8 +52,7 @@ main =
       for_ files \f -> unlink $ Path.concat [ outDir, f ]
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
--}
-    -- Note to reader: Delete this line to expand comment block
+Note to reader: Delete this line to expand comment block -}
     test "concatenateFiles" do
       let
         inFoo = Path.concat [ inDir, "foo.txt" ]
