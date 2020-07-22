@@ -561,7 +561,7 @@ The `Data.Path` module defines an API for a virtual filesystem, as follows:
 - The `ls` function enumerates the files in a directory.
 - The `filename` function returns the file name for a `Path`.
 - The `size` function returns the file size for a `Path` which represents a file.
-- The `isDirectory` function tests whether a function is a file or a directory.
+- The `isDirectory` function tests whether a `Path` is a file or a directory.
 
 In terms of types, we have the following type definitions:
 
