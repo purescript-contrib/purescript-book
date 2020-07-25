@@ -70,8 +70,10 @@ Note to reader: Delete this line to expand comment block -}
       test "Exercise - isPrime" do
         assertFalse "0 is not prime"
           $ isPrime 0
-        assert "1 is prime"
+        assertFalse "1 is not prime"
           $ isPrime 1
+        assert "2 is prime"
+          $ isPrime 2
         assertFalse "4 is not prime"
           $ isPrime 4
         assert "997 is prime"
