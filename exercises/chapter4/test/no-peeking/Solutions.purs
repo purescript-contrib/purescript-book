@@ -41,7 +41,7 @@ keepNonNegativeRewrite :: Array Number -> Array Number
 keepNonNegativeRewrite arr = (\n -> n >= 0.0) <$?> arr
 
 isPrime :: Int -> Boolean
-isPrime n = (n > 1) && (eq 1 $ length $ factors n)
+isPrime n = n > 1 && length (factors n) == 1
 
 cartesianProduct :: ∀ a. Array a -> Array a -> Array (Array a)
 cartesianProduct left right = do
