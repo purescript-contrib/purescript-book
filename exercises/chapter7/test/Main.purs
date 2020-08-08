@@ -7,11 +7,12 @@ import Control.Monad.Writer (runWriter, tell)
 import Data.AddressBook (PhoneType(..), address, phoneNumber)
 import Data.Array ((..))
 import Data.Either (Either(..))
+import Data.Foldable (foldl, foldr, foldMap)
 import Data.Int (fromNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.String.Regex as R
-import Data.Traversable (traverse)
+import Data.Traversable (sequence, traverse)
 import Data.Tuple (snd)
 import Data.Validation.Semigroup (invalid)
 import Effect (Effect)
@@ -154,16 +155,39 @@ Note to reader: Delete this line to expand comment block -}
       let
         leaf :: forall a. a -> Tree a
         leaf x = Branch Leaf x Leaf
+        intTree :: Tree Int
+        intTree = Branch (Branch (leaf 1) 2 (leaf 3)) 4 (Branch (leaf 5) 6 (leaf 7))
       suite "Exercise - traverse" do
+        suite "Functor Tree" do
+          test "Functor - map" do
+            Assert.equal 
+              (Branch (Branch (leaf "1") "2" (leaf "3")) "4" (Branch (leaf "5") "6" (leaf "7")))
+              $ map show intTree
+        suite "Foldable Tree" do
+          test "Foldable - foldr" do
+            Assert.equal "1234567"
+              $ foldr (\x acc -> show x <> acc) "" intTree
+          test "Foldable - foldl" do
+            Assert.equal "7654321"
+              $ foldl (\acc x -> show x <> acc) "" intTree
+          test "Foldable - foldMap" do
+            Assert.equal "1234567"
+              $ foldMap (\x -> show x) intTree
         suite "Maybe side-effect" do
-          test "Just" do
+          test "Just - traverse" do
             Assert.equal (Just $ Branch (leaf 1) 2 (leaf 3))
               $ traverse fromNumber
               $ Branch (leaf 1.0) 2.0 (leaf 3.0)
-          test "Nothing" do
+          test "Just - sequence" do
+            Assert.equal (Just $ Branch (leaf 1) 2 (leaf 3))
+              $ sequence $ Branch (leaf $ Just 1) (Just 2) (leaf $ Just 3)
+          test "Nothing - traverse" do
             Assert.equal Nothing
               $ traverse fromNumber
               $ Branch (leaf 1.0) 2.0 (leaf 3.7)
+          test "Nothing - sequence" do
+            Assert.equal Nothing
+              $ sequence $ Branch (leaf $ Nothing) (Just 2) (leaf $ Just 3)
         test "Array side-effect - check traversal order" do
           Assert.equal (1 .. 7)
             $ snd
