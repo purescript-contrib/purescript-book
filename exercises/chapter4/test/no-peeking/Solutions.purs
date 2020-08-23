@@ -58,20 +58,20 @@ triples n = do
   pure [ i, j, k ]
 
 -- | Provide the prime numbers that, multiplied together, make the argument.
-factorizations :: Int -> Array Int
-factorizations n = factorizations' 2 n []
+factorize :: Int -> Array Int
+factorize n = factorize' 2 n []
   where
-  factorizations' :: Int -> Int -> Array Int -> Array Int
-  factorizations' _ 1 result = result
+  factorize' :: Int -> Int -> Array Int -> Array Int
+  factorize' _ 1 result = result
 
-  factorizations' divisor dividend result =
+  factorize' divisor dividend result =
     let
       remainder = rem dividend divisor
     in
       if remainder == 0 then
-        factorizations' (divisor) (quot dividend divisor) (cons divisor result)
+        factorize' (divisor) (quot dividend divisor) (cons divisor result)
       else
-        factorizations' (divisor + 1) dividend result
+        factorize' (divisor + 1) dividend result
 
 allTrue :: Array Boolean -> Boolean
 allTrue bools = foldl (\acc bool -> acc && bool) true bools
