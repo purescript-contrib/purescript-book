@@ -1,14 +1,14 @@
 # PureScript by Example
 
-This repository contains a community fork of _PureScript by Example_ by Phil Freeman, also known as "the PureScript book". This version differs from the original in that it has been updated so that the code and exercises work with up-to-date versions of the compiler, libraries, and tools.
+This repository contains a [community fork](https://github.com/purescript-contrib/purescript-book/) of _PureScript by Example_ by Phil Freeman, also known as "the PureScript book". This version differs from the original in that it has been updated so that the code and exercises work with up-to-date versions of the compiler, libraries, and tools. Some chapters have also been rewritten to showcase the latest features of the PureScript ecosystem.
 
 If you enjoyed the book or found it useful, please consider buying a copy of [the original on Leanpub](https://leanpub.com/purescript).
 
 ## Status
 
-This book is being continuously updated as the language evolves, so please report any issues you notice with the material.
+This book is being continuously updated as the language evolves, so please report any [issues](https://github.com/purescript-contrib/purescript-book/issues) you discover with the material. We appreciate any feedback you have to share, even if it's as simple as pointing out a confusing section that we could make more beginner-friendly.
 
-Unit tests are also being added for the exercises in each chapter. See [#79](https://github.com/purescript-contrib/purescript-book/issues/79) for the latest status on tests.
+Unit tests are also being added to each chapter so you can check if your answers to the exercises are correct. See [#79](https://github.com/purescript-contrib/purescript-book/issues/79) for the latest status on tests.
 
 ## About the Book
 
