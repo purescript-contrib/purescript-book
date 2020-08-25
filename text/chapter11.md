@@ -101,7 +101,7 @@ modify_ :: forall s. (s -> s) -> State s Unit
 
 Note that these API signatures are presented in a simplified form using the `State` type constructor for now. The actual API involves `MonadState` which we'll cover in the later "Type Classes" section of this chapter, so don't worry if you see different signatures in your IDE tooltips or on Pursuit.
 
-Let's see an example. One use of the `State` monad might be to add the values in an array of numbers to the current state. We could do that by choosing `Number` as the state type `s`, and using `traverse_` to traverse the array, with a call to `modify` for each array element:
+Let's see an example. One use of the `State` monad might be to add the values in an array of numbers to the current state. We could do that by choosing `Int` as the state type `s`, and using `traverse_` to traverse the array, with a call to `modify` for each array element:
 
 ```haskell
 import Data.Foldable (traverse_)
