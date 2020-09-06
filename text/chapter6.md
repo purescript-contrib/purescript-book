@@ -363,7 +363,7 @@ Here, we might have annotated this function as `Int -> Int`, or `Number -> Numbe
 
 ## Overlapping and Orphan Instances
 
-PureScript has another rule regarding type class instances, called the _overlapping instances rule_. Whenever a type class instance is required at a function call site, PureScript will use the information inferred by the type checker to choose the correct instance. At that time, there should be exactly one appropriate instance for that type. If there are multiple valid instances, then it is unclear which instance to select, and the compiler will issue a error.
+PureScript has another rule regarding type class instances, called the _overlapping instances rule_. Whenever a type class instance is required at a function call site, PureScript will use the information inferred by the type checker to choose the correct instance. At that time, there should be exactly one appropriate instance for that type. If there are multiple valid instances, then it is unclear which instance to select, and the compiler will issue an error.
 
 To demonstrate this, we can try creating two conflicting type class instances for an example type. In the following code, we create two overlapping `Show` instances for the type `T`:
 
