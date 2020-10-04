@@ -647,10 +647,10 @@ Try out the new version in PSCi - you should get the same result. I'll let you d
  1. (Difficult) Write a function `whereIs` to search for a file by name. The function should return a value of type `Maybe Path`, indicating the directory containing the file, if it exists. It should behave as follows:
 
      ```text
-     > whereIs "/bin/ls"
+     > whereIs root "ls"
      Just (/bin/)
 
-     > whereIs "/bin/cat"
+     > whereIs root "cat"
      Nothing
      ```
 

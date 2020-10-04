@@ -6,7 +6,7 @@ import Data.Array (cons, filter, head, last, length, tail, (..))
 import Data.Foldable (foldl)
 import Data.Int (rem, quot)
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
-import Data.Path (Path, filename, isDirectory, ls, root, size)
+import Data.Path (Path, filename, isDirectory, ls, size)
 import Data.String.Common (split)
 import Data.String.Pattern (Pattern(..))
 import Data.Tuple (Tuple(..), snd)
@@ -127,8 +127,8 @@ allSizes paths =
     )
     paths
 
-whereIs :: String -> Maybe String
-whereIs fileName = head $ whereIs' $ allFiles root
+whereIs :: Path -> String -> Maybe String
+whereIs path fileName = head $ whereIs' $ allFiles path
   where
   whereIs' :: Array Path -> Array String
   whereIs' paths = do
