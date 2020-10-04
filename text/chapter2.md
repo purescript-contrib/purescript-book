@@ -2,7 +2,7 @@
 
 ## Chapter Goals
 
-In this chapter, we'll set up a working PureScript development environment, solve some exercises, and use the tests provided with this book to check our answers.
+In this chapter, we'll set up a working PureScript development environment, solve some exercises, and use the tests provided with this book to check our answers. You may also find a [video walkthrough of this chapter](https://www.youtube.com/watch?v=GPjPwb6d-70) helpful if that better suits your learning style.
 
 ## Environment Setup
 
