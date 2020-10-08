@@ -9,9 +9,12 @@ import Data.Picture
   , Picture
   , Point(Point)
   , Shape(Circle, Rectangle, Line, Text)
-  , origin
   , bounds
+  , getCenter
+  , getX
+  , getY
   , intersect
+  , origin
   )
 import Data.Picture as DataP
 import Math as Math
@@ -59,14 +62,15 @@ circleAtOrigin = Circle origin 10.0
 centerShape :: Shape -> Shape
 centerShape (Circle c r) = Circle origin r
 centerShape (Rectangle c w h) = Rectangle origin w h
-centerShape (Line (Point s) (Point e)) =
+centerShape line@(Line (Point s) (Point e)) =
   (Line
     (Point { x: s.x - deltaX, y: s.y - deltaY })
     (Point { x: e.x - deltaX, y: e.y - deltaY })
   )
   where
-  deltaX = (e.x + s.x) / 2.0
-  deltaY = (e.y + s.y) / 2.0
+  delta = getCenter line
+  deltaX = getX delta
+  deltaY = getY delta
 centerShape (Text loc text) = Text origin text
 
 scaleShape :: Number -> Shape -> Shape

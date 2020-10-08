@@ -11,6 +11,12 @@ data Point = Point
   , y :: Number
   }
 
+getX :: Point -> Number
+getX (Point p) = p.x
+
+getY :: Point -> Number
+getY (Point p) = p.y
+
 showPoint :: Point -> String
 showPoint (Point { x, y }) =
   "(" <> show x <> ", " <> show y <> ")"
@@ -37,7 +43,7 @@ origin = Point { x: 0.0, y: 0.0 }
 getCenter :: Shape -> Point
 getCenter (Circle c r) = c
 getCenter (Rectangle c w h) = c
-getCenter (Line (Point s) (Point e)) = Point { x: s.x - e.x, y: s.y - e.y }
+getCenter (Line (Point s) (Point e)) = Point { x: (s.x + e.x) / 2.0, y: (s.y + e.y) / 2.0 }
 getCenter (Text loc text) = loc
 
 type Picture = Array Shape
