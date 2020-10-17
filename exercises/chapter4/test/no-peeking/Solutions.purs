@@ -127,12 +127,12 @@ allSizes paths =
     )
     paths
 
-whereIs :: Path -> String -> Maybe String
+whereIs :: Path -> String -> Maybe Path
 whereIs path fileName = head $ whereIs' $ allFiles path
   where
-  whereIs' :: Array Path -> Array String
+  whereIs' :: Array Path -> Array Path
   whereIs' paths = do
     path <- paths
     child <- ls path
     guard $ eq fileName $ fromMaybe "" $ last $ split (Pattern "/") $ filename child
-    pure $ filename path
+    pure path

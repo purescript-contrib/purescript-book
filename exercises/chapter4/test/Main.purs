@@ -162,9 +162,11 @@ Note to reader: Delete this line to expand comment block -}
       suite "Exercise - whereIs" do
         test "locates a file"
           $ Assert.equal (Just ("/bin/"))
+          $ map filename
           $ whereIs root "ls"
         test "doesn't locate a file"
           $ Assert.equal (Nothing)
+          $ map filename
           $ whereIs root "cat"
 
 {- Note to reader: Delete this line to expand comment block
