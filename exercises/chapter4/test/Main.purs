@@ -4,7 +4,7 @@ import Prelude
 import Test.Examples
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
-import Data.Array (sort)
+import Data.Array (filter, find, sort)
 import Data.Maybe (Maybe(..))
 import Data.Path (filename, root)
 import Data.Tuple (fst)
@@ -155,10 +155,21 @@ Note to reader: Delete this line to expand comment block -}
           ]
           $ map filename
           $ onlyFiles root
-      test "Exercise - largestSmallest for root" do
-        Assert.equal [ "/home/user/code/js/test.js", "/etc/hosts" ]
-          $ map fst
-          $ largestSmallest root
+      suite "Exercise - largestSmallest for root" do
+        test "has length of 2" do
+          Assert.equal 2
+            $ length 
+            $ largestSmallest root
+        test "includes /home/user/code/js/test.js" do
+          Assert.equal (Just "/home/user/code/js/test.js")
+            $ map filename 
+            $ find (\p -> filename p == "/home/user/code/js/test.js")
+            $ largestSmallest root
+        test "includes /etc/hosts" do
+          Assert.equal (Just "/etc/hosts")
+            $ map filename
+            $ find (\p -> filename p == "/etc/hosts")
+            $ largestSmallest root
       suite "Exercise - whereIs" do
         test "locates a file"
           $ Assert.equal (Just ("/bin/"))
