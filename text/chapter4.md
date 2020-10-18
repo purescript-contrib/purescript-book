@@ -643,8 +643,7 @@ Try out the new version in PSCi - you should get the same result. I'll let you d
  ## Exercises
 
  1. (Easy) Write a function `onlyFiles` which returns all _files_ (not directories) in all subdirectories of a directory.
- 1. (Medium) Write a function `largestSmallest` which returns an array containing the single largest and single smallest files in the filesystem.
- 1. (Difficult) Write a function `whereIs` to search for a file by name. The function should return a value of type `Maybe Path`, indicating the directory containing the file, if it exists. It should behave as follows:
+ 2. (Medium) Write a function `whereIs` to search for a file by name. The function should return a value of type `Maybe Path`, indicating the directory containing the file, if it exists. It should behave as follows:
 
      ```text
      > whereIs root "ls"
@@ -655,6 +654,7 @@ Try out the new version in PSCi - you should get the same result. I'll let you d
      ```
 
      _Hint_: Try to write this function as an array comprehension using do notation.
+ 3. (Difficult) Write a function `largestSmallest` which takes a `Path` and returns an array containing the single largest and single smallest files in the filesystem. 
 
 ## Conclusion
 
