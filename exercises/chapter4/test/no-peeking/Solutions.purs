@@ -97,25 +97,6 @@ reverse = foldl (\xs x -> [ x ] <> xs) []
 onlyFiles :: Path -> Array Path
 onlyFiles p = filter (\p' -> not $ isDirectory p') $ allFiles p
 
-largestSmallest :: Path -> Array Path
-largestSmallest path = 
-  let files = allFiles path
-      maybeSizes = map size files
-      maybeMax = foldl (outlier (>)) Nothing maybeSizes
-      maybeMin = foldl (outlier (<)) Nothing maybeSizes
-  in nubBy compareNames $ catMaybes $ map (findFileBySize files) $ [maybeMax, maybeMin]
-  where
-  outlier :: (Int -> Int -> Boolean) -> Maybe Int -> Maybe Int -> Maybe Int
-  outlier criteria Nothing Nothing = Nothing
-  outlier criteria (Just x) Nothing = Just x
-  outlier criteria Nothing (Just x) = Just x
-  outlier criteria (Just x1) (Just x2) = if criteria x1 x2 then Just x1 else Just x2
-  findFileBySize :: Array Path -> Maybe Int -> Maybe Path
-  findFileBySize files maybeSize = find (\file -> size file == maybeSize) files
-  compareNames :: Path -> Path -> Ordering
-  compareNames file1 file2 = compare (filename file1) (filename file2)
-   
-
 allSizes :: Array Path -> Array (Tuple String Int)
 allSizes paths =
   map
@@ -134,3 +115,21 @@ whereIs path fileName = head $ whereIs' $ allFiles path
     child <- ls path
     guard $ eq fileName $ fromMaybe "" $ last $ split (Pattern "/") $ filename child
     pure path
+
+largestSmallest :: Path -> Array Path
+largestSmallest path = 
+  let files = allFiles path
+      maybeSizes = map size files
+      maybeMax = foldl (outlier (>)) Nothing maybeSizes
+      maybeMin = foldl (outlier (<)) Nothing maybeSizes
+  in nubBy compareNames $ catMaybes $ map (findFileBySize files) $ [maybeMax, maybeMin]
+  where
+  outlier :: (Int -> Int -> Boolean) -> Maybe Int -> Maybe Int -> Maybe Int
+  outlier criteria Nothing Nothing = Nothing
+  outlier criteria (Just x) Nothing = Just x
+  outlier criteria Nothing (Just x) = Just x
+  outlier criteria (Just x1) (Just x2) = if criteria x1 x2 then Just x1 else Just x2
+  findFileBySize :: Array Path -> Maybe Int -> Maybe Path
+  findFileBySize files maybeSize = find (\file -> size file == maybeSize) files
+  compareNames :: Path -> Path -> Ordering
+  compareNames file1 file2 = compare (filename file1) (filename file2)

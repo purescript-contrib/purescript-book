@@ -155,6 +155,15 @@ Note to reader: Delete this line to expand comment block -}
           ]
           $ map filename
           $ onlyFiles root
+      suite "Exercise - whereIs" do
+        test "locates a file"
+          $ Assert.equal (Just ("/bin/"))
+          $ map filename
+          $ whereIs root "ls"
+        test "doesn't locate a file"
+          $ Assert.equal (Nothing)
+          $ map filename
+          $ whereIs root "cat"
       suite "Exercise - largestSmallest for root" do
         test "has length of 2" do
           Assert.equal 2
@@ -170,15 +179,6 @@ Note to reader: Delete this line to expand comment block -}
             $ map filename
             $ find (\p -> filename p == "/etc/hosts")
             $ largestSmallest root
-      suite "Exercise - whereIs" do
-        test "locates a file"
-          $ Assert.equal (Just ("/bin/"))
-          $ map filename
-          $ whereIs root "ls"
-        test "doesn't locate a file"
-          $ Assert.equal (Nothing)
-          $ map filename
-          $ whereIs root "cat"
 
 {- Note to reader: Delete this line to expand comment block
 -}
