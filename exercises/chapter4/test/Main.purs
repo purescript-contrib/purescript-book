@@ -6,7 +6,7 @@ import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Data.Array (filter, find, sort)
 import Data.Maybe (Maybe(..))
-import Data.Path (filename, root)
+import Data.Path (Path(..), filename, root)
 import Data.Tuple (fst)
 import Effect (Effect)
 import Test.Unit (TestSuite, suite, test)
@@ -165,11 +165,20 @@ Note to reader: Delete this line to expand comment block -}
           $ map filename
           $ whereIs root "cat"
       suite "Exercise - largestSmallest" do
-        test "for root" do
-          Assert.equal ["/etc/hosts", "/home/user/code/js/test.js"]
-            $ sort
-            $ map filename
-            $ largestSmallest root
+        let
+          testls :: String -> Array String -> Path -> TestSuite
+          testls label expected path =
+            test label do
+              Assert.equal expected
+              -- Sorting to allow any ordering
+                $ sort
+                $ map filename
+                $ largestSmallest path
+          oneFileDir = Directory "/etc/" [ File "/etc/hosts" 300 ]
+          emptyDir = Directory "/etc/" []
+        testls "works for root" ["/etc/hosts", "/home/user/code/js/test.js"] root
+        testls "works for a directory with one file" ["/etc/hosts"] oneFileDir
+        testls "works for an empty directory" [] emptyDir
 
 {- Note to reader: Delete this line to expand comment block
 -}

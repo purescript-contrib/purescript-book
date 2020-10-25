@@ -2,7 +2,7 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 import Control.MonadZero (guard)
-import Data.Array (catMaybes, cons, filter, find, head, last, length, nubBy, tail, (..))
+import Data.Array (catMaybes, cons, filter, find, head, last, length, nub, tail, (..))
 import Data.Foldable (foldl)
 import Data.Int (rem, quot)
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
@@ -118,11 +118,11 @@ whereIs path fileName = head $ whereIs' $ allFiles path
 
 largestSmallest :: Path -> Array Path
 largestSmallest path = 
-  let files = allFiles path
+  let files = onlyFiles path
       maybeSizes = map size files
       maybeMax = foldl (outlier (>)) Nothing maybeSizes
       maybeMin = foldl (outlier (<)) Nothing maybeSizes
-  in nubBy compareNames $ catMaybes $ map (findFileBySize files) $ [maybeMax, maybeMin]
+  in catMaybes $ map (findFileBySize files) $ nub $ [maybeMax, maybeMin]
   where
   outlier :: (Int -> Int -> Boolean) -> Maybe Int -> Maybe Int -> Maybe Int
   outlier criteria Nothing Nothing = Nothing
@@ -131,5 +131,3 @@ largestSmallest path =
   outlier criteria (Just x1) (Just x2) = if criteria x1 x2 then Just x1 else Just x2
   findFileBySize :: Array Path -> Maybe Int -> Maybe Path
   findFileBySize files maybeSize = find (\file -> size file == maybeSize) files
-  compareNames :: Path -> Path -> Ordering
-  compareNames file1 file2 = compare (filename file1) (filename file2)

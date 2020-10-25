@@ -1,5 +1,5 @@
 module Data.Path
-  ( Path()
+  ( Path(..)
   , root
   , ls
   , filename
