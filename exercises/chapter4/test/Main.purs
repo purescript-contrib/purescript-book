@@ -164,20 +164,11 @@ Note to reader: Delete this line to expand comment block -}
           $ Assert.equal (Nothing)
           $ map filename
           $ whereIs root "cat"
-      suite "Exercise - largestSmallest for root" do
-        test "has length of 2" do
-          Assert.equal 2
-            $ length 
-            $ largestSmallest root
-        test "includes /home/user/code/js/test.js" do
-          Assert.equal (Just "/home/user/code/js/test.js")
-            $ map filename 
-            $ find (\p -> filename p == "/home/user/code/js/test.js")
-            $ largestSmallest root
-        test "includes /etc/hosts" do
-          Assert.equal (Just "/etc/hosts")
+      suite "Exercise - largestSmallest" do
+        test "for root" do
+          Assert.equal ["/etc/hosts", "/home/user/code/js/test.js"]
+            $ sort
             $ map filename
-            $ find (\p -> filename p == "/etc/hosts")
             $ largestSmallest root
 
 {- Note to reader: Delete this line to expand comment block
