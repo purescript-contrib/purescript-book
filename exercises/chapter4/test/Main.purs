@@ -4,7 +4,7 @@ import Prelude
 import Test.Examples
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
-import Data.Array (filter, find, sort)
+import Data.Array (sort)
 import Data.Maybe (Maybe(..))
 import Data.Path (Path(..), filename, root)
 import Data.Tuple (fst)
