@@ -89,16 +89,14 @@ instance semigroupMultiply :: Semigroup Multiply where
 instance monoidMultiply :: Monoid Multiply where
   mempty = Multiply 1
 
-instance actionMultiply :: Action Multiply Int where
+instance actionMultiplyInt :: Action Multiply Int where
   act (Multiply n) m = n * m
 
-instance showMultiply :: Show Multiply where
-  show (Multiply n) = "Multiply " <> show n
+-- These may also be written manualy
+derive newtype instance showMultiply :: Show Multiply
+derive newtype instance eqMultiply :: Eq Multiply
 
-instance eqMultiply :: Eq Multiply where
-  eq (Multiply n) (Multiply m) = n == m
-
-instance repeatAction :: Action Multiply String where
+instance actionMultiplyString :: Action Multiply String where
   act (Multiply n) s = power s n
 
 instance actionArray :: Action m a => Action m (Array a) where
@@ -113,17 +111,11 @@ newtype Self m
 instance actionSelf :: Monoid m => Action m (Self m) where
   act m1 (Self m2) = Self (m1 <> m2)
 
-instance eqSelf :: Eq m => Eq (Self m) where
-  eq (Self m1) (Self m2) = m1 == m2
-
-instance showSelf :: Show m => Show (Self m) where
-  show (Self m) = "Self " <> show m
-
-instance semigroupSelf :: Semigroup m => Semigroup (Self m) where
-  append (Self a) (Self b) = Self (a <> b)
-
-instance monoidSelf :: Monoid m => Monoid (Self m) where
-  mempty = Self mempty
+-- These may also be written manualy
+derive newtype instance showSelf :: Show m => Show (Self m)
+derive newtype instance eqSelf :: Eq m => Eq (Self m)
+derive newtype instance semigroupSelf :: Semigroup m => Semigroup (Self m)
+derive newtype instance monoidSelf :: Monoid m => Monoid (Self m)
 
 instance repeatActionMultSelf :: Action (Self Multiply) Int where
   act (Self (Multiply m)) s = m * s

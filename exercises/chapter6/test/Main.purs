@@ -1,7 +1,9 @@
 module Test.Main where
 
 import Prelude
+import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+
 import Data.Foldable (foldMap, foldl, foldr)
 import Data.Hashable (hash)
 import Data.List (List(..), (:))
@@ -166,7 +168,7 @@ Note to reader: Delete this line to expand comment block -}
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
           test "Multiply Array String append concrete" do
-            Assert.equal 
+            Assert.equal
               [ "foofoofoofoofoofoofoofoofoofoofoofoo"
               , "barbarbarbarbarbarbarbarbarbarbarbar"
               , "bazbazbazbazbazbazbazbazbazbazbazbaz"

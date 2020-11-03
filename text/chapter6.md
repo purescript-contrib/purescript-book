@@ -635,6 +635,7 @@ Another reason to define a superclass relationship is in the case where there is
  ## Exercises
 
  1. (Medium) Define a partial function `unsafeMaximum :: Partial => Array Int -> Int` which finds the maximum of a non-empty array of integers. Test out your function in PSCi using `unsafePartial`. _Hint_: Use the `maximum` function from `Data.Foldable`.
+
  1. (Medium) The `Action` class is a multi-parameter type class which defines an action of one type on another:
 
      ```haskell
@@ -661,20 +662,32 @@ Another reason to define a superclass relationship is in the case where there is
        mempty = Multiply 1
      ```
 
-     This monoid acts on strings by repeating an input string some number of times. Write an instance which implements this action:
+     Write an instance which implements this action:
 
      ```haskell
-     instance repeatAction :: Action Multiply String
+     instance actionMultiplyInt :: Action Multiply Int
      ```
-     _Hint_: Search Pursuit for a helper-function with the signature `String -> Int -> String`. Note that `String` might appear as a more generic type.
+     Does this instance satisfy the laws listed above?
+
+1. (Medium) Write an `Action` instance which repeats an input string some number of times:
+
+     ```haskell
+     instance actionMultiplyString :: Action Multiply String
+     ```
+     _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
 
      Does this instance satisfy the laws listed above?
+
  1. (Medium) Write an instance `Action m a => Action m (Array a)`, where the action on arrays is defined by acting on each array element independently.
+
  1. (Difficult) Given the following newtype, write an instance for `Action m (Self m)`, where the monoid `m` acts on itself using `append`:
 
      ```haskell
      newtype Self m = Self m
      ```
+
+     _Note_: The testing framework requires `Show` and `Eq` instances for the `Self` and `Multiply` types. You may either write these instances manually, or let the compiler handle this for you with [`derive newtype instance`](https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#type-class-deriving) shorthand.
+
  1. (Difficult) Should the arguments of the multi-parameter type class `Action` be related by some functional dependency? Why or why not? _Note_: There is no test for this exercise.
 
 ## A Type Class for Hashes
