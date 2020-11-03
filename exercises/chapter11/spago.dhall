@@ -10,6 +10,7 @@ You can edit this file as you like.
     , "ordered-collections"
     , "psci-support"
     , "strings"
+    , "test-unit"
     , "transformers"
     , "yargs"
     ]
