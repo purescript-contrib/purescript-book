@@ -19,27 +19,23 @@ import Data.Tuple (Tuple)
 
 --
 
-testParens :: String -> Boolean    
-testParens str =       
-  let        
-    ca = toCharArray str    
-    
-    openTally :: Char -> Int -> Int    
-    -- Open parens only considered if not already in deficit    
-    -- No recovery from too-many closed parens    
-    openTally '(' tally | tally >= 0 = tally + 1    
-    openTally ')' tally = tally - 1    
-    -- Non-parens has no effect    
-    openTally _ tally = tally    
-    
-    sumParens :: Array Char -> State Int Unit    
-    -- Either modify or modify_ are fine    
-    --sumParens = traverse_ \c -> modify $ openTally c    
-    sumParens = traverse_ \c -> modify_ $ openTally c    
-    
-    finalTally :: Int    
-    finalTally = execState (sumParens ca) 0    
-  in    
+testParens :: String -> Boolean
+testParens str =
+  let
+    openTally :: Char -> Int -> Int
+    -- Open parens only considered if not already in deficit.
+    -- No recovery from too-many closed parens.
+    openTally '(' tally | tally >= 0 = tally + 1
+    openTally ')' tally = tally - 1
+    -- Non-parens has no effect
+    openTally _ tally = tally
+
+    sumParens :: Array Char -> State Int Unit
+    sumParens = traverse_ \c -> modify_ $ openTally c
+
+    finalTally :: Int
+    finalTally = execState (sumParens $ toCharArray str) 0
+  in
     finalTally == 0
 
 --
