@@ -105,9 +105,6 @@ instance actionArray :: Action m a => Action m (Array a) where
 newtype Self m
   = Self m
 
--- Why is Monoid constraint required here?
--- Seems like this is already specified by Action class
---instance actionSelf :: Action m (Self m) where
 instance actionSelf :: Monoid m => Action m (Self m) where
   act m1 (Self m2) = Self (m1 <> m2)
 
