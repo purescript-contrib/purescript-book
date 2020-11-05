@@ -75,7 +75,8 @@ data Tree a
   = Leaf
   | Branch (Tree a) a (Tree a)
 
--- These may alternatively be written by hand, rather than derived from generic.
+-- Solution using derived instances:
+
 derive instance genericTree :: Generic (Tree a) _
 
 instance eqTree :: Eq a => Eq (Tree a) where
@@ -83,6 +84,29 @@ instance eqTree :: Eq a => Eq (Tree a) where
 
 instance showTree :: Show a => Show (Tree a) where
   show t = genericShow t
+
+{-
+-- Solution using manually-written instances:
+
+instance eqTree :: Eq a => Eq (Tree a) where
+  eq Leaf Leaf = true
+  eq (Branch t1a va t2a) (Branch t1b vb t2b) =
+    t1a == t1b
+      && va == vb
+      && t2a == t2b
+  eq _ _ = false
+
+instance showTree :: Show a => Show (Tree a) where
+  show Leaf = "Leaf"
+  show (Branch t1 v t2) =
+    "(Branch "
+      <> show t1
+      <> " "
+      <> show v
+      <> " "
+      <> show t2
+      <> ")"
+-}
 
 -- Exercise 2
 instance functorTree :: Functor Tree where

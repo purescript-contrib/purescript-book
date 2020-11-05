@@ -645,6 +645,14 @@ Other traversable functors include `Array`, and `Tuple a` and `Either a` for any
      data Tree a = Leaf | Branch (Tree a) a (Tree a)
      ```
 
+     You may either write these instances manually or let the compiler derive them for you. We recommend you take a brief detour from the book to read this guide on [how to derive from generic](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md#deriving-from-generic), then apply what you just learned to this exercise.
+
+     There are many "correct" formatting options for `Show` output. The test for this exercise expects the following whitespace style. This happens to match the default formatting of generic show, so you only need to make note of this if you're planning on writing this instance manually.
+
+     ```
+     (Branch (Branch Leaf 8 Leaf) 42 Leaf)
+     ```
+
  1. (Medium) Write a `Traversable` instance for `Tree a`, which combines side-effects from left-to-right. _Hint_: There are some additional instance dependencies that need to be defined for `Traversable`.
 
  1. (Medium) Write a function `traversePreOrder :: forall a m b. Applicative m => (a -> m b) -> Tree a -> m (Tree b)` that performs a pre-order traversal of the tree. This means the order of effect execution is root-left-right, instead of left-root-right as was done for the previous in-order traverse exercise. _Hint_: No additional instances need to be defined, and you don't need to call any of the the functions defined earlier. Applicative do notation (`ado`) is the easiest way to write this function.
