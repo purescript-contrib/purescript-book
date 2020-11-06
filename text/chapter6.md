@@ -191,7 +191,7 @@ class EuclideanRing a <= Field a
 
 The `Field` type class is composed from several more general _superclasses_. This allows us to talk abstractly about types which support some but not all of the `Field` operations. For example, a type of natural numbers would be closed under addition and multiplication, but not necessarily under subtraction, so that type might have an instance of the `Semiring` class (which is a superclass of `Num`), but not an instance of `Ring` or `Field`.
 
-Superclasses will be explained later in this chapter, but the full numeric type class hierarchy is beyond the scope of this chapter. The interested reader is encouraged to read the documentation for the superclasses of `Field` in `prelude`.
+Superclasses will be explained later in this chapter, but the full [numeric type class hierarchy](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html) ([cheatsheet](https://harry.garrood.me/numeric-hierarchy-overview/)) is beyond the scope of this chapter. The interested reader is encouraged to read the documentation for the superclasses of `Field` in `prelude`.
 
 ### Semigroups and Monoids
 
