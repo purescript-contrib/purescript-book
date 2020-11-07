@@ -387,29 +387,23 @@ We will see the `combineList` function again later, when we consider `Traversabl
 The source code for this chapter defines several data types which might be used in an address book application. The details are omitted here, but the key functions which are exported by the `Data.AddressBook` module have the following types:
 
 ```haskell
-address :: String -> String -> String -> Address
+{{#include ../exercises/chapter7/src/Data/AddressBook.purs:address_anno}}
 
-phoneNumber :: PhoneType -> String -> PhoneNumber
+{{#include ../exercises/chapter7/src/Data/AddressBook.purs:phoneNumber_anno}}
 
-person :: String -> String -> Address -> Array PhoneNumber -> Person
+{{#include ../exercises/chapter7/src/Data/AddressBook.purs:person_anno}}
 ```
 
 where `PhoneType` is defined as an algebraic data type:
 
 ```haskell
-data PhoneType = HomePhone | WorkPhone | CellPhone | OtherPhone
+{{#include ../exercises/chapter7/src/Data/AddressBook.purs:PhoneType}}
 ```
 
 These functions can be used to construct a `Person` representing an address book entry. For example, the following value is defined in `Data.AddressBook`:
 
 ```haskell
-examplePerson :: Person
-examplePerson =
-  person "John" "Smith"
-         (address "123 Fake St." "FakeTown" "CA")
-  	     [ phoneNumber HomePhone "555-555-5555"
-         , phoneNumber CellPhone "555-555-0000"
-  	     ]
+{{#include ../exercises/chapter7/src/Data/AddressBook.purs:examplePerson}}
 ```
 
 Test this value in PSCi (this result has been formatted):
@@ -420,7 +414,7 @@ Test this value in PSCi (this result has been formatted):
 > examplePerson
 { firstName: "John"
 , lastName: "Smith"
-, address:
+, homeAddress:
     { street: "123 Fake St."
     , city: "FakeTown"
     , state: "CA"
@@ -439,26 +433,15 @@ Test this value in PSCi (this result has been formatted):
 We saw in a previous section how we could use the `Either String` functor to validate a data structure of type `Person`. For example, provided functions to validate the two names in the structure, we might validate the entire data structure as follows:
 
 ```haskell
-nonEmpty :: String -> Either String Unit
-nonEmpty "" = Left "Field cannot be empty"
-nonEmpty _  = Right unit
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:nonEmpty1}}
 
-validatePerson :: Person -> Either String Person
-validatePerson p =
-  person <$> (nonEmpty p.firstName *> pure p.firstName)
-         <*> (nonEmpty p.lastName  *> pure p.lastName)
-         <*> pure p.address
-         <*> pure p.phones
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePerson1}}
 ```
 
 or with _applicative do_
 
 ```haskell
-validatePersonAdo :: Person -> Either String Person
-validatePersonAdo p = ado
-  f <- nonEmpty p.firstName *> pure p.firstName
-  l <- nonEmpty p.lastName *> pure p.firstName
-  in person f l p.address p.phones
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePerson1Ado}}
 ```
 
 In the first two lines, we use the `nonEmpty` function to validate a non-empty string. `nonEmpty` returns an error (indicated with the `Left` constructor) if its input is empty, or a successful empty value (`unit`) using the `Right` constructor otherwise. We use the sequencing operator `*>` to indicate that we want to perform two validations, returning the result from the validator on the right. In this case, the validator on the right simply uses `pure` to return the input unchanged.
@@ -467,7 +450,7 @@ The final lines do not perform any validation but simply provide the `address` a
 
 This function can be seen to work in PSCi, but has a limitation which we have seen before:
 
-```haskell
+```text
 > validatePerson $ person "" "" (address "" "" "") []
 (Left "Field cannot be empty")
 ```
@@ -481,34 +464,19 @@ The `Data.AddressBook.Validation` module uses the `V (Array String)` applicative
 Here is an example of a validator taken from the `Data.AddressBook.Validation` module:
 
 ```haskell
-type Errors = Array String
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:Errors}}
 
-nonEmpty :: String -> String -> V Errors Unit
-nonEmpty field "" = invalid ["Field '" <> field <> "' cannot be empty"]
-nonEmpty _     _  = pure unit
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:nonEmpty}}
 
-lengthIs :: String -> Int -> String -> V Errors Unit
-lengthIs field len value | S.length value /= len =
-  invalid ["Field '" <> field <> "' must have length " <> show len]
-lengthIs _     _   _     =
-  pure unit
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:lengthIs}}
 
-validateAddress :: Address -> V Errors Address
-validateAddress a =
-  address <$> (nonEmpty "Street" a.street *> pure a.street)
-          <*> (nonEmpty "City"   a.city   *> pure a.city)
-          <*> (lengthIs "State" 2 a.state *> pure a.state)
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validateAddress}}
 ```
 
 or with _applicative do_
 
 ```haskell
-validateAddressAdo :: Address -> V Errors Address
-validateAddressAdo a = ado
-  street  <- (nonEmpty "Street" a.street *> pure a.street)
-  city    <- (nonEmpty "City"   a.city   *> pure a.city)
-  state   <- (lengthIs "State" 2 a.state *> pure a.state)
-  in address street city state
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validateAddressAdo}}
 ```
 
 `validateAddress` validates an `Address` structure. It checks that the `street` and `city` fields are non-empty, and checks that the string in the `state` field has length 2.
@@ -540,11 +508,7 @@ This time, we receive an array of all validation errors.
 The `validatePhoneNumber` function uses a regular expression to validate the form of its argument. The key is a `matches` validation function, which uses a `Regex` from the `Data.String.Regex` module to validate its input:
 
 ```haskell
-matches :: String -> R.Regex -> String -> V Errors Unit
-matches _     regex value | R.test regex value =
-  pure unit
-matches field _     _     =
-  invalid ["Field '" <> field <> "' did not match the required format"]
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:matches}}
 ```
 
 Again, notice how `pure` is used to indicate successful validation, and `invalid` is used to signal an array of errors.
@@ -552,20 +516,13 @@ Again, notice how `pure` is used to indicate successful validation, and `invalid
 `validatePhoneNumber` is built from the `matches` function in the same way as before:
 
 ```haskell
-validatePhoneNumber :: PhoneNumber -> V Errors PhoneNumber
-validatePhoneNumber pn =
-  phoneNumber <$> pure pn."type"
-              <*> (matches "Number" phoneNumberRegex pn.number *> pure pn.number)
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePhoneNumber}}
 ```
 
 or with _applicative do_
 
 ```haskell
-validatePhoneNumberAdo :: PhoneNumber -> V Errors PhoneNumber
-validatePhoneNumberAdo pn = ado
-  tpe     <-  pure pn."type"
-  number  <-  (matches "Number" phoneNumberRegex pn.number *> pure pn.number)
-  in phoneNumber tpe number
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePhoneNumberAdo}}
 ```
 
 Again, try running this validator against some valid and invalid inputs in PSCi:
@@ -589,32 +546,15 @@ invalid (["Field 'Number' did not match the required format"])
 The remaining validator is `validatePerson`, which combines the validators we have seen so far to validate an entire `Person` structure:
 
 ```haskell
-arrayNonEmpty :: forall a. String -> Array a -> V Errors Unit
-arrayNonEmpty field [] =
-  invalid ["Field '" <> field <> "' must contain at least one value"]
-arrayNonEmpty _     _  =
-  pure unit
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:arrayNonEmpty}}
 
-validatePerson :: Person -> V Errors Person
-validatePerson p =
-  person <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
-         <*> (nonEmpty "Last Name"  p.lastName  *> pure p.lastName)
-         <*> validateAddress p.address
-         <*> (arrayNonEmpty "Phone Numbers" p.phones *>
-              traverse validatePhoneNumber p.phones)
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePerson}}
 ```
 
 or with _applicative do_
 
 ```haskell
-validatePersonAdo :: Person -> V Errors Person
-validatePersonAdo p = ado
-  firstName   <- (nonEmpty "First Name" p.firstName *> pure p.firstName)
-  lastName    <- (nonEmpty "Last Name"  p.lastName  *> pure p.lastName)
-  address     <- validateAddress p.address
-  numbers     <- (arrayNonEmpty "Phone Numbers" p.phones *>
-                  traverse validatePhoneNumber p.phones)
-  in person firstName lastName address numbers
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePersonAdo}}
 ```
 
 There is one more interesting function here, which we haven't seen yet - `traverse`, which appears in the final line.
