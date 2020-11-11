@@ -131,8 +131,3 @@ validatePersonAdo p = ado
                 traverse validatePhoneNumber p.phones)
   in person firstName lastName address numbers
 -- ANCHOR_END: validatePersonAdo
-
--- ANCHOR: validatePerson
-validatePerson' :: Person -> Either Errors Person
-validatePerson' p = unV Left Right $ validatePerson p
--- ANCHOR_END: validatePerson
