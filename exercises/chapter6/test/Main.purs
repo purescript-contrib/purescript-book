@@ -19,27 +19,72 @@ main =
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
 Note to reader: Delete this line to expand comment block -}
-    test "Exercise Group - Show Me" do
-      -- Tests for the first exercise in this chapter (Show Shape)
-      -- can be found at the end of the previous chapter (chapter 5).
-      Assert.equal true true
+    suite "Exercise Group - Show Me" do
+      test "Exercise - Show Point" do
+        Assert.equal "(1.0, 2.0)"
+          $ show
+          $ Point {x: 1.0, y: 2.0}
     suite "Exercise Group - Common Type Classes" do
-      suite "Exercise - Show and Eq for Complex" do
-        test "Show Complex" do
+      let cpx real imaginary = Complex {real, imaginary}
+      suite "Exercise - Show Complex" do
+        test "Show" do
           Assert.equal "1.0+2.0i"
             $ show
-            $ Complex { real: 1.0, imaginary: 2.0 }
-        test "Show Negative Complex" do
+            $ cpx 1.0 2.0
+        test "Show Negative" do
           Assert.equal "1.0-2.0i"
             $ show
-            $ Complex { real: 1.0, imaginary: -2.0 }
-        test "Eq Complex" do
-          Assert.equal (Complex { real: 1.0, imaginary: 2.0 })
-            $ Complex { real: 1.0, imaginary: 2.0 }
-        test "Eq Complex - not equal" do
+            $ cpx 1.0 (-2.0)
+      suite "Exercise - Eq Complex" do
+        test "equal" do
+          Assert.equal (cpx 1.0 2.0)
+            $ cpx 1.0 2.0
+        test "not equal" do
           Assert.expectFailure "should not be equal"
-            $ Assert.equal (Complex { real: 5.0, imaginary: 2.0 })
-            $ Complex { real: 1.0, imaginary: 2.0 }
+            $ Assert.equal (cpx 5.0 2.0)
+              $ cpx 1.0 2.0
+      suite "Exercise - Semiring Complex" do
+        test "add" do
+          Assert.equal (cpx 4.0 6.0)
+            $ add (cpx 1.0 2.0) (cpx 3.0 4.0)
+        test "multiply" do
+          Assert.equal (cpx (-5.0) 10.0)
+            $ mul (cpx 1.0 2.0) (cpx 3.0 4.0)
+      suite "Exercise - Ring Complex" do
+        test "subtract" do
+          Assert.equal (cpx 2.0 3.0)
+            $ sub (cpx 3.0 5.0) (cpx 1.0 2.0)
+      suite "Exercise - Show Shape" do
+        test "circle" do
+          Assert.equal "(Circle (1.0, 2.0) 3.0)"
+            $ show $ Circle (Point {x: 1.0, y: 2.0}) 3.0
+        test "rectangle" do
+          Assert.equal "(Rectangle (1.0, 2.0) 3.0 4.0)"
+            $ show $ Rectangle (Point {x: 1.0, y: 2.0}) 3.0 4.0
+        test "line" do
+          Assert.equal "(Line (1.0, 2.0) (3.0, 4.0))"
+            $ show $ Line (Point {x: 1.0, y: 2.0}) (Point {x: 3.0, y: 4.0})
+        test "text" do
+          Assert.equal "(Text (1.0, 2.0) \"Hello\")"
+            $ show $ Text (Point {x: 1.0, y: 2.0}) "Hello"
+      let
+        withDups =
+          [ Circle (Point {x: 1.0, y: 2.0}) 3.0
+          , Circle (Point {x: 3.0, y: 2.0}) 3.0
+          , Circle (Point {x: 1.0, y: 2.0}) 3.0
+          , Circle (Point {x: 2.0, y: 2.0}) 3.0
+          ]
+        noDups =
+          [ Circle (Point {x: 1.0, y: 2.0}) 3.0
+          , Circle (Point {x: 3.0, y: 2.0}) 3.0
+          , Circle (Point {x: 2.0, y: 2.0}) 3.0
+          ]
+      test "Exercise - dedupShapes" do
+        Assert.equal noDups
+          $ dedupShapes withDups
+      test "Exercise - dedupShapesFast" do
+        Assert.equal noDups
+          $ dedupShapesFast withDups
     suite "Exercise Group - Constraints and Dependencies" do
       suite "Exercise - Eq for NonEmpty" do
         test "NonEmpty equals" do

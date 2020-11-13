@@ -125,7 +125,15 @@ No type class instance was found for
 
  ## Exercises
 
- 1. (Easy) Use the `showShape` function from the previous chapter to define a `Show` instance for the `Shape` type.
+1. (Easy) Define a `Show` instance for `Point`. Match the same output as the `showPoint` function from the previous chapter.
+
+    ```haskell
+    data Point
+      = Point
+      { x :: Number
+      , y :: Number
+      }
+    ```
 
 ## Common Type Classes
 
@@ -304,18 +312,41 @@ Whatever "lifting" means in the general sense, it should be true that any reason
 
 Many standard type classes come with their own set of similar laws. The laws given to a type class give structure to the functions of that type class and allow us to study its instances in generality. The interested reader can research the laws ascribed to the standard type classes that we have seen already.
 
- ## Exercises
+### Deriving Instances
 
- 1. (Easy) The following newtype represents a complex number:
+Rather than writing instances manually, you can let the compiler to most of the work for you. Take a look at this [Type Class Deriving guide](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md). That information will help you solve the following exercises.
 
-     ```haskell
-     newtype Complex = Complex
-       { real :: Number
-       , imaginary :: Number
-       }
-     ```
+## Exercises
 
-     Define `Show` and `Eq` instances for `Complex`.
+The following newtype represents a complex number:
+
+```haskell
+newtype Complex
+  = Complex
+  { real :: Number
+  , imaginary :: Number
+  }
+```
+
+1. (Easy) Define a `Show` instance for `Complex`. Match the output format expected by the tests (e.g. `1.2+3.4i`, `5.6-7.8i`, etc.).
+
+2. (Easy) Derive an `Eq` instance for `Complex`. _Note_: You may instead write this instance manually, but why do more work if you don't have to?
+
+3. (Medium) Define a `Semiring` instance for `Complex`.
+
+4. (Easy) Derive (via `newtype`) a `Ring` instance for `Complex`. _Note_: You may instead write this instance manually, but that's not as convenient.
+
+Here's the `Shape` ADT from the previous chapter:
+
+```haskell
+data Shape
+  = Circle Point Number
+  | Rectangle Point Number Number
+  | Line Point Point
+  | Text Point String
+```
+
+5. (Medium) Derive (via `Generic`) a `Show` instance for `Shape`. How does the amount of code written and `String` output compare to `showShape` from the previous chapter? _Note_: You may instead write this instance manually, but you'll need to pay close attention to the output format expected by the tests.
 
 ## Type Class Constraints
 
@@ -454,35 +485,45 @@ When the program is compiled, the correct type class instance for `Show` is chos
 
 
 ## Exercises
- 1. (Easy) The following declaration defines a type of non-empty arrays of elements of type `a`:
+
+1. (Easy) The following declaration defines a type of non-empty arrays of elements of type `a`:
+
+   ```haskell
+   data NonEmpty a = NonEmpty a (Array a)
+   ```
+
+   Write an `Eq` instance for the type `NonEmpty a` which reuses the instances for `Eq a` and `Eq (Array a)`. _Note:_ you may instead derive the `Eq` instance.
+
+1. (Medium) Write a `Semigroup` instance for `NonEmpty a` by reusing the `Semigroup` instance for `Array`.
+
+1. (Medium) Write a `Functor` instance for `NonEmpty`.
+
+1. (Medium) Given any type `a` with an instance of `Ord`, we can add a new "infinite" value which is greater than any other value:
 
     ```haskell
-    data NonEmpty a = NonEmpty a (Array a)
+    data Extended a = Infinite | Finite a
     ```
 
-    Write an `Eq` instance for the type `NonEmpty a` which reuses the instances for `Eq a` and `Eq (Array a)`.
- 1. (Medium) Write a `Semigroup` instance for `NonEmpty a` by reusing the `Semigroup` instance for `Array`.
- 1. (Medium) Write a `Functor` instance for `NonEmpty`.
- 1. (Medium) Given any type `a` with an instance of `Ord`, we can add a new "infinite" value which is greater than any other value:
+   Write an `Ord` instance for `Extended a` which reuses the `Ord` instance for `a`.
 
-     ```haskell
-     data Extended a = Finite a | Infinite
-     ```
+1. (Difficult) Write a `Foldable` instance for `NonEmpty`. _Hint_: reuse the `Foldable` instance for arrays.
 
-    Write an `Ord` instance for `Extended a` which reuses the `Ord` instance for `a`.
- 1. (Difficult) Write a `Foldable` instance for `NonEmpty`. _Hint_: reuse the `Foldable` instance for arrays.
- 1. (Difficult) Given a type constructor `f` which defines an ordered container (and so has a `Foldable` instance), we can create a new container type which includes an extra element at the front:
+1. (Difficult) Given a type constructor `f` which defines an ordered container (and so has a `Foldable` instance), we can create a new container type which includes an extra element at the front:
 
-     ```haskell
-     data OneMore f a = OneMore a (f a)
-     ```
+    ```haskell
+    data OneMore f a = OneMore a (f a)
+    ```
 
-     The container `OneMore f` also has an ordering, where the new element comes before any element of `f`. Write a `Foldable` instance for `OneMore f`:
+    The container `OneMore f` also has an ordering, where the new element comes before any element of `f`. Write a `Foldable` instance for `OneMore f`:
 
-     ```haskell
-     instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
-     ...
-     ```
+    ```haskell
+    instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
+    ...
+    ```
+
+1. (Medium) Write a `dedupShapes :: Array Shape -> Array Shape` function which removes duplicate `Shape`s from an array using the `nubEq` function.
+
+1. (Medium) Write a `dedupShapesFast` function which is the same as `dudupShapes`, but uses the more efficient `nub` function.
 
 ## Multi Parameter Type Classes
 
