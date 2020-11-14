@@ -332,7 +332,7 @@ newtype Complex
 
 2. (Easy) Derive an `Eq` instance for `Complex`. _Note_: You may instead write this instance manually, but why do more work if you don't have to?
 
-3. (Medium) Define a `Semiring` instance for `Complex`.
+3. (Medium) Define a `Semiring` instance for `Complex`. _Note_: You can use `wrap` and `over2` from [`Data.Newtype`](https://pursuit.purescript.org/packages/purescript-newtype/docs/Data.Newtype) to create a more concise solution.
 
 4. (Easy) Derive (via `newtype`) a `Ring` instance for `Complex`. _Note_: You may instead write this instance manually, but that's not as convenient.
 

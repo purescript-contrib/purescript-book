@@ -9,6 +9,7 @@ import Data.Generic.Rep.Show (genericShow)
 import Data.Hashable (class Hashable, hash, hashEqual)
 import Data.Maybe (Maybe(..))
 import Data.Monoid (power)
+import Data.Newtype (class Newtype, over2, wrap)
 
 data Point
   = Point
@@ -44,22 +45,36 @@ instance eqComplex :: Eq Complex where
   -- eq (Complex a) (Complex b) = a.real == b.real && a.imaginary == b.imaginary
 -}
 
+derive instance newtypeComplex :: Newtype Complex _
+
+instance semiringComplex :: Semiring Complex where
+  add = over2 Complex add
+  mul = over2 Complex
+          \ { real: r1, imaginary: i1 }
+            { real: r2, imaginary: i2 }
+          ->
+            { real:      r1 * r2 - i1 * i2
+            , imaginary: r1 * i2 + r2 * i1
+            }
+  zero = wrap zero
+  one = wrap one
+{-
+-- Without Newtype
 instance semiringComplex :: Semiring Complex where
   add (Complex c1) (Complex c2) = Complex $ c1 + c2
-  mul (Complex c1) (Complex c2) = Complex
-    { real: r1 * r2 - i1 * i2
-    , imaginary: r1 * i2 + r2 * i1
-    }
-    where
-      r1 = c1.real
-      r2 = c2.real
-      i1 = c1.imaginary
-      i2 = c2.imaginary
+  mul
+    (Complex { real: r1, imaginary: i1 })
+    (Complex { real: r2, imaginary: i2 })
+      = Complex
+          { real:      r1 * r2 - i1 * i2
+          , imaginary: r1 * i2 + r2 * i1
+          }
   zero = Complex zero
   one = Complex one
   -- Could instead write `zero` and `one` more explicitly
   --zero = Complex {real: 0.0, imaginary: 0.0}
   --one = Complex {real: 1.0, imaginary: 1.0}
+-}
 
 derive newtype instance ringComplex :: Ring Complex
 {-
@@ -78,7 +93,6 @@ derive instance genericShape :: Generic Shape _
 
 instance showShape :: Show Shape where
   show = genericShow
-
 {-
 -- Manual solution
 instance showShape :: Show Shape where
