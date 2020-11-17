@@ -3,7 +3,7 @@ module Test.NoPeeking.Solutions where
 import Prelude
 import Control.Apply (lift2)
 import Data.AddressBook (Address, PhoneNumber, address)
-import Data.AddressBook.Validation (Errors, arrayNonEmpty, matches, nonEmpty, validateAddress, validatePhoneNumber)
+import Data.AddressBook.Validation (Errors, matches, nonEmpty, validateAddress, validatePhoneNumbers)
 import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Eq (genericEq)
@@ -147,10 +147,10 @@ personOptionalAddress firstName lastName homeAddress phones = { firstName, lastN
 validatePersonOptionalAddress :: PersonOptionalAddress -> V Errors PersonOptionalAddress
 validatePersonOptionalAddress p =
   personOptionalAddress
-    <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
-    <*> (nonEmpty "Last Name" p.lastName *> pure p.lastName)
-    <*> (traverse validateAddress p.homeAddress *> pure p.homeAddress)
-    <*> (arrayNonEmpty "Phone Numbers" p.phones *> traverse validatePhoneNumber p.phones)
+    <$> nonEmpty "First Name" p.firstName
+    <*> nonEmpty "Last Name" p.lastName
+    <*> traverse validateAddress p.homeAddress
+    <*> validatePhoneNumbers "Phone Numbers" p.phones
 
 -- Exercise 6
 sequenceUsingTraverse :: forall a m t. Traversable t => Applicative m => t (m a) -> m (t a)

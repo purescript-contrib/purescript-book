@@ -26,7 +26,7 @@ To explain the concept of an _applicative functor_, let's consider the type cons
 The source code for this module defines a function `address` which has the following type:
 
 ```haskell
-address :: String -> String -> String -> Address
+{{#include ../exercises/chapter7/src/Data/AddressBook.purs:address_anno}}
 ```
 
 This function is used to construct a value of type `Address` from three strings: a street name, a city, and a state.
@@ -444,7 +444,7 @@ or with _applicative do_
 {{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePerson1Ado}}
 ```
 
-In the first two lines, we use the `nonEmpty` function to validate a non-empty string. `nonEmpty` returns an error (indicated with the `Left` constructor) if its input is empty, or a successful empty value (`unit`) using the `Right` constructor otherwise. We use the sequencing operator `*>` to indicate that we want to perform two validations, returning the result from the validator on the right. In this case, the validator on the right simply uses `pure` to return the input unchanged.
+In the first two lines, we use the `nonEmpty1` function to validate a non-empty string. `nonEmpty1` returns an error indicated with the `Left` constructor if its input is empty, otherwise it returns the value wrapped with the `Right` constructor.
 
 The final lines do not perform any validation but simply provide the `address` and `phones` fields to the `person` function as the remaining arguments.
 
@@ -543,10 +543,10 @@ invalid (["Field 'Number' did not match the required format"])
 
 ## Traversable Functors
 
-The remaining validator is `validatePerson`, which combines the validators we have seen so far to validate an entire `Person` structure:
+The remaining validator is `validatePerson`, which combines the validators we have seen so far to validate an entire `Person` structure, including the following new `validatePhoneNumbers` function:
 
 ```haskell
-{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:arrayNonEmpty}}
+{{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePhoneNumbers}}
 
 {{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePerson}}
 ```
@@ -557,7 +557,7 @@ or with _applicative do_
 {{#include ../exercises/chapter7/src/Data/AddressBook/Validation.purs:validatePersonAdo}}
 ```
 
-There is one more interesting function here, which we haven't seen yet - `traverse`, which appears in the final line.
+`validatePhoneNumbers` uses a new function we haven't seen before - `traverse`.
 
 `traverse` is defined in the `Data.Traversable` module, in the `Traversable` type class:
 
@@ -603,12 +603,12 @@ combineList :: forall f a. Applicative f => List (f a) -> f (List a)
 
 Traversable functors capture the idea of traversing a data structure, collecting a set of effectful computations, and combining their effects. In fact, `sequence` and `traverse` are equally important to the definition of `Traversable` - each can be implemented in terms of each other. This is left as an exercise for the interested reader.
 
-The `Traversable` instance for lists is given in the `Data.List` module. The definition of `traverse` is given here:
+The `Traversable` instance for lists given in the `Data.List` module is:
 
 ```haskell
 instance traversableList :: Traversable List where
 -- traverse :: forall a b m. Applicative m => (a -> m b) -> List a -> m (List b)
-traverse _ Nil = pure Nil
+traverse _ Nil         = pure Nil
 traverse f (Cons x xs) = Cons <$> f x <*> traverse f xs
 ```
 
