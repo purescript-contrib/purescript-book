@@ -18,9 +18,9 @@ data PhoneType
   | OtherPhone
 
 instance showPhoneType :: Show PhoneType where
-  show HomePhone = "HomePhone"
-  show WorkPhone = "WorkPhone"
-  show CellPhone = "CellPhone"
+  show HomePhone  = "HomePhone"
+  show WorkPhone  = "WorkPhone"
+  show CellPhone  = "CellPhone"
   show OtherPhone = "OtherPhone"
 
 type PhoneNumber
