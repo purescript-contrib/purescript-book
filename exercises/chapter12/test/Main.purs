@@ -36,10 +36,10 @@ outDir = Path.concat [ "test", "data-out" ]
 reqUrl :: String
 reqUrl =
   -- Both http and https work for this API endpoint.
-  "https://reqres.in/api/users/1"
+  "https://jsonplaceholder.typicode.com/todos/1"
   -- If you want or need to use the http version (not the https), just
   -- remove the 's' from `https://`:
-  --"http://reqres.in/api/users/1"
+  --"http://jsonplaceholder.typicode.com/todos/1"
   -- Use this url for the http-server solution:
   --"http://localhost:42524/user.txt"
 
