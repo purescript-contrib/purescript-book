@@ -1,13 +1,14 @@
 module Data.AddressBook.Validation where
 
 import Prelude
+
 import Data.AddressBook (Address, Person, PhoneNumber, address, person, phoneNumber)
 import Data.Either (Either(..))
 import Data.String (length)
 import Data.String.Regex (Regex, test, regex)
 import Data.String.Regex.Flags (noFlags)
 import Data.Traversable (traverse)
-import Data.Validation.Semigroup (V, unV, invalid)
+import Data.Validation.Semigroup (V, invalid, toEither)
 import Partial.Unsafe (unsafePartial)
 
 type Errors
@@ -58,4 +59,4 @@ validatePerson p =
          <*> validatePhoneNumbers "Phone Numbers" p.phones
 
 validatePerson' :: Person -> Either Errors Person
-validatePerson' p = unV Left Right $ validatePerson p
+validatePerson' p = toEither $ validatePerson p

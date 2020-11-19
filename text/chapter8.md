@@ -31,13 +31,7 @@ import Prelude
 import Control.Plus (empty)
 import Data.Array ((..))
 
-countThrows :: Int -> Array (Array Int)
-countThrows n = do
-  x <- 1 .. 6
-  y <- 1 .. 6
-  if x + y == n
-    then pure [x, y]
-    else empty
+{{#include ../exercises/chapter8/test/Examples.purs:countThrows}}
 ```
 
 We can see that this function works in PSCi:
@@ -219,23 +213,11 @@ As an example of working with monads abstractly, this section will present a fun
 The function we will write is called `foldM`. It generalizes the `foldl` function that we met earlier to a monadic context. Here is its type signature:
 
 ```hs
-foldM :: forall m a b
-       . Monad m
-      => (a -> b -> m a)
-      -> a
-      -> List b
-      -> m a
+foldM :: forall m a b. Monad m => (a -> b -> m a) -> a -> List b -> m a
+foldl :: forall   a b.            (a -> b ->   a) -> a -> List b ->   a
 ```
 
-Notice that this is the same as the type of `foldl`, except for the appearance of the monad `m`:
-
-```hs
-foldl :: forall a b
-       . (a -> b -> a)
-      -> a
-      -> List b
-      -> a
-```
+Notice that this is the same as the type of `foldl`, except for the appearance of the monad `m`.
 
 Intuitively, `foldM` performs a fold over a list in some context supporting some set of side-effects.
 
@@ -268,9 +250,7 @@ Note that this implementation is almost identical to that of `foldl` on lists, w
 We can define and test this function in PSCi. Here is an example - suppose we defined a "safe division" function on integers, which tested for division by zero and used the `Maybe` type constructor to indicate failure:
 
 ```hs
-safeDivide :: Int -> Int -> Maybe Int
-safeDivide _ 0 = Nothing
-safeDivide a b = Just (a / b)
+{{#include ../exercises/chapter8/test/Examples.purs:safeDivide}}
 ```
 
 Then we can use `foldM` to express iterated safe division:
@@ -346,6 +326,7 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
      ```hs
      filterM :: forall m a. Monad m => (a -> m Boolean) -> List a -> m (List a)
      ```
+
  1. (Difficult) Every monad has a default `Functor` instance given by:
 
      ```hs
@@ -366,6 +347,7 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
      lift2 :: forall f a b c. Apply f => (a -> b -> c) -> f a -> f b -> f c
      lift2 f a b = f <$> a <*> b
      ```
+
     _Note:_ There are no tests for this exercise.
 
 ## Native Effects
@@ -414,44 +396,42 @@ The `Effect` monad provides a well-typed API for computations with side-effects,
 
 Let's take a closer look at the return type of the familiar `log` function. `Effect` indicates that this function produces a native effect, console IO in this case.
 `Unit` indicates that no _meaningful_ data is returned. You can think of `Unit` as being analogous to the `void` keyword in other languages, such as C, Java, etc.
+
 ```hs
 log :: String -> Effect Unit
 ```
 
 > _Aside:_ You may encounter IDE suggestions for the more general (and more elaborately typed) `log` function from `Effect.Class.Console`. This is interchangeable with the one from `Effect.Console` when dealing with the basic `Effect` monad. Reasons for the more general version will become clearer after reading about "Monad Transformers" in the "Monadic Adventures" chapter. For the curious (and impatient), this works because there's a `MonadEffect` instance for `Effect`.
->```hs
->log :: forall m. MonadEffect m => String -> m Unit
->```
+
+> ```hs
+> log :: forall m. MonadEffect m => String -> m Unit
+> ```
 
 Now let's now consider an `Effect` that returns meaningful data. The `random` function from `Effect.Random` produces a random `Number`.
+
 ```hs
 random :: Effect Number
 ```
 
 Here's a full example program (found in `test/Random.purs` of this chapter's exercises folder).
+
 ```hs
-module Test.Random where
-
-import Prelude
-import Effect (Effect)
-import Effect.Random (random)
-import Effect.Console (logShow)
-
-main :: Effect Unit
-main = do
-  n <- random
-  logShow n
+{{#include ../exercises/chapter8/test/Random.purs}}
 ```
+
 Because `Effect` is a monad, we use do notation to _unwrap_ the data it contains before passing this data on to the effectful `logShow` function. As a refresher, here's the equivalent code written using the `bind` operator:
+
 ```hs
 main :: Effect Unit
 main = random >>= logShow
 ```
 
 Try running this yourself with:
+
 ```
 spago run --main Test.Random
 ```
+
 You should see a randomly chosen number between `0.0` and `1.0` printed to the console.
 
 > _Aside:_ `spago run` defaults to searching in the `Main` module for a `main` function. You may also specify an alternate module as an entry point with the `--main` flag, as is done in the above example. Just be sure that this alternate module also contains a `main` function.
@@ -465,7 +445,7 @@ As mentioned previously, the `Effect` monad is of central importance to PureScri
 Let's examine a function from the `node-fs` package that involves two _native_ side effects: reading mutable state, and exceptions:
 
 ```hs
-readTextFile :: Encoding → String → Effect String
+readTextFile :: Encoding -> String -> Effect String
 ```
 
 If we attempt to read a file that does not exist:
@@ -481,6 +461,7 @@ main = do
 ```
 
 We encounter the following exception:
+
 ```
     throw err;
     ^
@@ -500,7 +481,7 @@ main = do
   result <- try $ readTextFile UTF8 "iDoNotExist.md"
   case result of
     Right lines -> log $ "Contents: \n" <> lines
-    Left error -> log $ "Couldn't open file. Error was: " <> message error
+    Left  error -> log $ "Couldn't open file. Error was: " <> message error
 ```
 
 `try` runs an `Effect` and returns eventual exceptions as a `Left` value. If the computation succeeds, the result gets wrapped in a `Right`:
@@ -716,6 +697,7 @@ We are going to build a form which will allow a user to add a new entry into our
 To keep things simple, the form will have a fixed shape: the different phone number types (home, cell, work, other) will be expanded into separate text boxes.
 
 You can launch the web app from the `exercises/chapter8` directory with the following commands:
+
 ```
 $ npm install
 $ npx spago build
@@ -733,23 +715,13 @@ Let's explore how it works.
 The `src/index.html` file is minimal:
 
 ```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Address Book</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
-  </head>
-  <body>
-    <div id="container"></div>
-    <script src="./index.js"></script>
-  </body>
-</html>
+{{#include ../exercises/chapter8/src/index.html}}
 ```
 
 The `<script` line includes the JavaScript entry point, `index.js`, which contains this single line:
+
 ```js
-require("../output/Main/index.js").main();
+{{#include ../exercises/chapter8/src/index.js}}
 ```
 
 It calls our generated JavaScript equivalent of the `main` function of `module Main` (`src/main.purs`). Recall that `spago build` puts all generated JavaScript in the `output` directory.
@@ -757,28 +729,11 @@ It calls our generated JavaScript equivalent of the `main` function of `module M
 The `main` function uses the DOM and HTML APIs to render our address book component within the `container` element we defined in `index.html`:
 
 ```hs
-main :: Effect Unit
-main = do
-  log "Rendering address book component"
-  -- Get window object
-  w <- window
-  -- Get window's HTML document
-  doc <- document w
-  -- Get "container" element in HTML
-  ctr <- getElementById "container" $ toNonElementParentNode doc
-  case ctr of
-    Nothing -> throw "Container element not found."
-    Just c -> do
-      -- Create AddressBook react component
-      addressBookApp <- mkAddressBookApp
-      let
-        -- Create JSX node from react component. Pass-in empty props
-        app = element addressBookApp {}
-      -- Render AddressBook JSX node in DOM "container" element
-      D.render app c
+{{#include ../exercises/chapter8/src/Main.purs:main}}
 ```
 
 Note that these three lines:
+
 ```hs
 w <- window
 doc <- document w
@@ -786,22 +741,24 @@ ctr <- getElementById "container" $ toNonElementParentNode doc
 ```
 
 Can be consolidated to:
+
 ```hs
 doc <- document =<< window
 ctr <- getElementById "container" $ toNonElementParentNode doc
 ```
 
 Or consolidated even further to:
+
 ```hs
 ctr <- getElementById "container" =<< (map toNonElementParentNode $ document =<< window)
 ```
 
 It is a matter of personal preference whether the intermediate `w` and `doc` variables aid in readability.
 
-
 Let's dig into our AddressBook `reactComponent`. We'll start with a simplified component, and then build up to the actual code in `Main.purs`.
 
 Take a look at this minimal component. Feel free to substitute the full component with this one to see it run:
+
 ```hs
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
@@ -811,6 +768,7 @@ mkAddressBookApp =
 ```
 
 `reactComponent` has this intimidating signature:
+
 ```hs
 reactComponent ::
   forall hooks props.
@@ -825,6 +783,7 @@ reactComponent ::
 The important points to note are the arguments after all the type class constraints. It takes a `String` (an arbitrary component name), a function that describes how to convert `props` into rendered `JSX`, and returns our `ReactComponent` wrapped in an `Effect`.
 
 The props-to-JSX function is simply:
+
 ```hs
 \props -> pure $ D.text "Hi! I'm an address book"
 ```
@@ -834,6 +793,7 @@ The props-to-JSX function is simply:
 Next we'll examine some of the additional complexities of the full Address Book component.
 
 These are the first few lines of our full component:
+
 ```hs
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
@@ -842,6 +802,7 @@ mkAddressBookApp = do
 ```
 
 We track `person` as a piece of state with the `useState` hook.
+
 ```hs
 Tuple person setPerson <- useState examplePerson
 ```
@@ -849,11 +810,13 @@ Tuple person setPerson <- useState examplePerson
 Note that you are free to break-up component state into multiple pieces of state with multiple calls to `useState`. For example, we could rewrite this app to use a separate piece of state for each record field of `Person`, but that happens to result in a slightly less convenient architecture in this case.
 
 In other examples, you may encounter the `/\` infix operator for `Tuple`. This is equivalent to the above line:
+
 ```hs
 firstName /\ setFirstName <- useState p.firstName
 ```
 
 `useState` takes a default initial value and returns the current value and a way to update the value. We can check the type of `useState` to gain more insight the types of `person` and `setPerson`:
+
 ```hs
 useState ::
   forall state.
@@ -864,6 +827,7 @@ useState ::
 We can strip the `Hook (UseState state)` wrapper off of the return value because `useState` is called within an `R.do` block. We'll elaborate on `R.do` later.
 
 So now we can observe the following signatures:
+
 ```hs
 person :: state
 setPerson :: (state -> state) -> Effect Unit
@@ -874,10 +838,14 @@ The specific type of `state` is determined by our initial default value. `Person
 `person` is how we access the current state at each rerender.
 
 `setPerson` is how we update the state. We simply provide a function that describes how to transform the current state to the new state. The record update syntax is perfect for this when the type of `state` happens to be a `Record`, for example:
+
 ```hs
 setPerson (\currentPerson -> currentPerson {firstName = "NewName"})
+
 ```
+
 or as shorthand:
+
 ```hs
 setPerson _ {firstName = "NewName"}
 ```
@@ -889,6 +857,7 @@ Recall that `useState` is used within an `R.do` block. `R.do` is a special react
 Another possible state management strategy is with `useReducer`, but that is outside the scope of this chapter.
 
 Rendering `JSX` occurs here:
+
 ```hs
 pure
   $ D.div
@@ -921,6 +890,7 @@ pure
 ```
 
 Here we produce `JSX` which represents the intended state of the DOM. This JSX is typically created by applying functions corresponding to HTML tags (e.g. `div`, `form`, `h3`, `li`, `ul`, `label`, `input`) which create single HTML elements. These HTML elements are actually React components themselves, converted to JSX. There are usually three variants of each of these functions:
+
 * `div_`: Accepts an array of child elements. Uses default attributes.
 * `div`: Accepts a `Record` of attributes. An array of child elements may be passed to the `children` field of this record.
 * `div'`: Same as `div`, but returns the `ReactComponent` before conversion to `JSX`.
@@ -928,26 +898,17 @@ Here we produce `JSX` which represents the intended state of the DOM. This JSX i
 To display validation errors (if any) at the top of our form, we create a `renderValidationErrors` helper function that turns the `Errors` structure into an array of JSX. This array is prepended to the rest of our form.
 
 ```hs
-renderValidationErrors :: Errors -> Array R.JSX
-renderValidationErrors [] = []
-renderValidationErrors xs =
-  let
-    renderError :: String -> R.JSX
-    renderError err = D.li_ [ D.text err ]
-  in
-    [ D.div
-        { className: "alert alert-danger row"
-        , children: [ D.ul_ (map renderError xs) ]
-        }
-    ]
+{{#include ../exercises/chapter8/src/Main.purs:renderValidationErrors}}
 ```
 
 Note that since we are simply manipulating regular data structures here, we can use functions like `map` to build up more interesting elements:
+
 ```hs
 children: [ D.ul_ (map renderError xs)]
 ```
 
 We use the `className` property to define classes for CSS styling. We're using the [Bootstrap](https://getbootstrap.com/) `stylesheet` for this project, which is imported in `index.html`. For example, we want items in our form arranged as `row`s, and validation errors to be emphasized with `alert-danger` styling:
+
 ```hs
 className: "alert alert-danger row"
 ```
@@ -955,44 +916,19 @@ className: "alert alert-danger row"
 A second helper function is `formField`, which creates a text input for a single form field:
 
 ```hs
-formField :: String -> String -> String -> (String -> Effect Unit) -> R.JSX
-formField name placeholder value setValue =
-  D.label
-    { className: "form-group row"
-    , children:
-        [ D.div
-            { className: "col-sm col-form-label"
-            , children: [ D.text name ]
-            }
-        , D.div
-            { className: "col-sm"
-            , children:
-                [ D.input
-                    { className: "form-control"
-                    , placeholder
-                    , value
-                    , onChange:
-                        let
-                          handleValue :: Maybe String -> Effect Unit
-                          handleValue (Just v) = setValue v
-
-                          handleValue Nothing = pure unit
-                        in
-                          handler targetValue handleValue
-                    }
-                ]
-            }
-        ]
-    }
+{{#include ../exercises/chapter8/src/Main.purs:formField}}
 ```
+
 Putting the `input` and display `text` in a `label` aids in accessibility for screen readers.
 
 The `onChange` attribute allows us to describe how to respond to user input. We use the `handler` function, which has the following type:
+
 ```hs
 handler :: forall a. EventFn SyntheticEvent a -> (a -> Effect Unit) -> EventHandler
 ```
 
 For the first argument to `handler` we use we use `targetValue`, which provides the value of the text within the HTML `input` element. It matches the signature expected by `handler` where the type variable `a` in this case is `Maybe String`:
+
 ```hs
 targetValue :: EventFn SyntheticEvent (Maybe String)
 ```
@@ -1000,9 +936,11 @@ targetValue :: EventFn SyntheticEvent (Maybe String)
 In JavaScript, the `input` element's `onChange` event is actually accompanied by a `String` value, but since strings in JavaScript can be null, `Maybe` is used for safety.
 
 The second argument to `handler`, `(a -> Effect Unit)`, must therefore have this signature:
+
 ```hs
 Maybe String -> Effect Unit
 ```
+
 It is a function that describes how to convert this `Maybe String` value into our desired effect. We define a custom `handleValue` function for this purpose and pass it to `handler` as follows:
 
 ```hs
@@ -1010,7 +948,7 @@ onChange:
   let
     handleValue :: Maybe String -> Effect Unit
     handleValue (Just v) = setValue v
-    handleValue Nothing = pure unit
+    handleValue Nothing  = pure unit
   in
     handler targetValue handleValue
 ```
@@ -1018,6 +956,7 @@ onChange:
 `setValue` is the function we provided to each `formField` call that takes a string and makes the appropriate record-update call to the `setPerson` hook.
 
 Note that `handleValue` can be substituted as:
+
 ```hs
 onChange: handler targetValue $ traverse_ setValue
 ```

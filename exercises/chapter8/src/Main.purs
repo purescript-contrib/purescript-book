@@ -1,6 +1,7 @@
 module Main where
 
 import Prelude
+
 import Data.AddressBook (PhoneNumber, examplePerson)
 import Data.AddressBook.Validation (Errors, validatePerson')
 import Data.Array (mapWithIndex, updateAt)
@@ -81,7 +82,7 @@ mkAddressBookApp =
     Tuple person setPerson <- useState examplePerson
     let
       errors = case validatePerson' person of
-        Left e -> e
+        Left  e -> e
         Right _ -> []
 
       -- helper-function to return array unchanged instead of Nothing if index is out of bounds
