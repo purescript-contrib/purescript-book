@@ -638,6 +638,7 @@ These examples show that traversing the `Nothing` value returns `Nothing` with n
 Other traversable functors include `Array`, and `Tuple a` and `Either a` for any type `a`. Generally, most "container" data type constructors have `Traversable` instances. As an example, the exercises will include writing a `Traversable` instance for a type of binary trees.
 
  ## Exercises
+
  1. (Easy) Write `Eq` and `Show` instances for the following binary tree data structure:
 
      ```haskell

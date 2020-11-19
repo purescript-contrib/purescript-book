@@ -51,7 +51,7 @@ nonEmpty _     value  = pure value
 
 -- ANCHOR: validatePhoneNumbers
 validatePhoneNumbers :: String -> Array PhoneNumber -> V Errors (Array PhoneNumber)
-validatePhoneNumbers field [] =
+validatePhoneNumbers field []      =
   invalid [ "Field '" <> field <> "' must contain at least one value" ]
 validatePhoneNumbers _     phones  =
   traverse validatePhoneNumber phones
