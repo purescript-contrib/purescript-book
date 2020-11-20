@@ -645,7 +645,7 @@ Other traversable functors include `Array`, and `Tuple a` and `Either a` for any
      data Tree a = Leaf | Branch (Tree a) a (Tree a)
      ```
 
-     You may either write these instances manually or let the compiler derive them for you. We recommend you take a brief detour from the book to read this guide on [how to derive from generic](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md#deriving-from-generic), then apply what you just learned to this exercise.
+     Recall from the previous chapter that you may either write these instances manually or let the compiler derive them for you.
 
      There are many "correct" formatting options for `Show` output. The test for this exercise expects the following whitespace style. This happens to match the default formatting of generic show, so you only need to make note of this if you're planning on writing this instance manually.
 

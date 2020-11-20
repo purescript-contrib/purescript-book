@@ -77,10 +77,9 @@ data Tree a
 
 -- Solution using derived instances:
 
-derive instance genericTree :: Generic (Tree a) _
+derive instance eqTree :: Eq a => Eq (Tree a)
 
-instance eqTree :: Eq a => Eq (Tree a) where
-  eq t = genericEq t
+derive instance genericTree :: Generic (Tree a) _
 
 instance showTree :: Show a => Show (Tree a) where
   show t = genericShow t
@@ -90,22 +89,16 @@ instance showTree :: Show a => Show (Tree a) where
 
 instance eqTree :: Eq a => Eq (Tree a) where
   eq Leaf Leaf = true
-  eq (Branch t1a va t2a) (Branch t1b vb t2b) =
-    t1a == t1b
-      && va == vb
+  eq (Branch t1a va t2a) (Branch t1b vb t2b)
+      =  t1a == t1b
+      && va  == vb
       && t2a == t2b
   eq _ _ = false
 
 instance showTree :: Show a => Show (Tree a) where
   show Leaf = "Leaf"
   show (Branch t1 v t2) =
-    "(Branch "
-      <> show t1
-      <> " "
-      <> show v
-      <> " "
-      <> show t2
-      <> ")"
+    "(Branch " <> show t1 <> " " <> show v <> " " <> show t2 <> ")"
 -}
 
 -- Exercise 2
