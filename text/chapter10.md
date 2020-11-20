@@ -24,7 +24,7 @@ The source code for this module is a continuation of the source code from chapte
 
 This chapter introduces the `argonaut` library as a dependency. This library is used for encoding and decoding JSON.
 
-The exercises for this chapter should be written in `test/Solutions.purs` and can be checked against the unit tests in `test/Main.purs` by running `spago test`.
+The exercises for this chapter should be written in `test/MySolutions.purs` and can be checked against the unit tests in `test/Main.purs` by running `spago test`.
 
 The Address Book app can be launched with `parcel src/index.html --open`. It uses the same workflow from Chapter 8, so refer to that chapter for more detailed instructions.
 
@@ -54,17 +54,13 @@ This function has the correct runtime representation for the function type `Stri
 We can assign this type to the function with the following foreign import declaration:
 
 ```haskell
-module Test.URI where
-
-foreign import encodeURIComponent :: String -> String
+{{#include ../exercises/chapter10/test/URI.purs}}
 ```
 
 We also need to write a foreign JavaScript module. If the module above is saved as `test/URI.purs`, then the foreign JavaScript module should be saved as `test/URI.js`:
 
 ```javascript
-"use strict";
-
-exports.encodeURIComponent = encodeURIComponent;
+{{#include ../exercises/chapter10/test/URI.js}}
 ```
 
 Spago will find `.js` files in the `src` and `test` directories, and provide them to the compiler as foreign JavaScript modules.
@@ -76,23 +72,23 @@ With these two pieces in place, we can now use the `encodeURIComponent` function
 ```text
 $ spago repl
 
-> import Data.URI
+> import Test.URI
 > encodeURIComponent "Hello World"
 "Hello%20World"
 ```
 
 We can also define our own functions in foreign modules. Here's an example of how to create and call a custom JavaScript function that squares a `Number`:
 
-`src/Test/Examples.js`:
+`test/Examples.js`:
+
 ```js
 "use strict";
 
-exports.square = function(n) {
-  return n * n;
-};
+{{#include ../exercises/chapter10/test/Examples.js:square}}
 ```
 
-`src/Test/Examples.purs`:
+`test/Examples.purs`:
+
 ```hs
 module Test.Examples where
 
@@ -118,6 +114,7 @@ exports.diagonal = function(w, h) {
 ```
 
 Because PureScript uses curried functions of *single arguments*, we cannot directly import the `diagonal` function of *two arguments* like so:
+
 ```hs
 -- This will not work with above uncurried definition of diagonal
 foreign import diagonal :: Number -> Number -> Number
@@ -126,6 +123,7 @@ foreign import diagonal :: Number -> Number -> Number
 However, there are a few solutions to this dilemma:
 
 The first option is to import and run the function with an `Fn` wrapper from `Data.Function.Uncurried` (`Fn` and uncurried functions are discussed in more detail later):
+
 ```hs
 foreign import diagonal :: Fn2 Number Number Number
 ```
@@ -246,6 +244,7 @@ lebab --replace output/ --transform arrow,arrow-return
 ```
 
 This operation would convert the above `curriedAdd` function to:
+
 ```js
 var curriedAdd = n => m =>
   m + n | 0;
@@ -254,9 +253,9 @@ var curriedAdd = n => m =>
 The remaining examples in this book will use arrow functions instead of nested functions.
 
 ## Exercises
-1. (Medium) Write a JavaScript function `volumeFn` in the `Test.Solutions` module that finds the volume of a box. Use an `Fn` wrapper from `Data.Function.Uncurried`.
-2. (Medium) Rewrite `volumeFn` with arrow functions as `volumeArrow`.
 
+1. (Medium) Write a JavaScript function `volumeFn` in the `Test.MySolutions` module that finds the volume of a box. Use an `Fn` wrapper from `Data.Function.Uncurried`.
+2. (Medium) Rewrite `volumeFn` with arrow functions as `volumeArrow`.
 
 ## Passing Simple Types
 
@@ -329,6 +328,7 @@ $ spago repl
 Note that the above techniques require trusting that JavaScript will return the expected types, as PureScript is not able to apply type checking to JavaScript code. We will describe this type safety concern in more detail later on in the JSON section, as well as cover techniques to protect against type mismatches.
 
 ## Exercises
+
 1. (Medium) Write a JavaScript function `cumulativeSumsComplex` (and corresponding PureScript foreign import) that takes an `Array` of `Complex` numbers and returns the cumulative sum as another array of complex numbers.
 
 ## Beyond Simple Types
@@ -347,6 +347,7 @@ However, there is a problem with this function. We might try to give it the type
 We can instead return a `Maybe` value to handle this corner case.
 
 It is tempting to write the following:
+
 ```js
 // Don't do this
 exports.maybeHead = arr => {
@@ -384,19 +385,24 @@ maybeHead arr = maybeHeadImpl Just Nothing arr
 ```
 
 Note that we wrote:
+
 ```hs
 forall a. (forall x. x -> Maybe x) -> (forall x. Maybe x) -> Array a -> Maybe a
 ```
+
 and not:
+
 ```hs
 forall a. ( a -> Maybe a) -> Maybe a -> Array a -> Maybe a
 ```
 
 While both forms work, the latter is more vulnerable to unwanted inputs in place of `Just` and `Nothing`.
 For example, in the more vulnerable case we could call it as follows:
+
 ```hs
 maybeHeadImpl (\_ -> Just 1000) (Just 1000) [1,2,3]
 ```
+
 which returns `Just 1000` for any array input.
 This vulnerability is allowed because `(\_ -> Just 1000)` and `Just 1000` match the signatures of `(a -> Maybe a)` and `Maybe a` respectively when `a` is `Int` (based on input array).
 
@@ -475,7 +481,9 @@ exports.unsafeHead = arr => {
 ```
 
 ## Exercises
+
 1. (Medium) Given a record that represents a quadratic polynomial `a*x^2 + b*x + c = 0`:
+
     ```hs
     type Quadratic = {
       a :: Number,
@@ -483,6 +491,7 @@ exports.unsafeHead = arr => {
       c :: Number
     }
     ```
+
     Write a JavaScript function `quadraticRootsImpl` and a wrapper `quadraticRoots :: Quadratic -> Pair Complex` that uses the quadratic formula to find the roots of this polynomial. Return the two roots as a `Pair` of `Complex` numbers. *Hint:* Use the `quadraticRoots` wrapper to pass a constructor for `Pair` to `quadraticRootsImpl`.
 
 ## Using Type Class Member Functions
@@ -497,23 +506,27 @@ exports.boldImpl = show => x =>
 ```
 
 Then we write the matching signature:
+
 ```hs
 foreign import boldImpl :: forall a. (a -> String) -> a -> String
 ```
 
 and a wrapper function that passes the correct instance of `show`:
+
 ```hs
 bold :: forall a. Show a => a -> String
 bold x = boldImpl show x
 ```
 
 Alternatively in point-free form:
+
 ```hs
 bold :: forall a. Show a => a -> String
 bold = boldImpl show
 ```
 
 We can then call the wrapper:
+
 ```text
 $ spago repl
 
@@ -522,7 +535,6 @@ $ spago repl
 > bold (Tuple 1 "Hat")
 "(TUPLE 1 \"HAT\")!!!"
 ```
-
 
 Here's another example demonstrating passing multiple functions, including a function of multiple arguments (`eq`):
 
@@ -562,6 +574,7 @@ exports.yellImpl = show => x => () =>
 ```
 
 The new foreign import is the same as before, except that the return type changed from `String` to `Effect Unit`.
+
 ```hs
 foreign import yellImpl :: forall a. (a -> String) -> a -> Effect Unit
 
@@ -614,17 +627,20 @@ Diagonal is 5
 Promises in JavaScript translate directly to asynchronous effects in PureScript with the help of the `aff-promise` library. See that library's [documentation](https://pursuit.purescript.org/packages/purescript-aff-promise) for more information. We'll just go through a few examples.
 
 Suppose we want to use this JavaScript `wait` promise (or asynchronous function) in our PureScript project. It may be used to delay execution for `ms` milliseconds.
+
 ```js
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 ```
 
 We just need to export it wrapped as an `Effect` (function of zero arguments):
+
 ```js
 exports.sleepImpl = ms => () =>
   wait(ms);
 ```
 
 Then import it as follows:
+
 ```hs
 foreign import sleepImpl :: Int -> Effect (Promise Unit)
 
@@ -721,6 +737,7 @@ exports.addComplexBroken = a => b => {
 ```
 
 We can use the original type signatures, and the code will still compile, despite the fact that the return types are incorrect.
+
 ```hs
 foreign import cumulativeSumsBroken :: Array Int -> Array Int
 
@@ -728,6 +745,7 @@ foreign import addComplexBroken :: Complex -> Complex -> Complex
 ```
 
 We can even execute the code, which might either produce unexpected results or a runtime error:
+
 ```text
 $ spago repl
 
@@ -759,20 +777,22 @@ Let's use JSON to make our PureScript code more impervious to bugs in JavaScript
 
 The `argonaut` library contains the JSON decoding and encoding capabilities we need. That library has excellent [documentation](https://github.com/purescript-contrib/purescript-argonaut#documentation), so we will only cover basic usage in this book.
 
-
 If we create an alternate foreign import that defines the return type as `Json`:
+
 ```hs
 foreign import cumulativeSumsJson :: Array Int -> Json
 foreign import addComplexJson :: Complex -> Complex -> Json
 ```
 
 Note that we're simply pointing to our existing broken functions:
+
 ```js
 exports.cumulativeSumsJson = exports.cumulativeSumsBroken
 exports.addComplexJson = exports.addComplexBroken
 ```
 
 And then write a wrapper to decode the returned foreign `Json` value:
+
 ```hs
 cumulativeSumsDecoded :: Array Int ->  Either String (Array Int)
 cumulativeSumsDecoded arr = decodeJson $ cumulativeSumsJson arr
@@ -782,6 +802,7 @@ addComplexDecoded a b = decodeJson $ addComplexJson a b
 ```
 
 Then any values that can't be successfully decoded to our return type appear as a `Left` error `String`:
+
 ```text
 $ spago repl
 
@@ -797,6 +818,7 @@ $ spago repl
 If we call the working versions, a `Right` value is returned.
 
 Try this yourself by modifying `test/Examples.js` with the following change to point to the working versions before running the next repl block.
+
 ```js
 exports.cumulativeSumsJson = exports.cumulativeSums
 exports.addComplexJson = exports.addComplex
@@ -817,6 +839,7 @@ $ spago repl
 Using JSON is also the easiest way to pass other structural types, such as `Map` and `Set` through the FFI. Note that since JSON only consists of booleans, numbers, strings, arrays, and objects of other JSON values, we can't write a `Map` and `Set` directly in JSON. But we can represent these structures as arrays (assuming the keys and values can also be represented in JSON), and then decode them back to `Map` or `Set`.
 
 Here's an example of a foreign function signature that modifies a `Map` of `String` keys and `Int` values, along with the wrapper function that handles JSON encoding and decoding.
+
 ```hs
 foreign import mapSetFooJson :: Json -> Json
 
@@ -825,6 +848,7 @@ mapSetFoo m = decodeJson $ mapSetFooJson $ encodeJson m
 ```
 
 Note that this is a prime use case for function composition. Both of these alternatives are equivalent to the above:
+
 ```hs
 mapSetFoo :: Map String Int -> Either String (Map String Int)
 mapSetFoo = decodeJson <<< mapSetFooJson <<< encodeJson
@@ -834,6 +858,7 @@ mapSetFoo = encodeJson >>> mapSetFooJson >>> decodeJson
 ```
 
 Here is the JavaScript implementation. Note the `Array.from` step which is necessary to convert the JavaScript `Map` into a JSON-friendly format before decoding converts it back to a PureScript `Map`.
+
 ```js
 exports.mapSetFooJson = j => {
   let m = new Map(j);
@@ -843,6 +868,7 @@ exports.mapSetFooJson = j => {
 ```
 
 Now we can send and receive a `Map` over the FFI:
+
 ```text
 $ spago repl
 
@@ -894,11 +920,13 @@ _Hint_: You'll need to write a `DecodeJson` instance for `Pair`. Consult the [ar
 ## Address book
 
 In this section we will apply our newly-acquired FFI and JSON knowledge to build on our address book example from chapter 8. We will add the following features:
+
 - A Save button at the bottom of the form that, when clicked, serializes the state of the form to JSON and saves it in local storage.
 - Automatic retrieval of the JSON document from local storage upon page reload. The form fields are populated with the contents of this document.
 - A pop-up alert if there is an issue saving or loading the form state.
 
 We'll start by creating FFI wrappers for the following Web Storage APIs in our `Effect.Storage` module:
+
 - `setItem` takes a key and a value (both strings), and returns a computation which stores (or updates) the value in local storage at the specified key.
 - `getItem` takes a key, and attempts to retrieve the associated value from local storage. However, since the `getItem` method on `window.localStorage` can return `null`, the return type is not `String`, but `Json`.
 
@@ -919,6 +947,7 @@ exports.getItem = key => () =>
 ```
 
 We'll create a save button like so:
+
 ```hs
 saveButton :: R.JSX
 saveButton =
@@ -935,6 +964,7 @@ saveButton =
 ```
 
 And write our validated `person` as a JSON string with `setItem` in the `validateAndSave` function:
+
 ```hs
 validateAndSave :: Effect Unit
 validateAndSave = do
@@ -947,60 +977,57 @@ validateAndSave = do
 ```
 
 Note that if we attempt to compile at this stage, we'll encounter the following error:
+
 ```text
   No type class instance was found for
     Data.Argonaut.Encode.Class.EncodeJson PhoneType
 ```
 
-This is because `PhoneType` in the `Person` record needs an `EncodeJson` instance. We'll just derive a generic encode instance, and an encode instance too while we're at it. More information how this works is available in the argonaut docs:
+This is because `PhoneType` in the `Person` record needs an `EncodeJson` instance. We'll just derive a generic encode instance, and a decode instance too while we're at it. More information how this works is available in the argonaut docs:
+
 ```hs
-import Data.Argonaut (class DecodeJson, class EncodeJson)
-import Data.Argonaut.Encode.Generic.Rep (genericEncodeJson)
-import Data.Argonaut.Decode.Generic.Rep (genericDecodeJson)
-import Data.Generic.Rep (class Generic)
+{{#include ../exercises/chapter10/src/Data/AddressBook.purs:import}}
 
-derive instance genericPhoneType :: Generic PhoneType _
-
-instance encodeJsonPhoneType :: EncodeJson PhoneType where
-  encodeJson = genericEncodeJson
-
-instance decodeJsonPhoneType :: DecodeJson PhoneType where
-  decodeJson = genericDecodeJson
+{{#include ../exercises/chapter10/src/Data/AddressBook.purs:PhoneType_generic}}
 ```
 
 Now we can save our `person` to local storage, but this isn't very useful unless we can retrieve the data. We'll tackle that next.
 
 We'll start with retrieving the "person" string from local storage:
+
 ```hs
 item <- getItem "person"
 ```
 
 Then we'll create a helper function to handle converting the string from local storage to our `Person` record. Note that this string in storage may be `null`, so we represent it as a foreign `Json` until it is successfully decoded as a `String`. There are a number of other conversion steps along the way - each of which return an `Either` value, so it makes sense to organize these together in a `do` block.
+
 ```hs
 processItem :: Json -> Either String Person
 processItem item = do
   jsonString <- decodeJson item
-  j <- jsonParser jsonString
-  (p :: Person) <- decodeJson j
-  pure p
+  j          <- jsonParser jsonString
+  decodeJson j
 ```
 
 Then we inspect this result to see if it succeeded. If it failed, we'll log the errors and use our default `examplePerson`, otherwise we'll use the person retrieved from local storage.
+
 ```hs
 initialPerson <- case processItem item of
-  Left err -> do
+  Left  err -> do
     log $ "Error: " <> err <> ". Loading examplePerson"
     pure examplePerson
-  Right p -> pure p
+  Right p   -> pure p
 ```
 
 Finally, we'll pass this `initialPerson` to our component via the `props` record:
+
 ```hs
 -- Create JSX node from react component.
 app = element addressBookApp { initialPerson }
 ```
 
 And pick it up on the other side to use in our state hook:
+
 ```hs
 mkAddressBookApp :: Effect (ReactComponent { initialPerson :: Person })
 mkAddressBookApp =
@@ -1009,14 +1036,15 @@ mkAddressBookApp =
 ```
 
 As a finishing touch, we'll improve the quality of our error messages by appending to the `String` of each `Left` value with `lmap`.
+
 ```hs
 processItem :: Json -> Either String Person
 processItem item = do
   jsonString <- lmap ("No string in local storage: " <> _) $ decodeJson item
-  j <- lmap ("Cannot parse JSON string: " <> _) $ jsonParser jsonString
-  (p :: Person) <- lmap ("Cannot decode Person: " <> _) $ decodeJson j
-  pure p
+  j          <- lmap ("Cannot parse JSON string: "   <> _) $ jsonParser jsonString
+  lmap               ("Cannot decode Person: "       <> _) $ decodeJson j
 ```
+
 Only the first error should ever occur during normal operation of this app. You can trigger the other errors by opening your web browser's dev tools, editing the saved "person" string in local storage, and refreshing the page. How you modify the JSON string determines which error is triggered. See if you can trigger each of them.
 
 That covers local storage. Next we'll implement the `alert` action, which is very similar to the `log` action from the `Effect.Console` module. The only difference is that the `alert` action uses the `window.alert` method, whereas the `log` action uses the `console.log` method. As such, `alert` can only be used in environments where `window.alert` is defined, such as a web browser.
@@ -1031,10 +1059,12 @@ exports.alert = msg => () =>
 ```
 
 We want this alert to appear when either:
+
 - A user attempts to save a form with validation errors.
 - The state cannot be retrieved from local storage.
 
 That is accomplished by simply replacing `log` with `alert` on these lines:
+
 ```hs
 Left errs -> alert $ "There are " <> show (length errs) <> " validation errors."
 
@@ -1051,6 +1081,7 @@ alert $ "Error: " <> err <> ". Loading examplePerson"
 ## Conclusion
 
 In this chapter, we've learned how to work with foreign JavaScript code from PureScript and we've seen the issues involved with writing trustworthy code using the FFI:
+
 - We've seen the importance of ensuring that foreign functions have correct representations.
 - We learned how to deal with corner cases like null values and other types of JavaScript data, by using foreign types, or the `Json` data type.
 - We saw how to safely serialize and deserialize JSON data.
@@ -1290,7 +1321,6 @@ shout(require('Data.Show').showNumber)(42);
 
      What can you say about the expressions which have these types?
  1. (Medium) Try using the functions defined in the `arrays` package, calling them from JavaScript, by compiling the library using `spago build` and importing modules using the `require` function in NodeJS. _Hint_: you may need to configure the output path so that the generated CommonJS modules are available on the NodeJS module path.
-
 
 ## Representing Side Effects
 
