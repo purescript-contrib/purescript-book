@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.Examples
-import Test.Solutions
+import Test.MySolutions
 import Control.Monad.Free (Free)
 import Data.Argonaut (decodeJson, encodeJson)
 import Data.Either (Either(..), isLeft)

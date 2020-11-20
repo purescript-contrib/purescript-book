@@ -106,7 +106,7 @@ mkAddressBookApp =
       validateAndSave = do
         log "Running validators"
         case validatePerson' person of
-          Left errs -> alert $ "There are " <> show (length errs) <> " validation errors."
+          Left  errs        -> alert $ "There are " <> show (length errs) <> " validation errors."
           Right validPerson -> do
             setItem "person" $ stringify $ encodeJson validPerson
             log "Saved"
@@ -157,9 +157,8 @@ mkAddressBookApp =
 processItem :: Json -> Either String Person
 processItem item = do
   jsonString <- lmap ("No string in local storage: " <> _) $ decodeJson item
-  j <- lmap ("Cannot parse JSON string: " <> _) $ jsonParser jsonString
-  (p :: Person) <- lmap ("Cannot decode Person: " <> _) $ decodeJson j
-  pure p
+  j          <- lmap ("Cannot parse JSON string: "   <> _) $ jsonParser jsonString
+  lmap               ("Cannot decode Person: "       <> _) $ decodeJson j
 
 main :: Effect Unit
 main = do
@@ -178,10 +177,10 @@ main = do
       -- Retrieve person from local storage
       item <- getItem "person"
       initialPerson <- case processItem item of
-        Left err -> do
+        Left  err -> do
           alert $ "Error: " <> err <> ". Loading examplePerson"
           pure examplePerson
-        Right p -> pure p
+        Right p   -> pure p
       let
         -- Create JSX node from react component.
         app = element addressBookApp { initialPerson }

@@ -1,6 +1,7 @@
 module Test.Examples where
 
 import Prelude
+
 import Control.Promise (Promise, toAffE)
 import Data.Argonaut (Json, decodeJson, encodeJson)
 import Data.Either (Either)

@@ -1,4 +1,4 @@
-module Test.Solutions where
+module Test.MySolutions where
 
 import Prelude
 import Control.Alt (alt)
