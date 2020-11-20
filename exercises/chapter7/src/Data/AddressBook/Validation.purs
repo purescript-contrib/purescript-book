@@ -8,7 +8,6 @@ import Data.String.Regex (Regex, test, regex)
 import Data.String.Regex.Flags (noFlags)
 import Data.Traversable (traverse)
 import Data.Validation.Semigroup (V, invalid)
-import Partial.Unsafe (unsafePartial)
 
 -----------------
 -- Some simple early examples returning `Either` instead of `V`:
@@ -65,18 +64,16 @@ lengthIs _     _   value = pure value
 -- ANCHOR_END: lengthIs
 
 -- ANCHOR: phoneNumberRegex
-phoneNumberRegex :: Regex
-phoneNumberRegex =
-  unsafePartial case regex "^\\d{3}-\\d{3}-\\d{4}$" noFlags of
-    Right r -> r
+phoneNumberRegex :: Either String Regex
+phoneNumberRegex = regex "^\\d{3}-\\d{3}-\\d{4}$" noFlags
 -- ANCHOR_END: phoneNumberRegex
 
 -- ANCHOR: matches
-matches :: String -> Regex -> String -> V Errors String
-matches _     regex value | test regex value =
-  pure value
-matches field _     _     =
-  invalid [ "Field '" <> field <> "' did not match the required format" ]
+matches :: String -> Either String Regex -> String -> V Errors String
+matches _    (Right regex) value | test regex value 
+                                 = pure value
+matches _    (Left  error) _     = invalid [ "Malformed regex: " <> error ]
+matches field _            _     = invalid [ "Field '" <> field <> "' did not match the required format" ]
 -- ANCHOR_END: matches
 
 -- ANCHOR: validateAddress

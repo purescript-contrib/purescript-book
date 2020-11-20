@@ -3,6 +3,7 @@ module Test.Main where
 import Prelude
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+
 import Control.Monad.Writer (runWriter, tell)
 import Data.AddressBook (PhoneType(..), address, phoneNumber)
 import Data.Array ((..))
@@ -102,8 +103,8 @@ Note to reader: Delete this line to expand comment block -}
         let
           stateTest str exp =
             test (show str) do
-              Assert.equal exp
-                $ R.test stateRegex str
+              Assert.equal (Right exp)
+                $ R.test <$> stateRegex <*> Right str
         stateTest "CA" true
         stateTest "Ca" true
         stateTest "C" false
@@ -113,8 +114,8 @@ Note to reader: Delete this line to expand comment block -}
         let
           nonEmptyTest str exp =
             test (show str) do
-              Assert.equal exp
-                $ R.test nonEmptyRegex str
+              Assert.equal (Right exp)
+                $ R.test <$> nonEmptyRegex <*> Right str
         nonEmptyTest "Houston" true
         nonEmptyTest "My Street" true
         nonEmptyTest "Ñóñá" true

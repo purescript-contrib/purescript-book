@@ -4,7 +4,7 @@ import Prelude
 import Control.Apply (lift2)
 import Data.AddressBook (Address, PhoneNumber, address)
 import Data.AddressBook.Validation (Errors, matches, nonEmpty, validateAddress, validatePhoneNumbers)
-import Data.Either (Either(..))
+import Data.Either (Either)
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Eq (genericEq)
 import Data.Generic.Rep.Show (genericShow)
@@ -13,7 +13,6 @@ import Data.String.Regex (Regex, regex)
 import Data.String.Regex.Flags (noFlags)
 import Data.Traversable (class Foldable, class Traversable, foldMap, foldl, foldr, sequence, traverse)
 import Data.Validation.Semigroup (V)
-import Partial.Unsafe (unsafePartial)
 
 {-| Exercise Group 1 -}
 -- Exercise 1
@@ -50,24 +49,20 @@ combineMaybe _ = pure Nothing
 
 {-| Exercise Group 2 -}
 -- Exercise 1
-stateRegex :: Regex
-stateRegex =
-  unsafePartial case regex "^[a-zA-Z]{2}$" noFlags of
-    Right r -> r
+stateRegex :: Either String Regex
+stateRegex = regex "^[a-zA-Z]{2}$" noFlags
 
 -- Exercise 2
-nonEmptyRegex :: Regex
-nonEmptyRegex =
-  unsafePartial case regex "[^\\s]$" noFlags of
-    Right r -> r
+nonEmptyRegex :: Either String Regex
+nonEmptyRegex = regex "[^\\s]$" noFlags
 
 -- Exercise 3
 validateAddressImproved :: Address -> V Errors Address
 validateAddressImproved a =
   address
-    <$> (matches "Street" nonEmptyRegex a.street *> pure a.street)
-    <*> (matches "City" nonEmptyRegex a.city *> pure a.city)
-    <*> (matches "State" stateRegex a.state *> pure a.state)
+    <$> matches "Street" nonEmptyRegex a.street
+    <*> matches "City"   nonEmptyRegex a.city
+    <*> matches "State"  stateRegex    a.state
 
 {-| Exercise Group 3 -}
 -- Exercise 1
