@@ -1,1 +1,6 @@
 deploy_key
+package-lock.json
+dist
+.cache
+/index.html
+/book
