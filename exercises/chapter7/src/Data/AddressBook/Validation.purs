@@ -72,7 +72,7 @@ phoneNumberRegex = regex "^\\d{3}-\\d{3}-\\d{4}$" noFlags
 matches :: String -> Either String Regex -> String -> V Errors String
 matches _    (Right regex) value | test regex value 
                                  = pure value
-matches _    (Left  error) _     = invalid [ "Malformed regex: " <> error ]
+matches _    (Left  error) _     = invalid [ error ]
 matches field _            _     = invalid [ "Field '" <> field <> "' did not match the required format" ]
 -- ANCHOR_END: matches
 
