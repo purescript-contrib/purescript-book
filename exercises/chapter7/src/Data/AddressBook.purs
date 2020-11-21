@@ -21,9 +21,9 @@ data PhoneType
   | OtherPhone
 -- ANCHOR_END: PhoneType
 
-{-| derive has not been discussed yet but will be
-covered in Ch 10.  Here it is needed by the unit
-tests to define how to compare the PhoneType values
+{-
+Eq and Show instances are needed by unit tests to
+compare and report differences between PhoneType values
 (HomePhone, WorkPhone, etc).
 -}
 derive instance eqPhoneType :: Eq PhoneType
