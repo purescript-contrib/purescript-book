@@ -13,7 +13,7 @@ This module's project introduces the following new dependencies:
 
 The source code for the chapter is broken up into a set of modules, each of which defines a `main` method. Different sections of this chapter are implemented in different files, and the `Main` module can be changed by modifying the Spago build command to run the appropriate file's `main` method at each point.
 
-The HTML file `html/index.html` contains a single `canvas` element which will be used in each example, and a `script` element to load the compiled PureScript code. To test the code for each section, open the HTML file in your browser.
+The HTML file `html/index.html` contains a single `canvas` element which will be used in each example, and a `script` element to load the compiled PureScript code. To test the code for each section, open the HTML file in your browser. Because most exercises target the browser, there are no unit tests for this chapter.
 
 ## Simple Shapes
 
@@ -681,5 +681,3 @@ data Scene
 This approach is taken in the `drawing` package, and it brings the flexibility of being able to manipulate the scene as data in various ways before rendering.
 
 For examples of games rendered to the canvas, see the "Behavior" and "Signal" recipes in the [cookbook](https://github.com/JordanMartinez/purescript-cookbook/blob/master/README.md#recipes).
-
-In the next chapter, we will see how to implement libraries like `canvas` which wrap existing JavaScript functionality, by using PureScript's _foreign function interface_.
