@@ -26,11 +26,12 @@ data PhoneType
   | OtherPhone
 
 -- ANCHOR: PhoneType_generic
-derive instance genericPhoneType    :: Generic    PhoneType _
-instance        encodeJsonPhoneType :: EncodeJson PhoneType where encodeJson = genericEncodeJson
-instance        decodeJsonPhoneType :: DecodeJson PhoneType where decodeJson = genericDecodeJson
+derive instance genericPhoneType :: Generic PhoneType _
+
+instance encodeJsonPhoneType :: EncodeJson PhoneType where encodeJson = genericEncodeJson
+instance decodeJsonPhoneType :: DecodeJson PhoneType where decodeJson = genericDecodeJson
 -- ANCHOR_END: PhoneType_generic
-instance        showPhoneType       :: Show       PhoneType where show       = genericShow
+instance showPhoneType       :: Show       PhoneType where show       = genericShow
 
 type PhoneNumber
   = { "type" :: PhoneType
