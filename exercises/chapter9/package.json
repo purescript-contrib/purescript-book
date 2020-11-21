@@ -1,7 +1,7 @@
 {
   "name": "purescript-book-chapter12",
   "version": "0.1.0",
-  "description": "Callback Hell",
+  "description": "Asynchronous Effects",
   "main": "",
   "private": true,
   "author": "Phil Freeman",
