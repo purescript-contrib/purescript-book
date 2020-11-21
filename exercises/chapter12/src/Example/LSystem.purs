@@ -47,44 +47,44 @@ type State =
   }
 -- ANCHOR_END: state
 
+-- ANCHOR: initial
+initial :: Sentence
+initial = [F, R, R, F, R, R, F, R, R]
+-- ANCHOR_END: initial
+
+-- ANCHOR: productions
+productions :: Letter -> Sentence
+productions L = [L]
+productions R = [R]
+productions F = [F, L, F, R, R, F, L, F]
+-- ANCHOR_END: productions
+
+-- ANCHOR: initialState
+initialState :: State
+initialState = { x: 120.0, y: 200.0, theta: 0.0 }
+-- ANCHOR_END: initialState
+
 main :: Effect Unit
 main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
   let
--- ANCHOR: initial
-    initial :: Sentence
-    initial = [F, R, R, F, R, R, F, R, R]
--- ANCHOR_END: initial
-
--- ANCHOR: productions
-    productions :: Letter -> Sentence
-    productions L = [L]
-    productions R = [R]
-    productions F = [F, L, F, R, R, F, L, F]
--- ANCHOR_END: productions
-
--- ANCHOR: interpret_anno
+    -- ANCHOR: interpret_anno
     interpret :: State -> Letter -> Effect State
--- ANCHOR_END: interpret_anno
--- ANCHOR: interpretLR
+    -- ANCHOR_END: interpret_anno
+    -- ANCHOR: interpretLR
     interpret state L = pure $ state { theta = state.theta - Math.tau / 6.0 }
     interpret state R = pure $ state { theta = state.theta + Math.tau / 6.0 }
--- ANCHOR_END: interpretLR
--- ANCHOR: interpretF
+    -- ANCHOR_END: interpretLR
+    -- ANCHOR: interpretF
     interpret state F = do
       let x = state.x + Math.cos state.theta * 1.5
           y = state.y + Math.sin state.theta * 1.5
       moveTo ctx state.x state.y
       lineTo ctx x y
       pure { x, y, theta: state.theta }
--- ANCHOR_END: interpretF
-
--- ANCHOR: initialState
-    initialState :: State
-    initialState = { x: 120.0, y: 200.0, theta: 0.0 }
--- ANCHOR_END: initialState
+    -- ANCHOR_END: interpretF
 
   setStrokeStyle ctx "#000"
 
