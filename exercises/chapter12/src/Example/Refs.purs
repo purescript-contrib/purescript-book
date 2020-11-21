@@ -28,6 +28,7 @@ render ctx count = void do
 
   setFillStyle ctx "#0F0"
 
+-- ANCHOR: withContext
   withContext ctx do
     let scaleX = Math.sin (toNumber count * Math.tau / 8.0) + 1.5
     let scaleY = Math.sin (toNumber count * Math.tau / 12.0) + 1.5
@@ -43,18 +44,23 @@ render ctx count = void do
       , width: 200.0
       , height: 200.0
       }
+-- ANCHOR_END: withContext
 
 main :: Effect Unit
 main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
+-- ANCHOR: clickCount
   clickCount <- Ref.new 0
+-- ANCHOR_END: clickCount
 
   render ctx 0
 
   node <- querySelector "#canvas"
   for_ node $ addEventListener "click" $ void do
     logShow "Mouse clicked!"
+-- ANCHOR: count
     count <- Ref.modify (\count -> count + 1) clickCount
+-- ANCHOR_END: count
     render ctx count

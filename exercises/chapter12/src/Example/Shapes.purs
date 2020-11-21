@@ -10,6 +10,7 @@ import Graphics.Canvas (closePath, lineTo, moveTo, fillPath,
 import Math as Math
 import Partial.Unsafe (unsafePartial)
 
+-- ANCHOR: translate
 translate
   :: forall r
    . Number
@@ -20,6 +21,7 @@ translate dx dy shape = shape
   { x = shape.x + dx
   , y = shape.y + dy
   }
+-- ANCHOR_END: translate
 
 main :: Effect Unit
 main = void $ unsafePartial do
@@ -45,6 +47,7 @@ main = void $ unsafePartial do
     , end: Math.tau * 2.0 / 3.0
     }
 
+-- ANCHOR: path
   setFillStyle ctx "#F00"
 
   fillPath ctx $ do
@@ -52,3 +55,4 @@ main = void $ unsafePartial do
     lineTo ctx 260.0 340.0
     lineTo ctx 340.0 340.0
     closePath ctx
+-- ANCHOR_END: path

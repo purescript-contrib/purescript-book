@@ -24,10 +24,7 @@ The `main` action starts, like in the other modules, by using the `getCanvasElem
 The `void` function takes a functor and replace its value with `Unit`. In the example it is used to make `main` to conform with its signature.
 
 ```haskell
-main :: Effect Unit
-main = void $ unsafePartial do
-  Just canvas <- getCanvasElementById "canvas"
-  ctx <- getContext2D canvas
+{{#include ../exercises/chapter12/src/Example/Rectangle.purs:main}}
 ```
 
 _Note_: the call to `unsafePartial` here is necessary since the pattern match on the result of `getCanvasElementById` is partial, matching only the `Just` constructor. For our purposes, this is fine, but in production code, we would probably want to match the `Nothing` constructor and provide an appropriate error message.
@@ -47,7 +44,7 @@ The graphics context `ctx` manages the state of the canvas, and provides methods
 We continue by setting the fill style to solid blue using the `setFillStyle` action. The longer hex notation of `#0000FF` may also be used for blue, but shorthand notation is easier for simple colors:
 
 ```haskell
-  setFillStyle ctx "#00F"
+{{#include ../exercises/chapter12/src/Example/Rectangle.purs:setFillStyle}}
 ```
 
 Note that the `setFillStyle` action takes the graphics context as an argument. This is a common pattern in the `Graphics.Canvas` module.
@@ -61,12 +58,7 @@ fillPath :: forall a. Context2D -> Effect a -> Effect a
 `fillPath` takes a graphics context, and another action which builds the path to render. To build a path, we can use the `rect` action. `rect` takes a graphics context, and a record which provides the position and size of the rectangle:
 
 ```haskell
-  fillPath ctx $ rect ctx
-    { x: 250.0
-    , y: 250.0
-    , width: 100.0
-    , height: 100.0
-    }
+{{#include ../exercises/chapter12/src/Example/Rectangle.purs:fillPath}}
 ```
 
 Build the rectangle example, providing `Example.Rectangle` as the name of the main module:
@@ -127,16 +119,7 @@ Notice that both the `Rectangle` and `Arc` record types contain `x` and `y` prop
 For example, the `Shapes` module defines a `translate` function which translates a shape by modifying its `x` and `y` properties:
 
 ```haskell
-translate
-  :: forall r
-   . Number
-  -> Number
-  -> { x :: Number, y :: Number | r }
-  -> { x :: Number, y :: Number | r }
-translate dx dy shape = shape
-  { x = shape.x + dx
-  , y = shape.y + dy
-  }
+{{#include ../exercises/chapter12/src/Example/Shapes.purs:translate}}
 ```
 
 Notice the row-polymorphic type. It says that `translate` accepts any record with `x` and `y` properties _and any other properties_, and returns the same type of record. The `x` and `y` fields are updated, but the rest of the fields remain unchanged.
@@ -148,13 +131,7 @@ The `translate` function can be used with both the `Rectangle` and `Arc` records
 The third type of path rendered in the `Shapes` example is a piecewise-linear path. Here is the corresponding code:
 
 ```haskell
-  setFillStyle "#F00" ctx
-
-  fillPath ctx $ do
-    moveTo ctx 300.0 260.0
-    lineTo ctx 260.0 340.0
-    lineTo ctx 340.0 340.0
-    closePath ctx
+{{#include ../exercises/chapter12/src/Example/Shapes.purs:path}}
 ```
 
 There are three functions in use here:
@@ -209,36 +186,25 @@ The `Example/Random.purs` file contains an example which uses the `Effect` monad
 The `main` action obtains a reference to the graphics context as before, and then sets the stroke and fill styles:
 
 ```haskell
-  setFillStyle ctx "#F00"
-  setStrokeStyle ctx "#000"
+{{#include ../exercises/chapter12/src/Example/Random.purs:style}}
 ```
 
 Next, the code uses the `for_` function to loop over the integers between `0` and `100`:
 
 ```haskell
-  for_ (1 .. 100) \_ -> do
+{{#include ../exercises/chapter12/src/Example/Random.purs:for}}
 ```
 
 On each iteration, the do notation block starts by generating three random numbers distributed between `0` and `1`. These numbers represent the `x` and `y` coordinates, and the radius of a circle:
 
 ```haskell
-    x <- random
-    y <- random
-    r <- random
+{{#include ../exercises/chapter12/src/Example/Random.purs:random}}
 ```
 
 Next, for each circle, the code creates an `Arc` based on these parameters and finally fills and strokes the arc with the current styles:
 
 ```haskell
-    let path = arc ctx
-         { x     : x * 600.0
-         , y     : y * 600.0
-         , radius: r * 50.0
-         , start : 0.0
-         , end   : Math.tau
-         }
-    fillPath ctx path
-    strokePath ctx path
+{{#include ../exercises/chapter12/src/Example/Random.purs:path}}
 ```
 
 Build this example by specifying the `Example.Random` module as the main module:
@@ -362,33 +328,19 @@ The `Example/Refs.purs` file contains an example which uses a `Ref` to track mou
 The code starts by creating a new reference containing the value `0`, by using the `new` action:
 
 ```haskell
-  clickCount <- Ref.new 0
+{{#include ../exercises/chapter12/src/Example/Refs.purs:clickCount}}
 ```
 
 Inside the click event handler, the `modify` action is used to update the click count, and the updated value is returned.
 
 ```haskell
-    count <- Ref.modify (\count -> count + 1) clickCount
+{{#include ../exercises/chapter12/src/Example/Refs.purs:count}}
 ```
 
 In the `render` function, the click count is used to determine the transformation applied to a rectangle:
 
 ```haskell
-    withContext ctx do
-      let scaleX = Math.sin (toNumber count * Math.tau / 8.0) + 1.5
-      let scaleY = Math.sin (toNumber count * Math.tau / 12.0) + 1.5
-
-      translate ctx { translateX: 300.0, translateY:  300.0 }
-      rotate ctx (toNumber count * Math.tau / 36.0)
-      scale ctx { scaleX: scaleX, scaleY: scaleY }
-      translate ctx { translateX: -100.0, translateY: -100.0 }
-
-      fillPath ctx $ rect ctx
-        { x: 0.0
-        , y: 0.0
-        , width: 200.0
-        , height: 200.0
-        }
+{{#include ../exercises/chapter12/src/Example/Refs.purs:withContext}}
 ```
 
 This action uses `withContext` to preserve the original transformation, and then applies the following sequence of transformations (remember that transformations are applied bottom-to-top):
@@ -443,7 +395,7 @@ Let's translate this into the language of types and functions.
 We can represent our alphabet of letters with the following ADT:
 
 ```haskell
-data Letter = L | R | F
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:letter}}
 ```
 
 This data type defines one data constructor for each letter in our alphabet.
@@ -451,19 +403,15 @@ This data type defines one data constructor for each letter in our alphabet.
 How can we represent the initial sequence of letters? Well, that's just an array of letters from our alphabet, which we will call a `Sentence`:
 
 ```haskell
-type Sentence = Array Letter
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:sentence}}
 
-initial :: Sentence
-initial = [F, R, R, F, R, R, F, R, R]
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:initial}}
 ```
 
 Our production rules can be represented as a function from `Letter` to `Sentence` as follows:
 
 ```haskell
-productions :: Letter -> Sentence
-productions L = [L]
-productions R = [R]
-productions F = [F, L, F, R, R, F, L, F]
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:productions}}
 ```
 
 This is just copied straight from the specification above.
@@ -516,11 +464,7 @@ The type `s` also appears as an argument to, and as the return type of the inter
 In the case of our example, we can define use following type to represent the state:
 
 ```haskell
-type State =
-  { x :: Number
-  , y :: Number
-  , theta :: Number
-  }
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:state}}
 ```
 
 The properties `x` and `y` represent the current position of the path, and the `theta` property represents the current direction of the path, specified as the angle between the path direction and the horizontal axis, in radians.
@@ -528,8 +472,7 @@ The properties `x` and `y` represent the current position of the path, and the `
 The initial state of the system might be specified as follows:
 
 ```haskell
-initialState :: State
-initialState = { x: 120.0, y: 200.0, theta: 0.0 }
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:initialState}}
 ```
 
 Now let's try to implement the `lsystem` function. We will find that its definition is remarkably simple.
@@ -544,8 +487,7 @@ lsystem :: forall a s
         -> Int
         -> s
         -> Effect s
-lsystem init prod interpret n state = go init n
-  where
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:lsystem_impl}}
 ```
 
 The `go` function works by recursion on its second argument. There are two cases: when `n` is zero, and when `n` is non-zero.
@@ -553,13 +495,13 @@ The `go` function works by recursion on its second argument. There are two cases
 In the first case, the recursion is complete, and we simply need to interpret the current sentence according to the interpretation function. We have a sentence of type `Array a`, a state of type `s`, and a function of type `s -> a -> Effect s`. This sounds like a job for the `foldM` function which we defined earlier, and which is available from the `control` package:
 
 ```haskell
-  go s 0 = foldM interpret state s
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:lsystem_go_s_0}}
 ```
 
 What about in the non-zero case? In that case, we can simply apply the production rules to each letter of the current sentence, concatenate the results, and repeat by calling `go` recursively:
 
 ```haskell
-  go s n = go (concatMap prod s) (n - 1)
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:lsystem_go_s_i}}
 ```
 
 That's it! Note how the use of higher order functions like `foldM` and `concatMap` allowed us to communicate our ideas concisely.
@@ -569,14 +511,7 @@ However, we're not quite done. The type we have given is actually still too spec
 Here is the more general type of `lsystem`, as specified in the accompanying source code for this chapter:
 
 ```haskell
-lsystem :: forall a m s
-         . Monad m
-        => Array a
-        -> (a -> Array a)
-        -> (s -> a -> m s)
-        -> Int
-        -> s
-        -> m s
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:lsystem_anno}}
 ```
 
 We can understand this type as saying that our interpretation function is free to have any side-effects at all, captured by the monad `m`. It might render to the canvas, or print information to the console, or support failure or multiple return values. The reader is encouraged to try writing L-systems which use these various types of side-effect.
@@ -586,25 +521,19 @@ This function is a good example of the power of separating data from implementat
 Let's complete our example by implementing its interpretation function. The type of `lsystem` tells us that its type signature must be `s -> a -> m s` for some types `a` and `s` and a type constructor `m`. We know that we want `a` to be `Letter` and `s` to be `State`, and for the monad `m` we can choose `Effect`. This gives us the following type:
 
 ```haskell
-interpret :: State -> Letter -> Effect State
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:interpret_anno}}
 ```
 
 To implement this function, we need to handle the three data constructors of the `Letter` type. To interpret the letters `L` (move left) and `R` (move right), we simply have to update the state to change the angle `theta` appropriately:
 
 ```haskell
-interpret state L = pure $ state { theta = state.theta - Math.tau / 6.0 }
-interpret state R = pure $ state { theta = state.theta + Math.tau / 6.0 }
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:interpretLR}}
 ```
 
 To interpret the letter `F` (move forward), we can calculate the new position of the path, render a line segment, and update the state, as follows:
 
 ```haskell
-interpret state F = do
-  let x = state.x + Math.cos state.theta * 1.5
-      y = state.y + Math.sin state.theta * 1.5
-  moveTo ctx state.x state.y
-  lineTo ctx x y
-  pure { x, y, theta: state.theta }
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:interpretF}}
 ```
 
 Note that in the source code for this chapter, the `interpret` function is defined using a `let` binding inside the `main` function, so that the name `ctx` is in scope. It would also be possible to move the context into the `State` type, but this would be inappropriate because it is not a changing part of the state of the system.
@@ -612,7 +541,7 @@ Note that in the source code for this chapter, the `interpret` function is defin
 To render this L-system, we can simply use the `strokePath` action:
 
 ```haskell
-strokePath ctx $ lsystem initial productions interpret 5 initialState
+{{#include ../exercises/chapter12/src/Example/LSystem.purs:strokePath}}
 ```
 
 Compile the L-system example using
