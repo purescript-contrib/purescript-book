@@ -7,7 +7,6 @@ In this chapter, we will explore the implementation of _domain-specific language
 A domain-specific language is a language which is well-suited to development in a particular problem domain. Its syntax and functions are chosen to maximize readability of code used to express ideas in that domain. We have already seen a number of examples of domain-specific languages in this book:
 
 - The `Game` monad and its associated actions, developed in chapter 11, constitute a domain-specific language for the domain of _text adventure game development_.
-- The library of combinators which we wrote for the `Async` and `Parallel` functors in chapter 12 could be considered an example of a domain-specific language for the domain of _asynchronous programming_.
 - The `quickcheck` package, covered in chapter 13, is a domain-specific language for the domain of _generative testing_. Its combinators enable a particularly expressive notation for test properties.
 
 This chapter will take a more structured approach to some of standard techniques in the implementation of domain-specific languages. It is by no means a complete exposition of the subject, but should provide you with enough knowledge to build some practical DSLs for your own tasks.
