@@ -1,6 +1,8 @@
 module Data.AddressBook where
 
 import Prelude
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Show (genericShow)
 
 type Address
   = { street :: String
@@ -17,11 +19,10 @@ data PhoneType
   | CellPhone
   | OtherPhone
 
+derive instance genericPhoneType :: Generic PhoneType _
+
 instance showPhoneType :: Show PhoneType where
-  show HomePhone  = "HomePhone"
-  show WorkPhone  = "WorkPhone"
-  show CellPhone  = "CellPhone"
-  show OtherPhone = "OtherPhone"
+  show = genericShow
 
 type PhoneNumber
   = { "type" :: PhoneType
