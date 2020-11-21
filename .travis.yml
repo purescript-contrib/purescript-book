@@ -13,6 +13,15 @@ script:
   - travis_fold start "test"
   - ./scripts/testAll.sh
   - travis_fold end "test"
+  - travis_fold start "remove anchors"
+  - ./scripts/removeAnchors.sh
+  - travis_fold end "remove anchors"
+  - travis_fold start "test again"
+  - ./scripts/testAll.sh
+  - travis_fold end "test again"
+  - travis_fold start "reset solutions"
+  - ./scripts/resetSolutions.sh
+  - travis_fold end "reset solutions"
   - ./mdbook build
   - cp CNAME book/
 before_deploy:
