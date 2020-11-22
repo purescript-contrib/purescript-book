@@ -6,13 +6,13 @@ import Data.Foldable (foldl)
 import Global as Global
 import Math as Math
 
-data Point = Point
+type Point =
   { x :: Number
   , y :: Number
   }
 
 showPoint :: Point -> String
-showPoint (Point { x, y }) =
+showPoint { x, y } =
   "(" <> show x <> ", " <> show y <> ")"
 
 data Shape
@@ -32,12 +32,12 @@ showShape (Text loc text) =
   "Text [location: " <> showPoint loc <> ", text: " <> show text <> "]"
 
 origin :: Point
-origin = Point { x: 0.0, y: 0.0 }
+origin = { x: 0.0, y: 0.0 }
 
 getCenter :: Shape -> Point
 getCenter (Circle c r) = c
 getCenter (Rectangle c w h) = c
-getCenter (Line (Point s) (Point e)) = Point { x: (s.x + e.x) / 2.0, y: (s.y + e.y) / 2.0 }
+getCenter (Line s e) = (s + e) * {x: 0.5, y: 0.5}
 getCenter (Text loc text) = loc
 
 type Picture = Array Shape
@@ -61,25 +61,25 @@ showBounds (Bounds b) =
   "]"
 
 shapeBounds :: Shape -> Bounds
-shapeBounds (Circle (Point { x, y }) r) = Bounds
+shapeBounds (Circle { x, y } r) = Bounds
   { top:    y - r
   , left:   x - r
   , bottom: y + r
   , right:  x + r
   }
-shapeBounds (Rectangle (Point { x, y }) w h) = Bounds
+shapeBounds (Rectangle { x, y } w h) = Bounds
   { top:    y - h / 2.0
   , left:   x - w / 2.0
   , bottom: y + h / 2.0
   , right:  x + w / 2.0
   }
-shapeBounds (Line (Point p1) (Point p2)) = Bounds
+shapeBounds (Line p1 p2) = Bounds
   { top:    Math.min p1.y p2.y
   , left:   Math.min p1.x p2.x
   , bottom: Math.max p1.y p2.y
   , right:  Math.max p1.x p2.x
   }
-shapeBounds (Text (Point { x, y }) _) = Bounds
+shapeBounds (Text { x, y } _) = Bounds
   { top:    y
   , left:   x
   , bottom: y
@@ -133,11 +133,6 @@ derive instance boundsEq :: Eq Bounds
 
 instance boundsShow :: Show Bounds where
   show b = showBounds b
-
-derive instance pointEq :: Eq Point
-
-instance pointShow :: Show Point where
-  show p = showPoint p
 
 derive instance shapeEq :: Eq Shape
 
