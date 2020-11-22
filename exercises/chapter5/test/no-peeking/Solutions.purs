@@ -11,8 +11,6 @@ import Data.Picture
   , Shape(Circle, Rectangle, Line, Text)
   , bounds
   , getCenter
-  , getX
-  , getY
   , intersect
   , origin
   )
@@ -68,9 +66,7 @@ centerShape line@(Line (Point s) (Point e)) =
     (Point { x: e.x - deltaX, y: e.y - deltaY })
   )
   where
-  delta = getCenter line
-  deltaX = getX delta
-  deltaY = getY delta
+  (Point { x: deltaX, y: deltaY}) = getCenter line
 centerShape (Text loc text) = Text origin text
 
 scaleShape :: Number -> Shape -> Shape

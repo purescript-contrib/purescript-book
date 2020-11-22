@@ -11,12 +11,6 @@ data Point = Point
   , y :: Number
   }
 
-getX :: Point -> Number
-getX (Point p) = p.x
-
-getY :: Point -> Number
-getY (Point p) = p.y
-
 showPoint :: Point -> String
 showPoint (Point { x, y }) =
   "(" <> show x <> ", " <> show y <> ")"
