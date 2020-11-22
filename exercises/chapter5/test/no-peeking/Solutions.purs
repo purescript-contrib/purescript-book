@@ -62,11 +62,11 @@ centerShape (Circle c r) = Circle origin r
 centerShape (Rectangle c w h) = Rectangle origin w h
 centerShape line@(Line (Point s) (Point e)) =
   (Line
-    (Point { x: s.x - deltaX, y: s.y - deltaY })
-    (Point { x: e.x - deltaX, y: e.y - deltaY })
+    (Point (s - delta))
+    (Point (e - delta))
   )
   where
-  (Point { x: deltaX, y: deltaY}) = getCenter line
+  (Point delta) = getCenter line
 centerShape (Text loc text) = Text origin text
 
 scaleShape :: Number -> Shape -> Shape
