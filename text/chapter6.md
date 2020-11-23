@@ -125,10 +125,10 @@ No type class instance was found for
 
  ## Exercises
 
-1. (Easy) Define a `Show` instance for `Point`. Match the same output as the `showPoint` function from the previous chapter.
+1. (Easy) Define a `Show` instance for `Point`. Match the same output as the `showPoint` function from the previous chapter. _Note:_ Point is now a `newtype` (instead of a `type` synonym), which allows us to customize how to `show` it. Otherwise, we'd be stuck with the default `Show` instance for records.
 
     ```haskell
-    data Point
+    newtype Point
       = Point
       { x :: Number
       , y :: Number

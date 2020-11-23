@@ -11,7 +11,7 @@ import Data.Maybe (Maybe(..))
 import Data.Monoid (power)
 import Data.Newtype (class Newtype, over2, wrap)
 
-data Point
+newtype Point
   = Point
   { x :: Number
   , y :: Number
