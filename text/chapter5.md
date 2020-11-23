@@ -236,7 +236,7 @@ sortPair arr@[x, y]
 sortPair arr = arr
 ```
 
-This way, we save ourselves from allocating a new array if the pair is already sorted.
+This way, we save ourselves from allocating a new array if the pair is already sorted. Note that if the input array does not contain _exactly_ two elements, then this function simply returns it unchanged, even if it's unsorted.
 
 ## Exercises
 
@@ -365,26 +365,16 @@ data Shape
   | Rectangle Point Number Number
   | Line Point Point
   | Text Point String
-```
 
-The `Point` type might also be defined as an algebraic data type, as follows:
-
-```haskell
-data Point = Point
+type Point =
   { x :: Number
   , y :: Number
   }
 ```
 
-The `Point` data type illustrates some interesting points:
-
-- The data carried by an ADT's constructors doesn't have to be restricted to primitive types: constructors can include records, arrays, or even other ADTs.
-- Even though ADTs are useful for describing data with multiple constructors, they can also be useful when there is only a single constructor.
-- The constructors of an algebraic data type might have the same name as the ADT itself. This is quite common, and it is important not to confuse the `Point` _type constructor_ with the `Point` _data constructor_ - they live in different namespaces.
-
 This declaration defines `Shape` as a sum of different constructors, and for each constructor identifies the data that is included. A `Shape` is either a `Circle` which contains a center `Point` and a radius (a number), or a `Rectangle`, or a `Line`, or `Text`. There are no other ways to construct a value of type `Shape`.
 
-An algebraic data type is introduced using the `data` keyword, followed by the name of the new type and any type arguments. The type's constructors (i.e. its _data constructors_) are defined after the equals symbol, and are separated by pipe characters (`|`).
+An algebraic data type is introduced using the `data` keyword, followed by the name of the new type and any type arguments. The type's constructors (i.e. its _data constructors_) are defined after the equals symbol, and are separated by pipe characters (`|`). The data carried by an ADT's constructors doesn't have to be restricted to primitive types: constructors can include records, arrays, or even other ADTs.
 
 Let's see another example from PureScript's standard libraries. We saw the `Maybe` type, which is used to define optional values, earlier in the book. Here is its definition from the `maybe` package:
 
@@ -472,20 +462,77 @@ This can be useful for improving readability of code in some circumstances.
 
 ## Newtypes
 
-There is an important special case of algebraic data types, called _newtypes_. Newtypes are introduced using the `newtype` keyword instead of the `data` keyword.
+There is a special case of algebraic data types, called _newtypes_. Newtypes are introduced using the `newtype` keyword instead of the `data` keyword.
 
-Newtypes must define _exactly one_ constructor, and that constructor must take _exactly one_ argument. That is, a newtype gives a new name to an existing type. In fact, the values of a newtype have the same runtime representation as the underlying type. They are, however, distinct from the point of view of the type system. This gives an extra layer of type safety.
+Newtypes must define _exactly one_ constructor, and that constructor must take _exactly one_ argument. That is, a newtype gives a new name to an existing type. In fact, the values of a newtype have the same runtime representation as the underlying type, so there is no runtime performance overhead. They are, however, distinct from the point of view of the type system. This gives an extra layer of type safety.
 
-As an example, we might want to define newtypes as type-level aliases for `Number`, to ascribe units like pixels and inches:
+As an example, we might want to define newtypes as type-level aliases for `Number`, to ascribe units like volts, amps, and ohms:
 
 ```haskell
-newtype Pixels = Pixels Number
-newtype Inches = Inches Number
+newtype Volt = Volt Number
+newtype Ohm = Ohm Number
+newtype Amp = Amp Number
 ```
 
-This way, it is impossible to pass a value of type `Pixels` to a function which expects `Inches`, but there is no runtime performance overhead.
+Then we define functions and values using these types:
 
-Newtypes will become important when we cover _type classes_ in the next chapter, since they allow us to attach different behavior to a type without changing its representation at runtime.
+```haskell
+calculateCurrent :: Volt -> Ohm -> Amp
+calculateCurrent (Volt v) (Ohm r) = Amp (v / r)
+
+battery :: Volt
+battery = Volt 1.5
+
+lightbulb :: Ohm
+lightbulb = Ohm 500.0
+
+current :: Amp
+current = calculateCurrent battery lightbulb
+```
+
+This prevents us from making silly mistakes, such as attempting to calculate the current produced by _two_ lightbulbs _without_ a voltage source.
+
+```haskell
+current :: Amp
+current = calculateCurrent lightbulb lightbulb
+{-
+TypesDoNotUnify:
+  current = calculateCurrent lightbulb lightbulb
+                             ^^^^^^^^^
+  Could not match type
+    Ohm
+  with type
+    Volt
+-}
+```
+
+If we instead just used `Number` without `newtype`, then the compiler can't help us catch this mistake:
+
+```haskell
+-- This also compiles, but is not as type safe.
+calculateCurrent :: Number -> Number -> Number
+calculateCurrent v r = v / r
+
+battery :: Number
+battery = 1.5
+
+lightbulb :: Number
+lightbulb = 500.0
+
+current :: Number
+current = calculateCurrent lightbulb lightbulb -- uncaught mistake
+```
+
+This design principle is perhaps better [communicated visually](https://twitter.com/jusrin00/status/875238742621028355/photo/1).
+
+Note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:
+```haskell
+newtype Watt = MakeWatt Number
+```
+
+In this case, `Watt` is the _type constructor_ and `MakeWatt` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs.
+
+Another application of newtypes is to attach different _behavior_ to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss _type classes_.
 
 ## A Library for Vector Graphics
 
