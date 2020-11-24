@@ -1,15 +1,16 @@
 module Test.Main where
 
-import Prelude
+import Prelude hiding (gcd)
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+import Test.NoPeeking.Solutions
 
-import Data.Int(round)
-import Data.Maybe(Maybe(Just, Nothing))
+import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, sortPair, takeFive, toString)
+import Data.Int (round)
+import Data.Maybe (Maybe(Just, Nothing))
 import Data.Person (Person)
 import Data.Picture (Shape(..), Picture, Bounds(..), getCenter, origin)
 import Effect (Effect)
-import Test.Unit (suite, test)
+import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
@@ -32,6 +33,7 @@ samplePicture =
 main :: Effect Unit
 main =
   runTest do
+    runChapterExamples
     {-  Move this block comment starting point to enable more tests
 Note to reader: Delete this line to expand comment block -}
     suite "Exercise Group - Simple Pattern Matching" do
@@ -122,5 +124,44 @@ Note to reader: Delete this line to expand comment block -}
           $ shapeBounds (Clipped samplePicture { x: 0.0, y: 0.0 } 4.0 4.0)
         Assert.equal (Bounds { top: 3.0, left: 3.0, right: 7.0, bottom: 7.0 })
           $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 4.0 4.0)
-    {- Note to reader: Delete this line to expand comment block
-    -}
+
+{- Note to reader: Delete this line to expand comment block
+-}
+runChapterExamples :: TestSuite
+runChapterExamples =
+  suite "Chapter Examples" do
+    test "gcd" do
+      Assert.equal 20
+        $ gcd 60 100
+    test "fromString" do
+      Assert.equal true
+        $ fromString "true"
+    test "toString" do
+      Assert.equal "false"
+        $ toString false
+    test "gcdV2" do
+      Assert.equal 20
+        $ gcdV2 60 100
+    test "isEmpty" do
+      Assert.equal false
+        $ isEmpty [2, 3]
+    test "takeFive" do
+      Assert.equal 6
+        $ takeFive [0, 1, 2, 3, 4]
+    test "showPerson" do
+      Assert.equal "Lovelace, Ada"
+        $ showPerson {first: "Ada", last: "Lovelace"}
+    test "livesInLA" do
+      Assert.equal true
+        $ livesInLA {name: "Suraj", address: {street: "123 Main St", city: "Los Angeles"}}
+    test "sortPair" do
+      Assert.equal [1, 2]
+        $ sortPair [2, 1]
+    test "lzs" do
+      Assert.equal [-1, -2, 3]
+        $ lzs [1, -1, -2, 3]
+    test "partialFunction" do
+      Assert.equal true
+        $ partialFunction true
+    test "current" do
+      Assert.equal (Amp 0.003) current
