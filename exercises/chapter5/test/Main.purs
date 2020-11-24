@@ -4,7 +4,7 @@ import Prelude hiding (gcd)
 import Test.MySolutions
 import Test.NoPeeking.Solutions
 
-import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, sortPair, takeFive, toString)
+import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, showPersonV2, sortPair, takeFive, toString, unknownPerson)
 import Data.Int (round)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Person (Person)
@@ -151,6 +151,11 @@ runChapterExamples =
     test "showPerson" do
       Assert.equal "Lovelace, Ada"
         $ showPerson {first: "Ada", last: "Lovelace"}
+    test "showPersonV2" do
+      Assert.equal "Lovelace, Ada"
+        $ showPersonV2 {first: "Ada", last: "Lovelace"}
+    test "unknownPerson" do
+      Assert.equal {first: "Jane", last: "Doe"} unknownPerson
     test "livesInLA" do
       Assert.equal true
         $ livesInLA {name: "Suraj", address: {street: "123 Main St", city: "Los Angeles"}}

@@ -184,6 +184,24 @@ Note that we could have also written
 
 and PSCi would have inferred the same type.
 
+## Record Puns
+
+Recall that the `showPerson` function matches a record inside its argument, binding the `first` and `last` fields to values named `x` and `y`. We could alternatively just reuse the field names themselves, and simplify this sort of pattern match as follows:
+
+```haskell
+{{#include ../exercises/chapter5/src/ChapterExamples.purs:showPersonV2}}
+```
+
+Here, we only specify the names of the fields, and we do not need to specify the names of the values we want to introduce. This is called a _record pun_.
+
+It is also possible to use record puns to _construct_ records. For example, if we have values named `first` and `last` in scope, we can construct a person record using `{ first, last }`:
+
+```haskell
+{{#include ../exercises/chapter5/src/ChapterExamples.purs:unknownPerson}}
+```
+
+This may improve readability of code in some circumstances.
+
 ## Nested Patterns
 
 Array patterns and record patterns both combine smaller patterns to build larger patterns. For the most part, the examples above have only used simple patterns inside array patterns and record patterns, but it is important to note that patterns can be arbitrarily _nested_, which allows functions to be defined using conditions on potentially complex data types.
@@ -365,33 +383,10 @@ Let's see an example. Suppose we want to convert a `Shape` into a `String`. We h
 ```haskell
 {{#include ../exercises/chapter5/src/Data/Picture.purs:showShape}}
 
-showPoint :: Point -> String
-showPoint (Point { x: x, y: y }) =
-  "(" <> show x <> ", " <> show y <> ")"
-
-```
-
-Each constructor can be used as a pattern, and the arguments to the constructor can themselves be bound using patterns of their own. Consider the first case of `showShape`: if the `Shape` matches the `Circle` constructor, then we bring the arguments of `Circle` (center and radius) into scope using two variable patterns, `c` and `r`. The other cases are similar.
-
-`showPoint` is another example of record pattern matching.
-
-## Record Puns
-
-The `showPoint` function matches a record inside its argument, binding the `x` and `y` properties to values with the same names. In PureScript, we can simplify this sort of pattern match as follows:
-
-```haskell
 {{#include ../exercises/chapter5/src/Data/Picture.purs:showPoint}}
 ```
 
-Here, we only specify the names of the properties, and we do not need to specify the names of the values we want to introduce. This is called a _record pun_.
-
-It is also possible to use record puns to _construct_ records. For example, if we have values named `x` and `y` in scope, we can construct a `Point` record using `{ x, y }`:
-
-```haskell
-{{#include ../exercises/chapter5/src/Data/Picture.purs:origin}}
-```
-
-This can be useful for improving readability of code in some circumstances.
+Each constructor can be used as a pattern, and the arguments to the constructor can themselves be bound using patterns of their own. Consider the first case of `showShape`: if the `Shape` matches the `Circle` constructor, then we bring the arguments of `Circle` (center and radius) into scope using two variable patterns, `c` and `r`. The other cases are similar.
 
 ## Exercises
 
