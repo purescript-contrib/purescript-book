@@ -8,7 +8,7 @@ import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, lives
 import Data.Int (round)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Person (Person)
-import Data.Picture (Shape(..), Picture, Bounds(..), getCenter, origin)
+import Data.Picture (Shape(..), Picture, getCenter, origin)
 import Effect (Effect)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
@@ -120,9 +120,9 @@ Note to reader: Delete this line to expand comment block -}
         Assert.equal 0
           $ round $ area $ Text origin "Text has no area!"
       test "Exercise - Clipped shapeBounds" do
-        Assert.equal (Bounds { top: -2.0, left: -2.0, right: 2.0, bottom: 2.0 })
+        Assert.equal { top: -2.0, left: -2.0, right: 2.0, bottom: 2.0 }
           $ shapeBounds (Clipped samplePicture { x: 0.0, y: 0.0 } 4.0 4.0)
-        Assert.equal (Bounds { top: 3.0, left: 3.0, right: 7.0, bottom: 7.0 })
+        Assert.equal { top: 3.0, left: 3.0, right: 7.0, bottom: 7.0 }
           $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 4.0 4.0)
 
 {- Note to reader: Delete this line to expand comment block

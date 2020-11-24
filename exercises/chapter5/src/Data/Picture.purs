@@ -79,7 +79,7 @@ showPicture = map showShape
 -- ANCHOR_END: showPicture
 
 -- ANCHOR: Bounds
-data Bounds = Bounds
+type Bounds =
   { top    :: Number
   , left   :: Number
   , bottom :: Number
@@ -88,7 +88,7 @@ data Bounds = Bounds
 -- ANCHOR_END: Bounds
 
 showBounds :: Bounds -> String
-showBounds (Bounds b) =
+showBounds b =
   "Bounds [top: " <> show b.top <>
   ", left: "      <> show b.left <>
   ", bottom: "    <> show b.bottom <>
@@ -96,25 +96,25 @@ showBounds (Bounds b) =
   "]"
 
 shapeBounds :: Shape -> Bounds
-shapeBounds (Circle { x, y } r) = Bounds
+shapeBounds (Circle { x, y } r) =
   { top:    y - r
   , left:   x - r
   , bottom: y + r
   , right:  x + r
   }
-shapeBounds (Rectangle { x, y } w h) = Bounds
+shapeBounds (Rectangle { x, y } w h) =
   { top:    y - h / 2.0
   , left:   x - w / 2.0
   , bottom: y + h / 2.0
   , right:  x + w / 2.0
   }
-shapeBounds (Line p1 p2) = Bounds
+shapeBounds (Line p1 p2) =
   { top:    Math.min p1.y p2.y
   , left:   Math.min p1.x p2.x
   , bottom: Math.max p1.y p2.y
   , right:  Math.max p1.x p2.x
   }
-shapeBounds (Text { x, y } _) = Bounds
+shapeBounds (Text { x, y } _) =
   { top:    y
   , left:   x
   , bottom: y
@@ -122,7 +122,7 @@ shapeBounds (Text { x, y } _) = Bounds
   }
 
 union :: Bounds -> Bounds -> Bounds
-union (Bounds b1) (Bounds b2) = Bounds
+union b1 b2 =
   { top:    Math.min b1.top    b2.top
   , left:   Math.min b1.left   b2.left
   , bottom: Math.max b1.bottom b2.bottom
@@ -130,7 +130,7 @@ union (Bounds b1) (Bounds b2) = Bounds
   }
 
 intersect :: Bounds -> Bounds -> Bounds
-intersect (Bounds b1) (Bounds b2) = Bounds
+intersect b1 b2 =
   { top:    Math.max b1.top    b2.top
   , left:   Math.max b1.left   b2.left
   , bottom: Math.min b1.bottom b2.bottom
@@ -138,7 +138,7 @@ intersect (Bounds b1) (Bounds b2) = Bounds
   }
 
 emptyBounds :: Bounds
-emptyBounds = Bounds
+emptyBounds =
   { top:     Global.infinity
   , left:    Global.infinity
   , bottom: -Global.infinity
@@ -146,7 +146,7 @@ emptyBounds = Bounds
   }
 
 infiniteBounds :: Bounds
-infiniteBounds = Bounds
+infiniteBounds =
   { top:    -Global.infinity
   , left:   -Global.infinity
   , bottom:  Global.infinity
@@ -166,11 +166,6 @@ These `instance`s are to enable testing.
 Feel free to ignore these.
 They'll make more sense in the next chapter.
 -}
-derive instance boundsEq :: Eq Bounds
-
-instance boundsShow :: Show Bounds where
-  show b = showBounds b
-
 derive instance shapeEq :: Eq Shape
 
 instance shapeShow :: Show Shape where

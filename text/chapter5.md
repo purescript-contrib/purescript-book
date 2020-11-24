@@ -489,7 +489,7 @@ $ spago repl
 
 The example code for this module contains a function `bounds` which computes the smallest bounding rectangle for a `Picture`.
 
-The `Bounds` data type defines a bounding rectangle. It is also defined as an algebraic data type with a single constructor:
+The `Bounds` type defines a bounding rectangle.
 
 ```haskell
 {{#include ../exercises/chapter5/src/Data/Picture.purs:Bounds}}
