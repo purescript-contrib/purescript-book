@@ -25,12 +25,12 @@ A convenient way to work with asynchronous code in JavaScript is with [`async` a
 
 Here is an example of using this technique to copy the contents of one file to another file:
 
-``` js
-var fs = require('fs');
+```js
+var fsPromises = require('fs').promises;
 
 async function copyFile(file1, file2) {
-  let data = await fs.readFile(file1, { encoding: 'utf-8' })
-  fs.writeFile(file2, data, { encoding: 'utf-8' })
+  let data = await fsPromises.readFile(file1, { encoding: 'utf-8' });
+  fsPromises.writeFile(file2, data, { encoding: 'utf-8' });
 }
 
 copyFile('file1.txt', 'file2.txt')
