@@ -38,7 +38,7 @@ fact n = n * fact (n - 1)
 
 Here, we can see how the factorial function is computed by reducing the problem to a subproblem - that of computing the factorial of a smaller integer. When we reach zero, the answer is immediate.
 
-Here is another common example, which computes the _Fibonnacci function_:
+Here is another common example, which computes the _Fibonacci function_:
 
 ```haskell
 fib :: Int -> Int
