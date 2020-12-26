@@ -109,7 +109,7 @@ Success! Now you're ready to try these next exercises on your own.
 ## Exercises
 
  1. (Easy) Write a function `circleArea` which computes the area of a circle with a given radius. Use the `pi` constant, which is defined in the `Math` module. _Hint_: don't forget to import `pi` by modifying the `import Math` statement.
- 1. (Medium) The `readFloat` function converts a String to a floating-point Number. Calling `readFloat "1.23"` produces `1.23`. Write a function `addE` which takes a `String`, converts it to a `Number` with `readFloat`, and then adds the mathematical constant `e` to it. _Hint_: You should first search [Pursuit](https://pursuit.purescript.org/) to find the module that contains the `readFloat` function and import that module.
+ 1. (Medium) Write a function `leftoverCents` which takes an `Integer` and returns what's leftover after dividing by `100`. Use the `rem` function. Search [Pursuit](https://pursuit.purescript.org/) for this function to learn about usage and which module to import it from. _Note:_ Your IDE may support auto-importing of this function if you accept the auto-completion suggestion.
 
 ## Conclusion
 

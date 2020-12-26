@@ -1,11 +1,11 @@
 module Test.NoPeeking.Solutions where
 
 import Prelude
-import Global (readFloat)
+import Data.Int (rem)
 import Math (e, pi, sqrt)
 
 diagonal w h = sqrt (w * w + h * h)
 
 circleArea r = pi * r * r
 
-addE s = readFloat s + e
+leftoverCents n = rem n 100
