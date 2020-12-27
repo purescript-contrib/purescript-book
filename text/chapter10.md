@@ -895,7 +895,7 @@ Map String Int
 1. (Medium) Rewrite the earlier `quadraticRoots` function as `quadraticRootsSet` which returns the `Complex` roots as a `Set` via JSON (instead of as a `Pair`).
 1. (Difficult) Rewrite the earlier `quadraticRoots` function as `quadraticRootsSafe` which uses JSON to pass the `Pair` of `Complex` roots over FFI. Don't use the `Pair` constructor in JavaScript, but instead, just return the pair in a decoder-compatible format.
 _Hint_: You'll need to write a `DecodeJson` instance for `Pair`. Consult the [argonaut docs](https://github.com/purescript-contrib/purescript-argonaut-codecs#writing-new-instances) for instruction on writing your own decode instance. Their [decodeJsonTuple](https://github.com/purescript-contrib/purescript-argonaut-codecs/blob/master/src/Data/Argonaut/Decode/Class.purs) instance may also be a helpful reference.  Note that you'll need a `newtype` wrapper for `Pair` to avoid creating an "orphan instance".
-1. (Medium) Write a `decodeArray2D :: String -> Either String (Array (Array Int))` function to parse and decode a JSON string containing a 2D array, such as `"[[1, 2, 3], [4, 5], [6]]"`. _Hint_: You'll need to use `jsonParser` to convert the `String` into `Json` before decoding.
+1. (Medium) Write a `parseAndDecodeArray2D :: String -> Either String (Array (Array Int))` function to parse and decode a JSON string containing a 2D array, such as `"[[1, 2, 3], [4, 5], [6]]"`. _Hint_: You'll need to use `jsonParser` to convert the `String` into `Json` before decoding.
 1. (Medium) The following data type represents a binary tree with values at the leaves:
 
      ```haskell

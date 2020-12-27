@@ -1,11 +1,13 @@
 module Test.MySolutions where
 
 import Prelude
+
 import Control.Alt (alt)
 import Control.Apply (lift2)
-import Data.Argonaut (class DecodeJson, class EncodeJson, Json, decodeJson, encodeJson, jsonParser)
+import Data.Argonaut (class DecodeJson, class EncodeJson, Json, JsonDecodeError(..), decodeJson, encodeJson, jsonParser, printJsonDecodeError)
 import Data.Argonaut.Decode.Generic.Rep (genericDecodeJson)
 import Data.Argonaut.Encode.Generic.Rep (genericEncodeJson)
+import Data.Bifunctor (lmap)
 import Data.Either (Either(..))
 import Data.Foldable (foldr)
 import Data.Function.Uncurried (Fn3)
@@ -30,7 +32,7 @@ quadraticRoots poly = quadraticRootsImpl Pair poly
 
 foreign import valuesOfMapJson :: Json -> Json
 
-valuesOfMap :: Map String Int -> Either String (Set Int)
+valuesOfMap :: Map String Int -> Either JsonDecodeError (Set Int)
 valuesOfMap = encodeJson >>> valuesOfMapJson >>> decodeJson
 
 valuesOfMapGeneric ::
@@ -41,12 +43,12 @@ valuesOfMapGeneric ::
   Ord k =>
   Ord v =>
   Map k v ->
-  Either String (Set v)
+  Either JsonDecodeError (Set v)
 valuesOfMapGeneric = encodeJson >>> valuesOfMapJson >>> decodeJson
 
 foreign import quadraticRootsSetJson :: Json -> Json
 
-quadraticRootsSet :: Quadratic -> Either String (Set Complex)
+quadraticRootsSet :: Quadratic -> Either JsonDecodeError (Set Complex)
 quadraticRootsSet = encodeJson >>> quadraticRootsSetJson >>> decodeJson
 
 foreign import quadraticRootsSafeJson :: Json -> Json
@@ -59,18 +61,20 @@ instance decodeJsonWrapPair :: DecodeJson a => DecodeJson (WrapPair a) where
     decoded <- decodeJson j
     case decoded of
       [ a, b ] -> map WrapPair $ lift2 Pair (decodeJson a) (decodeJson b)
-      _ -> Left "Couldn't decode WrapPair"
+      [ ] -> Left $ AtIndex 0 MissingValue
+      [ a ] -> Left $ AtIndex 1 MissingValue
+      _ -> Left $ AtIndex 2 $ UnexpectedValue j
 
-quadraticRootsSafeWrap :: Quadratic -> Either String (WrapPair Complex)
+quadraticRootsSafeWrap :: Quadratic -> Either JsonDecodeError (WrapPair Complex)
 quadraticRootsSafeWrap = encodeJson >>> quadraticRootsSafeJson >>> decodeJson
 
-quadraticRootsSafe :: Quadratic -> Either String (Pair Complex)
+quadraticRootsSafe :: Quadratic -> Either JsonDecodeError (Pair Complex)
 quadraticRootsSafe = quadraticRootsSafeWrap >>> map (\(WrapPair p) -> p)
 
-decodeArray2D :: String -> Either String (Array (Array Int))
-decodeArray2D str = do
+parseAndDecodeArray2D :: String -> Either String (Array (Array Int))
+parseAndDecodeArray2D str = do
   j <- jsonParser str
-  decodeJson j
+  lmap printJsonDecodeError $ decodeJson j
 
 data Tree a
   = Leaf a
@@ -100,7 +104,7 @@ instance encodeJsonIntOrString :: EncodeJson IntOrString where
 
 instance decodeJsonIntOrString :: DecodeJson IntOrString where
   decodeJson j =
-    foldr alt (Left "Could not decode IntOrString")
+    foldr alt (Left $ TypeMismatch "Not Int or String")
       [ map IntOrString_Int $ decodeJson j
       , map IntOrString_String $ decodeJson j
       ]

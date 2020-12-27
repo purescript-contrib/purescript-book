@@ -5,7 +5,7 @@ import Test.Examples
 import Test.MySolutions
 
 import Control.Monad.Free (Free)
-import Data.Argonaut (decodeJson, encodeJson)
+import Data.Argonaut (JsonDecodeError(..), decodeJson, encodeJson)
 import Data.Either (Either(..), isLeft)
 import Data.Function.Uncurried (runFn2, runFn3)
 import Data.Map as Map
@@ -144,11 +144,11 @@ main =
           { a: 3.0, b: -6.0, c: 3.0 }
           { real: 1.0, imag: 0.0 }
           { real: 1.0, imag: 0.0 }
-      test "Exercise - decodeArray2D" do
+      test "Exercise - parseAndDecodeArray2D" do
         let
           arr = [ [ 1, 2, 3 ], [ 4, 5 ], [ 6 ] ]
         Assert.equal (Right arr)
-          $ decodeArray2D
+          $ parseAndDecodeArray2D
           $ show arr -- the correct JSON string happens to also be produced by show
       test "Exercise - encode decode Tree" do
         let
@@ -284,14 +284,14 @@ runChapterExamples =
       Assert.equal 5.0 result
     suite "cumulativeSums Json" do
       test "broken" do
-        Assert.equal (Left "Couldn't decode Array (Failed at index 3): Value is not a Number")
+        Assert.equal (Left $ Named "Array" $ AtIndex 3 $ TypeMismatch "Number")
           $ cumulativeSumsDecodedBroken [ 1, 2, 3 ]
       test "working" do
         Assert.equal (Right [ 1, 3, 6 ])
           $ cumulativeSumsDecodedWorking [ 1, 2, 3 ]
     suite "addComplex Json" do
       test "broken" do
-        Assert.equal (Left "JSON was missing expected field: imag")
+        Assert.equal (Left $ AtKey "imag" MissingValue)
           $ addComplexDecodedBroken { real: 1.0, imag: 2.0 } { real: 3.0, imag: 4.0 }
       test "working" do
         Assert.equal (Right { imag: 6.0, real: 4.0 })

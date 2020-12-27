@@ -3,7 +3,7 @@ module Test.Examples where
 import Prelude
 
 import Control.Promise (Promise, toAffE)
-import Data.Argonaut (Json, decodeJson, encodeJson)
+import Data.Argonaut (Json, JsonDecodeError, decodeJson, encodeJson)
 import Data.Either (Either)
 import Data.Function.Uncurried (Fn2, mkFn2)
 import Data.Map (Map)
@@ -90,17 +90,17 @@ foreign import addComplexBroken :: Complex -> Complex -> Complex
 
 foreign import cumulativeSumsJson :: Array Int -> Json
 
-cumulativeSumsDecoded :: Array Int -> Either String (Array Int)
+cumulativeSumsDecoded :: Array Int -> Either JsonDecodeError (Array Int)
 cumulativeSumsDecoded arr = decodeJson $ cumulativeSumsJson arr
 
 foreign import addComplexJson :: Complex -> Complex -> Json
 
-addComplexDecoded :: Complex -> Complex -> Either String Complex
+addComplexDecoded :: Complex -> Complex -> Either JsonDecodeError Complex
 addComplexDecoded a b = decodeJson $ addComplexJson a b
 
 foreign import mapSetFooJson :: Json -> Json
 
-mapSetFoo :: Map String Int -> Either String (Map String Int)
+mapSetFoo :: Map String Int -> Either JsonDecodeError (Map String Int)
 mapSetFoo = encodeJson >>> mapSetFooJson >>> decodeJson
 
 {-
@@ -111,20 +111,20 @@ between versions by the reader.
 -}
 foreign import cumulativeSumsJsonBroken :: Array Int -> Json
 
-cumulativeSumsDecodedBroken :: Array Int -> Either String (Array Int)
+cumulativeSumsDecodedBroken :: Array Int -> Either JsonDecodeError (Array Int)
 cumulativeSumsDecodedBroken = cumulativeSumsJsonBroken >>> decodeJson
 
 foreign import addComplexJsonBroken :: Complex -> Complex -> Json
 
-addComplexDecodedBroken :: Complex -> Complex -> Either String Complex
+addComplexDecodedBroken :: Complex -> Complex -> Either JsonDecodeError Complex
 addComplexDecodedBroken a b = decodeJson $ addComplexJsonBroken a b
 
 foreign import cumulativeSumsJsonWorking :: Array Int -> Json
 
-cumulativeSumsDecodedWorking :: Array Int -> Either String (Array Int)
+cumulativeSumsDecodedWorking :: Array Int -> Either JsonDecodeError (Array Int)
 cumulativeSumsDecodedWorking = cumulativeSumsJsonWorking >>> decodeJson
 
 foreign import addComplexJsonWorking :: Complex -> Complex -> Json
 
-addComplexDecodedWorking :: Complex -> Complex -> Either String Complex
+addComplexDecodedWorking :: Complex -> Complex -> Either JsonDecodeError Complex
 addComplexDecodedWorking a b = decodeJson $ addComplexJsonWorking a b
