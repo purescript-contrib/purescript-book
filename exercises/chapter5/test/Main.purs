@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude hiding (gcd)
 import Test.MySolutions
-import Test.NoPeeking.Solutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
 import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, showPersonV2, sortPair, takeFive, toString, unknownPerson)
 import Data.Int (round)
