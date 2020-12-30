@@ -101,3 +101,6 @@ Your solution should edit `shapeBounds` in `Picture.purs`.
 shapeBounds :: ShapeExt -> Bounds
 shapeBounds (Clipped pic pt w h) = intersect (bounds pic) (DataP.shapeBounds (Rectangle pt w h))
 shapeBounds (Shape shape) = DataP.shapeBounds shape
+
+calculateWattage :: Amp -> Volt -> Watt
+calculateWattage (Amp i) (Volt v) = MakeWatt $ i * v
