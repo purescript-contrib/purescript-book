@@ -2,6 +2,7 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 
+import ChapterExamples (Amp(..), Volt(..), Watt(..))
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Person (Person)
 import Data.Picture
