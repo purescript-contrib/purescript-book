@@ -456,6 +456,16 @@ In this case, `Watt` is the _type constructor_ and `MakeWatt` is the _data const
 
 Another application of newtypes is to attach different _behavior_ to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss _type classes_.
 
+## Exercises
+
+1. (Easy) Define a `Watt` newtype as a number, then define a `calculateWattage` function:
+```haskell
+calculateWattage :: Ohm -> Volt -> Watt
+```
+that calculates a wattage based on the given resistance in Ohms and voltage in Volts.
+
+(You can do this as the square of the voltage (V) in Volts divided by the resistance (R) in Ohms (V<sup>2</sup>/R), or use `calculateCurrent` to compute a current (I) in Amps and then compute the wattage as a product of the current and the voltage (IV) or as the product of  the square of the current and the resistance (I<sup>2</sup>R).)
+
 ## A Library for Vector Graphics
 
 Let's use the data types we have defined above to create a simple library for using vector graphics.
