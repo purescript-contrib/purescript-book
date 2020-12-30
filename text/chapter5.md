@@ -458,13 +458,11 @@ Another application of newtypes is to attach different _behavior_ to an existing
 
 ## Exercises
 
-1. (Easy) Define a `Watt` newtype as a number, then define a `calculateWattage` function:
+1. (Easy) Define a `calculateWattage` function using the above definitions `Amp`, `Volt`, and `Watt`:
 ```haskell
-calculateWattage :: Ohm -> Volt -> Watt
+calculateWattage :: Amp -> Volt -> Watt
 ```
-that calculates a wattage based on the given resistance in Ohms and voltage in Volts.
-
-(You can do this as the square of the voltage (V) in Volts divided by the resistance (R) in Ohms (V<sup>2</sup>/R), or use `calculateCurrent` to compute a current (I) in Amps and then compute the wattage as a product of the current and the voltage (IV) or as the product of  the square of the current and the resistance (I<sup>2</sup>R).)
+that calculates a wattage in Watts as the product of the given current in Amps and voltage in Volts.
 
 ## A Library for Vector Graphics
 
