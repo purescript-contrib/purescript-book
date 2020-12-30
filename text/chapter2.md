@@ -20,6 +20,7 @@ The book repo contains PureScript example code and unit tests for the exercises 
 cd purescript-book
 ./scripts/resetSolutions.sh
 ./scripts/removeAnchors.sh
+git add .
 git commit --all --message "Exercises ready to be solved"
 ```
 
