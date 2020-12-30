@@ -462,7 +462,7 @@ Another application of newtypes is to attach different _behavior_ to an existing
 ```haskell
 calculateWattage :: Amp -> Volt -> Watt
 ```
-that calculates a wattage in Watts as the product of the given current in Amps and voltage in Volts.
+that calculates a wattage in `Watt`s as the product of the given current in `Amp`s and voltage in `Volt`s.
 
 ## A Library for Vector Graphics
 
