@@ -97,7 +97,7 @@ forall a b c d. (a -> b -> c -> d) -> Maybe a -> Maybe b -> Maybe c -> Maybe d
 
 This type says that we can take any function with three arguments, and lift it to give a new function whose argument and result types are wrapped with `Maybe`.
 
-Certainly, this is not possible for any type constructor `f`, so what is it about the `Maybe` type which allowed us to do this? Well, in specializing the type above, we removed a type class constraint on `f` from the `Apply` type class. `Apply` is defined in the Prelude as follows:
+Certainly, this is not possible for every type constructor `f`, so what is it about the `Maybe` type which allowed us to do this? Well, in specializing the type above, we removed a type class constraint on `f` from the `Apply` type class. `Apply` is defined in the Prelude as follows:
 
 ```haskell
 class Functor f where
