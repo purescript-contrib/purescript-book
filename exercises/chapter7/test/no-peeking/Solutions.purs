@@ -54,7 +54,7 @@ stateRegex = regex "^[a-zA-Z]{2}$" noFlags
 
 -- Exercise 2
 nonEmptyRegex :: Either String Regex
-nonEmptyRegex = regex "[^\\s]$" noFlags
+nonEmptyRegex = regex "\\S" noFlags
 
 -- Exercise 3
 validateAddressImproved :: Address -> V Errors Address

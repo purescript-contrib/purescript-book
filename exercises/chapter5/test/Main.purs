@@ -2,8 +2,8 @@ module Test.Main where
 
 import Prelude hiding (gcd)
 import Test.MySolutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
-import Test.NoPeeking.Solutions as Solutions
 import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, showPersonV2, sortPair, takeFive, toString, unknownPerson, Volt(..), Watt(..))
 import Data.Int (round)
 import Data.Maybe (Maybe(Just, Nothing))
@@ -111,9 +111,8 @@ Note to reader: Delete this line to expand comment block -}
           $ shapeText $ Line origin { x: 1.0, y: 1.0 }
     suite "Exercise Group - Newtype" do
       test "Exercise - calculateWattage" do
-        let
-          (MakeWatt w) = calculateWattage (Amp 0.5) (Volt 120.0)
-        Assert.equal 60.0 w
+        Assert.equal (MakeWatt 60.0)
+          $ calculateWattage (Amp 0.5) (Volt 120.0)
     suite "Exercise Group - Vector Graphics" do
       test "Exercise - area" do
         Assert.equal 50
@@ -126,6 +125,8 @@ Note to reader: Delete this line to expand comment block -}
           $ round $ area $ Text origin "Text has no area!"
       test "Exercise - Clipped shapeBounds" do
         Assert.equal { top: -2.0, left: -2.0, right: 2.0, bottom: 2.0 }
+          -- Note to users: You'll need to manually import shapeBounds
+          -- from Data.Picture. Don't import from Test.NoPeeking.Solutions.
           $ shapeBounds (Clipped samplePicture { x: 0.0, y: 0.0 } 4.0 4.0)
         Assert.equal { top: 3.0, left: 3.0, right: 7.0, bottom: 7.0 }
           $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 4.0 4.0)

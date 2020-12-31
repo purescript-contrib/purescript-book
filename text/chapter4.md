@@ -190,9 +190,9 @@ For example, suppose we wanted to compute an array of all numbers between 1 and 
  1. (Easy) Write a function `squared` which calculates the squares of an array of numbers. _Hint_: Use the `map` or `<$>` function.
  1. (Easy) Write a function `keepNonNegative` which removes the negative numbers from an array of numbers. _Hint_: Use the `filter` function.
  1. (Medium)
-    * Define an infix synonym `<$?>` for `filter`.
+    * Define an infix synonym `<$?>` for `filter`. _Note_: Infix synonyms may not be defined in the REPL, but you can define it in a file.
     * Write a `keepNonNegativeRewrite` function, which is the same as `keepNonNegative`, but replaces `filter` with your new infix operator `<$?>`.
-    * Experiment with the precedence level and associativity of your operator in PSCi. NOTE: no unit tests for this.
+    * Experiment with the precedence level and associativity of your operator in PSCi. _Note_: There are no unit tests for this step.
 
 ## Flattening Arrays
 
