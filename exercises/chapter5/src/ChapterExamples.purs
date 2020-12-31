@@ -127,5 +127,3 @@ newtype Coulomb = MakeCoulomb Number
 -- These are to enable testing. Will be explained in Ch6.
 derive newtype instance eqAmp :: Eq Amp
 derive newtype instance showAmp :: Show Amp
-derive newtype instance eqCoulomb :: Eq Coulomb
-derive newtype instance showCoulomb :: Show Coulomb

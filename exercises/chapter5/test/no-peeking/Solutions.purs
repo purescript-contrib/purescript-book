@@ -103,7 +103,7 @@ shapeBounds :: ShapeExt -> Bounds
 shapeBounds (Clipped pic pt w h) = intersect (bounds pic) (DataP.shapeBounds (Rectangle pt w h))
 shapeBounds (Shape shape) = DataP.shapeBounds shape
 
-newtype Watt = MakeWatt Number
+newtype Watt = Watt Number
 
 calculateWattage :: Amp -> Volt -> Watt
-calculateWattage (Amp i) (Volt v) = MakeWatt $ i * v
+calculateWattage (Amp i) (Volt v) = Watt $ i * v
