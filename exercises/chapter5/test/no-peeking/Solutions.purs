@@ -2,7 +2,7 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 
-import ChapterExamples (Amp(..), Volt(..), Watt(..))
+import ChapterExamples (Amp(..), Volt(..), Coulomb(..))
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Person (Person)
 import Data.Picture
@@ -102,6 +102,8 @@ Your solution should edit `shapeBounds` in `Picture.purs`.
 shapeBounds :: ShapeExt -> Bounds
 shapeBounds (Clipped pic pt w h) = intersect (bounds pic) (DataP.shapeBounds (Rectangle pt w h))
 shapeBounds (Shape shape) = DataP.shapeBounds shape
+
+newtype Watt = MakeWatt Number
 
 calculateWattage :: Amp -> Volt -> Watt
 calculateWattage (Amp i) (Volt v) = MakeWatt $ i * v

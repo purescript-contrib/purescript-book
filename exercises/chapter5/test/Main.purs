@@ -4,7 +4,7 @@ import Prelude hiding (gcd)
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
-import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, showPersonV2, sortPair, takeFive, toString, unknownPerson, Volt(..), Watt(..))
+import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, showPersonV2, sortPair, takeFive, toString, unknownPerson, Volt(..))
 import Data.Int (round)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Person (Person)
