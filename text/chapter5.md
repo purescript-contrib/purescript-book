@@ -449,20 +449,20 @@ This design principle is perhaps better [communicated visually](https://twitter.
 
 Note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:
 ```haskell
-{{#include ../exercises/chapter5/src/ChapterExamples.purs:Watt}}
+{{#include ../exercises/chapter5/src/ChapterExamples.purs:Coulomb}}
 ```
 
-In this case, `Watt` is the _type constructor_ and `MakeWatt` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs.
+In this case, `Coulomb` is the _type constructor_ and `MakeCoulomb` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs.
 
 Another application of newtypes is to attach different _behavior_ to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss _type classes_.
 
 ## Exercises
 
-1. (Easy) Define a `calculateWattage` function using the above definitions `Amp`, `Volt`, and `Watt`:
+1. (Easy) Use `newtype` to define a `Watt` unit for `Number` with `MakeWatt` as the data constructor, then define a `calculateWattage` function using this new `Watt` type and the above definitions `Amp` and `Volt`:
 ```haskell
 calculateWattage :: Amp -> Volt -> Watt
 ```
-that calculates a wattage in `Watt`s as the product of the given current in `Amp`s and voltage in `Volt`s.
+A wattage in `Watt`s can be calculated as the product of a given current in `Amp`s and a given voltage in `Volt`s.
 
 ## A Library for Vector Graphics
 

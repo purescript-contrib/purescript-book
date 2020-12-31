@@ -111,8 +111,9 @@ Note to reader: Delete this line to expand comment block -}
           $ shapeText $ Line origin { x: 1.0, y: 1.0 }
     suite "Exercise Group - Newtype" do
       test "Exercise - calculateWattage" do
-        Assert.equal (MakeWatt 60.0)
-          $ calculateWattage (Amp 0.5) (Volt 120.0)
+        Assert.equal 60.0
+          $ let (MakeWatt w) = calculateWattage (Amp 0.5) (Volt 120.0)
+            in w
     suite "Exercise Group - Vector Graphics" do
       test "Exercise - area" do
         Assert.equal 50
