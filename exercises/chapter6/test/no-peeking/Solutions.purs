@@ -219,11 +219,6 @@ instance actionSelf :: Monoid m => Action m (Self m) where
 -- These may also be written manualy
 derive newtype instance showSelf :: Show m => Show (Self m)
 derive newtype instance eqSelf :: Eq m => Eq (Self m)
-derive newtype instance semigroupSelf :: Semigroup m => Semigroup (Self m)
-derive newtype instance monoidSelf :: Monoid m => Monoid (Self m)
-
-instance repeatActionMultSelf :: Action (Self Multiply) Int where
-  act (Self (Multiply m)) s = m * s
 
 arrayHasDuplicates :: forall a. Hashable a => Array a -> Boolean
 arrayHasDuplicates arr =
