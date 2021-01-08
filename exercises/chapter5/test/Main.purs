@@ -112,7 +112,7 @@ Note to reader: Delete this line to expand comment block -}
     suite "Exercise Group - Newtype" do
       test "Exercise - calculateWattage" do
         Assert.equal 60.0
-          $ let (Watt w) = calculateWattage (Amp 0.5) (Volt 120.0)
+          $ let (MakeWatt w) = calculateWattage (Amp 0.5) (Volt 120.0)
             in w
     suite "Exercise Group - Vector Graphics" do
       test "Exercise - area" do
