@@ -458,7 +458,7 @@ Another application of newtypes is to attach different _behavior_ to an existing
 
 ## Exercises
 
-1. (Easy) Use `newtype` to define a `Watt` unit for `Number` also using `Watt` as the data constructor, then define a `calculateWattage` function using this new `Watt` type and the above definitions `Amp` and `Volt`:
+1. (Easy) Define `Watt` as a `newtype` of `Number`. Then define a `calculateWattage` function using this new `Watt` type and the above definitions `Amp` and `Volt`:
 ```haskell
 calculateWattage :: Amp -> Volt -> Watt
 ```
