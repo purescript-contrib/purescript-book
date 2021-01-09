@@ -452,13 +452,13 @@ Note that the constructor of a newtype often has the same name as the newtype it
 {{#include ../exercises/chapter5/src/ChapterExamples.purs:Coulomb}}
 ```
 
-In this case, `Coulomb` is the _type constructor_ and `MakeCoulomb` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs.
+In this case, `Coulomb` is the _type constructor_ and `MakeCoulomb` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs. Note that although the type constructor and data constructor can have different names, in practice it is idiomatic for them to share the same name. This is the case with `Amp` and `Volt` types above.
 
 Another application of newtypes is to attach different _behavior_ to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss _type classes_.
 
 ## Exercises
 
-1. (Easy) Use `newtype` to define a `Watt` unit for `Number` with `MakeWatt` as the data constructor, then define a `calculateWattage` function using this new `Watt` type and the above definitions `Amp` and `Volt`:
+1. (Easy) Use `newtype` to define a `Watt` unit for `Number` also using `Watt` as the data constructor, then define a `calculateWattage` function using this new `Watt` type and the above definitions `Amp` and `Volt`:
 ```haskell
 calculateWattage :: Amp -> Volt -> Watt
 ```
