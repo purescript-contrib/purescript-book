@@ -6,24 +6,31 @@ import Data.List (filter, head, nubBy, null)
 import Data.Maybe (Maybe)
 
 findEntryByStreet :: String -> AddressBook -> Maybe Entry
+-- Equivalent: findEntryByStreet streetName book = head (filter filterEntry book)
 -- Equivalent: findEntryByStreet streetName book = head $ filter filterEntry book
-findEntryByStreet streetName = filter filterEntry >>> head
+findEntryByStreet streetName = head <<< filter filterEntry
   where
   filterEntry :: Entry -> Boolean
   filterEntry e = e.address.street == streetName
 
--- Example alternative implementation using property accessor and composition
+-- Example alternative implementation using property accessor
 findEntryByStreet' :: String -> AddressBook -> Maybe Entry
-findEntryByStreet' streetName = filter (_.address.street >>> eq streetName) >>> head
+findEntryByStreet' streetName = head <<< filter (_.address.street >>> eq streetName)
 
 isInBook :: String -> String -> AddressBook -> Boolean
-isInBook firstName lastName book = not null $ filter filterEntry book
+-- Equivalent: isInBook firstName lastName book = not null $ filter filterEntry book
+isInBook firstName lastName = not null <<< filter filterEntry
   where
   filterEntry :: Entry -> Boolean
-  filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
+  filterEntry entry =
+     entry.firstName == firstName &&
+     entry.lastName  == lastName
 
 removeDuplicates :: AddressBook -> AddressBook
-removeDuplicates book = nubBy filterEntry book
+-- Equivalent: removeDuplicates book = nubBy entriesAreDuplicated book
+removeDuplicates = nubBy entriesAreDuplicated
   where
-  filterEntry :: Entry -> Entry -> Boolean
-  filterEntry e1 e2 = e1.firstName == e2.firstName && e1.lastName == e2.lastName
+  entriesAreDuplicated :: Entry -> Entry -> Boolean
+  entriesAreDuplicated e1 e2 =
+    e1.firstName == e2.firstName &&
+    e1.lastName  == e2.lastName
