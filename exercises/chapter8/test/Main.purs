@@ -82,6 +82,11 @@ Note to reader: Delete this line to expand comment block -}
           test "1000000 terms of Gregory Series"
             $ Assert.assert "Estimated value of pi not within threshold"
             (estimatePi 1000000 - pi < 0.000002)
+        suite "fibonacci" do
+          test "40th Fibonacci number"
+            $ Assert.equal 165580141 (fibonacci 40)
+          test "45th Fibonacci number"
+            $ Assert.equal 1836311903 (fibonacci 45)
 
 {- Note to reader: Delete this line to expand comment block
 -}

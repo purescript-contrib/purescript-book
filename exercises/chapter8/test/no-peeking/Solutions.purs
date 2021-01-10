@@ -1,7 +1,7 @@
 module Test.NoPeeking.Solutions where
 
 import Prelude
-import Control.Monad.ST.Ref (modify, new, read)
+import Control.Monad.ST.Ref (modify, new, read, write)
 import Control.Monad.ST (ST, for, run)
 import Data.Array (foldM, head, nub, sort, tail)
 import Data.Int (toNumber)
@@ -43,3 +43,21 @@ estimatePi n =
         modify (\acc -> acc + sign / (2.0 * toNumber k - 1.0)) accRef
     final <- read accRef
     pure $ final * 4.0
+
+fibonacci :: Int -> Int
+fibonacci 0 = 0
+fibonacci 1 = 1
+fibonacci n =
+  run
+    ( do
+        x <- new 0
+        y <- new 1
+        for 2 (n + 1) \k -> do
+          x' <- read x
+          y' <- read y
+          _ <- write (x' + y') y
+          write y' x
+        x' <- read x
+        y' <- read y
+        pure $ x' + y'
+    )
