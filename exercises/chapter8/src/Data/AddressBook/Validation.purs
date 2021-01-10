@@ -3,10 +3,11 @@ module Data.AddressBook.Validation where
 import Prelude
 
 import Data.AddressBook (Address, Person, PhoneNumber, address, person, phoneNumber)
-import Data.Either (Either(..))
+import Data.Either (Either)
 import Data.String (length)
-import Data.String.Regex (Regex, test, regex)
+import Data.String.Regex (Regex, test)
 import Data.String.Regex.Flags (noFlags)
+import Data.String.Regex.Unsafe (unsafeRegex)
 import Data.Traversable (traverse)
 import Data.Validation.Semigroup (V, invalid, toEither)
 
@@ -28,14 +29,13 @@ lengthIs field len value | length value /= len =
   invalid [ "Field '" <> field <> "' must have length " <> show len ]
 lengthIs _     _   value = pure value
 
-phoneNumberRegex :: Either String Regex
-phoneNumberRegex = regex "^\\d{3}-\\d{3}-\\d{4}$" noFlags
+phoneNumberRegex :: Regex
+phoneNumberRegex = unsafeRegex "^\\d{3}-\\d{3}-\\d{4}$" noFlags
 
-matches :: String -> Either String Regex -> String -> V Errors String
-matches _    (Right regex) value | test regex value 
-                                 = pure value
-matches _    (Left  error) _     = invalid [ error ]
-matches field _            _     = invalid [ "Field '" <> field <> "' did not match the required format" ]
+matches :: String -> Regex -> String -> V Errors String
+matches _     regex value | test regex value 
+                          = pure value
+matches field _     _     = invalid [ "Field '" <> field <> "' did not match the required format" ]
 
 validateAddress :: Address -> V Errors Address
 validateAddress a =

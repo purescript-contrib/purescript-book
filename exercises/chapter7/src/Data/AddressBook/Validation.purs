@@ -1,11 +1,13 @@
 module Data.AddressBook.Validation where
 
 import Prelude
+
 import Data.AddressBook (Address, Person, PhoneNumber, address, person, phoneNumber)
 import Data.Either (Either(..))
 import Data.String (length)
-import Data.String.Regex (Regex, test, regex)
+import Data.String.Regex (Regex, test)
 import Data.String.Regex.Flags (noFlags)
+import Data.String.Regex.Unsafe (unsafeRegex)
 import Data.Traversable (traverse)
 import Data.Validation.Semigroup (V, invalid)
 
@@ -64,16 +66,34 @@ lengthIs _     _   value = pure value
 -- ANCHOR_END: lengthIs
 
 -- ANCHOR: phoneNumberRegex
-phoneNumberRegex :: Either String Regex
-phoneNumberRegex = regex "^\\d{3}-\\d{3}-\\d{4}$" noFlags
+-- | We use `Data.String.Regex.Unsafe.unsafeRegex` here instead of `Data.String.Regex.regex` in order
+-- | to simplify the code.
+-- |
+-- | The safe function has this signature:
+-- |
+-- | ```purescript
+-- | regex :: String -> RegexFlags -> Either String Regex
+-- | ```
+-- |
+-- | which can fail if we pass an invalid regex `String`. Since we construct the string ourselves
+-- | the only reason it would fail is if we were careless. Even in this case it's safe for us to use:
+-- |
+-- | ```purescript
+-- | unsafeRegex :: String -> RegexFlags -> Regex
+-- | ```
+-- |
+-- | instead because the error would be cought at compile time. That's because `phoneNumberRegex` is
+-- | defined as a top level binidng and so it's resolve at compile time. This wouldn't be the case
+-- | if we for example would pass in a `String` that we get from use input.
+phoneNumberRegex :: Regex
+phoneNumberRegex = unsafeRegex "^\\d{3}-\\d{3}-\\d{4}$" noFlags
 -- ANCHOR_END: phoneNumberRegex
 
 -- ANCHOR: matches
-matches :: String -> Either String Regex -> String -> V Errors String
-matches _    (Right regex) value | test regex value 
-                                 = pure value
-matches _    (Left  error) _     = invalid [ error ]
-matches field _            _     = invalid [ "Field '" <> field <> "' did not match the required format" ]
+matches :: String -> Regex -> String -> V Errors String
+matches _     regex value | test regex value
+                          = pure value
+matches field _     _     = invalid [ "Field '" <> field <> "' did not match the required format" ]
 -- ANCHOR_END: matches
 
 -- ANCHOR: validateAddress
