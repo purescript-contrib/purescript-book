@@ -666,7 +666,7 @@ The `ST` effect is a good way to generate short JavaScript when working with loc
 ## Exercises
 
 1. (Medium) Rewrite the `safeDivide` function as `exceptionDivide` and throw an exception using `throwException` if the denominator is zero. _Note:_ There is no unit test for this exercise because it's tricky to check for an expected exception within our unit test framework. Feel free to work on adding this test.
-1. (Skip) There is no exercise for `ST` yet. Feel free to propose one. See [this issue](https://github.com/purescript-contrib/purescript-book/issues/120) for more details.
+1. (Medium) Write a function `estimatePi :: Int -> Number` that uses `n` terms of the [Gregory Series](https://mathworld.wolfram.com/GregorySeries.html) to calculate an approximation of `pi`. _Hints:_ You can pattern your answer like the definition of `simulate` above. You might need to convert an `Int` into a `Number` using `toNumber :: Int -> Number` from `Data.Int`.
 
 ## DOM Effects
 

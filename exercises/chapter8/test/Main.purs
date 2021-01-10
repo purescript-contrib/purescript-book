@@ -6,6 +6,7 @@ import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Data.List (List(..), foldM, (:))
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
+import Math (pi)
 import Test.Examples (countThrows, safeDivide)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
@@ -73,6 +74,14 @@ Note to reader: Delete this line to expand comment block -}
             $ filterM
                 onlyPositiveEvenIntegers
                 (2 : 3 : 4 : Nil)
+      suite "ST" do
+        suite "estimatePi" do
+          test "1000 terms of Gregory Series"
+            $ Assert.assert "Estimated value of pi not within threshold"
+            (estimatePi 1000 - pi < 0.002)
+          test "1000000 terms of Gregory Series"
+            $ Assert.assert "Estimated value of pi not within threshold"
+            (estimatePi 1000000 - pi < 0.000002)
 
 {- Note to reader: Delete this line to expand comment block
 -}
