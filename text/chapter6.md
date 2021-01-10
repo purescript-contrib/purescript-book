@@ -348,11 +348,6 @@ data Shape
 
 5. (Medium) Derive (via `Generic`) a `Show` instance for `Shape`. How does the amount of code written and `String` output compare to `showShape` from the previous chapter? _Note_: You may instead write this instance manually, but you'll need to pay close attention to the output format expected by the tests.
 
-6. (Medium) Write a `dedupShapes :: Array Shape -> Array Shape` function which removes duplicate `Shape`s from an array using the `nubEq` function.
-
-7. (Medium) Write a `dedupShapesFast` function which is the same as `dedupShapes`, but uses the more efficient `nub` function.
-
-
 ## Type Class Constraints
 
 Types of functions can be constrained by using type classes. Here is an example: suppose we want to write a function which tests if three values are equal, by using equality defined using an `Eq` type class instance.
@@ -457,6 +452,10 @@ When the program is compiled, the correct type class instance for `Show` is chos
     instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
     ...
     ```
+
+1. (Medium) Write a `dedupShapes :: Array Shape -> Array Shape` function which removes duplicate `Shape`s from an array using the `nubEq` function.
+
+1. (Medium) Write a `dedupShapesFast` function which is the same as `dedupShapes`, but uses the more efficient `nub` function.
 
 ## Multi Parameter Type Classes
 
