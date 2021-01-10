@@ -4,7 +4,7 @@ import Prelude
 import Control.Monad.ST.Ref (modify, new, read, write)
 import Control.Monad.ST (ST, for, run)
 import Data.Array (foldM, head, nub, sort, tail)
-import Data.Int (toNumber)
+import Data.Int (even, toNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe)
 import Effect (Effect)
@@ -29,7 +29,6 @@ filterM f (x : xs) = do
 
 exceptionDivide :: Int -> Int -> Effect Int
 exceptionDivide _ 0 = throwException $ error "div zero"
-
 exceptionDivide a b = pure $ a / b
 
 estimatePi :: Int -> Number
@@ -38,7 +37,7 @@ estimatePi n =
     accRef <- new 0.0
     for 1 (n + 1) \k ->
       let
-        sign = if k `mod` 2 == 0 then -1.0 else 1.0
+        sign = if even k then -1.0 else 1.0
       in
         modify (\acc -> acc + sign / (2.0 * toNumber k - 1.0)) accRef
     final <- read accRef
