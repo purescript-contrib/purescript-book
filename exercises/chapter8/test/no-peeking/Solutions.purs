@@ -1,7 +1,6 @@
 module Test.NoPeeking.Solutions where
 
 import Prelude
-
 import Control.Monad.ST.Ref (modify, new, read)
 import Control.Monad.ST (ST, for, run)
 import Data.Array (foldM, head, nub, sort, tail)
@@ -39,8 +38,8 @@ estimatePi n =
     accRef <- new 0.0
     for 1 (n + 1) \k ->
       let
-        sign = if k `mod` 2 == 0 then (-1.0) else 1.0
+        sign = if k `mod` 2 == 0 then -1.0 else 1.0
       in
-        modify (\acc -> acc + sign / (2.0 * (toNumber k) - 1.0)) accRef
+        modify (\acc -> acc + sign / (2.0 * toNumber k - 1.0)) accRef
     final <- read accRef
     pure $ final * 4.0
