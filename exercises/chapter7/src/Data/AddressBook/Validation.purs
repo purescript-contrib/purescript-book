@@ -66,8 +66,8 @@ lengthIs _     _   value = pure value
 -- ANCHOR_END: lengthIs
 
 -- ANCHOR: phoneNumberRegex
--- | We use `Data.String.Regex.Unsafe.unsafeRegex` here instead of `Data.String.Regex.regex` in order
--- | to simplify the code.
+-- | We use `Data.String.Regex.Unsafe.unsafeRegex` here instead of `Data.String.Regex.regex`
+-- | in order to simplify the code.
 -- |
 -- | The safe function has this signature:
 -- |
@@ -77,7 +77,7 @@ lengthIs _     _   value = pure value
 -- |
 -- | which can fail if passed an invalid regex `String`. This potential failure is worth
 -- | checking for at runtime when working with a user-provided regex `String`.
--- | But in our case, we hardcode a literal regex string, so it's not as problematic
+-- | But in our case, we hardcode a literal regex `String`, so it's not as problematic
 -- | to use this more convenient "unsafe" version that may throw an exception:
 -- |
 -- | ```purescript
