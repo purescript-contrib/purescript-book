@@ -75,16 +75,19 @@ lengthIs _     _   value = pure value
 -- | regex :: String -> RegexFlags -> Either String Regex
 -- | ```
 -- |
--- | which can fail if we pass an invalid regex `String`. Since we construct the string ourselves
--- | the only reason it would fail is if we were careless. Even in this case it's safe for us to use:
+-- | which can fail if passed an invalid regex `String`. This potential failure is worth
+-- | checking for at runtime when working with a user-provided regex `String`.
+-- | But in our case, we hardcode a literal regex string, so it's not as problematic
+-- | to use this more convenient "unsafe" version that may throw an exception:
 -- |
 -- | ```purescript
 -- | unsafeRegex :: String -> RegexFlags -> Regex
 -- | ```
 -- |
--- | instead because the error would be cought at compile time. That's because `phoneNumberRegex` is
--- | defined as a top level binidng and so it's resolve at compile time. This wouldn't be the case
--- | if we for example would pass in a `String` that we get from use input.
+-- | We can achieve a bit more safety by binding our `Regex` values at the top level,
+-- | so any potential runtime exceptions are thrown as soon as our application starts.
+-- | This is better than defining these values in a local context, where the error may
+-- | not be encountered until later on during application execution.
 phoneNumberRegex :: Regex
 phoneNumberRegex = unsafeRegex "^\\d{3}-\\d{3}-\\d{4}$" noFlags
 -- ANCHOR_END: phoneNumberRegex
