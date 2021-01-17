@@ -77,7 +77,7 @@ length arr =
 
 In this function, we use an `if .. then .. else` expression to branch based on the emptiness of the array. The `null` function returns `true` on an empty array. Empty arrays have length zero, and a non-empty array has a length that is one more than the length of its tail.
 
-The `tail` function returns a `Maybe` wrapping the given array without its first element. If the array is empty (i.e. it doesn't has a tail) `Nothing` is returned. The `fromMaybe` function takes a default value and a `Maybe` value. If the latter is `Nothing` it returns the default, in the other case it returns the value wrapped by `Just`.
+The `tail` function returns a `Maybe` wrapping the given array without its first element. If the array is empty (i.e. it doesn't have a tail) `Nothing` is returned. The `fromMaybe` function takes a default value and a `Maybe` value. If the latter is `Nothing` it returns the default, in the other case it returns the value wrapped by `Just`.
 
 This example is obviously a very impractical way to find the length of an array in JavaScript, but should provide enough help to allow you to complete the following exercises:
 
