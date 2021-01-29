@@ -900,7 +900,7 @@ _Hint_: You'll need to write a `DecodeJson` instance for `Pair`. Consult the [ar
      ```
 
      Derive generic `EncodeJson` and `DecodeJson` instances for the `Tree` type.
-     Consult the [argonaut docs](https://github.com/purescript-contrib/purescript-argonaut-codecs#generics) for instructions on how to do this.
+     Consult the [argonaut docs](https://github.com/purescript-contrib/purescript-argonaut-codecs/tree/main/docs#generics) for instructions on how to do this.
      Note that you'll also need generic instances of `Show` and `Eq` to enable unit testing for this exercise, but those should be straightforward to implement after tackling the JSON instances.
 1. (Difficult) The following `data` type should be represented directly in JSON as either an integer or a string:
 
