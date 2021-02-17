@@ -17,11 +17,11 @@ The HTML file `html/index.html` contains a single `canvas` element which will be
 
 ## Simple Shapes
 
-The `Example/Rectangle.purs` file contains a simple introductory example, which draws a single blue rectangle at the center of the canvas. The module imports the `Effect` Type from the `Effect` module, and also the `Graphics.Canvas` module, which contains actions in the `Effect` monad for working with the Canvas API.
+The `Example/Rectangle.purs` file contains a simple introductory example, which draws a single blue rectangle at the center of the canvas. The module imports the `Effect` type from the `Effect` module, and also the `Graphics.Canvas` module, which contains actions in the `Effect` monad for working with the Canvas API.
 
 The `main` action starts, like in the other modules, by using the `getCanvasElementById` action to get a reference to the canvas object, and the `getContext2D` action to access the 2D rendering context for the canvas:
 
-The `void` function takes a functor and replace its value with `Unit`. In the example it is used to make `main` to conform with its signature.
+The `void` function takes a functor and replaces its value with `Unit`. In the example it is used to make `main` conform with its signature.
 
 ```haskell
 {{#include ../exercises/chapter12/src/Example/Rectangle.purs:main}}
@@ -55,7 +55,7 @@ Finally, we use the `fillPath` action to fill the rectangle. `fillPath` has the 
 fillPath :: forall a. Context2D -> Effect a -> Effect a
 ```
 
-`fillPath` takes a graphics context, and another action which builds the path to render. To build a path, we can use the `rect` action. `rect` takes a graphics context, and a record which provides the position and size of the rectangle:
+`fillPath` takes a graphics context and another action which builds the path to render. To build a path, we can use the `rect` action. `rect` takes a graphics context, and a record which provides the position and size of the rectangle:
 
 ```haskell
 {{#include ../exercises/chapter12/src/Example/Rectangle.purs:fillPath}}
