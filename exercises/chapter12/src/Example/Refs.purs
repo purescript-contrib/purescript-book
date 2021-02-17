@@ -4,9 +4,7 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Console (logShow)
-import Effect.DOM (addEventListener, querySelector)
 import Effect.Ref as Ref
-import Data.Foldable (for_)
 import Data.Int (toNumber)
 import Data.Maybe (Maybe(..))
 import Graphics.Canvas (Context2D, getContext2D, getCanvasElementById,
@@ -14,6 +12,14 @@ import Graphics.Canvas (Context2D, getContext2D, getCanvasElementById,
                         setFillStyle)
 import Math as Math
 import Partial.Unsafe (unsafePartial)
+import Web.DOM.Document (toParentNode)
+import Web.DOM.Element (toEventTarget)
+import Web.DOM.ParentNode (QuerySelector(..), querySelector)
+import Web.Event.Event (EventType(..))
+import Web.Event.EventTarget (addEventListener, eventListener)
+import Web.HTML (window)
+import Web.HTML.HTMLDocument (toDocument)
+import Web.HTML.Window (document)
 
 render :: Context2D -> Int -> Effect Unit
 render ctx count = void do
@@ -56,11 +62,14 @@ main = void $ unsafePartial do
 -- ANCHOR_END: clickCount
 
   render ctx 0
+  doc <- map (toParentNode <<< toDocument) (document =<< window)
+  Just node <- querySelector (QuerySelector "#canvas") doc
 
-  node <- querySelector "#canvas"
-  for_ node $ addEventListener "click" $ void do
+  clickListener <- eventListener $ \_ -> do
     logShow "Mouse clicked!"
 -- ANCHOR: count
     count <- Ref.modify (\count -> count + 1) clickCount
 -- ANCHOR_END: count
     render ctx count
+
+  addEventListener (EventType "click") clickListener true (toEventTarget node)
