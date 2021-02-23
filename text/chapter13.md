@@ -395,7 +395,8 @@ Success : Success : ...
      ```
 
      _Hint_: Use the `oneOf` function defined in `Test.QuickCheck.Gen` to define your `Arbitrary` instance.
- 1. (Medium) Use the `all` function to simplify the result of the `quickCheckPure` function - your function should return `true` if every test passes, and `false` otherwise. Try using the `First` monoid, defined in `monoids` with the `foldMap` function to preserve the first error in case of failure.
+ 1. (Medium) Use `all` to simplify the result of the `quickCheckPure` function&mdash;your new function should have type `List Result -> Boolean` and should return `true` if every test passes and `false` otherwise.
+ 1. (Medium) As another approach to simplifying the result of `quickCheckPure`, try writing a function `squashResults :: List Result -> Result`. Consider using the `First` monoid from `Data.Maybe.First` with the `foldMap` function to preserve the first error in case of failure.
 
 ## Conclusion
 
