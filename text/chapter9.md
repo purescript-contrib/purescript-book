@@ -137,7 +137,7 @@ $ spago repl
 … import Prelude
 … import Effect.Aff (launchAff_)
 … import Effect.Class.Console (log)
-… import Test.ExamplesHTTP (getUrl)
+… import Test.HTTP (getUrl)
 …
 … launchAff_ do
 …   str <- getUrl "https://reqres.in/api/users/1"
