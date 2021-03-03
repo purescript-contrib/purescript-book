@@ -2,7 +2,7 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 import Data.AddressBook (AddressBook, Entry)
-import Data.List (filter, head, nubBy, null)
+import Data.List (filter, head, nubByEq, null)
 import Data.Maybe (Maybe)
 
 findEntryByStreet :: String -> AddressBook -> Maybe Entry
@@ -27,8 +27,8 @@ isInBook firstName lastName = not null <<< filter filterEntry
      entry.lastName  == lastName
 
 removeDuplicates :: AddressBook -> AddressBook
--- Equivalent: removeDuplicates book = nubBy entriesAreDuplicated book
-removeDuplicates = nubBy entriesAreDuplicated
+-- Equivalent: removeDuplicates book = nubByEq entriesAreDuplicated book
+removeDuplicates = nubByEq entriesAreDuplicated
   where
   entriesAreDuplicated :: Entry -> Entry -> Boolean
   entriesAreDuplicated e1 e2 =

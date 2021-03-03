@@ -7,6 +7,6 @@
   "author": "Phil Freeman",
   "license": "Creative,Commons,Attribution-NonCommercial-ShareAlike,4.0,International,License",
   "dependencies": {
-    "xhr2": "^0.2.0"
+    "xhr2": "^0.2.1"
   }
 }

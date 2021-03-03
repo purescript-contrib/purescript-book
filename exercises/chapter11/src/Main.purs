@@ -20,7 +20,7 @@ import Node.Yargs.Setup (usage)
 runGame :: GameEnvironment -> Effect Unit
 runGame env = do
   interface <- RL.createConsoleInterface RL.noCompletion
-  RL.setPrompt "> " 2 interface
+  RL.setPrompt "> " interface
 
   let
     lineHandler :: GameState -> String -> Effect Unit
@@ -28,11 +28,11 @@ runGame env = do
       case runRWS (game (split (wrap " ") input)) env currentState of
         RWSResult state _ written -> do
           for_ written log
-          RL.setLineHandler interface $ lineHandler state
+          RL.setLineHandler (lineHandler state) $ interface
       RL.prompt interface
       pure unit
 
-  RL.setLineHandler interface $ lineHandler initialGameState
+  RL.setLineHandler (lineHandler initialGameState) interface
   RL.prompt interface
 
   pure unit

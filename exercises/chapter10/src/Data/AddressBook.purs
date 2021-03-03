@@ -4,11 +4,11 @@ import Prelude
 
 -- ANCHOR: import
 import Data.Argonaut (class DecodeJson, class EncodeJson)
-import Data.Argonaut.Decode.Generic.Rep (genericDecodeJson)
-import Data.Argonaut.Encode.Generic.Rep (genericEncodeJson)
+import Data.Argonaut.Decode.Generic (genericDecodeJson)
+import Data.Argonaut.Encode.Generic (genericEncodeJson)
 import Data.Generic.Rep (class Generic)
 -- ANCHOR_END: import
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 
 type Address
   = { street :: String

@@ -3,9 +3,9 @@ module Data.Picture where
 
 import Prelude
 import Data.Foldable (foldl)
+import Data.Number (infinity)
 -- ANCHOR_END: module_picture
 -- ANCHOR: picture_import_as
-import Global as Global
 import Math as Math
 -- ANCHOR_END: picture_import_as
 
@@ -139,18 +139,18 @@ intersect b1 b2 =
 
 emptyBounds :: Bounds
 emptyBounds =
-  { top:     Global.infinity
-  , left:    Global.infinity
-  , bottom: -Global.infinity
-  , right:  -Global.infinity
+  { top:     infinity
+  , left:    infinity
+  , bottom: -infinity
+  , right:  -infinity
   }
 
 infiniteBounds :: Bounds
 infiniteBounds =
-  { top:    -Global.infinity
-  , left:   -Global.infinity
-  , bottom:  Global.infinity
-  , right:   Global.infinity
+  { top:    -infinity
+  , left:   -infinity
+  , bottom:  infinity
+  , right:   infinity
   }
 
 -- ANCHOR: bounds

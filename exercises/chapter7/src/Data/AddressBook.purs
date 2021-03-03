@@ -2,7 +2,7 @@ module Data.AddressBook where
 
 import Prelude
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 
 type Address
   = { street :: String
