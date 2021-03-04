@@ -90,24 +90,18 @@ foreign import addComplexBroken :: Complex -> Complex -> Complex
 
 foreign import cumulativeSumsJson :: Array Int -> Json
 
--- ANCHOR: cumulativeSumsDecoded
 cumulativeSumsDecoded :: Array Int -> Either JsonDecodeError (Array Int)
 cumulativeSumsDecoded arr = decodeJson $ cumulativeSumsJson arr
--- ANCHOR_END: cumulativeSumsDecoded
 
 foreign import addComplexJson :: Complex -> Complex -> Json
 
--- ANCHOR: addComplexDecoded
 addComplexDecoded :: Complex -> Complex -> Either JsonDecodeError Complex
 addComplexDecoded a b = decodeJson $ addComplexJson a b
--- ANCHOR_END: addComplexDecoded
 
--- ANCHOR: mapSetFooJson
 foreign import mapSetFooJson :: Json -> Json
 
 mapSetFoo :: Map String Int -> Either JsonDecodeError (Map String Int)
 mapSetFoo = encodeJson >>> mapSetFooJson >>> decodeJson
--- ANCHOR_END: mapSetFooJson
 
 {-
 These versions always point to either the working or broken versions

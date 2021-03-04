@@ -24,7 +24,6 @@ import Web.HTML.Window (document)
 -- Note that there's a Purty formatting bug that
 -- adds an unwanted blank line
 -- https://gitlab.com/joneshf/purty/issues/77
--- ANCHOR: renderValidationErrors
 renderValidationErrors :: Errors -> Array R.JSX
 renderValidationErrors [] = []
 renderValidationErrors xs =
@@ -37,11 +36,9 @@ renderValidationErrors xs =
         , children: [ D.ul_ (map renderError xs) ]
         }
     ]
--- ANCHOR_END: renderValidationErrors
 
 -- Helper function to render a single form field with an
 -- event handler to update
--- ANCHOR: formField
 formField :: String -> String -> String -> (String -> Effect Unit) -> R.JSX
 formField name placeholder value setValue =
   D.label
@@ -70,7 +67,6 @@ formField name placeholder value setValue =
             }
         ]
     }
--- ANCHOR_END: formField
 
 mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
@@ -101,7 +97,6 @@ mkAddressBookApp =
       -- helper-function to render all phone numbers
       renderPhoneNumbers :: Array R.JSX
       renderPhoneNumbers = mapWithIndex renderPhoneNumber person.phones
-    -- ANCHOR: mkAddressBookApp_pure
     pure
       $ D.div
           { className: "container"
@@ -130,9 +125,7 @@ mkAddressBookApp =
                       }
                   ]
           }
-    -- ANCHOR_END: mkAddressBookApp_pure
 
--- ANCHOR: main
 main :: Effect Unit
 main = do
   log "Rendering address book component"
@@ -152,4 +145,3 @@ main = do
         app = element addressBookApp {}
       -- Render AddressBook JSX node in DOM "container" element
       D.render app c
--- ANCHOR_END: main

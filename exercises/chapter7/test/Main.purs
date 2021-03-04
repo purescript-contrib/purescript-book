@@ -2,7 +2,6 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
 import Control.Monad.Writer (runWriter, tell)
 import Data.AddressBook (PhoneType(..), address, phoneNumber)
@@ -26,7 +25,6 @@ main =
   runTest do
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
     suite "Exercise Group - Applicative and Effects" do
       suite "Exercise - Numeric operators that work with Maybe" do
         suite "addMaybe" do
@@ -243,7 +241,6 @@ Note to reader: Delete this line to expand comment block -}
           Assert.equal Nothing
             $ traverseUsingSequence fromNumber [ 1.0, 2.7 ]
 
-{- Note to reader: Delete this line to expand comment block
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =

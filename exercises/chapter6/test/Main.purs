@@ -2,7 +2,6 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
 import Data.Foldable (foldMap, foldl, foldr)
 import Data.Hashable (hash)
@@ -18,7 +17,6 @@ main =
   runTest do
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
     suite "Exercise Group - Show Me" do
       test "Exercise - Show Point" do
         Assert.equal "(1.0, 2.0)"
@@ -253,7 +251,6 @@ Note to reader: Delete this line to expand comment block -}
             $ hash
             $ Hour 14
 
-{- Note to reader: Delete this line to expand comment block
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =

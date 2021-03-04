@@ -7,7 +7,6 @@ import Data.Maybe (Maybe(..))
 import Data.Array ((..))
 
 {-| Monads and Do Notation -}
--- ANCHOR: countThrows
 countThrows :: Int -> Array (Array Int)
 countThrows n = do
   x <- 1 .. 6
@@ -15,7 +14,6 @@ countThrows n = do
   if x + y == n
     then pure [ x, y ]
     else empty
--- ANCHOR_END: countThrows
 
 {-| Folding With Monads -}
 foldM :: forall m a b
@@ -29,8 +27,6 @@ foldM f a (b : bs) = do
   a' <- f a b
   foldM f a' bs
 
--- ANCHOR: safeDivide
 safeDivide :: Int -> Int -> Maybe Int
 safeDivide _ 0 = Nothing
 safeDivide a b = Just (a / b)
--- ANCHOR_END: safeDivide

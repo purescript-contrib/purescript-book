@@ -3,7 +3,6 @@ module Test.Main where
 import Prelude
 import Test.Examples
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
 import Control.Monad.Free (Free)
 import Data.Argonaut (JsonDecodeError(..), decodeJson, encodeJson)

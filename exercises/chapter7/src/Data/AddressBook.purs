@@ -10,18 +10,14 @@ type Address
     , state :: String
     }
 
--- ANCHOR: address_anno
 address :: String -> String -> String -> Address
--- ANCHOR_END: address_anno
 address street city state = { street, city, state }
 
--- ANCHOR: PhoneType
 data PhoneType
   = HomePhone
   | WorkPhone
   | CellPhone
   | OtherPhone
--- ANCHOR_END: PhoneType
 
 {-
 Eq and Show instances are needed by unit tests to
@@ -49,9 +45,7 @@ type PhoneNumber
     , number :: String
     }
 
--- ANCHOR: phoneNumber_anno
 phoneNumber :: PhoneType -> String -> PhoneNumber
--- ANCHOR_END: phoneNumber_anno
 phoneNumber ty number =
   { "type": ty
   , number: number
@@ -64,12 +58,9 @@ type Person
     , phones :: Array PhoneNumber
     }
 
--- ANCHOR: person_anno
 person :: String -> String -> Address -> Array PhoneNumber -> Person
--- ANCHOR_END: person_anno
 person firstName lastName homeAddress phones = { firstName, lastName, homeAddress, phones }
 
--- ANCHOR: examplePerson
 examplePerson :: Person
 examplePerson =
   person "John" "Smith"
@@ -77,4 +68,3 @@ examplePerson =
     [ phoneNumber HomePhone "555-555-5555"
     , phoneNumber CellPhone "555-555-0000"
     ]
--- ANCHOR_END: examplePerson

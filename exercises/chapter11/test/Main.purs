@@ -3,7 +3,6 @@ module Test.Main where
 import Prelude
 
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
 import Effect (Effect)
 import Control.Monad.Writer (runWriterT, execWriter)
@@ -22,7 +21,6 @@ main =
   runTest do
     test "" success
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
     suite "Exercises Group - The State Monad" do
       suite "testParens" do
         let 
@@ -102,5 +100,4 @@ Note to reader: Delete this line to expand comment block -}
                   indent' $ do
                     line' "I am even more indented"
 
-{- Note to reader: Delete this line to expand comment block
 -}

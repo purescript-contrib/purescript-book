@@ -2,7 +2,6 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
 import Data.Array ((..))
 import Data.Bifunctor (lmap)
@@ -52,7 +51,6 @@ main =
       for_ files \f -> unlink $ Path.concat [ outDir, f ]
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
     test "concatenateFiles" do
       let
         inFoo = Path.concat [ inDir, "foo.txt" ]
@@ -137,7 +135,6 @@ Note to reader: Delete this line to expand comment block -}
         actual <- recurseFiles file
         Assert.equal (Set.fromFoldable expected) $ Set.fromFoldable actual
 
-{- Note to reader: Delete this line to expand comment block
 -}
 runChapterExamples :: TestSuite
 runChapterExamples = do
