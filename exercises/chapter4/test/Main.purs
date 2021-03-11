@@ -17,7 +17,6 @@ main :: Effect Unit
 main =
   runTest do
     runChapterExamples
-    {-  Move this block comment starting point to enable more tests
     suite "Exercise Group - Recursion" do
       test "Exercise - isEven" do
         assert "0 is even"
@@ -114,6 +113,7 @@ main =
         test "Test number that uses the prime numbers less than 10" do
           Assert.equal [ 7, 5, 3, 2 ]
             $ factorize 210
+    {-  Move this block comment starting point to enable more tests
     suite "Exercise Group - Folds and Tail Recursion" do
       test "Exercise - allTrue" do
         assert "all elements true"
