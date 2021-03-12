@@ -3,9 +3,9 @@ module Test.MySolutions where
 import Prelude
 
 import Control.Alternative (guard)
-import Data.Array (filter, find, reverse, uncons, (..), (:))
+import Data.Array (filter, find, uncons, (..), (:))
+import Data.Foldable (foldl)
 import Data.Maybe (Maybe(..))
-import Data.Newtype (overF)
 import Test.Examples (factors)
 
 -- Note to reader: Add your solutions to this file
@@ -60,3 +60,17 @@ factorize n = case n of
   _ -> if isPrime n then [n] else case (find (n `divisibleBy` _) $ reverse $ primes n) of
     Just i -> i : (factorize $ n / i)
     _ -> []
+
+allTrue :: Array Boolean -> Boolean
+allTrue = foldl (&&) true
+
+fibTailRec :: Int -> Int
+fibTailRec n = fibTailRec' n 1 1
+  where
+    fibTailRec' :: Int -> Int -> Int -> Int
+    fibTailRec' 0 acc _ = acc
+    fibTailRec' 1 acc _ = acc
+    fibTailRec' i n' n'' = fibTailRec' (i - 1) (n' + n'') n'
+
+reverse :: forall a. Array a -> Array a
+reverse = foldl (\xs x -> x : xs) []
