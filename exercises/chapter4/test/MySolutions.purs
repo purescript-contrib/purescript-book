@@ -3,10 +3,12 @@ module Test.MySolutions where
 import Prelude
 
 import Control.Alternative (guard)
-import Data.Array (filter, find, uncons, (..), (:))
+import Data.Array (filter, find, head, last, sortWith, uncons, (..), (:))
 import Data.Foldable (foldl)
-import Data.Maybe (Maybe(..))
-import Test.Examples (factors)
+import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Path (Path, filename, isDirectory, ls, size)
+import Data.String (Pattern(..), split)
+import Test.Examples (allFiles, factors)
 
 -- Note to reader: Add your solutions to this file
 isEven :: Int -> Boolean
@@ -74,3 +76,34 @@ fibTailRec n = fibTailRec' n 1 1
 
 reverse :: forall a. Array a -> Array a
 reverse = foldl (\xs x -> x : xs) []
+
+allFiles'' :: Path -> Array Path
+allFiles'' path = reverse $ allFiles''' [path] []
+  where
+    allFiles''' rest acc = case uncons rest of
+      Just { head: x, tail: xs } -> 
+        if isDirectory x
+          then allFiles''' (ls x <> xs) (x : acc)
+          else allFiles''' xs (x : acc)
+      _ -> acc
+
+onlyFiles :: Path -> Array Path
+onlyFiles = filter (not <<< isDirectory) <<< allFiles''
+
+whereIs :: Path -> String -> Maybe Path
+whereIs path name = head $ impl $ allFiles path
+  where
+    impl :: Array Path -> Array Path
+    impl paths = do
+      path' <- paths
+      child <- ls path'
+      guard $ eq name $ fromMaybe "" $ last $ split (Pattern "/") $ filename child
+      pure path'
+
+largestSmallest :: Path -> Array Path
+largestSmallest path = impl $ filter (not <<< isDirectory) $ allFiles path
+  where
+    impl :: Array Path -> Array Path
+    impl files = case uncons $ sortWith (fromMaybe 0 <<< size) files of
+      Just { head: x, tail: xs } -> (:) x $ fromMaybe [] $ pure <$> last xs
+      Nothing -> []
