@@ -444,7 +444,7 @@ current :: Number
 current = calculateCurrent lightbulb lightbulb -- uncaught mistake
 ```
 
-This design principle is perhaps better [communicated visually](https://twitter.com/jusrin00/status/875238742621028355/photo/1).
+This design principle is perhaps better [communicated visually](https://raw.githubusercontent.com/justinwoo/my-twitter-memes/master/images/DCV46-aXUAEOnqf.jpg).
 
 Note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:
 ```haskell
