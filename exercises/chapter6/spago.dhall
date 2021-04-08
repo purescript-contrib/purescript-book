@@ -4,9 +4,16 @@ You can edit this file as you like.
 -}
 { name = "my-project"
 , dependencies =
-  [ "console"
+  [ "arrays"
+  , "console"
   , "effect"
   , "either"
+  , "foldable-traversable"
+  , "lists"
+  , "maybe"
+  , "newtype"
+  , "partial"
+  , "prelude"
   , "psci-support"
   , "strings"
   , "test-unit"

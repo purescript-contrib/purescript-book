@@ -7,8 +7,13 @@ You can edit this file as you like.
   [ "arrays"
   , "console"
   , "effect"
+  , "foldable-traversable"
+  , "integers"
   , "math"
+  , "maybe"
   , "numbers"
+  , "partial"
+  , "prelude"
   , "psci-support"
   , "test-unit"
   ]

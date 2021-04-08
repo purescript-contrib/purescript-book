@@ -4,11 +4,20 @@ You can edit this file as you like.
 -}
 { name = "my-project"
 , dependencies =
-  [ "console"
+  [ "arrays"
+  , "console"
   , "effect"
+  , "either"
+  , "foldable-traversable"
+  , "integers"
+  , "lists"
+  , "maybe"
+  , "prelude"
   , "psci-support"
   , "strings"
   , "test-unit"
+  , "transformers"
+  , "tuples"
   , "validation"
   ]
 , packages = ./packages.dhall
