@@ -378,9 +378,9 @@ We will see the `combineList` function again later, when we consider `Traversabl
 
 ## Exercises
 
-1.  (Medium) Write versions of the numeric operators `+`, `-`, `*` and `/` which work with optional arguments (i.e. arguments wrapped in `Maybe`) and return a value wrapped in `Maybe`. Name these functions `addMaybe`, `subMaybe`, `mulMaybe`, and `divMaybe`. _Hint_: Use `lift2`.
-1.  (Medium) Extend the above exercise to work with all `Apply` types (not just `Maybe`). Name these new functions `addApply`, `subApply`, `mulApply`, and `divApply`.
-1.  (Difficult) Write a function `combineMaybe` which has type `forall a f. Applicative f => Maybe (f a) -> f (Maybe a)`. This function takes an optional computation with side-effects, and returns a side-effecting computation which has an optional result.
+1. (Medium) Write versions of the numeric operators `+`, `-`, `*` and `/` which work with optional arguments (i.e. arguments wrapped in `Maybe`) and return a value wrapped in `Maybe`. Name these functions `addMaybe`, `subMaybe`, `mulMaybe`, and `divMaybe`. _Hint_: Use `lift2`.
+1. (Medium) Extend the above exercise to work with all `Apply` types (not just `Maybe`). Name these new functions `addApply`, `subApply`, `mulApply`, and `divApply`.
+1. (Difficult) Write a function `combineMaybe` which has type `forall a f. Applicative f => Maybe (f a) -> f (Maybe a)`. This function takes an optional computation with side-effects, and returns a side-effecting computation which has an optional result.
 
 ## Applicative Validation
 
@@ -537,9 +537,9 @@ invalid (["Field 'Number' did not match the required format"])
 
 ## Exercises
 
-1.  (Easy) Write a regular expression `stateRegex :: Regex` to check that a string only contains two alphabetic characters. _Hint_: see the source code for `phoneNumberRegex`.
-1.  (Medium) Write a regular expression `nonEmptyRegex :: Regex` to check that a string is not entirely whitespace. _Hint_: If you need help developing this regex expression, check out [RegExr](https://regexr.com) which has a great cheatsheet and interactive test environment.
-1.  (Medium) Write a function `validateAddressImproved` that is similar to `validateAddress`, but uses the above `stateRegex` to validate the `state` field and `nonEmptyRegex` to validate the `street` and `city` fields. _Hint_: see the source for `validatePhoneNumber` for an example of how to use `matches`.
+1. (Easy) Write a regular expression `stateRegex :: Regex` to check that a string only contains two alphabetic characters. _Hint_: see the source code for `phoneNumberRegex`.
+1. (Medium) Write a regular expression `nonEmptyRegex :: Regex` to check that a string is not entirely whitespace. _Hint_: If you need help developing this regex expression, check out [RegExr](https://regexr.com) which has a great cheatsheet and interactive test environment.
+1. (Medium) Write a function `validateAddressImproved` that is similar to `validateAddress`, but uses the above `stateRegex` to validate the `state` field and `nonEmptyRegex` to validate the `street` and `city` fields. _Hint_: see the source for `validatePhoneNumber` for an example of how to use `matches`.
 
 ## Traversable Functors
 
@@ -639,31 +639,31 @@ Other traversable functors include `Array`, and `Tuple a` and `Either a` for any
 
 ## Exercises
 
-1.  (Easy) Write `Eq` and `Show` instances for the following binary tree data structure:
+1. (Easy) Write `Eq` and `Show` instances for the following binary tree data structure:
 
-    ```haskell
-    data Tree a = Leaf | Branch (Tree a) a (Tree a)
-    ```
+   ```haskell
+   data Tree a = Leaf | Branch (Tree a) a (Tree a)
+   ```
 
-    Recall from the previous chapter that you may either write these instances manually or let the compiler derive them for you.
+   Recall from the previous chapter that you may either write these instances manually or let the compiler derive them for you.
 
-    There are many "correct" formatting options for `Show` output. The test for this exercise expects the following whitespace style. This happens to match the default formatting of generic show, so you only need to make note of this if you're planning on writing this instance manually.
+   There are many "correct" formatting options for `Show` output. The test for this exercise expects the following whitespace style. This happens to match the default formatting of generic show, so you only need to make note of this if you're planning on writing this instance manually.
 
-    ```
-    (Branch (Branch Leaf 8 Leaf) 42 Leaf)
-    ```
+   ```
+   (Branch (Branch Leaf 8 Leaf) 42 Leaf)
+   ```
 
-1.  (Medium) Write a `Traversable` instance for `Tree a`, which combines side-effects from left-to-right. _Hint_: There are some additional instance dependencies that need to be defined for `Traversable`.
+1. (Medium) Write a `Traversable` instance for `Tree a`, which combines side-effects from left-to-right. _Hint_: There are some additional instance dependencies that need to be defined for `Traversable`.
 
-1.  (Medium) Write a function `traversePreOrder :: forall a m b. Applicative m => (a -> m b) -> Tree a -> m (Tree b)` that performs a pre-order traversal of the tree. This means the order of effect execution is root-left-right, instead of left-root-right as was done for the previous in-order traverse exercise. _Hint_: No additional instances need to be defined, and you don't need to call any of the the functions defined earlier. Applicative do notation (`ado`) is the easiest way to write this function.
+1. (Medium) Write a function `traversePreOrder :: forall a m b. Applicative m => (a -> m b) -> Tree a -> m (Tree b)` that performs a pre-order traversal of the tree. This means the order of effect execution is root-left-right, instead of left-root-right as was done for the previous in-order traverse exercise. _Hint_: No additional instances need to be defined, and you don't need to call any of the the functions defined earlier. Applicative do notation (`ado`) is the easiest way to write this function.
 
-1.  (Medium) Write a function `traversePostOrder` that performs a post-order traversal of the tree where effects are executed left-right-root.
+1. (Medium) Write a function `traversePostOrder` that performs a post-order traversal of the tree where effects are executed left-right-root.
 
-1.  (Medium) Create a new version of the `Person` type where the `homeAddress` field is optional (using `Maybe`). Then write a new version of `validatePerson` (renamed as `validatePersonOptionalAddress`) to validate this new `Person`. _Hint_: Use `traverse` to validate a field of type `Maybe a`.
+1. (Medium) Create a new version of the `Person` type where the `homeAddress` field is optional (using `Maybe`). Then write a new version of `validatePerson` (renamed as `validatePersonOptionalAddress`) to validate this new `Person`. _Hint_: Use `traverse` to validate a field of type `Maybe a`.
 
-1.  (Difficult) Write a function `sequenceUsingTraverse` which behaves like `sequence`, but is written in terms of `traverse`.
+1. (Difficult) Write a function `sequenceUsingTraverse` which behaves like `sequence`, but is written in terms of `traverse`.
 
-1.  (Difficult) Write a function `traverseUsingSequence` which behaves like `traverse`, but is written in terms of `sequence`.
+1. (Difficult) Write a function `traverseUsingSequence` which behaves like `traverse`, but is written in terms of `sequence`.
 
 ## Applicative Functors for Parallelism
 
