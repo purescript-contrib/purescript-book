@@ -57,7 +57,7 @@ instance semiringComplex :: Semiring Complex where
             , imaginary: r1 * i2 + r2 * i1
             }
   zero = wrap zero
-  one = wrap one
+  one = wrap { real: one, imaginary: zero }
 {-
 -- Without Newtype
 instance semiringComplex :: Semiring Complex where
@@ -70,10 +70,10 @@ instance semiringComplex :: Semiring Complex where
           , imaginary: r1 * i2 + r2 * i1
           }
   zero = Complex zero
-  one = Complex one
+  one = Complex { real: one, imaginary: zero }
   -- Could instead write `zero` and `one` more explicitly
   --zero = Complex {real: 0.0, imaginary: 0.0}
-  --one = Complex {real: 1.0, imaginary: 1.0}
+  --one = Complex {real: 1.0, imaginary: 0.0}
 -}
 
 derive newtype instance ringComplex :: Ring Complex
