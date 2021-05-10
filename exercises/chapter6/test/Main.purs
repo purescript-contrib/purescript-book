@@ -47,6 +47,10 @@ Note to reader: Delete this line to expand comment block -}
         test "add" do
           Assert.equal (cpx 4.0 6.0)
             $ add (cpx 1.0 2.0) (cpx 3.0 4.0)
+        test "add zero" do
+          let v = cpx 1.2 3.4
+          Assert.equal v
+            $ add v zero
         test "multiply" do
           Assert.equal (cpx (-5.0) 10.0)
             $ mul (cpx 1.0 2.0) (cpx 3.0 4.0)
