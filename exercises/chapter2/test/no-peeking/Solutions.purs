@@ -2,7 +2,7 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 import Data.Int (rem)
-import Math (e, pi, sqrt)
+import Math (pi, sqrt)
 
 diagonal w h = sqrt (w * w + h * h)
 
