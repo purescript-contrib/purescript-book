@@ -181,9 +181,6 @@ Note to reader: Delete this line to expand comment block -}
           test "Multiply Int append" do
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
-          test "Multiply Int concrete" do
-            Assert.equal 15
-              $ act m1 a
         -- Multiply String is the actual exercise question
         suite "Multiply String" do
           let
