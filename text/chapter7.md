@@ -109,6 +109,8 @@ class Functor f <= Apply f where
 
 The `Apply` type class is a subclass of `Functor`, and defines an additional function `apply`. As `<$>` was defined as an alias for `map`, the `Prelude` module defines `<*>` as an alias for `apply`. As we'll see, these two operators are often used together.
 
+Note that this [`apply`](https://pursuit.purescript.org/packages/purescript-prelude/docs/Control.Apply#v:apply) is different than the [`apply`](https://pursuit.purescript.org/packages/purescript-prelude/docs/Data.Function#v:apply) from `Data.Function` (infixed as `$`). Luckily, infix notation is almost always used for the latter, so you don't need to worry about name collisions. And yes, it may have been nicer to swap the `<*>` and `<$>` operators so that each `apply` involved the dollar-sign; however, we wanted to keep our notation consistent with Haskell.
+
 The type of `apply` looks a lot like the type of `map`. The difference between `map` and `apply` is that `map` takes a function as an argument, whereas the first argument to `apply` is wrapped in the type constructor `f`. We'll see how this is used soon, but first, let's see how to implement the `Apply` type class for the `Maybe` type:
 
 ```haskell

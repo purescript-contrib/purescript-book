@@ -659,8 +659,6 @@ infixr 0 apply as $
 
 The `apply` function takes another function (of type `(a -> b)`) as its first argument and a value (of type `a`) as its second argument, then calls that function with that value. If it seems like this function doesn't contribute anything meaningful, you are absolutely correct! Your program is logically identical without it (see [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency)). The syntactic utility of this function comes from the special properties assigned to its infix operator. `$` is a right-associative (`infixr`), low precedence (`0`) operator, which lets us remove sets of parentheses for deeply-nested applications.
 
-Note that there are actually _two_ commonly-used functions named `apply`: `Data.Function.apply` and `Control.Apply.apply`, which have infix operators of `$` and `<*>` respectively. We'll cover the latter in Chapter 7. Luckily, the infix notation is almost always used for these functions, so you don't need to worry about name collisions.
-
 Another parens-busting opportunity for the `$` operator is in our earlier `findEntry` function:
 ```haskell
 findEntry firstName lastName book = head $ filter filterEntry book
