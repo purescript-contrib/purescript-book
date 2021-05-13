@@ -206,7 +206,7 @@ Note to reader: Delete this line to expand comment block -}
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
           test "concrete" do
-            Assert.equal [ 3, 6, 9 ]
+            Assert.equal (map (act m1) a)
               $ act m1 a
         suite "Action Multiply (Array String)" do
           let
