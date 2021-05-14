@@ -205,7 +205,7 @@ Note to reader: Delete this line to expand comment block -}
           test "act appended" do
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
-          test "concrete" do
+          test "act acts on elements" do
             Assert.equal (map (act m1) a)
               $ act m1 a
         suite "Action Multiply (Array String)" do
