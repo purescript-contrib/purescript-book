@@ -4,6 +4,7 @@ import Prelude
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 
+import Data.Array (elem)
 import Data.Foldable (foldMap, foldl, foldr)
 import Data.Hashable (hash)
 import Data.List (List(..), (:))
@@ -180,8 +181,10 @@ Note to reader: Delete this line to expand comment block -}
           Assert.equal (act m1 (act m2 a))
             $ act (m1 <> m2) a
         test "concrete" do
-          Assert.equal 15
-            $ act m1 a
+          let expectOneOf = [ 1, 15, 125 ]
+              got = act m1 a
+          Assert.assert ("expected one of " <> show expectOneOf <> ", got " <> show got)
+            $ elem got expectOneOf
       -- Multiply String is the actual exercise question
       suite "Action Multiply String" do
         let
@@ -206,8 +209,10 @@ Note to reader: Delete this line to expand comment block -}
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
           test "concrete" do
-            Assert.equal [ 3, 6, 9 ]
-              $ act m1 a
+            let expectOneOf = [[ 0, 0, 1], [ 3, 6, 9 ], [ 1, 8, 27 ]]
+                got = act m1 a
+            Assert.assert ("expected one of " <> show expectOneOf <> ", got " <> show got)
+              $ elem got expectOneOf
         suite "Action Multiply (Array String)" do
           let
             a = [ "foo", "bar", "baz" ]

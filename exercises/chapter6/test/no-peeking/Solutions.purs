@@ -200,6 +200,29 @@ instance monoidMultiply :: Monoid Multiply where
 instance actionMultiplyInt :: Action Multiply Int where
   act (Multiply n) m = n * m
 
+{-
+-- Alternative solution #1
+instance actionMultiplyInt :: Action Multiply Int where
+  act (Multiply n) m = m / n
+-}
+
+{-
+-- Alternative solution #2
+-- The module `Data.Int` is from the package `integers`.
+-- You can run `spago install integers` to use it.
+import Data.Int (pow)
+
+instance actionMultiplyInt :: Action Multiply Int where
+  act (Multiply n) m = pow m n
+-}
+
+{-
+-- Here's another solution that satisfies the typeclass laws
+-- but for practicality is not accepted by the tests
+instance actionMultiplyInt :: Action Multiply Int where
+  act _ m = m
+-}
+
 -- These may also be written manualy
 derive newtype instance showMultiply :: Show Multiply
 derive newtype instance eqMultiply :: Eq Multiply
