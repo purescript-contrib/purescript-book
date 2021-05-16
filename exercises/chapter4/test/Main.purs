@@ -21,15 +21,28 @@ main =
     {-  Move this block comment starting point to enable more tests
 Note to reader: Delete this line to expand comment block -}
     suite "Exercise Group - Recursion" do
-      test "Exercise - isEven" do
-        assert "0 is even"
-          $ isEven 0
-        assertFalse "1 is odd"
-          $ isEven 1
-        assert "20 is even"
-          $ isEven 20
-        assertFalse "19 is odd"
-          $ isEven 19
+      suite "Exercise - isEven" do
+        test "0 is even" do
+          Assert.equal true
+            $ isEven 0
+        test "1 is odd" do
+          Assert.equal false
+            $ isEven 1
+        test "20 is even" do
+          Assert.equal true
+            $ isEven 20
+        test "19 is odd" do
+          Assert.equal false
+            $ isEven 19
+        test "-1 is odd" do
+          Assert.equal false
+            $ isEven (-1)
+        test "-20 is even" do
+          Assert.equal true
+            $ isEven (-20)
+        test "-19 is odd" do
+          Assert.equal false
+            $ isEven (-19)
       suite "Exercise - countEven" do
         test "[] has none" do
           Assert.equal 0

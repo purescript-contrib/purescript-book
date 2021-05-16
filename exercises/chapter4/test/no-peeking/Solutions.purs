@@ -9,14 +9,16 @@ import Data.Maybe (Maybe(..), fromMaybe, maybe)
 import Data.Path (Path, filename, isDirectory, ls, size)
 import Data.String.Common (split)
 import Data.String.Pattern (Pattern(..))
-import Data.Tuple (Tuple(..), snd)
+import Data.Tuple (Tuple(..))
 import Test.Examples
 
 isEven :: Int -> Boolean
-isEven n = case n of
-  0 -> true
-  1 -> false
-  _ -> isEven $ n - 2
+isEven n =
+  if n == 0
+    then true
+    else if n < 0
+      then isEven (-n)
+      else not (isEven (n - 1))
 
 oneIfEven :: Int -> Int
 oneIfEven n = if isEven n then 1 else 0
@@ -117,7 +119,7 @@ whereIs path fileName = head $ whereIs' $ allFiles path
     pure path
 
 largestSmallest :: Path -> Array Path
-largestSmallest path = 
+largestSmallest path =
   let files = onlyFiles path
       maybeSizes = map size files
       maybeMax = foldl (outlier (>)) Nothing maybeSizes
