@@ -14,10 +14,10 @@ import Test.Examples
 
 isEven :: Int -> Boolean
 isEven n =
-  if n == 0
-    then true
-    else if n < 0
-      then isEven (-n)
+  if n < 0
+    then isEven (-n)
+    else if n == 0
+      then true
       else not (isEven (n - 1))
 
 oneIfEven :: Int -> Int
