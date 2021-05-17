@@ -624,12 +624,12 @@ Another reason to define a superclass relationship is in the case where there is
        act :: m -> a -> a
      ```
 
-     An _action_ is a function which describes how monoidal values can be used to modify a value of another type. There are two laws for the `Action` type class:
+     An _action_ is a function which describes how monoidal values are used to determine how to modify a value of another type. There are two laws for the `Action` type class:
 
      - `act mempty a = a`
      - `act (m1 <> m2) a = act m1 (act m2 a)`
 
-     That is, the action respects the operations defined by the `Monoid` class.
+     Applying an empty action is a no-op. And applying two actions in sequence is the same as applying the actions combined. That is, actions respect the operations defined by the `Monoid` class.
 
      For example, the natural numbers form a monoid under multiplication:
 
@@ -648,7 +648,9 @@ Another reason to define a superclass relationship is in the case where there is
      ```haskell
      instance actionMultiplyInt :: Action Multiply Int
      ```
-     Does this instance satisfy the laws listed above?
+     Verify that this instance satisfies the laws listed above.
+
+1. (Difficult) There are actually multiple ways to implement an instance of `Action Multiply Int`. How many can you think of? Purescript does not allow multiple implementations of a same instance, so you will have to replace your original implementation. _Note_: the tests cover 3 implementations.
 
 1. (Medium) Write an `Action` instance which repeats an input string some number of times:
 
