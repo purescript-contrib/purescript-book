@@ -632,7 +632,7 @@ pure (Nothing)
 invalid (["Field 'Example' cannot be empty"])
 
 > traverse (nonEmpty "Example") (Just "Testing")
-pure ((Just unit))
+pure ((Just "Testing"))
 ```
 
 These examples show that traversing the `Nothing` value returns `Nothing` with no validation, and traversing `Just x` uses the validation function to validate `x`. That is, `traverse` takes a validation function for type `a` and returns a validation function for `Maybe a`, i.e. a validation function for optional values of type `a`.
