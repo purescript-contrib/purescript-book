@@ -108,6 +108,7 @@ Note to reader: Delete this line to expand comment block -}
         stateTest "C" false
         stateTest "CAA" false
         stateTest "C3" false
+        stateTest "C$" false
       suite "Exercise - nonEmptyRegex" do
         let
           nonEmptyTest str exp = test str do
