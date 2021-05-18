@@ -1,4 +1,4 @@
-name: CI
+name: Run Tests
 
 on:
   pull_request:
@@ -13,14 +13,13 @@ jobs:
       - name: Set up PureScript toolchain
         uses: purescript-contrib/setup-purescript@main
 
-        # Todo - revisit caching of each exercise directory
-        # - name: Cache PureScript dependencies
-        #   uses: actions/cache@v2
-        #   with:
-        #     key: ${{ runner.os }}-spago-${{ hashFiles('**/*.dhall') }}
-        #     path: |
-        #       exercises/*/.spago
-        #       exercises/*/output
+      - name: Cache PureScript dependencies
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-spago-${{ hashFiles('**/*.dhall') }}
+          path: |
+            exercises/*/.spago
+            exercises/*/output
 
       - name: Set up Node toolchain
         uses: actions/setup-node@v1
@@ -56,4 +55,3 @@ jobs:
 
       - name: Reset solutions
         run: ./scripts/resetSolutions.sh
-
