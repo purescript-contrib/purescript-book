@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up PureScript toolchain
+        uses: purescript-contrib/setup-purescript@main
+
+        # Todo - revisit caching of each exercise directory
+        # - name: Cache PureScript dependencies
+        #   uses: actions/cache@v2
+        #   with:
+        #     key: ${{ runner.os }}-spago-${{ hashFiles('**/*.dhall') }}
+        #     path: |
+        #       exercises/*/.spago
+        #       exercises/*/output
+
+      - name: Set up Node toolchain
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install NPM dependencies
+        run: npm install purescript spago
+
+      - name: Run Build
+        run: ./scripts/buildAll.sh
+
+      - name: Run tests
+        run: ./scripts/testAll.sh
+
+      - name: Remove anchors
+        run: ./scripts/removeAnchors.sh
+
+      - name: Run tests again
+        run: ./scripts/testAll.sh
+
+      - name: Reset solutions
+        run: ./scripts/resetSolutions.sh
+
