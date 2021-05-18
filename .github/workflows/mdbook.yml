@@ -22,6 +22,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/master'
         with:
-          github_token: ${{ secrets.GITHUB_REPO_DEPLOY_KEY }}
+          deploy_key: ${{ secrets.GITHUB_REPO_DEPLOY_KEY }}
           publish_dir: ./book
           cname: book.purescript.org
