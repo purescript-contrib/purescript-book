@@ -659,7 +659,7 @@ Another reason to define a superclass relationship is in the case where there is
      ```
      _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
 
-     Does this instance satisfy the laws listed above?
+     Verify that this instance satisfies the laws listed above.
 
  1. (Medium) Write an instance `Action m a => Action m (Array a)`, where the action on arrays is defined by acting on each array element independently.
 
