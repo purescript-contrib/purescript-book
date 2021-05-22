@@ -137,13 +137,13 @@ Note to reader: Delete this line to expand comment block -}
           $ allTrue [ true, false, true ]
       suite "Exercise - fibTailRec" do
         test "Verify 0" do
-          Assert.equal 1
+          Assert.equal 0
             $ fibTailRec 0
         test "Verify 9" do
-          Assert.equal 55
+          Assert.equal 34
             $ fibTailRec 9
         test "Verify 44" do
-          Assert.equal 1134903170
+          Assert.equal 701408733
             $ fibTailRec 44
       suite "Exercise - reverse" do
         test "Empty Array" do

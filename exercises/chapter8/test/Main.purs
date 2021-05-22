@@ -84,9 +84,9 @@ Note to reader: Delete this line to expand comment block -}
             (abs (estimatePi 1000000 - pi) < 0.000002)
         suite "fibonacci" do
           test "40th Fibonacci number"
-            $ Assert.equal 165580141 (fibonacci 40)
+            $ Assert.equal 102334155 (fibonacci 40)
           test "45th Fibonacci number"
-            $ Assert.equal 1836311903 (fibonacci 45)
+            $ Assert.equal 1134903170 (fibonacci 45)
 
 {- Note to reader: Delete this line to expand comment block
 -}

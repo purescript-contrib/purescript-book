@@ -51,7 +51,7 @@ fibonacci n =
     ( do
         x <- new 0
         y <- new 1
-        for 2 (n + 1) \k -> do
+        for 2 n \k -> do
           x' <- read x
           y' <- read y
           _ <- write (x' + y') y
