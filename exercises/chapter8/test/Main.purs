@@ -3,9 +3,13 @@ module Test.Main where
 import Prelude
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+
+import Data.Either (Either(..), fromLeft, fromRight)
 import Data.List (List(..), foldM, (:))
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
+import Effect.Exception (error, message, try)
+import Effect.Unsafe (unsafePerformEffect)
 import Math (abs, pi)
 import Test.Examples (countThrows, safeDivide)
 import Test.Unit (TestSuite, suite, test)
@@ -74,6 +78,18 @@ Note to reader: Delete this line to expand comment block -}
             $ filterM
                 onlyPositiveEvenIntegers
                 (2 : 3 : 4 : Nil)
+      suite "exceptionDivide" do
+        test "6 / 3"
+          $ Assert.equal 2
+          $ fromRight 0
+          $ unsafePerformEffect
+          $ try $ exceptionDivide 6 3
+        test "6 / 0"
+          $ Assert.equal "div zero"
+          $ message
+          $ fromLeft (error "")
+          $ unsafePerformEffect
+          $ try $ exceptionDivide 6 0
       suite "ST" do
         suite "estimatePi" do
           test "1000 terms of Gregory Series"
