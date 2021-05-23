@@ -659,7 +659,7 @@ Another reason to define a superclass relationship is in the case where there is
      instance actionMultiplyString :: Action Multiply String
      ```
      
-      _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
+     _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
       
       Remember, your instance must satisfy the laws listed above. 
 
