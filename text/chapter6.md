@@ -346,7 +346,7 @@ data Shape
   | Text Point String
 ```
 
-5. (Medium) Derive (via `Generic`) a `Show` instance for `Shape`. How does the amount of code written and `String` output compare to `showShape` from the previous chapter? _Note_: You may instead write this instance manually, but you'll need to pay close attention to the output format expected by the tests. _Hint_: See the [Deriving from `Generic`](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md#deriving-from-generic) section of the [Type Class Deriving](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md) guide.
+5. (Medium) Derive (via `Generic`) a `Show` instance for `Shape`. How does the amount of code written and `String` output compare to `showShape` from the previous chapter? _Hint_: See the [Deriving from `Generic`](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md#deriving-from-generic) section of the [Type Class Deriving](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md) guide.
 
 ## Type Class Constraints
 
