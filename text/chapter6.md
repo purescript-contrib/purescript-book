@@ -659,7 +659,9 @@ Another reason to define a superclass relationship is in the case where there is
      instance actionMultiplyString :: Action Multiply String
      ```
      
-      Remember, your instance must satisfy the laws listed above. _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
+      _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
+      
+      Remember, your instance must satisfy the laws listed above. 
 
  1. (Medium) Write an instance `Action m a => Action m (Array a)`, where the action on arrays is defined by acting on each array element independently. Remember, your instance must satisfy the laws listed above.
 
@@ -669,7 +671,9 @@ Another reason to define a superclass relationship is in the case where there is
      newtype Self m = Self m
      ```
 
-     Remember, your instance must satisfy the laws listed above. _Note_: The testing framework requires `Show` and `Eq` instances for the `Self` and `Multiply` types. You may either write these instances manually, or let the compiler handle this for you with [`derive newtype instance`](https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#derive-from-newtype) shorthand.
+     _Note_: The testing framework requires `Show` and `Eq` instances for the `Self` and `Multiply` types. You may either write these instances manually, or let the compiler handle this for you with [`derive newtype instance`](https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#derive-from-newtype) shorthand.
+     
+     Remember, your instance must satisfy the laws listed above. 
 
  1. (Difficult) Should the arguments of the multi-parameter type class `Action` be related by some functional dependency? Why or why not? _Note_: There is no test for this exercise.
 
