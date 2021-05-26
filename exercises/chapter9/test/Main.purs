@@ -112,7 +112,7 @@ Note to reader: Delete this line to expand comment block -}
       test "valid site" do
         let
           expectedOutFile = Path.concat [ inDir, "user.txt" ]
-        actual <- getWithTimeout 1000.0 reqUrl
+        actual <- getWithTimeout 10000.0 reqUrl
         expected <- Just <$> readTextFile UTF8 expectedOutFile
         Assert.equal expected actual
       test "no response" do
