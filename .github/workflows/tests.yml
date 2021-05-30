@@ -57,3 +57,6 @@ jobs:
 
       - name: Reset solutions
         run: ./scripts/resetSolutions.sh
+
+      - name: Run tests again
+        run: ./scripts/testAll.sh
