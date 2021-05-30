@@ -9,3 +9,11 @@ for f in $ALL_PURS; do
   # Delete lines starting with an '-- ANCHOR' comment
   perl -ni -e 'print if !/^\s*-- ANCHOR/' $f
 done
+
+# All .js files in the exercises directories (excluding hidden files and output/)
+ALL_JS=$(find exercises \( ! -regex '.*/\..*' \) \( ! -regex '.*/output/.*' \) -type f -name '*.js')
+
+for f in $ALL_JS; do
+  # Delete lines starting with an '// ANCHOR' comment
+  perl -ni -e 'print if !/^\s*\/\/ ANCHOR/' $f
+done
