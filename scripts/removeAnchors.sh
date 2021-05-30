@@ -2,18 +2,10 @@
 
 # This script removes all code anchors to improve readability
 
-# All .purs files in the exercises directories (excluding hidden files)
-ALL_PURS=$(find exercises \( ! -regex '.*/\..*' \) -type f -name '*.purs')
+# All .purs & .js files in the src/ and test/ directories of chapter exercises.
+FILES=$(find . -regextype posix-extended -regex './exercises/chapter[0-9]{1,2}/(src|test)/.*\.(purs|js)' -type f)
 
-for f in $ALL_PURS; do
-  # Delete lines starting with an '-- ANCHOR' comment
-  perl -ni -e 'print if !/^\s*-- ANCHOR/' $f
-done
-
-# All .js files in the exercises directories (excluding hidden files and output/)
-ALL_JS=$(find exercises \( ! -regex '.*/\..*' \) \( ! -regex '.*/output/.*' \) -type f -name '*.js')
-
-for f in $ALL_JS; do
-  # Delete lines starting with an '// ANCHOR' comment
-  perl -ni -e 'print if !/^\s*\/\/ ANCHOR/' $f
+for f in $FILES; do
+  # Delete lines starting with an 'ANCHOR' comment
+  sed -i -E '/^\s*(--|\/\/) ANCHOR/d' $f
 done
