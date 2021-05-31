@@ -38,9 +38,9 @@ As a simple example, a JavaScript function makes no guarantees that its return v
 
 ## Calling JavaScript From PureScript
 
-The simplest way to use JavaScript code from PureScript is to give a type to an existing JavaScript value using a _foreign import_ declaration. Foreign import declarations should have a corresponding JavaScript declaration in a _foreign JavaScript module_.
+The simplest way to use JavaScript code from PureScript is to give a type to an existing JavaScript value using a _foreign import_ declaration. Foreign import declarations must have a corresponding JavaScript declaration _exported_ from a _foreign JavaScript module_.
 
-For example, consider the `encodeURIComponent` function, which can be used from JavaScript to encode a component of a URI by escaping special characters:
+For example, consider the `encodeURIComponent` function, which can be used in JavaScript to encode a component of a URI by escaping special characters:
 
 ```text
 $ node
@@ -57,17 +57,15 @@ We can assign this type to the function with the following foreign import declar
 {{#include ../exercises/chapter10/test/URI.purs}}
 ```
 
-We also need to write a foreign JavaScript module. If the module above is saved as `test/URI.purs`, then the foreign JavaScript module should be saved as `test/URI.js`:
+We also need to write a foreign JavaScript module to import it from. Purescript uses the CommonJS module system when interoperating with JavaScript. A corresponding foreign JavaScript module is one of the same name but extension changed from `.purs` to `.js`. If the Purescript module above is saved as `URI.purs`, then the foreign JavaScript module is saved as `URI.js`:
 
 ```javascript
 {{#include ../exercises/chapter10/test/URI.js}}
 ```
 
-Spago will find `.js` files in the `src` and `test` directories, and provide them to the compiler as foreign JavaScript modules.
+In CommonJS, functions and values are exported from a module by assigning them to the `exports` object.
 
-JavaScript functions and values are exported from foreign JavaScript modules by assigning them to the `exports` object just like a regular CommonJS module. The `purs` compiler (wrapped by `spago`) treats this module like a regular CommonJS module, and simply adds it as a dependency to the compiled PureScript module. However, when bundling code for the browser with `psc-bundle` or `spago bundle-app --to`, it is very important to follow the pattern above, assigning exports to the `exports` object using a property assignment. This is because `psc-bundle` recognizes this format, allowing unused JavaScript exports to be removed from bundled code.
-
-With these two pieces in place, we can now use the `encodeURIComponent` function from PureScript like any function written in PureScript. For example, if this declaration is saved as a module and loaded into PSCi, we can reproduce the calculation above:
+With these two pieces in place, we can now use the `encodeURIComponent` function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:
 
 ```text
 $ spago repl
