@@ -7,5 +7,5 @@ FILES=$(find . -regextype posix-extended -regex './exercises/chapter[0-9]{1,2}/(
 
 for f in $FILES; do
   # Delete lines starting with an 'ANCHOR' comment
-  sed -i -E '/^\s*(--|\/\/) ANCHOR/d' $f
+  perl -ni -e 'print if !/^\s*(--|\/\/) ANCHOR/' $f
 done
