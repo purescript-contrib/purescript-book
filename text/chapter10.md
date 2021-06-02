@@ -340,14 +340,21 @@ exports.head = arr =>
   arr[0];
 ```
 
-However, there is a problem with this function. We might try to give it the type `forall a. Array a -> a`, but for empty arrays, this function returns `undefined`. Therefore, this function does not have the correct runtime representation.
+How would we type this function? We might try to give it the type `forall a. Array a -> a`, but for empty arrays, this function returns `undefined`. Therefore, the type `forall a. Array a -> a` does not correctly represent this implementation.
 
-We can instead return a `Maybe` value to handle this corner case.
+We instead want to return a `Maybe` value to handle this corner case:
 
-It is tempting to write the following:
+```hs
+foreign import maybeHead :: forall a. Array a -> Maybe a
+```
+
+But how do we return a `Maybe`? It is tempting to write the following:
 
 ```js
 // Don't do this
+
+let Data_Maybe = require("../Data.Maybe")
+
 exports.maybeHead = arr => {
   if (arr.length) {
     return Data_Maybe.Just.create(arr[0]);
@@ -357,13 +364,9 @@ exports.maybeHead = arr => {
 }
 ```
 
-```hs
-foreign import maybeHead :: forall a. Array a -> Maybe a
-```
+Importing and using the `Data.Maybe` module directly in the foreign module isn't recommended as it makes our code brittle to changes in the code generator &mdash; `create` and `value` are not public APIs. Additionally, doing this can cause problems when using `purs bundle` for dead code elimination.
 
-But calling these `Maybe` constructors directly in the FFI code isn't recommended as it makes the code brittle to changes in the code generator. Additionally, doing this can cause problems when using `purs bundle` for dead code elimination.
-
-The recommended approach is to add extra parameters to your FFI-defined function to accept the functions you need to call as arguments:
+The recommended approach is to add extra parameters to our FFI-defined function to accept the functions we need.
 
 ```js
 exports.maybeHeadImpl = just => nothing => arr => {
@@ -405,7 +408,7 @@ which returns `Just 1000` for any array input.
 This vulnerability is allowed because `(\_ -> Just 1000)` and `Just 1000` match the signatures of `(a -> Maybe a)` and `Maybe a` respectively when `a` is `Int` (based on input array).
 
 In the more secure type signature, even when `a` is determined to be `Int` based on the input array, we still need to provide valid functions matching the signatures involving `forall x`.
-The *only* option for `(forall x. Maybe x)` is `Nothing`, since a `Just` would assume a type for `x` and then no longer be valid for all `x`. The only options for `(forall x. x -> Maybe x)` are `Just` (our desired argument) and `(\_ -> Nothing)`, which is the only remaining vulnerability.
+The *only* option for `(forall x. Maybe x)` is `Nothing`, since a `Just` value would assume a type for `x` and will no longer be valid for all `x`. The only options for `(forall x. x -> Maybe x)` are `Just` (our desired argument) and `(\_ -> Nothing)`, which is the only remaining vulnerability.
 
 ## Defining Foreign Types
 
