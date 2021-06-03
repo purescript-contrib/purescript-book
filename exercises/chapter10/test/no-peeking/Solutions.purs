@@ -9,15 +9,16 @@ import Data.Argonaut.Decode.Generic (genericDecodeJson)
 import Data.Argonaut.Encode.Generic (genericEncodeJson)
 import Data.Bifunctor (lmap)
 import Data.Either (Either(..))
+import Data.Eq.Generic (genericEq)
 import Data.Foldable (foldr)
 import Data.Function.Uncurried (Fn3)
 import Data.Generic.Rep (class Generic)
-import Data.Eq.Generic (genericEq)
-import Data.Show.Generic (genericShow)
 import Data.Map (Map)
+import Data.Maybe (Maybe(..))
 import Data.Pair (Pair(..))
 import Data.Set (Set)
-import Test.Examples (Complex, Quadratic)
+import Data.Show.Generic (genericShow)
+import Test.Examples (Complex, Quadratic, Undefined)
 
 foreign import volumeFn :: Fn3 Number Number Number Number
 
@@ -29,6 +30,11 @@ foreign import quadraticRootsImpl :: (forall a. a -> a -> Pair a) -> Quadratic -
 
 quadraticRoots :: Quadratic -> Pair Complex
 quadraticRoots poly = quadraticRootsImpl Pair poly
+
+foreign import toMaybeImpl :: forall a. (forall x. x -> Maybe x) -> (forall x. Maybe x) -> Undefined a -> Maybe a
+
+toMaybe :: forall a. Undefined a -> Maybe a
+toMaybe = toMaybeImpl Just Nothing
 
 foreign import valuesOfMapJson :: Json -> Json
 

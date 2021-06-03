@@ -36,6 +36,14 @@ exports.quadraticRootsImpl = mkPair => poly => {
   }
 };
 
+exports.toMaybeImpl = just => nothing => undefined$ => {
+  if (undefined$ === undefined) {
+    return nothing
+  } else {
+    return just(undefined$)
+  }
+}
+
 exports.valuesOfMapJson = j => {
   let m = new Map(j);
   let s = new Set(m.values())
