@@ -412,15 +412,15 @@ The *only* option for `(forall x. Maybe x)` is `Nothing`, since a `Just` value w
 
 ## Defining Foreign Types
 
-Suppose instead of returning a `Maybe a`, we wanted to return a new type `Undefined a` whose representation at runtime was like that for the type `a`, but also allowing the `undefined` value.
+Suppose instead of returning a `Maybe a`, we want to actually return `arr[0]`. We want a type that represents a value either of type `a` or the `undefined` value (but not `null`). We'll call this type `Undefined a`.
 
-We can define a _foreign type_ using the FFI using a _foreign type declaration_. The syntax is similar to defining a foreign function:
+We can define a _foreign type_ using a _foreign type declaration_. The syntax is similar to defining a foreign function:
 
 ```haskell
 foreign import data Undefined :: Type -> Type
 ```
 
-Note that the `data` keyword here indicates that we are defining a type, not a value. Instead of a type signature, we give the _kind_ of the new type. In this case, we declare the kind of `Undefined` to be `Type -> Type`. In other words, `Undefined` is a type constructor.
+The `data` keyword here indicates that we are defining a _type_, not a value. Instead of a type signature, we give the _kind_ of the new type. In this case, we declare the kind of `Undefined` to be `Type -> Type`. In other words, `Undefined` is a type constructor.
 
 We can now simply reuse our original definition for `head`:
 
@@ -435,17 +435,17 @@ And in the PureScript module:
 foreign import undefinedHead :: forall a. Array a -> Undefined a
 ```
 
-The body of the `undefinedHead` function returns `arr[0]` even if that value is undefined, and the type signature reflects the fact that our function can return an undefined value.
+The body of the `undefinedHead` function returns `arr[0]` which may be `undefined`, and the type signature correctly reflects that fact.
 
-This function has the correct runtime representation for its type, but is quite useless since we have no way to use a value of type `Undefined a`. But we can fix that by writing some new functions using the FFI!
+This function has the correct runtime representation for its type, but is quite useless since we have no way to use a value of type `Undefined a`. Well, not exactly. We can use this type in another FFI!
 
-The most basic function we need will tell us whether a value is defined or not:
+We can write a function that will tell us whether a value is undefined or not:
 
 ```haskell
 foreign import isUndefined :: forall a. Undefined a -> Boolean
 ```
 
-This is easily defined in our foreign JavaScript module as follows:
+This is defined in our foreign JavaScript module as follows:
 
 ```javascript
 exports.isUndefined = value =>
