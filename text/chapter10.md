@@ -495,6 +495,17 @@ exports.unsafeHead = arr => {
 
     Write a JavaScript function `quadraticRootsImpl` and a wrapper `quadraticRoots :: Quadratic -> Pair Complex` that uses the quadratic formula to find the roots of this polynomial. Return the two roots as a `Pair` of `Complex` numbers. *Hint:* Use the `quadraticRoots` wrapper to pass a constructor for `Pair` to `quadraticRootsImpl`.
 
+1. (Medium) Write the function `toMaybe :: forall a. Undefined a -> Maybe a`. This function converts `undefined` to `Nothing` and `a` values to `Just`s.
+
+1. (Difficult) With `toMaybe` in place, we can rewrite `maybeHead` as
+
+    ```hs
+    maybeHead :: forall a. Array a -> Maybe a
+    maybeHead = toMaybe <<< undefinedHead
+    ```
+
+    Is this a better approach than our previous implementation? _Note:_ There is no unit test for this exercise.
+
 ## Using Type Class Member Functions
 
 Just like our earlier guide on passing the `Maybe` constructor over FFI, this is another case of writing PureScript that calls JavaScript, which in turn calls PureScript functions again. Here we will explore how to pass type class member functions over the FFI.
