@@ -452,7 +452,9 @@ AddressBook
 
 This is because function application associates to the left, and this explains why we can just specify function arguments one after the other, separated by whitespace.
 
-Note that in the rest of the book, I will talk about things like "functions of two arguments". However, it is to be understood that this means a curried function, taking a first argument and returning another function.
+The `->` operator in function types is a _type constructor_ for functions. It takes two type arguments, the function's argument type and the return type. The left and right operands respectively.
+
+Note that in the rest of the book, I will talk about things like "functions of two arguments". However, it is to be understood that this means a curried function, taking a first argument and returning a function that takes the second.
 
 Now consider the definition of `insertEntry`:
 
