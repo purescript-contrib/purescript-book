@@ -103,49 +103,26 @@ $ spago repl
 
 ## Functions of Multiple Arguments
 
-Let's rewrite our `diagonal` function from Chapter 2 in a foreign module to demonstrate how to call functions of multiple arguments. Recall that this function calculates the diagonal of a right-angled triangle:
+Let's rewrite our `diagonal` function from Chapter 2 in a foreign module. This function calculates the diagonal of a right-angled triangle.
 
-```js
-exports.diagonal = function(w, h) {
-  return Math.sqrt(w * w + h * h);
-};
-```
-
-Because PureScript uses curried functions of *single arguments*, we cannot directly import the `diagonal` function of *two arguments* like so:
 
 ```hs
--- This will not work with above uncurried definition of diagonal
 foreign import diagonal :: Number -> Number -> Number
 ```
 
-However, there are a few solutions to this dilemma:
+Recall that functions in PureScript are _curried_. `diagonal` is a function that takes a `Number` and returns a _function_, that takes a `Number` and returns a `Number`.
 
-The first option is to import and run the function with an `Fn` wrapper from `Data.Function.Uncurried` (`Fn` and uncurried functions are discussed in more detail later):
-
-```hs
-foreign import diagonal :: Fn2 Number Number Number
-```
-
-```text
-$ spago repl
-
-> import Test.Examples
-> import Data.Function.Uncurried
-> runFn2 diagonal 3.0 4.0
-5.0
-```
-
-The second option is to wrap or rewrite the function as curried JavaScript:
 
 ```js
-exports.diagonalNested = function(w) {
-  return function (h) {
+exports.diagonal = function(w) {
+  return function(h) {
     return Math.sqrt(w * w + h * h);
-  };
+  }
 };
 ```
 
-or equivalently with arrow functions (see ES6 note below):
+Or with ES6 arrow syntax (see ES6 note below).
+
 
 ```js
 exports.diagonalArrow = w => h =>
@@ -153,52 +130,75 @@ exports.diagonalArrow = w => h =>
 ```
 
 ```hs
-foreign import diagonalNested :: Number -> Number -> Number
-foreign import diagonalArrow  :: Number -> Number -> Number
+foreign import diagonalArrow :: Number -> Number -> Number
 ```
 
 ```text
 $ spago repl
 
 > import Test.Examples
-> diagonalNested 3.0 4.0
+> diagonal 3.0 4.0
 5.0
 > diagonalArrow 3.0 4.0
 5.0
 ```
 
-## A Note About Uncurried Functions
+## Uncurried Functions
 
-PureScript's Prelude contains an interesting set of examples of foreign types. As we have covered already, PureScript's function types only take a single argument, and can be used to simulate functions of multiple arguments via _currying_. This has certain advantages - we can partially apply functions, and give type class instances for function types - but it comes with a performance penalty. For performance critical code, it is sometimes necessary to define genuine JavaScript functions which accept multiple arguments. The Prelude defines foreign types which allow us to work safely with such functions.
+Writing curried functions in JavaScript isn't always feasible, despite being scarcely idiomatic. A typical multi-argument JavaScript function would be of the _uncurried_ form:
 
-For example, the following foreign type declaration is taken from the `Data.Function.Uncurried` module:
-
-```haskell
-foreign import data Fn2 :: Type -> Type -> Type -> Type
+```js
+exports.diagonalUncurried = function(w, h) {
+  return Math.sqrt(w * w + h * h);
+}
 ```
 
-This defines the type constructor `Fn2` which takes three type arguments. `Fn2 a b c` is a type representing JavaScript functions of two arguments of types `a` and `b`, and with return type `c`.
+The module `Data.Function.Uncurried` exports _wrapper_ types and utility functions to work with uncurried functions.
 
-The `functions` package defines similar type constructors for function arities from 0 to 10.
-
-We can create a function of two arguments by using the `mkFn2` function, as follows:
-
-```haskell
-import Data.Function.Uncurried
-
-uncurriedAdd :: Fn2 Int Int Int
-uncurriedAdd = mkFn2 \n m -> m + n
+```hs
+foreign import diagonalUncurried :: Fn2 Number Number Number
 ```
 
-and we can apply a function of two arguments by using the `runFn2` function:
+Inspecting the type constructor `Fn2`:
+
+```text
+$ spago repl
+
+> import Data.Function.Uncurried 
+> :kind Fn2
+Type -> Type -> Type -> Type
+```
+
+`Fn2` takes three type arguments. `Fn2 a b c` is a type representing an uncurried function of two arguments of types `a` and `b`, that returns a value of type `c`. We used it to import `diagonalUncurried` from the foriegn module.
+
+We can then call it with `runFn2` which takes the uncurried function then the arguments.
 
 ```text
 $ spago repl
 
 > import Test.Examples
 > import Data.Function.Uncurried
-> runFn2 uncurriedAdd 3 10
-13
+> runFn2 diagonalUncurried 3.0 4.0
+5.0
+```
+
+The `functions` package defines similar type constructors for function arities from 0 to 10.
+
+## A Note About Uncurried Functions
+
+PureScript's curried functions has certain advantages. It allows us to partially apply functions, and to give type class instances for function types - but it comes with a performance penalty. For performance critical code, it is sometimes necessary to define uncurried JavaScript functions which accept multiple arguments.
+
+We can also create uncurried functions from PureScript. For a function of two arguments, we can use the `mkFn2` function.
+
+```haskell
+uncurriedAdd :: Fn2 Int Int Int
+uncurriedAdd = mkFn2 \n m -> m + n
+```
+
+We can apply the uncurried function of two arguments by using `runFn2` as before:
+
+```haskell
+uncurriedSum = runFn2 uncurriedAdd 3 10
 ```
 
 The key here is that the compiler _inlines_ the `mkFn2` and `runFn2` functions whenever they are fully applied. The result is that the generated code is very compact:
@@ -207,6 +207,8 @@ The key here is that the compiler _inlines_ the `mkFn2` and `runFn2` functions w
 var uncurriedAdd = function (n, m) {
   return m + n | 0;
 };
+
+var uncurriedSum = uncurriedAdd(3, 10);
 ```
 
 For contrast, here is a traditional curried function:
@@ -214,6 +216,8 @@ For contrast, here is a traditional curried function:
 ```haskell
 curriedAdd :: Int -> Int -> Int
 curriedAdd n m = m + n
+
+curriedSum = curriedAdd 3 10
 ```
 
 and the resulting generated code, which is less compact due to the nested functions:
@@ -224,6 +228,8 @@ var curriedAdd = function (n) {
     return m + n | 0;
   };
 };
+
+var curriedSum = curriedAdd(3)(10);
 ```
 
 ## A Note About Modern JavaScript Syntax
