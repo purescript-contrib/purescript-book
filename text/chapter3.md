@@ -369,6 +369,7 @@ Let's also test `showEntry` by creating an address book entry record containing 
 Now let's write some utility functions for working with address books. We will need a value which represents an empty address book: an empty list.
 
 ```haskell
+import Control.Plus (empty)
 emptyBook :: AddressBook
 emptyBook = empty
 ```
