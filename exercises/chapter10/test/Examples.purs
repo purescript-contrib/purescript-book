@@ -5,7 +5,7 @@ import Prelude
 import Control.Promise (Promise, toAffE)
 import Data.Argonaut (Json, JsonDecodeError, decodeJson, encodeJson)
 import Data.Either (Either)
-import Data.Function.Uncurried (Fn2, mkFn2)
+import Data.Function.Uncurried (Fn2, mkFn2, runFn2)
 import Data.Map (Map)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
@@ -14,17 +14,35 @@ import Effect.Uncurried (EffectFn2)
 
 foreign import square :: Number -> Number
 
+-- ANCHOR: diagonal
 foreign import diagonal :: Number -> Number -> Number
+-- ANCHOR_END: diagonal
 
+-- ANCHOR: diagonal_arrow
 foreign import diagonalArrow :: Number -> Number -> Number
+-- ANCHOR_END: diagonal_arrow
 
+-- ANCHOR: diagonal_uncurried
 foreign import diagonalUncurried :: Fn2 Number Number Number
+-- ANCHOR_END: diagonal_uncurried
 
+-- ANCHOR: uncurried_add
 uncurriedAdd :: Fn2 Int Int Int
 uncurriedAdd = mkFn2 \n m -> m + n
+-- ANCHOR_END: uncurried_add
 
+-- ANCHOR: uncurried_sum
+uncurriedSum :: Int
+uncurriedSum = runFn2 uncurriedAdd 3 10
+-- ANCHOR_END: uncurried_sum
+
+-- ANCHOR: curried_add
 curriedAdd :: Int -> Int -> Int
 curriedAdd n m = m + n
+
+curriedSum :: Int
+curriedSum = curriedAdd 3 10
+-- ANCHOR_END: curried_add
 
 foreign import cumulativeSums :: Array Int -> Array Int
 

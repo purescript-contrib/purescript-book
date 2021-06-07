@@ -107,30 +107,25 @@ Let's rewrite our `diagonal` function from Chapter 2 in a foreign module. This f
 
 
 ```hs
-foreign import diagonal :: Number -> Number -> Number
+{{#include ../exercises/chapter10/test/Examples.purs:diagonal}}
 ```
 
 Recall that functions in PureScript are _curried_. `diagonal` is a function that takes a `Number` and returns a _function_, that takes a `Number` and returns a `Number`.
 
 
 ```js
-exports.diagonal = function(w) {
-  return function(h) {
-    return Math.sqrt(w * w + h * h);
-  }
-};
+{{#include ../exercises/chapter10/test/Examples.js:diagonal}}
 ```
 
 Or with ES6 arrow syntax (see ES6 note below).
 
 
 ```js
-exports.diagonalArrow = w => h =>
-  Math.sqrt(w * w + h * h);
+{{#include ../exercises/chapter10/test/Examples.js:diagonal_arrow}}
 ```
 
 ```hs
-foreign import diagonalArrow :: Number -> Number -> Number
+{{#include ../exercises/chapter10/test/Examples.purs:diagonal_arrow}}
 ```
 
 ```text
@@ -148,15 +143,13 @@ $ spago repl
 Writing curried functions in JavaScript isn't always feasible, despite being scarcely idiomatic. A typical multi-argument JavaScript function would be of the _uncurried_ form:
 
 ```js
-exports.diagonalUncurried = function(w, h) {
-  return Math.sqrt(w * w + h * h);
-}
+{{#include ../exercises/chapter10/test/Examples.js:diagonal_uncurried}}
 ```
 
 The module `Data.Function.Uncurried` exports _wrapper_ types and utility functions to work with uncurried functions.
 
 ```hs
-foreign import diagonalUncurried :: Fn2 Number Number Number
+{{#include ../exercises/chapter10/test/Examples.purs:diagonal_uncurried}}
 ```
 
 Inspecting the type constructor `Fn2`:
@@ -191,14 +184,13 @@ PureScript's curried functions has certain advantages. It allows us to partially
 We can also create uncurried functions from PureScript. For a function of two arguments, we can use the `mkFn2` function.
 
 ```haskell
-uncurriedAdd :: Fn2 Int Int Int
-uncurriedAdd = mkFn2 \n m -> m + n
+{{#include ../exercises/chapter10/test/Examples.purs:uncurried_add}}
 ```
 
 We can apply the uncurried function of two arguments by using `runFn2` as before:
 
 ```haskell
-uncurriedSum = runFn2 uncurriedAdd 3 10
+{{#include ../exercises/chapter10/test/Examples.purs:uncurried_sum}}
 ```
 
 The key here is that the compiler _inlines_ the `mkFn2` and `runFn2` functions whenever they are fully applied. The result is that the generated code is very compact:
@@ -214,10 +206,7 @@ var uncurriedSum = uncurriedAdd(3, 10);
 For contrast, here is a traditional curried function:
 
 ```haskell
-curriedAdd :: Int -> Int -> Int
-curriedAdd n m = m + n
-
-curriedSum = curriedAdd 3 10
+{{#include ../exercises/chapter10/test/Examples.purs:curried_add}}
 ```
 
 and the resulting generated code, which is less compact due to the nested functions:
