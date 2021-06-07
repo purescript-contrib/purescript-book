@@ -14,11 +14,11 @@ import Effect.Uncurried (EffectFn2)
 
 foreign import square :: Number -> Number
 
-foreign import diagonal :: Fn2 Number Number Number
-
-foreign import diagonalNested :: Number -> Number -> Number
+foreign import diagonal :: Number -> Number -> Number
 
 foreign import diagonalArrow :: Number -> Number -> Number
+
+foreign import diagonalUncurried :: Fn2 Number Number Number
 
 uncurriedAdd :: Fn2 Int Int Int
 uncurriedAdd = mkFn2 \n m -> m + n
