@@ -57,13 +57,6 @@ Note to reader: Delete this line to expand comment block -}
                 , { real: 5.0, imag: 6.0 }
                 ]
     suite "Exercise Group - Beyond Simple Types" do
-      suite "Exercise - toMaybe" do
-        test "Nothing" do
-          Assert.equal Nothing
-            $ toMaybe $ (undefinedHead [] :: Undefined Int)
-        test "Just" do
-          Assert.equal (Just 1)
-            $ toMaybe $ undefinedHead [1]
       suite "Exercise - quadraticRoots" do
         let
           helper :: String -> Quadratic -> Complex -> Complex -> Free TestF Unit
@@ -88,6 +81,13 @@ Note to reader: Delete this line to expand comment block -}
           { a: 3.0, b: -6.0, c: 3.0 }
           { real: 1.0, imag: 0.0 }
           { real: 1.0, imag: 0.0 }
+      suite "Exercise - toMaybe" do
+        test "Nothing" do
+          Assert.equal Nothing
+            $ toMaybe $ (undefinedHead [] :: Undefined Int)
+        test "Just" do
+          Assert.equal (Just 1)
+            $ toMaybe $ undefinedHead [1]
     suite "Exercise Group - JSON" do
       suite "Exercise - valuesOfMap" do
         test "Items" do
