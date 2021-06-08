@@ -240,8 +240,14 @@ runChapterExamples =
         $ runFn2 diagonalUncurried 3.0 4.0
     test "uncurriedAdd" do
       Assert.equal 13
+        $ runFn2 uncurriedAdd 3 10
+    test "uncurriedSum" do
+      Assert.equal 13
         $ uncurriedSum
     test "curriedAdd" do
+      Assert.equal 13
+        $ curriedAdd 3 10
+    test "curriedSum" do
       Assert.equal 13
         $ curriedSum
     test "cumulativeSums" do
