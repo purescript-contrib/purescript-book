@@ -520,20 +520,22 @@ exports.boldBad = Show => x =>
   Show.show(x).toUppercase() + "!!!";
 ```
 
-A constraint in a foreign import definition results in importing a curried function that accepts a _dictionary_ object containing the class members. The compiler implicitly passes, for us, a dictionary of the correct instance members when calling the foreign function. However, this practice has been DEPRECATED as representing type class instances as dictionaries is an accidental complexity. Doing so will trigger a warning.
+A constraint in a foreign import definition results in importing a curried function that accepts a _dictionary_ object containing the class members. The compiler implicitly passes, for us, a dictionary of the correct instance members when calling the foreign function. However, this practice has been DEPRECATED and doing so will trigger a warning. Use of dictionaries in providing access to type class members turned out to be more complex than anticipated.
 
-Instead, just like passing the `Maybe` data constructors over FFI, we can also pass type class members. We write a foreign import for a function that accepts the _member_ we need:
+Instead, it is simpler to just pass the type class members we need &mdash; like when passing the `Maybe` data constructors.
 
-
-```hs
-foreign import boldImpl :: forall a. (a -> String) -> a -> String
-```
-
-The foreign JavaScript function accepts the member function, expecting `show`.
+We write the foreign JavaScript function expecting the member function, in our case we're expecting `show`.
 
 ```js
 exports.boldImpl = show => x =>
   show(x).toUpperCase() + "!!!";
+```
+
+Then we write the matching type for the foreign import.
+
+
+```hs
+foreign import boldImpl :: forall a. (a -> String) -> a -> String
 ```
 
 And finally, the intended function passes the correct instance of `show`.
@@ -549,8 +551,6 @@ Alternatively in point-free style:
 bold :: forall a. Show a => a -> String
 bold = boldImpl show
 ```
-
-PureScript's type system ensures the correct _instance_ of `show` is passed.
 
 We can then call `bold`:
 
