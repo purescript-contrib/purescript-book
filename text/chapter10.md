@@ -520,9 +520,9 @@ exports.boldBad = Show => x =>
   Show.show(x).toUppercase() + "!!!";
 ```
 
-A constraint in a foreign import definition results in importing a curried function that accepts a _dictionary_ object containing the class members. The compiler implicitly passes, for us, a dictionary of the correct instance members when calling the foreign function. However, this practice has been DEPRECATED and doing so will trigger a warning. Use of dictionaries in providing access to type class members turned out to be more complex than anticipated.
+A constraint in a foreign import definition results in importing a curried function that accepts a _dictionary_ object containing the class members. The compiler implicitly passes, for us, a dictionary of the correct instance members when calling the foreign function. However, this practice has been DEPRECATED and doing so will trigger a warning. Accessing type class members though dictionary objects was an unnecessary indirection. Not passing dictionaries also enhances code optimization.
 
-Instead, it is simpler to just pass the type class members we need &mdash; like when passing the `Maybe` data constructors.
+Instead, simply pass the type class members we need to the foreign function &mdash; like when passing the `Maybe` data constructors.
 
 We write the foreign JavaScript function expecting the member function, in our case we're expecting `show`.
 
