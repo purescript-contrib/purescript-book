@@ -108,14 +108,11 @@ allSizes paths =
     paths
 
 whereIs :: Path -> String -> Maybe Path
-whereIs path fileName = head $ whereIs' $ allFiles path
-  where
-  whereIs' :: Array Path -> Array Path
-  whereIs' paths = do
-    path <- paths
-    child <- ls path
-    guard $ eq fileName $ fromMaybe "" $ last $ split (Pattern "/") $ filename child
-    pure path
+whereIs path fileName = head $ do
+  path' <- allFiles path
+  child <- ls path'
+  guard $ filename child == filename path' <> fileName
+  pure path'
 
 largestSmallest :: Path -> Array Path
 largestSmallest path =
