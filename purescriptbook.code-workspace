@@ -1,0 +1,69 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "exercises/chapter2"
+    },
+    {
+      "path": "exercises/chapter3"
+    },
+    {
+      "path": "exercises/chapter4"
+    },
+    {
+      "path": "exercises/chapter5"
+    },
+    {
+      "path": "exercises/chapter6"
+    },
+    {
+      "path": "exercises/chapter7"
+    },
+    {
+      "path": "exercises/chapter8"
+    },
+    {
+      "path": "exercises/chapter9"
+    },
+    {
+      "path": "exercises/chapter10"
+    },
+    {
+      "path": "exercises/chapter11"
+    },
+    {
+      "path": "exercises/chapter12"
+    },
+    {
+      "path": "exercises/chapter13"
+    },
+    {
+      "path": "exercises/chapter14"
+    },
+    {
+      "path": "tmp/purcel"
+    },
+    {
+      "path": "tmp/purescript-comonad-ui-todos"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "exercises": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "nwolverson.ide-purescript",
+      "nwolverson.language-purescript",
+      "mvakula.vscode-purty"
+    ]
+  }
+}
