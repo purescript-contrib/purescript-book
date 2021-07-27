@@ -53,6 +53,7 @@ Let's work through this next exercise together in test-driven-development style.
 We'll start by enabling the tests for this exercise. Move the start of the block-comment down a few lines as shown below. Block comments start with `{-` and end with `-}`:
 ```hs
 {{#include ../exercises/chapter2/test/Main.purs:diagonalTests}}
+    {-  Move this block comment starting point to enable more tests
 ```
 
 If we attempt to run the test now, we'll encounter a compilation error because we have not yet implemented our `diagonal` function.
