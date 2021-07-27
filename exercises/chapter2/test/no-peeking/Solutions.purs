@@ -4,7 +4,9 @@ import Prelude
 import Data.Int (rem)
 import Math (pi, sqrt)
 
+-- ANCHOR: diagonal
 diagonal w h = sqrt (w * w + h * h)
+-- ANCHOR_END: diagonal
 
 circleArea r = pi * r * r
 

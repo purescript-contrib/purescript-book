@@ -52,12 +52,7 @@ Let's work through this next exercise together in test-driven-development style.
 
 We'll start by enabling the tests for this exercise. Move the start of the block-comment down a few lines as shown below. Block comments start with `{-` and end with `-}`:
 ```hs
-    suite "diagonal" do
-      test "3 4 5" do
-        Assert.equal 5.0 (diagonal 3.0 4.0)
-      test "5 12 13" do
-        Assert.equal 13.0 (diagonal 5.0 12.0)
-{-  Move this block comment starting point to enable more tests
+{{#include ../exercises/chapter2/test/Main.purs:diagonalTests}}
 ```
 
 If we attempt to run the test now, we'll encounter a compilation error because we have not yet implemented our `diagonal` function.
@@ -90,7 +85,7 @@ And check our work by running `spago test`:
 
 Uh-oh, that's not quite right. Let's fix this with the correct application of the Pythagorean formula by changing the function to:
 ```hs
-diagonal w h = sqrt (w * w + h * h)
+{{#include ../exercises/chapter2/test/no-peeking/Solutions.purs:diagonal}}
 ```
 
 Trying `spago test` again now shows all tests are passing:
