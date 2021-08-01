@@ -56,6 +56,7 @@ insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry = Cons 
 -- ANCHOR_END: insertEntry
 
+-- Note to reader: Delete this line. MAINTAINER CAUTION: This implementation is copied in the book source
 -- ANCHOR: findEntry_signature
 findEntry :: String -> String -> AddressBook -> Maybe Entry
 -- ANCHOR_END: findEntry_signature
