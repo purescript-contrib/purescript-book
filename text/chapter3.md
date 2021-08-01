@@ -13,13 +13,7 @@ The front-end of our application will be the interactive mode PSCi, but it would
 The source code for this chapter is contained in the file `src/Data/AddressBook.purs`. This file starts with a module declaration and its import list:
 
 ```haskell
-module Data.AddressBook where
-
-import Prelude
-
-import Control.Plus (empty)
-import Data.List (List(..), filter, head)
-import Data.Maybe (Maybe)
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:imports}}
 ```
 
 Here, we import several modules:
@@ -233,21 +227,13 @@ The only exception to this rule is the `where` keyword in the initial `module` d
 A good first step when tackling a new problem in PureScript is to write out type definitions for any values you will be working with. First, let's define a type for records in our address book:
 
 ```haskell
-type Entry =
-  { firstName :: String
-  , lastName  :: String
-  , address   :: Address
-  }
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:Entry}}
 ```
 
 This defines a _type synonym_ called `Entry` - the type `Entry` is equivalent to the type on the right of the equals symbol: a record type with three fields - `firstName`, `lastName` and `address`. The two name fields will have type `String`, and the `address` field will have type `Address`, defined as follows:
 
 ```haskell
-type Address =
-  { street :: String
-  , city   :: String
-  , state  :: String
-  }
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:Address}}
 ```
 
 Note that records can contain other records.
@@ -255,7 +241,7 @@ Note that records can contain other records.
 Now let's define a third type synonym, for our address book data structure, which will be represented simply as a linked list of entries:
 
 ```haskell
-type AddressBook = List Entry
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:AddressBook}}
 ```
 
 Note that `List Entry` is not the same as `Array Entry`, which represents an _array_ of entries.
@@ -301,24 +287,19 @@ PureScript's _kind system_ supports other interesting kinds, which we will see l
 Let's write our first function, which will render an address book entry as a string. We start by giving the function a type. This is optional, but good practice, since it acts as a form of documentation. In fact, the PureScript compiler will give a warning if a top-level declaration does not contain a type annotation. A type declaration separates the name of a function from its type with the `::` symbol:
 
 ```haskell
-showEntry :: Entry -> String
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:showEntry_signature}}
 ```
 
 This type signature says that `showEntry` is a function, which takes an `Entry` as an argument and returns a `String`. Here is the code for `showEntry`:
 
 ```haskell
-showEntry entry = entry.lastName <> ", " <>
-                  entry.firstName <> ": " <>
-                  showAddress entry.address
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:showEntry_implementation}}
 ```
 
 This function concatenates the three fields of the `Entry` record into a single string, using the `showAddress` function to turn the record inside the `address` field into a `String`. `showAddress` is defined similarly:
 
 ```haskell
-showAddress :: Address -> String
-showAddress addr = addr.street <> ", " <>
-                   addr.city <> ", " <>
-                   addr.state
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:showAddress}}
 ```
 
 A function definition begins with the name of the function, followed by a list of argument names. The result of the function is specified after the equals sign. Fields are accessed with a dot, followed by the field name. In PureScript, string concatenation uses the diamond operator (`<>`), instead of the plus operator like in JavaScript.
@@ -369,14 +350,13 @@ Let's also test `showEntry` by creating an address book entry record containing 
 Now let's write some utility functions for working with address books. We will need a value which represents an empty address book: an empty list.
 
 ```haskell
-emptyBook :: AddressBook
-emptyBook = empty
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:emptyBook}}
 ```
 
 We will also need a function for inserting a value into an existing address book. We will call this function `insertEntry`. Start by giving its type:
 
 ```haskell
-insertEntry :: Entry -> AddressBook -> AddressBook
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:insertEntry_signature}}
 ```
 
 This type signature says that `insertEntry` takes an `Entry` as its first argument, and an `AddressBook` as a second argument, and returns a new `AddressBook`.
@@ -473,8 +453,7 @@ insertEntry entry = Cons entry
 But now, by the same argument, we can remove `entry` from both sides:
 
 ```haskell
-insertEntry :: Entry -> AddressBook -> AddressBook
-insertEntry = Cons
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:insertEntry}}
 ```
 
 This process is called _eta conversion_, and can be used (along with some other techniques) to rewrite functions in _point-free form_, which means functions defined without reference to their arguments.
@@ -555,7 +534,7 @@ We also know that we will need a function to pass to `filter`. Let's call this f
 Putting these facts together, a reasonable type signature for our function, which we will call `findEntry`, is:
 
 ```haskell
-findEntry :: String -> String -> AddressBook -> Maybe Entry
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:findEntry_signature}}
 ```
 
 This type signature says that `findEntry` takes two strings, the first and last names, and a `AddressBook`, and returns an optional `Entry`. The optional result will contain a value only if the name is found in the address book.
@@ -602,7 +581,7 @@ There are situations where putting a prefix function in an infix position as an 
 2
 ```
 
-This is fine, but doesn't line up with common usage (in conversation, one might say "eight mod three"). Wrapping a prefix function in backticks (\`) lets you use that it in infix position as an operator, e.g.,
+This is fine, but doesn't line up with common usage (in conversation, one might say "eight mod three"). Wrapping a prefix function in backticks (\`) lets you use it in infix position as an operator, e.g.,
 
 ```text
 > 8 `mod` 3
@@ -715,8 +694,7 @@ We can rewrite the right-hand side of `findEntry` using either operator. Using b
 In this form, we can apply the eta conversion trick from earlier, to arrive at the final form of `findEntry`:
 
 ```haskell
-findEntry firstName lastName = head <<< filter filterEntry
-  where
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:findEntry_implementation}}
     ...
 ```
 
