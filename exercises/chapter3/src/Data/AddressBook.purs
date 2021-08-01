@@ -49,6 +49,7 @@ emptyBook :: AddressBook
 emptyBook = empty
 -- ANCHOR_END: emptyBook
 
+-- Note to reader: Delete this line. MAINTAINER CAUTION: There is an alternate copy of this implementation in the book source
 -- ANCHOR: insertEntry
 -- ANCHOR: insertEntry_signature
 insertEntry :: Entry -> AddressBook -> AddressBook
@@ -56,7 +57,7 @@ insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry = Cons 
 -- ANCHOR_END: insertEntry
 
--- Note to reader: Delete this line. MAINTAINER CAUTION: This implementation is copied in the book source
+-- Note to reader: Delete this line. MAINTAINER CAUTION: There is an alternate copy of this implementation in the book source
 -- ANCHOR: findEntry_signature
 findEntry :: String -> String -> AddressBook -> Maybe Entry
 -- ANCHOR_END: findEntry_signature
