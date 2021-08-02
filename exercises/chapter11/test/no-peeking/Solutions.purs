@@ -2,10 +2,13 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 
+import Control.Alt ((<|>))
 import Control.Monad.Except (ExceptT, throwError)
 import Control.Monad.Reader (Reader, ReaderT, ask, lift, local, runReader, runReaderT)
 import Control.Monad.State (State, StateT, get, put, execState, modify_)
 import Control.Monad.Writer (Writer, WriterT, tell, runWriter, execWriterT)
+import Data.Array (some)
+import Data.Foldable (fold)
 import Data.Identity (Identity)
 import Data.Maybe (Maybe(..))
 import Data.Monoid (power)
@@ -112,3 +115,12 @@ indent' = local $ (+) 1
 
 render' :: Doc' -> String
 render' doct = joinWith "\n" $ unwrap $ runReaderT (execWriterT doct) 0
+
+asFollowedByBs ::  Parser String
+asFollowedByBs = do
+  as <- some $ string "a"
+  bs <- some $ string "b"
+  pure $ fold $ as <> bs
+
+asOrBs :: Parser String
+asOrBs = fold <$> some (string "a" <|> string "b")

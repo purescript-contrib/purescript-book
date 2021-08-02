@@ -731,8 +731,8 @@ Again, this illustrates the power of reusability that monad transformers bring -
  ## Exercises
 
  1. (Easy) Remove the calls to the `lift` function from your implementation of the `string` parser. Verify that the new implementation type checks, and convince yourself that it should.
- 1. (Medium) Use your `string` parser with the `many` combinator to write a parser which recognizes strings consisting of several copies of the string `"a"` followed by several copies of the string `"b"`.
- 1. (Medium) Use the `<|>` operator to write a parser which recognizes strings of the letters `a` or `b` in any order.
+ 1. (Medium) Use your `string` parser with the `many` combinator to write a parser `asFollowedByBs` which recognizes strings consisting of several copies of the string `"a"` followed by several copies of the string `"b"`.
+ 1. (Medium) Use the `<|>` operator to write a parser `asOrBs` which recognizes strings of the letters `a` or `b` in any order.
  1. (Difficult) The `Parser` monad might also be defined as follows:
 
      ```haskell

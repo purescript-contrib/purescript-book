@@ -1,6 +1,6 @@
 module Test.Main where
 
-import Prelude
+import Prelude (Unit, discard, ($), (<>))
 
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
@@ -102,5 +102,32 @@ Note to reader: Delete this line to expand comment block -}
                   indent' $ do
                     line' "I am even more indented"
 
+    suite "Exercises Group - Monad Comprehensions/backtracking" do
+      suite "parser" do
+        let
+          runParser p s = unwrap $ runExceptT $ runWriterT $ runStateT p s
+        test "should parse as followed by bs" do
+          Assert.equal (Right (Tuple (Tuple "aaabb" "cde") [
+            "The state is aaabbcde",
+            "The state is aabbcde",
+            "The state is abbcde",
+            "The state is bbcde",
+            "The state is bcde"]))
+            $ runParser asFollowedByBs "aaabbcde"
+        test "should fail if first is not a" do
+          Assert.equal (Left ["Could not parse"])
+            $ runParser asFollowedByBs "bfoobar"
+        test "should parse as and bs" do
+          Assert.equal (Right (Tuple (Tuple "babbaa" "cde") [
+            "The state is babbaacde",
+            "The state is abbaacde",
+            "The state is bbaacde",
+            "The state is baacde",
+            "The state is aacde",
+            "The state is acde"]))
+            $ runParser asOrBs "babbaacde"
+        test "should fail if first is not a or b" do
+          Assert.equal (Left ["Could not parse","Could not parse"])
+            $ runParser asOrBs "foobar"
 {- Note to reader: Delete this line to expand comment block
 -}
