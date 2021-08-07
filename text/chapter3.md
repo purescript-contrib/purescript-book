@@ -581,7 +581,7 @@ There are situations where putting a prefix function in an infix position as an 
 2
 ```
 
-The above usage works fine, but is awkward to read. A more familiar phasing is "eight mod three", which you can achieve by wrapping a prefix function in backticks (\`):
+The above usage works fine, but is awkward to read. A more familiar phrasing is "eight mod three", which you can achieve by wrapping a prefix function in backticks (\`):
 
 ```text
 > 8 `mod` 3
