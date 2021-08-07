@@ -3,7 +3,7 @@ module Test.Main where
 import Prelude (Unit, discard, ($), (<>))
 
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 
 import Effect (Effect)
 import Control.Monad.Writer (runWriterT, execWriter)
@@ -22,12 +22,12 @@ main =
   runTest do
     test "" success
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
+This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. -}
     suite "Exercises Group - The State Monad" do
       suite "testParens" do
-        let 
+        let
           runTestParens :: Boolean -> String -> TestSuite
-          runTestParens expected str = 
+          runTestParens expected str =
             test testName do
               Assert.equal expected $ testParens str
             where testName = "str = \"" <> str <> "\""
@@ -129,5 +129,5 @@ Note to reader: Delete this line to expand comment block -}
         test "should fail if first is not a or b" do
           Assert.equal (Left ["Could not parse","Could not parse"])
             $ runParser asOrBs "foobar"
-{- Note to reader: Delete this line to expand comment block
+{- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}

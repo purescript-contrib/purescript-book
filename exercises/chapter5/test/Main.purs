@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude hiding (gcd)
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 
 import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, showPersonV2, sortPair, takeFive, toString, unknownPerson, Volt(..))
 import Data.Int (round)
@@ -35,7 +35,7 @@ main =
   runTest do
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
+This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. -}
     suite "Exercise Group - Simple Pattern Matching" do
       test "Exercise - factorial" do
         Assert.equal 1
@@ -132,7 +132,7 @@ Note to reader: Delete this line to expand comment block -}
         Assert.equal { top: 3.0, left: 3.0, right: 7.0, bottom: 7.0 }
           $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 4.0 4.0)
 
-{- Note to reader: Delete this line to expand comment block
+{- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =

@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 
 import Data.Either (Either(..), fromLeft, fromRight)
 import Data.List (List(..), foldM, (:))
@@ -21,7 +21,7 @@ main =
   runTest do
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
+This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. -}
     suite "Exercises Group - Monads and Applicatives" do
       suite "third" do
         test "No elements"
@@ -104,7 +104,7 @@ Note to reader: Delete this line to expand comment block -}
           test "45th Fibonacci number"
             $ Assert.equal 1134903170 (fibonacci 45)
 
-{- Note to reader: Delete this line to expand comment block
+{- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =

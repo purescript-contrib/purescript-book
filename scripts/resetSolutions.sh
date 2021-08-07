@@ -8,7 +8,7 @@
 for d in exercises/*; do
   # if directory (excludes LICENSE file)
   if [ -d $d ]; then
-    perl -ni -e 'print if !/Note to reader: Delete this line/' $d/test/Main.purs
+    perl -ni -e 'print if !/This line should have been automatically deleted/' $d/test/Main.purs
   fi
   # if there's a no-peeking directory
   if [ -d $d/test/no-peeking ]; then

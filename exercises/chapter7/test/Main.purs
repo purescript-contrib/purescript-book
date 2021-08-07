@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 
 import Control.Monad.Writer (runWriter, tell)
 import Data.AddressBook (PhoneType(..), address, phoneNumber)
@@ -26,7 +26,7 @@ main =
   runTest do
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
+This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. -}
     suite "Exercise Group - Applicative and Effects" do
       suite "Exercise - Numeric operators that work with Maybe" do
         suite "addMaybe" do
@@ -160,7 +160,7 @@ Note to reader: Delete this line to expand comment block -}
       suite "Exercise - traverse" do
         suite "Functor Tree" do
           test "Functor - map" do
-            Assert.equal 
+            Assert.equal
               (Branch (Branch (leaf "1") "2" (leaf "3")) "4" (Branch (leaf "5") "6" (leaf "7")))
               $ map show intTree
         suite "Foldable Tree" do
@@ -244,7 +244,7 @@ Note to reader: Delete this line to expand comment block -}
           Assert.equal Nothing
             $ traverseUsingSequence fromNumber [ 1.0, 2.7 ]
 
-{- Note to reader: Delete this line to expand comment block
+{- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =

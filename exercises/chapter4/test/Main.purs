@@ -3,7 +3,7 @@ module Test.Main where
 import Prelude
 import Test.Examples
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 import Data.Array (sort)
 import Data.Maybe (Maybe(..))
 import Data.Path (Path(..), filename, root)
@@ -19,7 +19,7 @@ main =
   runTest do
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
-Note to reader: Delete this line to expand comment block -}
+This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. -}
     suite "Exercise Group - Recursion" do
       suite "Exercise - isEven" do
         test "0 is even" do
@@ -193,7 +193,7 @@ Note to reader: Delete this line to expand comment block -}
         testls "works for a directory with one file" ["/etc/hosts"] oneFileDir
         testls "works for an empty directory" [] emptyDir
 
-{- Note to reader: Delete this line to expand comment block
+{- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =
