@@ -41,12 +41,6 @@
     },
     {
       "path": "exercises/chapter14"
-    },
-    {
-      "path": "tmp/purcel"
-    },
-    {
-      "path": "tmp/purescript-comonad-ui-todos"
     }
   ],
   "settings": {
