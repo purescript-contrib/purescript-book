@@ -57,7 +57,7 @@ insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry = Cons
 -- ANCHOR_END: insertEntry
 
--- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. NOTE TO MAINTAINER: If editing `insertEntry`, remember to also update the non-anchored (and unsimplified) version of this function that is hardcoded in the book text.
+-- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. NOTE TO MAINTAINER: If editing `findEntry`, remember to also update the non-anchored (and unsimplified) version of this function that is hardcoded in the book text.
 -- ANCHOR: findEntry_signature
 findEntry :: String -> String -> AddressBook -> Maybe Entry
 -- ANCHOR_END: findEntry_signature
