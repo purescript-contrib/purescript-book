@@ -31,12 +31,7 @@ Let's see some simple examples of recursion in PureScript.
 Here is the usual _factorial function_ example:
 
 ```haskell
-fact :: Int -> Int
-fact n =
-  if n == 0 then
-    1
-  else
-    n * fact (n - 1)
+{{#include ../exercises/chapter4/test/Examples.purs:fact}}
 ```
 
 Here, we can see how the factorial function is computed by reducing the problem to a subproblem - that of computing the factorial of a smaller integer. When we reach zero, the answer is immediate.
@@ -44,14 +39,7 @@ Here, we can see how the factorial function is computed by reducing the problem 
 Here is another common example, which computes the _Fibonacci function_:
 
 ```haskell
-fib :: Int -> Int
-fib n =
-  if n == 0 then
-    0
-  else if n == 1 then
-    1
-  else
-    fib (n - 1) + fib (n - 2)
+{{#include ../exercises/chapter4/test/Examples.purs:fib}}
 ```
 
 Again, this problem is solved by considering the solutions to subproblems. In this case, there are two subproblems, corresponding to the expressions `fib (n - 1)` and `fib (n - 2)`. When these two subproblems are solved, we assemble the result by adding the partial results.
@@ -70,11 +58,7 @@ import Prelude
 import Data.Array (null, tail)
 import Data.Maybe (fromMaybe)
 
-length :: forall a. Array a -> Int
-length arr =
-  if null arr
-    then 0
-    else 1 + (length $ fromMaybe [] $ tail arr)
+{{#include ../exercises/chapter4/test/Examples.purs:length}}
 ```
 
 In this function, we use an `if .. then .. else` expression to branch based on the emptiness of the array. The `null` function returns `true` on an empty array. Empty arrays have length zero, and a non-empty array has a length that is one more than the length of its tail.
@@ -179,7 +163,7 @@ In the example above, we parenthesized the expression `1 .. 5`, but this was act
 ["1","2","3","4","5"]
 ```
 
-If we wanted to assign an _associativity_ (left or right) to an infix operator, we could do so with the `infixl` and `infixr` keywords instead.
+If we wanted to assign an _associativity_ (left or right) to an infix operator, we could do so with the `infixl` and `infixr` keywords instead.  Using `infix` assigns no associativity, meaning that you must parenthesize any expression using the same operator multiple times or using multiple operators of the same precedence.
 
 ## Filtering Arrays
 
@@ -309,11 +293,7 @@ _Note_: Just like `map` and `concatMap` allowed us to write _array comprehension
 We can rewrite our `factors` function using do notation as follows:
 
 ```haskell
-factors :: Int -> Array (Array Int)
-factors n = filter (\xs -> product xs == n) $ do
-  i <- 1 .. n
-  j <- i .. n
-  pure [i, j]
+{{#include ../exercises/chapter4/test/Examples.purs:factors}}
 ```
 
 The keyword `do` introduces a block of code which uses do notation. The block consists of expressions of a few types:
@@ -334,37 +314,28 @@ In the last line, we use the `pure` function. This function can be evaluated in 
 In the case of arrays, `pure` simply constructs a singleton array. In fact, we could modify our `factors` function to use this form, instead of using `pure`:
 
 ```haskell
-factorsV2 :: Int -> Array (Array Int)
-factorsV2 n = filter (\xs -> product xs == n) $ do
-  i <- 1 .. n
-  j <- i .. n
-  [[i, j]]
+{{#include ../exercises/chapter4/test/Examples.purs:factorsV2}}
 ```
 
 and the result would be the same.
 
 ## Guards
 
-One further change we can make to the `factors` function is to move the filter inside the array comprehension. This is possible using the `guard` function from the `Control.MonadZero` module (from the `control` package):
+One further change we can make to the `factors` function is to move the filter inside the array comprehension. This is possible using the `guard` function from the `Control.Alternative` module (from the `control` package):
 
 ```haskell
-import Control.MonadZero (guard)
+import Control.Alternative (guard)
 
-factorsV3 :: Int -> Array (Array Int)
-factorsV3 n = do
-  i <- 1 .. n
-  j <- i .. n
-  guard $ i * j == n
-  pure [i, j]
+{{#include ../exercises/chapter4/test/Examples.purs:factorsV3}}
 ```
 
 Just like `pure`, we can apply the `guard` function in PSCi to understand how it works. The type of the `guard` function is more general than we need here:
 
 ```text
-> import Control.MonadZero
+> import Control.Alternative
 
 > :type guard
-forall m. MonadZero m => Boolean -> m Unit
+forall m. Alternative m => Boolean -> m Unit
 ```
 
 In our case, we can assume that PSCi reported the following type:
@@ -469,8 +440,12 @@ Recursion is a powerful technique for specifying algorithms, but comes with a pr
 It is easy to verify this problem, with the following code in PSCi:
 
 ```text
-> f 0 = 0
-> f n = 1 + f (n - 1)
+> :paste
+… f n = 
+…   if n == 0
+…     then 0
+…     else 1 + f (n - 1)
+… ^D
 
 > f 10
 10
@@ -483,7 +458,7 @@ This is a problem. If we are going to adopt recursion as a standard technique fr
 
 PureScript provides a partial solution to this problem in the form of _tail recursion optimization_.
 
-_Note_: more complete solutions to the problem can be implemented in libraries using so-called _trampolining_, but that is beyond the scope of this chapter. The interested reader can consult the documentation for the `free` and `tailrec` packages.
+_Note_: more complete solutions to the problem can be implemented in libraries using so-called _trampolining_, but that is beyond the scope of this chapter. The interested reader can consult the documentation for the [`free`](https://pursuit.purescript.org/packages/purescript-free) and [`tailrec`](https://pursuit.purescript.org/packages/purescript-tailrec) packages.
 
 The key observation which enables tail recursion optimization is the following: a recursive call in _tail position_ to a function can be replaced with a _jump_, which does not allocate a stack frame. A call is in _tail position_ when it is the last call made before a function returns. This is the reason why we observed a stack overflow in the example - the recursive call to `f` was _not_ in tail position.
 
@@ -492,9 +467,7 @@ In practice, the PureScript compiler does not replace the recursive call with a 
 Here is an example of a recursive function with all recursive calls in tail position:
 
 ```haskell
-factTailRec :: Int -> Int -> Int
-factTailRec 0 acc = acc
-factTailRec n acc = factTailRec (n - 1) (acc * n)
+{{#include ../exercises/chapter4/test/Examples.purs:factTailRec}}
 ```
 
 Notice that the recursive call to `factTailRec` is the last thing that happens in this function - it is in tail position.
@@ -516,14 +489,7 @@ length arr =
 This implementation is not tail recursive, so the generated JavaScript will cause a stack overflow when executed on a large input array. However, we can make it tail recursive, by introducing a second function argument to accumulate the result instead:
 
 ```haskell
-lengthTailRec :: forall a. Array a -> Int
-lengthTailRec arr = length' arr 0
-  where
-    length' :: Array a -> Int -> Int
-    length' arr' acc =
-      if null arr'
-        then acc
-        else length' (fromMaybe [] $ tail arr') (acc + 1)
+{{#include ../exercises/chapter4/test/Examples.purs:lengthTailRec}}
 ```
 
 In this case, we delegate to the helper function `length'`, which is tail recursive - its only recursive call is in the last case, and is in tail position. This means that the generated code will be a _while loop_, and will not blow the stack for large inputs.
@@ -610,7 +576,7 @@ The `Test.Solutions` module defines functions which use the `Data.Path` API. You
 Let's write a function which performs a deep enumeration of all files inside a directory. This function will have the following type:
 
 ```haskell
-allFiles :: Path -> Array Path
+{{#include ../exercises/chapter4/test/Examples.purs:allFiles_signature}}
 ```
 
 We can define this function by recursion. First, we can use `ls` to enumerate the immediate children of the directory. For each child, we can recursively apply `allFiles`, which will return an array of paths. `concatMap` will allow us to apply `allFiles` and flatten the results at the same time.
@@ -618,7 +584,7 @@ We can define this function by recursion. First, we can use `ls` to enumerate th
 Finally, we use the cons operator `:` to include the current file:
 
 ```haskell
-allFiles file = file : concatMap allFiles (ls file)
+{{#include ../exercises/chapter4/test/Examples.purs:allFiles_implementation}}
 ```
 
 _Note_: the cons operator `:` actually has poor performance on immutable arrays, so it is not recommended in general. Performance can be improved by using other data structures, such as linked lists and sequences.
@@ -641,10 +607,7 @@ Recall that a backwards arrow corresponds to choosing an element from an array. 
 Here is the new version:
 
 ```haskell
-allFiles' :: Path -> Array Path
-allFiles' file = file : do
-  child <- ls file
-  allFiles' child
+{{#include ../exercises/chapter4/test/Examples.purs:allFiles_2}}
 ```
 
 Try out the new version in PSCi - you should get the same result. I'll let you decide which version you find clearer.
