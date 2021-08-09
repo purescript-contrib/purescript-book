@@ -202,7 +202,7 @@ runChapterExamples =
       Assert.equal 120
         $ fact 5
     test "fib" do
-      Assert.equal 55
+      Assert.equal 34
         $ fib 9
     test "length" do
       Assert.equal 3
