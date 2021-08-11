@@ -88,14 +88,21 @@ A guard is a boolean-valued expression which must be satisfied in addition to th
 {{#include ../exercises/chapter5/src/ChapterExamples.purs:gcdV2}}
 ```
 
-In this case, the third line uses a guard to impose the extra condition that the first argument is strictly larger than the second.
+In this case, the third line uses a guard to impose the extra condition that the first argument is strictly larger than the second. The guard in the final line uses the expression `otherwise`, which might seem like a keyword, but is in fact just a regular binding in `Prelude`:
+```text
+> :type otherwise
+Boolean
+
+> otherwise
+true
+```
 
 As this example demonstrates, guards appear on the left of the equals symbol, separated from the list of patterns by a pipe character (`|`).
 
 ## Exercises
 
 1. (Easy) Write the `factorial` function using pattern matching. _Hint_: Consider the two corner cases of zero and non-zero inputs. _Note_: This is a repeat of an example from the previous chapter, but see if you can rewrite it here on your own.
-1. (Medium) Write a function `binomial` which finds the coefficient of the x^`k`th term in the polynomial expansion of (1 + x)^`n`. This is the same as the number of ways to choose a subset of `k` elements from a set of `n` elements. Use the formula `n! / k! (n - k)!`, where `!` is the factorial function written earlier. _Hint_: Use pattern matching to handle corner cases.
+1. (Medium) Write a function `binomial` which finds the coefficient of the x^`k`th term in the polynomial expansion of (1 + x)^`n`. This is the same as the number of ways to choose a subset of `k` elements from a set of `n` elements. Use the formula `n! / k! (n - k)!`, where `!` is the factorial function written earlier. _Hint_: Use pattern matching to handle corner cases. If it takes a long time to complete or crashes with an error about the call stack, try adding more corner cases.
 1. (Medium) Write a function `pascal` which uses [_Pascal`s Rule_](https://en.wikipedia.org/wiki/Pascal%27s_rule) for computing the same binomial coefficients as the previous exercise.
 
 ## Array Patterns
@@ -171,9 +178,7 @@ We are able to append additional fields to the record, and the `showPerson` func
 Type of expression lacks required label "last"
 ```
 
-We can read the new type signature of `showPerson` as "takes any record with `first` and `last` fields which are `Strings` _and any other fields_, and returns a `String`".
-
-This function is polymorphic in the _row_ `r` of record fields, hence the name _row polymorphism_.
+We can read the new type signature of `showPerson` as "takes any record with `first` and `last` fields which are `Strings` _and any other fields_, and returns a `String`". This function is polymorphic in the _row_ `r` of record fields, hence the name _row polymorphism_.  Note that this behavior is different than that of the original `showPerson`. Without the row variable `r`, `showPerson` only accepts records with _exactly_ a `first` and `last` field and no others. 
 
 Note that we could have also written
 
@@ -275,7 +280,7 @@ Failed pattern match
 
 Functions which return a value for any combination of inputs are called _total_ functions, and functions which do not are called _partial_.
 
-It is generally considered better to define total functions where possible. If it is known that a function does not return a result for some valid set of inputs, it is usually better to return a value with type `Maybe a` for some `a`, using `Nothing` to indicate failure. This way, the presence or absence of a value can be indicated in a type-safe way.
+It is generally considered better to define total functions where possible. If it is known that a function does not return a result for some valid set of inputs, it is usually better to return a value capable of indicating failure, such as type `Maybe a` for some `a`, using `Nothing` when it cannot return a valid result. This way, the presence or absence of a value can be indicated in a type-safe way.
 
 The PureScript compiler will generate an error if it can detect that your function is not total due to an incomplete pattern match. The `unsafePartial` function can be used to silence these errors (if you are sure that your partial function is safe!) If we removed the call to the `unsafePartial` function above, then the compiler would generate the following error:
 
@@ -355,6 +360,8 @@ data Maybe a = Nothing | Just a
 
 This example demonstrates the use of a type parameter `a`. Reading the pipe character as the word "or", its definition almost reads like English: "a value of type `Maybe a` is either `Nothing`, or `Just` a value of type `a`".
 
+Note that we don't use the syntax `forall a.` anywhere in our data definition. `forall` syntax is necessary for functions, but is not used when defining ADTs with `data` or type aliases with `type`.
+
 Data constructors can also be used to define recursive data structures. Here is one more example, defining a data type of singly-linked lists of elements of type `a`:
 
 ```haskell
@@ -372,8 +379,6 @@ For example, the `Line` constructor defined above required two `Point`s, so to c
 ```haskell
 {{#include ../exercises/chapter5/src/Data/Picture.purs:exampleLine}}
 ```
-
-To construct the points `p1` and `p2`, we apply the `Point` constructor to its single argument, which is a record.
 
 So, constructing values of algebraic data types is simple, but how do we use them? This is where the important connection with pattern matching appears: the only way to consume a value of an algebraic data type is to use a pattern to match its constructor.
 
@@ -444,12 +449,18 @@ current :: Number
 current = calculateCurrent lightbulb lightbulb -- uncaught mistake
 ```
 
-Note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:
+Note that while a newtype can only have a single constructor, and the constructor must be of a single value, a newtype _can_ take any number of type variables. For example, the following newtype would be a valid definition:
+
+```Haskell
+newtype CouldError err a = CouldError (Either err a)
+```
+
+Also note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:
 ```haskell
 {{#include ../exercises/chapter5/src/ChapterExamples.purs:Coulomb}}
 ```
 
-In this case, `Coulomb` is the _type constructor_ and `MakeCoulomb` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs. Note that although the type constructor and data constructor can have different names, in practice it is idiomatic for them to share the same name. This is the case with `Amp` and `Volt` types above.
+In this case, `Coulomb` is the _type_ and `MakeCoulomb` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs. Note that although the type constructor and data constructor can have different names, in practice it is idiomatic for them to share the same name. This is the case with `Amp` and `Volt` types above.
 
 Another application of newtypes is to attach different _behavior_ to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss _type classes_.
 
