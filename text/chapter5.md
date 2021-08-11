@@ -460,7 +460,7 @@ Also note that the constructor of a newtype often has the same name as the newty
 {{#include ../exercises/chapter5/src/ChapterExamples.purs:Coulomb}}
 ```
 
-In this case, `Coulomb` is the _type_ and `MakeCoulomb` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs. Note that although the type constructor and data constructor can have different names, in practice it is idiomatic for them to share the same name. This is the case with `Amp` and `Volt` types above.
+In this case, `Coulomb` is the _type_ and `MakeCoulomb` is the _data constructor_. These live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs. Note that although the type and data constructor can have different names, in practice it is idiomatic for them to share the same name. This is the case with `Amp` and `Volt` types above.
 
 Another application of newtypes is to attach different _behavior_ to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss _type classes_.
 
