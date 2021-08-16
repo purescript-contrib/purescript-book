@@ -47,7 +47,7 @@ instance showBoolean :: Show Boolean where
   show false = "false"
 ```
 
-This code declares a type class instance called `showBoolean` - in PureScript, type class instances can be named to aid the readability of the generated JavaScript. We say that the `Boolean` type _belongs to the `Show` type class_.  
+This code declares a type class instance called `showBoolean` - in PureScript, type class instances can be named to aid the readability of the generated JavaScript. We say that the `Boolean` type _belongs to the `Show` type class_.
 
 We can try out the `Show` type class in PSCi, by showing a few values with different types:
 
@@ -125,7 +125,7 @@ No type class instance was found for
   Data.Show.Show (Int -> Int)
 ```
 
-Type class instances can be defined in one of two places: in the same module that the type class is defined, or in the same module that the type "belonging to" the type class is defined. An instance defined in any other spot is called an "orphan instance" and is not allowed by the PureScript compiler. Some of the exercises in this chapter will require you to copy the definition of a type into your MySolutions module so that you can define type class instances for that type.
+Type class instances can be defined in one of two places: in the same module that the type class is defined, or in the same module that the type "belonging to" the type class is defined. An instance defined in any other spot is called an ["orphan instance"](https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#orphan-instances) and is not allowed by the PureScript compiler. Some of the exercises in this chapter will require you to copy the definition of a type into your MySolutions module so that you can define type class instances for that type.
 
  ## Exercises
 
