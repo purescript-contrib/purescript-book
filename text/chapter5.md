@@ -449,7 +449,7 @@ current :: Number
 current = calculateCurrent lightbulb lightbulb -- uncaught mistake
 ```
 
-Note that while a newtype can only have a single constructor, and the constructor must be of a single value, a newtype _can_ take any number of type variables. For example, the following newtype would be a valid definition:
+Note that while a newtype can only have a single constructor, and the constructor must be of a single value, a newtype _can_ take any number of type variables. For example, the following newtype would be a valid definition (`err` and `a` are the type variables, and the `CouldError` constructor expects a _single_ value of type `Either err a`):
 
 ```Haskell
 newtype CouldError err a = CouldError (Either err a)
