@@ -8,6 +8,8 @@ This motivating example for this chapter will be a library for hashing data stru
 
 We will also see a collection of standard type classes from PureScript's Prelude and standard libraries. PureScript code leans heavily on the power of type classes to express ideas concisely, so it will be beneficial to familiarize yourself with these classes.
 
+If you come from an Object Oriented background, please note that the word "class" means something _very_ different in this context than what you're used to. A type class serves a purpose more similar to an OO interface. 
+
 ## Project Setup
 
 The source code for this chapter is defined in the file `src/Data/Hashable.purs`.
@@ -45,7 +47,7 @@ instance showBoolean :: Show Boolean where
   show false = "false"
 ```
 
-This code declares a type class instance called `showBoolean` - in PureScript, type class instances are named to aid the readability of the generated JavaScript. We say that the `Boolean` type _belongs to the `Show` type class_.
+This code declares a type class instance called `showBoolean` - in PureScript, type class instances can be named to aid the readability of the generated JavaScript. We say that the `Boolean` type _belongs to the `Show` type class_.  
 
 We can try out the `Show` type class in PSCi, by showing a few values with different types:
 
@@ -123,16 +125,14 @@ No type class instance was found for
   Data.Show.Show (Int -> Int)
 ```
 
+Type class instances can be defined in one of two places: in the same module that the type class is defined, or in the same module that the type "belonging to" the type class is defined. An instance defined in any other spot is called an "orphan instance" and is not allowed by the PureScript compiler. Some of the exercises in this chapter will require you to copy the definition of a type into your MySolutions module so that you can define type class instances for that type.
+
  ## Exercises
 
 1. (Easy) Define a `Show` instance for `Point`. Match the same output as the `showPoint` function from the previous chapter. _Note:_ Point is now a `newtype` (instead of a `type` synonym), which allows us to customize how to `show` it. Otherwise, we'd be stuck with the default `Show` instance for records.
 
     ```haskell
-    newtype Point
-      = Point
-      { x :: Number
-      , y :: Number
-      }
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Point}}
     ```
 
 ## Common Type Classes
@@ -301,7 +301,7 @@ Well, we can build an intuition that the `map` function applies the function it 
 
 Type class instances for `Functor` are expected to adhere to a set of _laws_, called the _functor laws_:
 
-- `map id xs = xs`
+- `map identity xs = xs`
 - `map g (map f xs) = map (g <<< f) xs`
 
 The first law is the _identity law_. It states that lifting the identity function (the function which returns its argument unchanged) over a structure just returns the original structure. This makes sense since the identity function does not modify its input.
@@ -321,11 +321,7 @@ Rather than writing instances manually, you can let the compiler do most of the 
 The following newtype represents a complex number:
 
 ```haskell
-newtype Complex
-  = Complex
-  { real :: Number
-  , imaginary :: Number
-  }
+{{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Complex}}
 ```
 
 1. (Easy) Define a `Show` instance for `Complex`. Match the output format expected by the tests (e.g. `1.2+3.4i`, `5.6-7.8i`, etc.).
@@ -336,15 +332,11 @@ newtype Complex
 
 4. (Easy) Derive (via `newtype`) a `Ring` instance for `Complex`. _Note_: You may instead write this instance manually, but that's not as convenient.
 
-Here's the `Shape` ADT from the previous chapter:
+    Here's the `Shape` ADT from the previous chapter:
 
-```haskell
-data Shape
-  = Circle Point Number
-  | Rectangle Point Number Number
-  | Line Point Point
-  | Text Point String
-```
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Shape}}
+    ```
 
 5. (Medium) Derive (via `Generic`) a `Show` instance for `Shape`. How does the amount of code written and `String` output compare to `showShape` from the previous chapter? _Hint_: See the [Deriving from `Generic`](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md#deriving-from-generic) section of the [Type Class Deriving](https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md) guide.
 
@@ -420,11 +412,11 @@ When the program is compiled, the correct type class instance for `Show` is chos
 
 1. (Easy) The following declaration defines a type of non-empty arrays of elements of type `a`:
 
-   ```haskell
-   data NonEmpty a = NonEmpty a (Array a)
-   ```
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:NonEmpty}}
+    ```
 
-   Write an `Eq` instance for the type `NonEmpty a` which reuses the instances for `Eq a` and `Eq (Array a)`. _Note:_ you may instead derive the `Eq` instance.
+    Write an `Eq` instance for the type `NonEmpty a` which reuses the instances for `Eq a` and `Eq (Array a)`. _Note:_ you may instead derive the `Eq` instance.
 
 1. (Medium) Write a `Semigroup` instance for `NonEmpty a` by reusing the `Semigroup` instance for `Array`.
 
@@ -433,24 +425,24 @@ When the program is compiled, the correct type class instance for `Show` is chos
 1. (Medium) Given any type `a` with an instance of `Ord`, we can add a new "infinite" value which is greater than any other value:
 
     ```haskell
-    data Extended a = Infinite | Finite a
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Extended}}
     ```
 
-   Write an `Ord` instance for `Extended a` which reuses the `Ord` instance for `a`.
+    Write an `Ord` instance for `Extended a` which reuses the `Ord` instance for `a`.
 
 1. (Difficult) Write a `Foldable` instance for `NonEmpty`. _Hint_: reuse the `Foldable` instance for arrays.
 
 1. (Difficult) Given a type constructor `f` which defines an ordered container (and so has a `Foldable` instance), we can create a new container type which includes an extra element at the front:
 
     ```haskell
-    data OneMore f a = OneMore a (f a)
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:OneMore}}
     ```
 
     The container `OneMore f` also has an ordering, where the new element comes before any element of `f`. Write a `Foldable` instance for `OneMore f`:
 
     ```haskell
-    instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
-    ...
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:OneMore_Foldable}}
+      ...
     ```
 
 1. (Medium) Write a `dedupShapes :: Array Shape -> Array Shape` function which removes duplicate `Shape`s from an array using the `nubEq` function.
@@ -613,67 +605,66 @@ In general, it makes sense to define a superclass relationship when the laws for
 
 Another reason to define a superclass relationship is in the case where there is a clear "is-a" relationship between the two classes. That is, every member of the subclass _is a_ member of the superclass as well.
 
- ## Exercises
+## Exercises
 
- 1. (Medium) Define a partial function `unsafeMaximum :: Partial => Array Int -> Int` which finds the maximum of a non-empty array of integers. Test out your function in PSCi using `unsafePartial`. _Hint_: Use the `maximum` function from `Data.Foldable`.
+1. (Medium) Define a partial function `unsafeMaximum :: Partial => Array Int -> Int` which finds the maximum of a non-empty array of integers. Test out your function in PSCi using `unsafePartial`. _Hint_: Use the `maximum` function from `Data.Foldable`.
 
- 1. (Medium) The `Action` class is a multi-parameter type class which defines an action of one type on another:
+1. (Medium) The `Action` class is a multi-parameter type class which defines an action of one type on another:
 
-     ```haskell
-     class Monoid m <= Action m a where
-       act :: m -> a -> a
-     ```
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Action}}
+    ```
 
-     An _action_ is a function which describes how monoidal values are used to determine how to modify a value of another type. There are two laws for the `Action` type class:
+    An _action_ is a function which describes how monoidal values are used to determine how to modify a value of another type. There are two laws for the `Action` type class:
 
-     - `act mempty a = a`
-     - `act (m1 <> m2) a = act m1 (act m2 a)`
+    - `act mempty a = a`
+    - `act (m1 <> m2) a = act m1 (act m2 a)`
 
-     Applying an empty action is a no-op. And applying two actions in sequence is the same as applying the actions combined. That is, actions respect the operations defined by the `Monoid` class.
+    Applying an empty action is a no-op. And applying two actions in sequence is the same as applying the actions combined. That is, actions respect the operations defined by the `Monoid` class.
 
-     For example, the natural numbers form a monoid under multiplication:
+    For example, the natural numbers form a monoid under multiplication:
 
-     ```haskell
-     newtype Multiply = Multiply Int
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Multiply}}
 
-     instance semigroupMultiply :: Semigroup Multiply where
-       append (Multiply n) (Multiply m) = Multiply (n * m)
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:semigroupMultiply}}
 
-     instance monoidMultiply :: Monoid Multiply where
-       mempty = Multiply 1
-     ```
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:monoidMultiply}}
+    ```
 
-     Write an instance which implements this action:
+    Write an instance which implements this action:
 
-     ```haskell
-     instance actionMultiplyInt :: Action Multiply Int
-     ```
-     
-     Remember, your instance must satisfy the laws listed above.
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Multiply_Action}}
+      ...
+    ```
+    
+    Remember, your instance must satisfy the laws listed above.
 
 1. (Difficult) There are actually multiple ways to implement an instance of `Action Multiply Int`. How many can you think of? Purescript does not allow multiple implementations of a same instance, so you will have to replace your original implementation. _Note_: the tests cover 3 implementations.
 
 1. (Medium) Write an `Action` instance which repeats an input string some number of times:
 
-     ```haskell
-     instance actionMultiplyString :: Action Multiply String
-     ```
-     
-     _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:actionMultiplyString}}
+      ...
+    ```
+    
+    _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
 
-     Does this instance satisfy the laws listed above?
+    Does this instance satisfy the laws listed above?
 
- 1. (Medium) Write an instance `Action m a => Action m (Array a)`, where the action on arrays is defined by acting on each array element independently.
+1. (Medium) Write an instance `Action m a => Action m (Array a)`, where the action on arrays is defined by acting on each array element independently.
 
- 1. (Difficult) Given the following newtype, write an instance for `Action m (Self m)`, where the monoid `m` acts on itself using `append`:
+1. (Difficult) Given the following newtype, write an instance for `Action m (Self m)`, where the monoid `m` acts on itself using `append`:
 
-     ```haskell
-     newtype Self m = Self m
-     ```
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Self}}
+    ```
 
-     _Note_: The testing framework requires `Show` and `Eq` instances for the `Self` and `Multiply` types. You may either write these instances manually, or let the compiler handle this for you with [`derive newtype instance`](https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#derive-from-newtype) shorthand.
+    _Note_: The testing framework requires `Show` and `Eq` instances for the `Self` and `Multiply` types. You may either write these instances manually, or let the compiler handle this for you with [`derive newtype instance`](https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#derive-from-newtype) shorthand.
 
- 1. (Difficult) Should the arguments of the multi-parameter type class `Action` be related by some functional dependency? Why or why not? _Note_: There is no test for this exercise.
+1. (Difficult) Should the arguments of the multi-parameter type class `Action` be related by some functional dependency? Why or why not? _Note_: There is no test for this exercise.
 
 ## A Type Class for Hashes
 
@@ -689,16 +680,7 @@ What properties might we expect of a hash function?
 The first property looks a lot like a law for a type class, whereas the second property is more along the lines of an informal contract, and certainly would not be enforceable by PureScript's type system. However, this should provide the intuition for the following type class:
 
 ```haskell
-newtype HashCode = HashCode Int
-
-instance hashCodeEq :: Eq HashCode where
-    eq (HashCode a) (HashCode b) = a == b
-
-hashCode :: Int -> HashCode
-hashCode h = HashCode (h `mod` 65535)
-
-class Eq a <= Hashable a where
-  hash :: a -> HashCode
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:Hashable}}
 ```
 
 with the associated law that `a == b` implies `hash a == hash b`.
@@ -708,8 +690,7 @@ We'll spend the rest of this section building a library of instances and functio
 We will need a way to combine hash codes in a deterministic way:
 
 ```haskell
-combineHashes :: HashCode -> HashCode -> HashCode
-combineHashes (HashCode h1) (HashCode h2) = hashCode (73 * h1 + 51 * h2)
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:combineHashes}}
 ```
 
 The `combineHashes` function will mix two hash codes and redistribute the result over the interval 0-65535.
@@ -717,8 +698,7 @@ The `combineHashes` function will mix two hash codes and redistribute the result
 Let's write a function which uses the `Hashable` constraint to restrict the types of its inputs. One common task which requires a hashing function is to determine if two values hash to the same hash code. The `hashEqual` relation provides such a capability:
 
 ```haskell
-hashEqual :: forall a. Hashable a => a -> a -> Boolean
-hashEqual = eq `on` hash
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:hashEqual}}
 ```
 
 This function uses the `on` function from `Data.Function` to define hash-equality in terms of equality of hash codes, and should read like a declarative definition of hash-equality: two values are "hash-equal" if they are equal after each value has been passed through the `hash` function.
@@ -726,37 +706,31 @@ This function uses the `on` function from `Data.Function` to define hash-equalit
 Let's write some `Hashable` instances for some primitive types. Let's start with an instance for integers. Since a `HashCode` is really just a wrapped integer, this is simple - we can use the `hashCode` helper function:
 
 ```haskell
-instance hashInt :: Hashable Int where
-  hash = hashCode
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:hashInt}}
 ```
 
 We can also define a simple instance for `Boolean` values using pattern matching:
 
 ```haskell
-instance hashBoolean :: Hashable Boolean where
-  hash false = hashCode 0
-  hash true  = hashCode 1
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:hashBoolean}}
 ```
 
 With an instance for hashing integers, we can create an instance for hashing `Char`s by using the `toCharCode` function from `Data.Char`:
 
 ```haskell
-instance hashChar :: Hashable Char where
-  hash = hash <<< toCharCode
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:hashChar}}
 ```
 
 To define an instance for arrays, we can `map` the `hash` function over the elements of the array (if the element type is also an instance of `Hashable`) and then perform a left fold over the resulting hashes using the `combineHashes` function:
 
 ```haskell
-instance hashArray :: Hashable a => Hashable (Array a) where
-  hash = foldl combineHashes (hashCode 0) <<< map hash
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:hashArray}}
 ```
 
 Notice how we build up instances using the simpler instances we have already written. Let's use our new `Array` instance to define an instance for `String`s, by turning a `String` into an array of `Char`s:
 
 ```haskell
-instance hashString :: Hashable String where
-  hash = hash <<< toCharArray
+{{#include ../exercises/chapter6/src/Data/Hashable.purs:hashString}}
 ```
 
 How can we prove that these `Hashable` instances satisfy the type class law that we stated above? We need to make sure that equal values have equal hash codes. In cases like `Int`, `Char`, `String` and `Boolean`, this is simple because there are no values of those types which are equal in the sense of `Eq` but not equal identically.
@@ -771,14 +745,13 @@ The source code for this chapter includes several other examples of `Hashable` i
  1. (Medium) Write a function `arrayHasDuplicates` which tests if an array has any duplicate elements based on both hash and value equality. First check for hash equality with the `hashEqual` function, then check for value equality with `==` if a duplicate pair of hashes is found. _Hint_: the `nubByEq` function in `Data.Array` should make this task much simpler.
  1. (Medium) Write a `Hashable` instance for the following newtype which satisfies the type class law:
 
-     ```haskell
-     newtype Hour = Hour Int
+    ```haskell
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Hour}}
 
-     instance eqHour :: Eq Hour where
-       eq (Hour n) (Hour m) = mod n 12 == mod m 12
-     ```
+    {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:eqHour}}
+    ```
 
-     The newtype `Hour` and its `Eq` instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.
+    The newtype `Hour` and its `Eq` instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.
  1. (Difficult) Prove the type class laws for the `Hashable` instances for `Maybe`, `Either` and `Tuple`. _Note_: There is no test for this exercise.
 
 ## Conclusion

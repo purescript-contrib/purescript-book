@@ -17,40 +17,57 @@ import Data.Maybe (Maybe(..))
 import Data.String.CodeUnits (toCharArray)
 import Data.Tuple (Tuple(..))
 
+-- ANCHOR: Hashable
 newtype HashCode = HashCode Int
+
+instance hashCodeEq :: Eq HashCode where
+  eq (HashCode a) (HashCode b) = a == b
 
 hashCode :: Int -> HashCode
 hashCode h = HashCode (h `mod` 65535)
 
 class Eq a <= Hashable a where
   hash :: a -> HashCode
+-- ANCHOR_END: Hashable
 
 instance showHashCode :: Show HashCode where
   show (HashCode h) = "(HashCode " <> show h <> ")"
 
-derive instance eqHashCode :: Eq HashCode
-
+-- ANCHOR: combineHashes
 combineHashes :: HashCode -> HashCode -> HashCode
 combineHashes (HashCode h1) (HashCode h2) = hashCode (73 * h1 + 51 * h2)
+-- ANCHOR_END: combineHashes
 
+-- ANCHOR: hashEqual
 hashEqual :: forall a. Hashable a => a -> a -> Boolean
 hashEqual = eq `on` hash
+-- ANCHOR_END: hashEqual
 
+-- ANCHOR: hashChar
 instance hashChar :: Hashable Char where
   hash = hash <<< toCharCode
+-- ANCHOR_END: hashChar
 
+-- ANCHOR: hashString
 instance hashString :: Hashable String where
   hash = hash <<< toCharArray
+-- ANCHOR_END: hashString
 
+-- ANCHOR: hashInt
 instance hashInt :: Hashable Int where
   hash = hashCode
+-- ANCHOR_END: hashInt
 
+-- ANCHOR: hashBoolean
 instance hashBoolean :: Hashable Boolean where
   hash false = hashCode 0
   hash true  = hashCode 1
+-- ANCHOR_END: hashBoolean
 
+-- ANCHOR: hashArray
 instance hashArray :: Hashable a => Hashable (Array a) where
   hash = foldl combineHashes (hashCode 0) <<< map hash
+-- ANCHOR_END: hashArray
 
 instance hashMaybe :: Hashable a => Hashable (Maybe a) where
   hash Nothing = hashCode 0

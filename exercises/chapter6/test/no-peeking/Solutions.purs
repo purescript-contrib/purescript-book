@@ -11,21 +11,25 @@ import Data.Maybe (Maybe(..))
 import Data.Monoid (power)
 import Data.Newtype (class Newtype, over2, wrap)
 
+-- ANCHOR: Point
 newtype Point
-  = Point
-  { x :: Number
-  , y :: Number
-  }
+      = Point
+      { x :: Number
+      , y :: Number
+      }
+-- ANCHOR_END: Point
 
 instance showPoint :: Show Point where
   show (Point p) =
     "(" <> show p.x <> ", " <> show p.y <> ")"
 
+-- ANCHOR: Complex
 newtype Complex
   = Complex
   { real :: Number
   , imaginary :: Number
   }
+-- ANCHOR_END: Complex
 
 instance showComplex :: Show Complex where
   show (Complex c) =
@@ -83,11 +87,13 @@ instance ringComplex :: Ring Complex where
   sub (Complex a) (Complex b) = Complex $ a - b
 -}
 
+-- ANCHOR: Shape
 data Shape
-  = Circle Point Number
-  | Rectangle Point Number Number
-  | Line Point Point
-  | Text Point String
+      = Circle Point Number
+      | Rectangle Point Number Number
+      | Line Point Point
+      | Text Point String
+-- ANCHOR_END: Shape
 
 derive instance genericShape :: Generic Shape _
 
@@ -102,8 +108,9 @@ instance showShape :: Show Shape where
   show (Text p s) = "(Text " <> show p <> " " <> show s <> ")"
 -}
 
-data NonEmpty a
-  = NonEmpty a (Array a)
+-- ANCHOR: NonEmpty
+data NonEmpty a = NonEmpty a (Array a)
+-- ANCHOR_END: NonEmpty
 
 instance eqNonEmpty :: Eq a => Eq (NonEmpty a) where
   eq (NonEmpty e1 a1) (NonEmpty e2 a2) = e1 == e2 && a1 == a2
@@ -125,9 +132,9 @@ instance functorNonEmpty :: Functor NonEmpty where
   map func (NonEmpty e1 a1) = NonEmpty (func e1) (map func a1)
 -}
 
-data Extended a
-  = Infinite
-  | Finite a
+-- ANCHOR: Extended
+data Extended a = Infinite | Finite a 
+-- ANCHOR_END: Extended
 
 derive instance eqExtended :: Eq a => Eq (Extended a)
 {-
@@ -156,10 +163,13 @@ instance foldableNonEmpty :: Foldable NonEmpty where
   foldl func st (NonEmpty val arr) = foldl func st ([ val ] <> arr)
   foldMap func (NonEmpty val arr) = foldMap func ([ val ] <> arr)
 
-data OneMore f a
-  = OneMore a (f a)
+-- ANCHOR: OneMore
+data OneMore f a = OneMore a (f a)
+-- ANCHOR_END: OneMore
 
+-- ANCHOR: OneMore_Foldable
 instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
+-- ANCHOR_END: OneMore_Foldable
   foldr func st (OneMore val more) = func val lastB
     where
     lastB = foldr func st more
@@ -184,20 +194,28 @@ unsafeMaximum :: Partial => Array Int -> Int
 unsafeMaximum arr = case maximum arr of
   Just m -> m
 
-class
-  Monoid m <= Action m a where
-  act :: m -> a -> a
+-- ANCHOR: Action
+class Monoid m <= Action m a where
+      act :: m -> a -> a
+-- ANCHOR_END: Action
 
-newtype Multiply
-  = Multiply Int
+-- ANCHOR: Multiply
+newtype Multiply = Multiply Int
+-- ANCHOR_END: Multiply
 
+-- ANCHOR: semigroupMultiply
 instance semigroupMultiply :: Semigroup Multiply where
-  append (Multiply n) (Multiply m) = Multiply (n * m)
+      append (Multiply n) (Multiply m) = Multiply (n * m)
+-- ANCHOR_END: semigroupMultiply
 
+-- ANCHOR: monoidMultiply
 instance monoidMultiply :: Monoid Multiply where
-  mempty = Multiply 1
+      mempty = Multiply 1
+-- ANCHOR_END: monoidMultiply
 
+-- ANCHOR: Multiply_Action
 instance actionMultiplyInt :: Action Multiply Int where
+-- ANCHOR_END: Multiply_Action
   act (Multiply n) m = n * m
 
 {-
@@ -227,14 +245,17 @@ instance actionMultiplyInt :: Action Multiply Int where
 derive newtype instance showMultiply :: Show Multiply
 derive newtype instance eqMultiply :: Eq Multiply
 
+-- ANCHOR: actionMultiplyString
 instance actionMultiplyString :: Action Multiply String where
+-- ANCHOR_END: actionMultiplyString
   act (Multiply n) s = power s n
 
 instance actionArray :: Action m a => Action m (Array a) where
   act m arr = map (act m) arr
 
-newtype Self m
-  = Self m
+-- ANCHOR: Self
+newtype Self m = Self m
+-- ANCHOR_END: Self
 
 instance actionSelf :: Monoid m => Action m (Self m) where
   act m1 (Self m2) = Self (m1 <> m2)
@@ -250,11 +271,14 @@ arrayHasDuplicates arr =
   in
     length arr /= (length $ nubByEq hashAndValEqual arr)
 
-newtype Hour
-  = Hour Int
+-- ANCHOR: Hour
+newtype Hour = Hour Int
+-- ANCHOR_END: Hour
 
+-- ANCHOR: eqHour
 instance eqHour :: Eq Hour where
-  eq (Hour n) (Hour m) = mod n 12 == mod m 12
+      eq (Hour n) (Hour m) = mod n 12 == mod m 12
+-- ANCHOR_END: eqHour
 
 instance hashHour :: Hashable Hour where
   hash (Hour h) = hash $ mod h 12
