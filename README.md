@@ -12,7 +12,7 @@ Unit tests are also being added to each chapter so you can check if your answers
 
 ## About the Book
 
-PureScript is a small strongly, statically typed programming language with expressive types, written in and inspired by Haskell, and compiling to Javascript.
+PureScript is a small, strongly, statically typed programming language with expressive types, written in and inspired by Haskell, and compiling to Javascript.
 
 Functional programming in JavaScript has seen quite a lot of popularity recently, but large-scale application development is hindered by the lack of a disciplined environment in which to write code. PureScript aims to solve that problem by bringing the power of strongly-typed functional programming to the world of JavaScript development.
 
