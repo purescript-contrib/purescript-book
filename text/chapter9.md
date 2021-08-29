@@ -48,25 +48,7 @@ It is also possible to use callbacks or synchronous functions, but those are les
 The `Aff` monad in PureScript offers similar ergonomics of JavaScript's `async`/`await` syntax. Here is the same `copyFile` example from before, but rewritten in PureScript using `Aff`:
 
 ```hs
-import Prelude
-import Data.Either (Either(..))
-import Effect.Aff (Aff, attempt, message)
-import Effect.Class.Console (log)
-import Node.Encoding (Encoding(..))
-import Node.FS.Aff (readTextFile, writeTextFile)
-import Node.Path (FilePath)
-
-copyFile :: FilePath -> FilePath -> Aff Unit
-copyFile file1 file2 = do
-  my_data <- readTextFile UTF8 file1
-  writeTextFile UTF8 file2 my_data
-
-main :: Aff Unit
-main = do
-  result <- attempt $ copyFile "file1.txt" "file2.txt"
-  case result of
-    Left e -> log $ "There was a problem with copyFile: " <> message e
-    _ -> pure unit
+{{#include ../exercises/chapter9/test/Copy.purs:copyFile}}
 ```
 
 It is also possible to re-write the above snippet using callbacks or synchronous functions (for example with `Node.FS.Async` and `Node.FS.Sync` respectively), but those share the same downsides as discussed earlier with JavaScript, and so that coding style is not recommended.
@@ -114,18 +96,7 @@ You're also welcome to consult these supplemental resources too, but again, the 
 The `affjax` library offers a convenient way to make asynchronous AJAX HTTP requests with `Aff`. Consult the [Affjax docs](https://pursuit.purescript.org/packages/purescript-affjax) for more usage information. Here is an example that makes HTTP GET requests at a provided URL and returns the response body or an error message:
 
 ```hs
-import Prelude
-import Affjax as AX
-import Affjax.ResponseFormat as ResponseFormat
-import Data.Either (Either(..))
-import Effect.Aff (Aff)
-
-getUrl :: String -> Aff String
-getUrl url = do
-  result <- AX.get ResponseFormat.string url
-  pure $ case result of
-    Left err -> "GET /api response failed to decode: " <> AX.printError err
-    Right response -> response.body
+{{#include ../exercises/chapter9/test/HTTP.purs:getUrl}}
 ```
 
 When calling this in the repl, `launchAff_` is required to convert the `Aff` to a repl-compatible `Effect`:
@@ -179,22 +150,7 @@ You'll notice in the repl that `seqDelay` is much slower than `parDelay`.
 Note that parallel execution is enabled by simply by replacing `sequence_` with `parSequence_`.
 
 ```hs
-import Prelude
-
-import Control.Parallel (parSequence_)
-import Data.Array (replicate)
-import Data.Foldable (sequence_)
-import Effect (Effect)
-import Effect.Aff (Aff, Milliseconds(..), delay, launchAff_)
-
-delayArray :: Array (Aff Unit)
-delayArray = replicate 100 $ delay $ Milliseconds 10.0
-
-seqDelay :: Effect Unit
-seqDelay = launchAff_ $ sequence_ delayArray
-
-parDelay :: Effect Unit
-parDelay = launchAff_ $ parSequence_ delayArray
+{{#include ../exercises/chapter9/test/ParallelDelay.purs:delays}}
 ```
 
 ```shell
@@ -212,22 +168,7 @@ unit
 Here's a more real-world example of making multiple HTTP requests in parallel. We're reusing our `getUrl` function to fetch information from two users in parallel. Note that `parTraverse` (the parallel version of `traverse`) is used in this case. This example would also work fine with `traverse` instead, but it will be slower.
 
 ```hs
-import Prelude
-
-import Control.Parallel (parTraverse)
-import Effect (Effect)
-import Effect.Aff (launchAff_)
-import Effect.Class.Console (logShow)
-import Test.HTTP (getUrl)
-
-fetchPar :: Effect Unit
-fetchPar =
-  launchAff_
-    $ do
-        let
-          urls = map (\n -> "https://reqres.in/api/users/" <> show n) [ 1, 2 ]
-        res <- parTraverse getUrl urls
-        logShow res
+{{#include ../exercises/chapter9/test/ParallelFetch.purs:fetchPar}}
 ```
 
 ```shell

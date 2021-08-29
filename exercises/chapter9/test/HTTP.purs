@@ -1,5 +1,6 @@
 module Test.HTTP where
 
+-- ANCHOR: getUrl
 import Prelude
 import Affjax as AX
 import Affjax.ResponseFormat as ResponseFormat
@@ -12,3 +13,4 @@ getUrl url = do
   pure case result of
     Left err -> "GET /api response failed to decode: " <> AX.printError err
     Right response -> response.body
+-- ANCHOR_END: getUrl
