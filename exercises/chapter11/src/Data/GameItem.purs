@@ -4,7 +4,9 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 
+-- ANCHOR: GameItem
 data GameItem = Candle | Matches
+-- ANCHOR_END: GameItem
 
 instance showGameItem :: Show GameItem where
   show Candle         = "Candle"

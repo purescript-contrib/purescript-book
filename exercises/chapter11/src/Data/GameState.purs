@@ -4,15 +4,19 @@ import Prelude
 
 import Data.Coords (Coords(..), coords)
 import Data.GameItem (GameItem(..))
+-- ANCHOR: imports
 import Data.Map as M
 import Data.Set as S
+-- ANCHOR_END: imports
 import Data.Tuple (Tuple(..))
 
+-- ANCHOR: GameState
 newtype GameState = GameState
   { items       :: M.Map Coords (S.Set GameItem)
   , player      :: Coords
   , inventory   :: S.Set GameItem
   }
+-- ANCHOR_END: GameState
 
 instance showGameState :: Show GameState where
   show (GameState o) =

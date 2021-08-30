@@ -595,15 +595,7 @@ Indeed, the same is true of the actions we covered for the `ReaderT`, `WriterT`,
 In the case of the `split` function above, the monad stack we constructed is an instance of each of the `MonadState`, `MonadWriter` and `MonadError` type classes. This means that we don't need to call `lift` at all! We can just use the actions `get`, `put`, `tell` and `throwError` as if they were defined on the monad stack itself:
 
 ```haskell
-split :: Parser String
-split = do
-  s <- get
-  tell ["The state is " <> show s]
-  case s of
-    "" -> throwError "Empty string"
-    _ -> do
-      put (drop 1 s)
-      pure (take 1 s)
+{{#include ../exercises/chapter11/src/Split.purs:split}}
 ```
 
 This computation really looks like we have extended our programming language to support the three new side-effects of mutable state, logging and error handling. However, everything is still implemented using pure functions and immutable data under the hood.
@@ -656,9 +648,7 @@ Here, the input string `"test"` has been repeatedly split to return an array of 
 The `Control.MonadPlus` module defines a subclass of the `Alternative` type class, called `MonadPlus`. `MonadPlus` captures those type constructors which are both monads and instances of `Alternative`:
 
 ```haskell
-class (Monad m, Alternative m) <= MonadZero m
-
-class MonadZero m <= MonadPlus m
+class (Monad m, Alternative m) <= MonadPlus m
 ```
 
 In particular, our `Parser` monad is an instance of `MonadPlus`.
@@ -666,17 +656,13 @@ In particular, our `Parser` monad is an instance of `MonadPlus`.
 When we covered array comprehensions earlier in the book, we introduced the `guard` function, which could be used to filter out unwanted results. In fact, the `guard` function is more general, and can be used for any monad which is an instance of `MonadPlus`:
 
 ```haskell
-guard :: forall m. MonadZero m => Boolean -> m Unit
+guard :: forall m. Alternative m => Boolean -> m Unit
 ```
 
 The `<|>` operator allows us to backtrack in case of failure. To see how this is useful, let's define a variant of the `split` combinator which only matches upper case characters:
 
 ```haskell
-upper :: Parser String
-upper = do
-  s <- split
-  guard $ toUpper s == s
-  pure s
+{{#include ../exercises/chapter11/src/Split.purs:upper}}
 ```
 
 Here, we use a `guard` to fail if the string is not upper case. Note that this code looks very similar to the array comprehensions we saw earlier - using `MonadPlus` in this way, we sometimes refer to constructing _monad comprehensions_.
@@ -686,11 +672,7 @@ Here, we use a `guard` to fail if the string is not upper case. Note that this c
 We can use the `<|>` operator to backtrack to another alternative in case of failure. To demonstrate this, let's define one more parser, which matches lower case characters:
 
 ```haskell
-lower :: Parser String
-lower = do
-  s <- split
-  guard $ toLower s == s
-  pure s
+{{#include ../exercises/chapter11/src/Split.purs:lower}}
 ```
 
 With this, we can define a parser which eagerly matches many upper case characters if the first character is upper case, or many lower case character if the first character is lower case:
@@ -762,12 +744,7 @@ The first type parameter, `r`, represents the global configuration type. The sec
 In the case of our game, our global configuration is defined in a type called `GameEnvironment` in the `Data.GameEnvironment` module:
 
 ```haskell
-type PlayerName = String
-
-newtype GameEnvironment = GameEnvironment
-  { playerName    :: PlayerName
-  , debugMode     :: Boolean
-  }
+{{#include ../exercises/chapter11/src/Data/GameEnvironment.purs:env}}
 ```
 
 It defines the player name, and a flag which indicates whether or not the game is running in debug mode. These options will be set from the command line when we come to run our monad transformer.
@@ -775,20 +752,15 @@ It defines the player name, and a flag which indicates whether or not the game i
 The mutable state is defined in a type called `GameState` in the `Data.GameState` module:
 
 ```haskell
-import Data.Map as M
-import Data.Set as S
+{{#include ../exercises/chapter11/src/Data/GameState.purs:imports}}
 
-newtype GameState = GameState
-  { items       :: M.Map Coords (S.Set GameItem)
-  , player      :: Coords
-  , inventory   :: S.Set GameItem
-  }
+{{#include ../exercises/chapter11/src/Data/GameState.purs:GameState}}
 ```
 
 The `Coords` data type represents points on a two-dimensional grid, and the `GameItem` data type is an enumeration of the items in the game:
 
 ```haskell
-data GameItem = Candle | Matches
+{{#include ../exercises/chapter11/src/Data/GameItem.purs:GameItem}}
 ```
 
 The `GameState` type uses two new data structures: `Map` and `Set`, which represent sorted maps and sorted sets respectively. The `items` property is a mapping from coordinates of the game grid to sets of game items at that location. The `player` property stores the current coordinates of the player, and the `inventory` property stores a set of game items currently held by the player.
@@ -800,9 +772,7 @@ We will see how the `Map` and `Set` structures are used as we write the actions 
 For our log, we will use the `List String` monoid. We can define a type synonym for our `Game` monad, implemented using `RWS`:
 
 ```haskell
-type Log = L.List String
-
-type Game = RWS GameEnvironment Log GameState
+{{#include ../exercises/chapter11/src/Game.purs:Game}}
 ```
 
 ## Implementing Game Logic
@@ -812,10 +782,7 @@ Our game is going to be built from simple actions defined in the `Game` monad, b
 One of the simplest actions in our game is the `has` action. This action tests whether the player's inventory contains a particular game item. It is defined as follows:
 
 ```haskell
-has :: GameItem -> Game Boolean
-has item = do
-  GameState state <- get
-  pure $ item `S.member` state.inventory
+{{#include ../exercises/chapter11/src/Game.purs:has}}
 ```
 
 This function uses the `get` action defined in the `MonadState` type class to read the current game state, and then uses the `member` function defined in `Data.Set` to test whether the specified `GameItem` appears in the `Set` of inventory items.
@@ -823,15 +790,13 @@ This function uses the `get` action defined in the `MonadState` type class to re
 Another action is the `pickUp` action. It adds a game item to the player's inventory if it appears in the current room. It uses actions from the `MonadWriter` and `MonadState` type classes. First of all, it reads the current game state:
 
 ```haskell
-pickUp :: GameItem -> Game Unit
-pickUp item = do
-  GameState state <- get
+{{#include ../exercises/chapter11/src/Game.purs:pickup_start}}
 ```
 
 Next, `pickUp` looks up the set of items in the current room. It does this by using the `lookup` function defined in `Data.Map`:
 
 ```haskell
-  case state.player `M.lookup` state.items of
+{{#include ../exercises/chapter11/src/Game.purs:pickup_case}}
 ```
 
 The `lookup` function returns an optional result indicated by the `Maybe` type constructor. If the key does not appear in the map, the `lookup` function returns `Nothing`, otherwise it returns the corresponding value in the `Just` constructor.
@@ -839,18 +804,13 @@ The `lookup` function returns an optional result indicated by the `Maybe` type c
 We are interested in the case where the corresponding item set contains the specified game item. Again we can test this using the `member` function:
 
 ```haskell
-    Just items | item `S.member` items -> do
+{{#include ../exercises/chapter11/src/Game.purs:pickup_Just}}
 ```
 
 In this case, we can use `put` to update the game state, and `tell` to add a message to the log:
 
 ```haskell
-      let newItems = M.update (Just <<< S.delete item) state.player state.items
-          newInventory = S.insert item state.inventory
-      put $ GameState state { items     = newItems
-                            , inventory = newInventory
-                            }
-      tell (L.singleton ("You now have the " <> show item))
+{{#include ../exercises/chapter11/src/Game.purs:pickup_body}}
 ```
 
 Note that there is no need to `lift` either of the two computations here, because there are appropriate instances for both `MonadState` and `MonadWriter` for our `Game` monad transformer stack.
@@ -860,18 +820,13 @@ The argument to `put` uses a record update to modify the game state's `items` an
 Finally, the `pickUp` function handles the remaining cases, by notifying the user using `tell`:
 
 ```haskell
-    _ -> tell (L.singleton "I don't see that item here.")
+{{#include ../exercises/chapter11/src/Game.purs:pickup_err}}
 ```
 
 As an example of using the `Reader` monad, we can look at the code for the `debug` command. This command allows the user to inspect the game state at runtime if the game is running in debug mode:
 
 ```haskell
-  GameEnvironment env <- ask
-  if env.debugMode
-    then do
-      state <- get
-      tell (L.singleton (show state))
-    else tell (L.singleton "Not running in debug mode.")
+{{#include ../exercises/chapter11/src/Game.purs:debug}}
 ```
 
 Here, we use the `ask` action to read the game configuration. Again, note that we don't need to `lift` any computation, and we can use actions defined in the `MonadState`, `MonadReader` and `MonadWriter` type classes in the same do notation block.
@@ -889,7 +844,7 @@ The front-end of our game is built using two packages: `optparse`, which provide
 The interface to our game logic is provided by the function `game` in the `Game` module:
 
 ```haskell
-game :: Array String -> Game Unit
+{{#include ../exercises/chapter11/src/Game.purs:game_sig}}
 ```
 
 To run this computation, we pass a list of words entered by the user as an array of strings, and run the resulting `RWS` computation using `runRWS`:
@@ -905,7 +860,7 @@ runRWS :: forall r w s a. RWS r w s a -> r -> s -> RWSResult s a w
 The front-end of our application is defined by a function `runGame`, with the following type signature:
 
 ```haskell
-runGame :: GameEnvironment -> Effect Unit
+{{#include ../exercises/chapter11/src/Main.purs:runGame_sig}}
 ```
 
 This function interacts with the user via the console (using the `node-readline` and `console` packages). `runGame` takes the game configuration as a function argument.
@@ -925,29 +880,21 @@ foreign import setLineHandler
 The `Interface` type represents a handle for the console, and is passed as an argument to the functions which interact with it. An `Interface` can be created using the `createConsoleInterface` function:
 
 ```haskell
-import Node.ReadLine as RL
+{{#include ../exercises/chapter11/src/Main.purs:import_RL}}
 
-runGame env = do
-  interface <- RL.createConsoleInterface RL.noCompletion
+{{#include ../exercises/chapter11/src/Main.purs:runGame_interface}}
 ```
 
 The first step is to set the prompt at the console. We pass the `interface` handle, and provide the prompt string and indentation level:
 
 ```haskell
-  RL.setPrompt "> " 2 interface
+{{#include ../exercises/chapter11/src/Main.purs:runGame_prompt}}
 ```
 
 In our case, we are interested in implementing the line handler function. Our line handler is defined using a helper function in a `let` declaration, as follows:
 
 ```haskell
-lineHandler :: GameState -> String -> Effect Unit
-lineHandler currentState input = do
-  case runRWS (game (split (wrap " ") input)) env currentState of
-    RWSResult state _ written -> do
-      for_ written log
-      RL.setLineHandler interface $ lineHandler state
-  RL.prompt interface
-  pure unit
+{{#include ../exercises/chapter11/src/Main.purs:runGame_lineHandler}}
 ```
 
 The `let` binding is closed over both the game configuration, named `env`, and the console handle, named `interface`.
@@ -961,8 +908,7 @@ Having run the game logic, which is a pure computation, we need to print any log
 The `runGame` function finally attaches the initial line handler to the console interface, and displays the initial prompt:
 
 ```haskell
-  RL.setLineHandler interface $ lineHandler initialGameState
-  RL.prompt interface
+{{#include ../exercises/chapter11/src/Main.purs:runGame_attach_handler}}
 ```
 
  ## Exercises

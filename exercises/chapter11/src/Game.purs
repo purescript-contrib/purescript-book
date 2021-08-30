@@ -16,9 +16,11 @@ import Data.Map as M
 import Data.Maybe (Maybe(..))
 import Data.Set as S
 
+-- ANCHOR: Game
 type Log = L.List String
 
 type Game = RWS GameEnvironment Log GameState
+-- ANCHOR_END: Game
 
 describeRoom :: Game Unit
 describeRoom = do
@@ -28,19 +30,28 @@ describeRoom = do
     Coords { x: 0, y: 1 } -> tell (L.singleton "You are in a clearing.")
     _ -> tell (L.singleton "You are deep in the forest.")
 
+-- ANCHOR: pickup_start
 pickUp :: GameItem -> Game Unit
 pickUp item = do
   GameState state <- get
+-- ANCHOR_END: pickup_start
+-- ANCHOR: pickup_case
   case state.player `M.lookup` state.items of
-    Just items
-      | item `S.member` items -> do
+-- ANCHOR_END: pickup_case
+-- ANCHOR: pickup_Just
+    Just items | item `S.member` items -> do
+-- ANCHOR_END: pickup_Just
+-- ANCHOR: pickup_body
           let newItems = M.update (Just <<< S.delete item) state.player state.items
               newInventory = S.insert item state.inventory
           put $ GameState state { items     = newItems
                                 , inventory = newInventory
                                 }
           tell (L.singleton ("You now have the " <> show item))
+-- ANCHOR_END: pickup_body
+-- ANCHOR: pickup_err
     _ -> tell (L.singleton "I don't see that item here.")
+-- ANCHOR_END: pickup_err
 
 move :: Int -> Int -> Game Unit
 move dx dy = modify_ (\(GameState state) -> GameState (state { player = updateCoords state.player }))
@@ -48,10 +59,12 @@ move dx dy = modify_ (\(GameState state) -> GameState (state { player = updateCo
   updateCoords :: Coords -> Coords
   updateCoords (Coords p) = coords (p.x + dx) (p.y + dy)
 
+-- ANCHOR: has
 has :: GameItem -> Game Boolean
 has item = do
   GameState state <- get
   pure $ item `S.member` state.inventory
+-- ANCHOR_END: has
 
 use :: GameItem -> Game Unit
 use Candle = tell (L.singleton "I don't know what you want me to do with that.")
@@ -66,7 +79,9 @@ use Matches = do
                            ])
     else tell (L.singleton "You don't have anything to light.")
 
+-- ANCHOR: game_sig
 game :: Array String -> Game Unit
+-- ANCHOR_END: game_sig
 game ["look"] = do
   GameState state <- get
   tell (L.singleton ("You are at " <> prettyPrintCoords state.player))
@@ -93,11 +108,13 @@ game ["use", item] =
         then use gameItem
         else tell (L.singleton "You don't have that item.")
 game ["debug"] = do
+-- ANCHOR: debug
   GameEnvironment env <- ask
   if env.debugMode
     then do
       state :: GameState <- get
       tell (L.singleton (show state))
     else tell (L.singleton "Not running in debug mode.")
+-- ANCHOR_END: debug
 game [] = pure unit
 game _  = tell (L.singleton "I don't understand.")
