@@ -11,13 +11,7 @@ This module's project introduces the following new dependencies:
 - `ordered-collections`, which provides data typs for immutable maps and sets
 - `transformers`, which provides implementations of standard monad transformers
 - `node-readline`, which provides FFI bindings to the [`readline`](https://nodejs.org/api/readline.html) interface provided by NodeJS
-- `yargs`, which provides an applicative interface to the [`yargs`](https://www.npmjs.com/package/yargs) command line argument processing library
-
-It is also necessary to install the `yargs` module using NPM:
-
-```text
-npm install
-```
+- `optparse`, which provides applicative parsers for processing command line arguments
 
 ## How To Play The Game
 
@@ -26,20 +20,28 @@ To run the project, use `spago run`
 By default you will see a usage message:
 
 ```text
-node ./dist/Main.js -p <player name>
+Monadic Adventures! A game to learn monad transformers
 
-Options:
-  -p, --player  Player name  [required]
-  -d, --debug   Use debug mode
+Usage: run.js (-p|--player <player name>) [-d|--debug]
+  Play the game as <player name>
 
-Missing required arguments: p
-The player name is required
+Available options:
+  -p,--player <player name>
+                           The player's name <String>
+  -d,--debug               Use debug mode
+  -h,--help                Show this help text
 ```
 
-Provide the player name using the `-p` option:
+To provide command line arguments, you can either call `spago run` with the `-a` option to pass additional arguments directly to your application, or you can call `spago bundle-app`, which will create an index.js file that can be run directly with `node`.  
+For example, to provide the player name using the `-p` option:
 
 ```text
-spago run -a "-p Phil"
+$ spago run -a "-p Phil"
+>
+```
+```text
+$ spago bundle-app 
+$ node index.js -p Phil
 >
 ```
 
@@ -882,7 +884,7 @@ The remainder of the `Game` module defines a set of similar actions, each using 
 
 Since our game logic runs in the `RWS` monad, it is necessary to run the computation in order to respond to the user's commands.
 
-The front-end of our game is built using two packages: `yargs`, which provides an applicative interface to the `yargs` command line parsing library, and `node-readline`, which wraps NodeJS' `readline` module, allowing us to write interactive console-based applications.
+The front-end of our game is built using two packages: `optparse`, which provides applicative command line parsing, and `node-readline`, which wraps NodeJS' `readline` module, allowing us to write interactive console-based applications.
 
 The interface to our game logic is provided by the function `game` in the `Game` module:
 
@@ -972,45 +974,44 @@ The `runGame` function finally attaches the initial line handler to the console 
 
 ## Handling Command Line Options
 
-The final piece of the application is responsible for parsing command line options and creating the `GameEnvironment` configuration record. For this, we use the `yargs` package.
+The final piece of the application is responsible for parsing command line options and creating the `GameEnvironment` configuration record. For this, we use the `optparse` package.
 
-`yargs` is an example of _applicative command line option parsing_. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the `yargs` package, the functor we are interested in is the `Y` functor, which adds the side-effect of reading from command line options. It provides the following handler:
-
-```haskell
-runY :: forall a. YargsSetup -> Y (Effect a) -> Effect a
-```
-
-This is best illustrated by example. The application's `main` function is defined using `runY` as follows:
+`optparse` is an example of _applicative command line option parsing_. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the `optparse` package, the functor we are interested in is the `Parser` functor (imported from the optparse module `Options.Applicative`, not to be confused with our `Parser` that we defined in the `Split` module), which adds the side-effect of reading from command line options. It provides the following handler:
 
 ```haskell
-main = runY (usage "$0 -p <player name>") $ map runGame env
+customExecParser :: forall a. ParserPrefs → ParserInfo a → Effect a
 ```
 
-The first argument is used to configure the `yargs` library. In our case, we simply provide a usage message, but the `Node.Yargs.Setup` module provides several other options.
-
-The second argument uses the `map` function to lift the `runGame` function over the `Y` type constructor. The argument `env` is constructed in a `where` declaration using the applicative operators `<$>` and `<*>`:
+This is best illustrated by example. The application's `main` function is defined using `customExecParser` as follows:
 
 ```haskell
-  where
-  env :: Y GameEnvironment
-  env = gameEnvironment
-          <$> yarg "p" ["player"]
-                   (Just "Player name")
-                   (Right "The player name is required")
-                   false
-          <*> flag "d" ["debug"]
-                   (Just "Use debug mode")
+{{#include ../exercises/chapter11/src/Main.purs:main}}
 ```
 
-Here, the `gameEnvironment` function, which has the type `PlayerName -> Boolean -> GameEnvironment`, is lifted over `Y`. The two arguments specify how to read the player name and debug flag from the command line options. The first argument describes the player name option, which is specified by the `-p` or `--player` options, and the second describes the debug mode flag, which is turned on using the `-d` or `--debug` options.
+The first argument is used to configure the `optparse` library. In our case, we simply configure it to show the help message when the application is run without any arguments (instead of showing a "missing argument" error) by using `OP.prefs OP.showHelpOnEmpty`, but the `Options.Applicative.Builder` module provides several other options.
 
-This demonstrates two basic functions defined in the `Node.Yargs.Applicative` module: `yarg`, which defines a command line option which takes an optional argument (of type `String`, `Number` or `Boolean`), and `flag` which defines a command line flag of type `Boolean`.
+The second argument is the complete description of our parser program:
+```haskell 
+{{#include ../exercises/chapter11/src/Main.purs:argParser}}
+
+{{#include ../exercises/chapter11/src/Main.purs:parserOptions}}
+```
+
+Here `OP.info` combines a `Parser` with a set of options for how the help message is formatted. `env <**> OP.helper` takes any command line argument `Parser` named `env` and adds a `--help` option to it automatically. Options for the help message are of type `InfoMod`, which is a monoid, so we can use the `fold` function to add several options together. 
+
+The interesting part of our parser is constructing the `GameEnvironment`:
+
+```haskell
+{{#include ../exercises/chapter11/src/Main.purs:env}}
+```
+
+`player` and `debug` are both `Parser`s, so we can use our applicative operators `<$>` and `<*>` to lift our `gameEnvironment` function, which has the type `PlayerName -> Boolean -> GameEnvironment` over `Parser`. `OP.strOption` constructs a command line option that expects a string value, and is configured via a collection of `Mod`s folded together. `OP.flag` works similarly, but doesn't expect an associated value. `optparse` offers extensive [documentation](https://pursuit.purescript.org/packages/purescript-optparse) on different modifiers available to build various command line parsers.
 
 Notice how we were able to use the notation afforded by the applicative operators to give a compact, declarative specification of our command line interface. In addition, it is simple to add new command line arguments, simply by adding a new function argument to `runGame`, and then using `<*>` to lift `runGame` over an additional argument in the definition of `env`.
 
  ## Exercises
 
- 1. (Medium) Add a new Boolean-valued property `cheatMode` to the `GameEnvironment` record. Add a new command line flag `-c` to the `yargs` configuration which enables cheat mode. The `cheat` command from the previous exercise should be disallowed if cheat mode is not enabled.
+ 1. (Medium) Add a new Boolean-valued property `cheatMode` to the `GameEnvironment` record. Add a new command line flag `-c` to the `optparse` configuration which enables cheat mode. The `cheat` command from the previous exercise should be disallowed if cheat mode is not enabled.
 
 ## Conclusion
 

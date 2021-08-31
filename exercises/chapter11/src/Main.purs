@@ -3,19 +3,17 @@ module Main where
 import Prelude
 
 import Control.Monad.RWS (RWSResult(..), runRWS)
-import Data.Either (Either(..))
-import Data.Foldable (for_)
+import Data.Foldable (fold, for_)
 import Data.GameEnvironment (GameEnvironment, gameEnvironment)
 import Data.GameState (GameState, initialGameState)
-import Data.Maybe (Maybe(..))
 import Data.Newtype (wrap)
 import Data.String (split)
 import Effect (Effect)
 import Effect.Console (log)
 import Game (game)
 import Node.ReadLine as RL
-import Node.Yargs.Applicative (Y, runY, flag, yarg)
-import Node.Yargs.Setup (usage)
+import Options.Applicative ((<**>))
+import Options.Applicative as OP
 
 runGame :: GameEnvironment -> Effect Unit
 runGame env = do
@@ -38,13 +36,41 @@ runGame env = do
   pure unit
 
 main :: Effect Unit
-main = runY (usage "$0 -p <player name>") $ map runGame env
+-- ANCHOR: main
+main = OP.customExecParser prefs argParser >>= runGame 
+-- ANCHOR_END: main
   where
-  env :: Y GameEnvironment
-  env = gameEnvironment
-          <$> yarg "p" ["player"]
-                       (Just "Player name")
-                       (Right "The player name is required")
-                       false
-          <*> flag "d" ["debug"]
-                       (Just "Use debug mode")
+
+-- ANCHOR: argParser
+  argParser :: OP.ParserInfo GameEnvironment
+  argParser = OP.info (env <**> OP.helper) parserOptions
+-- ANCHOR_END: argParser
+
+-- ANCHOR: env
+  env :: OP.Parser GameEnvironment
+  env = gameEnvironment <$> player <*> debug
+
+  player :: OP.Parser String
+  player = OP.strOption $ fold 
+    [ OP.long "player"
+    , OP.short 'p'
+    , OP.metavar "<player name>"
+    , OP.help "The player's name <String>"
+    ]
+
+  debug :: OP.Parser Boolean
+  debug = OP.switch $ fold 
+    [ OP.long "debug"
+    , OP.short 'd'
+    , OP.help "Use debug mode"
+    ]
+-- ANCHOR_END: env
+
+  prefs = OP.prefs OP.showHelpOnEmpty
+-- ANCHOR: parserOptions
+  parserOptions = fold 
+    [ OP.fullDesc
+    , OP.progDesc "Play the game as <player name>"
+    , OP.header "Monadic Adventures! A game to learn monad transformers" 
+    ]
+-- ANCHOR_END: parserOptions

@@ -4,7 +4,7 @@ You can edit this file as you like.
 -}
 { name = "my-project"
 , dependencies =
-  [ "arrays" 
+  [ "arrays"
   , "console"
   , "control"
   , "effect"
@@ -15,6 +15,7 @@ You can edit this file as you like.
   , "maybe"
   , "newtype"
   , "node-readline"
+  , "optparse"
   , "ordered-collections"
   , "prelude"
   , "psci-support"
@@ -22,7 +23,6 @@ You can edit this file as you like.
   , "test-unit"
   , "transformers"
   , "tuples"
-  , "yargs"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
