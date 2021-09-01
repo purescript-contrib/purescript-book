@@ -2,7 +2,7 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 import Control.MonadZero (guard)
-import Data.Array (catMaybes, cons, filter, find, head, last, length, nub, null, tail, (..))
+import Data.Array (catMaybes, cons, filter, find, head, last, length, nub, null, tail, (..), reverse)
 import Data.Foldable (foldl)
 import Data.Int (rem, quot)
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
