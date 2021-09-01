@@ -58,19 +58,11 @@ triples n = do
 
 -- | Provide the prime numbers that, multiplied together, make the argument.
 factorize :: Int -> Array Int
-factorize n = factorize' 2 n []
-  where
-  factorize' :: Int -> Int -> Array Int -> Array Int
-  factorize' _ 1 result = result
-
-  factorize' divisor dividend result =
-    let
-      remainder = rem dividend divisor
-    in
-      if remainder == 0 then
-        factorize' (divisor) (quot dividend divisor) (cons divisor result)
-      else
-        factorize' (divisor + 1) dividend result
+factorize n = do
+  f <- reverse $ factors n
+  fi <- reverse $ f
+  guard $ isPrime fi
+  pure fi
 
 allTrue :: Array Boolean -> Boolean
 allTrue bools = foldl (\acc bool -> acc && bool) true bools
