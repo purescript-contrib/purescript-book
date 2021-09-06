@@ -545,7 +545,7 @@ Fortunately, as we will see, we can use the automatic code generation provided b
 
  ## Exercises
 
- 1. (Easy) Use the `ExceptT` monad transformer over the `Identity` functor to write a function `safeDivide` which divides two numbers, throwing an error if the denominator is zero.
+ 1. (Easy) Use the `ExceptT` monad transformer over the `Identity` functor to write a function `safeDivide` which divides two numbers, throwing an error (as the String "Divide by zero!") if the denominator is zero.
  1. (Medium) Write a parser
 
      ```haskell
@@ -564,7 +564,7 @@ Fortunately, as we will see, we can use the automatic code generation provided b
      _Hint_: you can use the implementation of `split` as a starting point. You might find the `stripPrefix` function useful.
  1. (Difficult) Use the `ReaderT` and `WriterT` monad transformers to reimplement the document printing library which we wrote earlier using the `Reader` monad.
 
-     Instead of using `line` to emit strings and `cat` to concatenate strings, use the `Array String` monoid with the `WriterT` monad transformer, and `tell` to append a line to the result.
+     Instead of using `line` to emit strings and `cat` to concatenate strings, use the `Array String` monoid with the `WriterT` monad transformer, and `tell` to append a line to the result. Use the same names as in the original implementation but ending with an apostrophe (`'`).
 
 ## Type Classes to the Rescue!
 
@@ -731,7 +731,7 @@ Again, this illustrates the power of reusability that monad transformers bring -
  ## Exercises
 
  1. (Easy) Remove the calls to the `lift` function from your implementation of the `string` parser. Verify that the new implementation type checks, and convince yourself that it should.
- 1. (Medium) Use your `string` parser with the `many` combinator to write a parser `asFollowedByBs` which recognizes strings consisting of several copies of the string `"a"` followed by several copies of the string `"b"`.
+ 1. (Medium) Use your `string` parser with the `some` combinator to write a parser `asFollowedByBs` which recognizes strings consisting of several copies of the string `"a"` followed by several copies of the string `"b"`.
  1. (Medium) Use the `<|>` operator to write a parser `asOrBs` which recognizes strings of the letters `a` or `b` in any order.
  1. (Difficult) The `Parser` monad might also be defined as follows:
 
@@ -965,10 +965,10 @@ The `runGame` function finally attaches the initial line handler to the console 
 
  ## Exercises
 
- 1. (Medium) Implement a new command `cheat`, which moves all game items from the game grid into the user's inventory.
+ 1. (Medium) Implement a new command `cheat`, which moves all game items from the game grid into the user's inventory. Create a function `cheat :: RWS GameEnvironment (L.List String) GameState Unit` in the `MySolutions` module, and use this function from `game`.
  1. (Difficult) The `Writer` component of the `RWS` monad is currently used for two types of messages: error messages and informational messages. Because of this, several parts of the code use case statements to handle error cases.
 
-     Refactor the code to use the `ExceptT` monad transformer to handle the error messages, and `RWS` to handle informational messages.
+     Refactor the code to use the `ExceptT` monad transformer to handle the error messages, and `RWS` to handle informational messages. _Note:_ There are no tests for this exercise.
 
 ## Handling Command Line Options
 

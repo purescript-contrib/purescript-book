@@ -4,16 +4,23 @@ import Prelude
 
 import Control.Alt ((<|>))
 import Control.Monad.Except (ExceptT, throwError)
+import Control.Monad.RWS (RWS)
 import Control.Monad.Reader (Reader, ReaderT, ask, lift, local, runReader, runReaderT)
 import Control.Monad.State (State, StateT, get, put, execState, modify_)
 import Control.Monad.Writer (Writer, WriterT, tell, runWriter, execWriterT)
 import Data.Array (some)
-import Data.Foldable (fold)
+import Data.Foldable (fold, foldl)
+import Data.GameEnvironment (GameEnvironment)
+import Data.GameState (GameState(..))
 import Data.Identity (Identity)
+import Data.List ((:))
+import Data.List as L
+import Data.Map as M
 import Data.Maybe (Maybe(..))
 import Data.Monoid (power)
 import Data.Monoid.Additive (Additive(..))
 import Data.Newtype (unwrap)
+import Data.Set as S
 import Data.String (joinWith)
 import Data.String.CodeUnits (stripPrefix, toCharArray)
 import Data.String.Pattern (Pattern(..))
@@ -84,6 +91,12 @@ collatz c = runWriter $ cltz 0 c
 
 --
 
+safeDivide :: Int -> Int -> ExceptT String Identity Int
+safeDivide _ 0 = throwError "Divide by zero!"
+safeDivide a b = pure $ a / b
+
+--
+
 type Errors = Array String
 type Log = Array String
 type Parser = StateT String (WriterT Log (ExceptT Errors Identity))
@@ -124,3 +137,10 @@ asFollowedByBs = do
 
 asOrBs :: Parser String
 asOrBs = fold <$> some (string "a" <|> string "b")
+
+cheat :: RWS GameEnvironment (L.List String) GameState Unit 
+cheat = do 
+  GameState state <- get 
+  let newInventory = foldl S.union state.inventory state.items
+  tell $ foldl (\acc x -> ("You now have the " <> show x) : acc) L.Nil $ S.unions state.items
+  put $ GameState state { items = M.empty, inventory = newInventory }

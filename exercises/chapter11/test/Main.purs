@@ -1,18 +1,27 @@
 module Test.Main where
 
-import Prelude (Unit, discard, ($), (<>))
-
+import Prelude (Unit, discard, negate, ($), (*>), (<>))
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 
-import Effect (Effect)
-import Control.Monad.Writer (runWriterT, execWriter)
 import Control.Monad.Except (runExceptT)
+import Control.Monad.RWS (RWSResult(..), runRWS)
 import Control.Monad.State (runStateT)
+import Control.Monad.Writer (runWriterT, execWriter)
+import Data.Coords (Coords(..))
 import Data.Either (Either(..))
+import Data.GameEnvironment (GameEnvironment(..))
+import Data.GameItem (GameItem(..))
+import Data.GameState (GameState(..), initialGameState)
+import Data.List (List, (:))
+import Data.List as L
+import Data.Map as M
 import Data.Monoid.Additive (Additive(..))
 import Data.Newtype (unwrap)
+import Data.Set as S
 import Data.Tuple (Tuple(..))
+import Effect (Effect)
+import Game (Game, move, pickUp)
 import Test.Unit (TestSuite, success, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -76,6 +85,12 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
           Assert.equal expected_15
             $ collatz 15
     suite "Exercises Group - Monad Transformers" do
+      suite "safeDivide" do
+        test "should fail when dividing by zero" do
+          Assert.equal (Left "Divide by zero!") 
+            $ unwrap $ runExceptT $ safeDivide 5 0 
+        test "should successfully divide for any other input" do 
+          Assert.equal (Right 2) $ unwrap $ runExceptT $ safeDivide 6 3 
       suite "parser" do
         let
           runParser p s = unwrap $ runExceptT $ runWriterT $ runStateT p s
@@ -129,5 +144,37 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
         test "should fail if first is not a or b" do
           Assert.equal (Left ["Could not parse","Could not parse"])
             $ runParser asOrBs "foobar"
+
+    suite "Exercises Group - The RWS Monad" do
+      let 
+        runGame :: Game Unit -> RWSResult GameState Unit (List String)
+        runGame testGame = runRWS testGame env initialGameState
+        env = GameEnvironment { debugMode: false, playerName: "Phil" }
+
+        expectedCheaterState = GameState 
+          { inventory: S.fromFoldable [Candle, Matches] 
+          , items: M.empty
+          , player: Coords { x: 0, y: 0 } 
+          }
+
+        expectedLogs = ("You now have the Candle" : "You now have the Matches" : L.Nil)
+
+      test "adds all items to your inventory when cheating" do 
+        let (RWSResult actualState _ log) = runGame cheat 
+        Assert.equal expectedCheaterState actualState
+        Assert.equal expectedLogs $ L.sort log
+
+        let (RWSResult actualState _ log) = runGame (move 0 (-1) *> move 0 1 *> cheat)
+        Assert.equal expectedCheaterState actualState
+        Assert.equal expectedLogs $ L.sort log
+
+        let (RWSResult actualState _ log) = runGame (pickUp Matches *> cheat)
+        Assert.equal expectedCheaterState actualState
+        Assert.equal expectedLogs $ L.sort log
+
+        let (RWSResult actualState _ log) = runGame (pickUp Matches *> move 0 1 *> pickUp Candle *> move 0 (-1) *> cheat)
+        Assert.equal expectedCheaterState actualState
+        Assert.equal expectedLogs $ L.sort log
+
 {- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}

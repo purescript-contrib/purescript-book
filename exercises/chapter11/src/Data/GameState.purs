@@ -22,6 +22,8 @@ instance showGameState :: Show GameState where
     ", inventory: " <> show o.inventory <>
     " }"
 
+derive instance eqGameState :: Eq GameState
+
 initialGameState :: GameState
 initialGameState = GameState
   { items      : M.fromFoldable [ Tuple (coords 0 1) (S.singleton Candle)
