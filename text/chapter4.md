@@ -31,7 +31,7 @@ Let's see some simple examples of recursion in PureScript.
 Here is the usual _factorial function_ example:
 
 ```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:fact}}
+{{#include ../exercises/chapter4/test/Examples.purs:factorial}}
 ```
 
 Here, we can see how the factorial function is computed by reducing the problem to a subproblem - that of computing the factorial of a smaller integer. When we reach zero, the answer is immediate.
@@ -44,7 +44,7 @@ Here is another common example, which computes the _Fibonacci function_:
 
 Again, this problem is solved by considering the solutions to subproblems. In this case, there are two subproblems, corresponding to the expressions `fib (n - 1)` and `fib (n - 2)`. When these two subproblems are solved, we assemble the result by adding the partial results.
 
-Note that, while the above examples of `fact` and `fib` work as intended, a more idiomatic implementation would use pattern matching instead of `if`/`then`/`else`. Pattern matching techniques are discussed in a later chapter.
+Note that, while the above examples of `factorial` and `fib` work as intended, a more idiomatic implementation would use pattern matching instead of `if`/`then`/`else`. Pattern matching techniques are discussed in a later chapter.
 
 ## Recursion on Arrays
 

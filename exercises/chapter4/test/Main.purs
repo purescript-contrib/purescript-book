@@ -203,9 +203,9 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
 runChapterExamples :: TestSuite
 runChapterExamples =
   suite "Chapter Examples" do
-    test "fact" do
+    test "factorial" do
       Assert.equal 120
-        $ fact 5
+        $ factorial 5
     test "fib" do
       Assert.equal 34
         $ fib 9

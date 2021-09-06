@@ -7,14 +7,14 @@ import Data.Foldable (product)
 import Data.Maybe (fromMaybe)
 import Data.Path (Path, ls)
 
--- ANCHOR: fact
-fact :: Int -> Int
-fact n =
+-- ANCHOR: factorial
+factorial :: Int -> Int
+factorial n =
   if n == 0 then
     1
   else
-    n * fact (n - 1)
--- ANCHOR_END: fact
+    n * factorial (n - 1)
+-- ANCHOR_END: factorial
 
 -- ANCHOR: fib
 fib :: Int -> Int
