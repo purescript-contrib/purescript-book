@@ -131,6 +131,10 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
               Assert.equal (sort xs)
                 $ sort
                 $ primeFactors n
+        primeFactorsTest 1 []
+        primeFactorsTest 2 [2]
+        primeFactorsTest 3 [3]
+        primeFactorsTest 4 [2, 2]
         primeFactorsTest 6 [3, 2]
         primeFactorsTest 18 [3, 3, 2]
         primeFactorsTest 210 [ 7, 5, 3, 2 ]
