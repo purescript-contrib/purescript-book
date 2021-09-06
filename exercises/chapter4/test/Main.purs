@@ -229,9 +229,9 @@ runChapterExamples =
       pure $ test (name <> " " <> show n) do
         Assert.equal (sort $ map sort xs)
           $ sort $ map sort f n
-    test "factTailRec" do
+    test "factorialTailRec" do
       Assert.equal 120
-        $ factTailRec 5 1
+        $ factorialTailRec 5 1
     test "lengthTailRec" do
       Assert.equal 3
         $ lengthTailRec [ 0, 0, 0 ]

@@ -61,13 +61,13 @@ factorsV3 n = do
   pure [ i, j ]
 -- ANCHOR_END: factorsV3
 
--- ANCHOR: factTailRec
-factTailRec :: Int -> Int -> Int
-factTailRec n acc = 
+-- ANCHOR: factorialTailRec
+factorialTailRec :: Int -> Int -> Int
+factorialTailRec n acc =
   if n == 0
     then acc
-    else factTailRec (n - 1) (acc * n)
--- ANCHOR_END: factTailRec
+    else factorialTailRec (n - 1) (acc * n)
+-- ANCHOR_END: factorialTailRec
 
 -- ANCHOR: lengthTailRec
 lengthTailRec :: forall a. Array a -> Int
@@ -75,7 +75,7 @@ lengthTailRec arr = length' arr 0
   where
   length' :: Array a -> Int -> Int
   length' arr' acc =
-    if null arr' 
+    if null arr'
       then acc
       else length' (fromMaybe [] $ tail arr') (acc + 1)
 -- ANCHOR_END: lengthTailRec

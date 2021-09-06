@@ -441,7 +441,7 @@ It is easy to verify this problem, with the following code in PSCi:
 
 ```text
 > :paste
-… f n = 
+… f n =
 …   if n == 0
 …     then 0
 …     else 1 + f (n - 1)
@@ -467,10 +467,10 @@ In practice, the PureScript compiler does not replace the recursive call with a 
 Here is an example of a recursive function with all recursive calls in tail position:
 
 ```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:factTailRec}}
+{{#include ../exercises/chapter4/test/Examples.purs:factorialTailRec}}
 ```
 
-Notice that the recursive call to `factTailRec` is the last thing that happens in this function - it is in tail position.
+Notice that the recursive call to `factorialTailRec` is the last thing that happens in this function - it is in tail position.
 
 ## Accumulators
 
