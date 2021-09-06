@@ -7,7 +7,6 @@ import Test.NoPeeking.Solutions  -- This line should have been automatically del
 import Data.Array (sort)
 import Data.Maybe (Maybe(..))
 import Data.Path (Path(..), filename, root)
-import Data.Tuple (fst)
 import Effect (Effect)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert (assert, assertFalse)
@@ -122,13 +121,17 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
           Assert.equal (sort [ [ 3, 4, 5 ], [ 5, 12, 13 ], [ 6, 8, 10 ] ])
             $ sort
             $ triples 13
-      suite "Exercise - factorize" do
-        test "Test small non-prime number" do
-          Assert.equal [ 3, 2 ]
-            $ factorize 6
-        test "Test number that uses the prime numbers less than 10" do
-          Assert.equal [ 7, 5, 3, 2 ]
-            $ factorize 210
+      suite "Exercise - primeFactors" do
+        let
+          primeFactorsTest :: Int -> Array Int -> _
+          primeFactorsTest n xs =
+            test (show n) do
+              Assert.equal (sort xs)
+                $ sort
+                $ primeFactors n
+        primeFactorsTest 6 [3, 2]
+        primeFactorsTest 18 [3, 3, 2]
+        primeFactorsTest 210 [ 7, 5, 3, 2 ]
     suite "Exercise Group - Folds and Tail Recursion" do
       test "Exercise - allTrue" do
         assert "all elements true"

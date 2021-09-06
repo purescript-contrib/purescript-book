@@ -57,20 +57,16 @@ triples n = do
   pure [ i, j, k ]
 
 -- | Provide the prime numbers that, multiplied together, make the argument.
-factorize :: Int -> Array Int
-factorize n = factorize' 2 n []
+primeFactors :: Int -> Array Int
+primeFactors n = factorize 2 n
   where
-  factorize' :: Int -> Int -> Array Int -> Array Int
-  factorize' _ 1 result = result
-
-  factorize' divisor dividend result =
-    let
-      remainder = rem dividend divisor
-    in
-      if remainder == 0 then
-        factorize' (divisor) (quot dividend divisor) (cons divisor result)
-      else
-        factorize' (divisor + 1) dividend result
+  factorize :: Int -> Int -> Array Int
+  factorize _ 1 = []
+  factorize divisor dividend =
+    if dividend `mod` divisor == 0 then
+      cons divisor $ factorize (divisor) (dividend / divisor)
+    else
+      factorize (divisor + 1) dividend
 
 allTrue :: Array Boolean -> Boolean
 allTrue bools = foldl (\acc bool -> acc && bool) true bools
