@@ -1,14 +1,14 @@
 module Test.Main where
 
-import Prelude (Unit, discard, negate, ($), (*>), (<>))
+import Prelude (Unit, discard, negate, ($), (*>), (<>), (==))
 import Test.MySolutions
+import Game 
 import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 
 import Control.Monad.Except (runExceptT)
 import Control.Monad.RWS (RWSResult(..), runRWS)
 import Control.Monad.State (runStateT)
 import Control.Monad.Writer (runWriterT, execWriter)
-import Data.Coords (Coords(..))
 import Data.Either (Either(..))
 import Data.GameEnvironment (GameEnvironment(..))
 import Data.GameItem (GameItem(..))
@@ -21,7 +21,6 @@ import Data.Newtype (unwrap)
 import Data.Set as S
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
-import Game (Game, move, pickUp)
 import Test.Unit (TestSuite, success, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -151,29 +150,28 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
         runGame testGame = runRWS testGame env initialGameState
         env = GameEnvironment { debugMode: false, playerName: "Phil" }
 
-        expectedCheaterState = GameState 
-          { inventory: S.fromFoldable [Candle, Matches] 
-          , items: M.empty
-          , player: Coords { x: 0, y: 0 } 
-          }
-
+        playerHasAllItems inventory = inventory == S.fromFoldable [Candle, Matches]  
         expectedLogs = ("You now have the Candle" : "You now have the Matches" : L.Nil)
 
       test "adds all items to your inventory when cheating" do 
-        let (RWSResult actualState _ log) = runGame cheat 
-        Assert.equal expectedCheaterState actualState
+        let (RWSResult (GameState actualState) _ log) = runGame cheat 
+        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState.inventory
+        Assert.assert "Expected map to no longer have any items" $ M.isEmpty actualState.items
         Assert.equal expectedLogs $ L.sort log
 
-        let (RWSResult actualState _ log) = runGame (move 0 (-1) *> move 0 1 *> cheat)
-        Assert.equal expectedCheaterState actualState
+        let (RWSResult (GameState actualState) _ log) = runGame (move 0 (-1) *> move 0 1 *> cheat)
+        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState.inventory
+        Assert.assert "Expected map to no longer have any items" $ M.isEmpty actualState.items
         Assert.equal expectedLogs $ L.sort log
 
-        let (RWSResult actualState _ log) = runGame (pickUp Matches *> cheat)
-        Assert.equal expectedCheaterState actualState
+        let (RWSResult (GameState actualState) _ log) = runGame (pickUp Matches *> cheat)
+        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState.inventory
+        Assert.assert "Expected map to no longer have any items" $ M.isEmpty actualState.items
         Assert.equal expectedLogs $ L.sort log
 
-        let (RWSResult actualState _ log) = runGame (pickUp Matches *> move 0 1 *> pickUp Candle *> move 0 (-1) *> cheat)
-        Assert.equal expectedCheaterState actualState
+        let (RWSResult (GameState actualState) _ log) = runGame (pickUp Matches *> move 0 1 *> pickUp Candle *> move 0 (-1) *> cheat)
+        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState.inventory
+        Assert.assert "Expected map to no longer have any items" $ M.isEmpty actualState.items
         Assert.equal expectedLogs $ L.sort log
 
 {- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.

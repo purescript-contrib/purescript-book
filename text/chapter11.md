@@ -965,7 +965,7 @@ The `runGame` function finally attaches the initial line handler to the console 
 
  ## Exercises
 
- 1. (Medium) Implement a new command `cheat`, which moves all game items from the game grid into the user's inventory. Create a function `cheat :: RWS GameEnvironment (L.List String) GameState Unit` in the `MySolutions` module, and use this function from `game`.
+ 1. (Medium) Implement a new command `cheat`, which moves all game items from the game grid into the user's inventory. Create a function `cheat :: Game Unit` in the `Game` module, and use this function from `game`.
  1. (Difficult) The `Writer` component of the `RWS` monad is currently used for two types of messages: error messages and informational messages. Because of this, several parts of the code use case statements to handle error cases.
 
      Refactor the code to use the `ExceptT` monad transformer to handle the error messages, and `RWS` to handle informational messages. _Note:_ There are no tests for this exercise.
