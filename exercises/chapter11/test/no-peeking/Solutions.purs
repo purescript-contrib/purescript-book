@@ -4,13 +4,11 @@ import Prelude
 
 import Control.Alt ((<|>))
 import Control.Monad.Except (ExceptT, throwError)
-import Control.Monad.RWS (RWS)
 import Control.Monad.Reader (Reader, ReaderT, ask, lift, local, runReader, runReaderT)
 import Control.Monad.State (State, StateT, get, put, execState, modify_)
 import Control.Monad.Writer (Writer, WriterT, tell, runWriter, execWriterT)
 import Data.Array (some)
 import Data.Foldable (fold, foldl)
-import Data.GameEnvironment (GameEnvironment)
 import Data.GameState (GameState(..))
 import Data.Identity (Identity)
 import Data.List ((:))
@@ -26,6 +24,7 @@ import Data.String.CodeUnits (stripPrefix, toCharArray)
 import Data.String.Pattern (Pattern(..))
 import Data.Traversable (sequence, traverse_)
 import Data.Tuple (Tuple)
+import Game (Game)
 
 --
 
@@ -138,9 +137,10 @@ asFollowedByBs = do
 asOrBs :: Parser String
 asOrBs = fold <$> some (string "a" <|> string "b")
 
-cheat :: RWS GameEnvironment (L.List String) GameState Unit 
-cheat = do 
-  GameState state <- get 
+-- Note, that this function should be defined in Game.purs to avoid creating a circular dependency.
+cheat :: Game Unit
+cheat = do
+  GameState state <- get
   let newInventory = foldl S.union state.inventory state.items
   tell $ foldl (\acc x -> ("You now have the " <> show x) : acc) L.Nil $ S.unions state.items
   put $ GameState state { items = M.empty, inventory = newInventory }
