@@ -86,10 +86,10 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
     suite "Exercises Group - Monad Transformers" do
       suite "safeDivide" do
         test "should fail when dividing by zero" do
-          Assert.equal (Left "Divide by zero!") 
-            $ unwrap $ runExceptT $ safeDivide 5 0 
-        test "should successfully divide for any other input" do 
-          Assert.equal (Right 2) $ unwrap $ runExceptT $ safeDivide 6 3 
+          Assert.equal (Left "Divide by zero!")
+            $ unwrap $ runExceptT $ safeDivide 5 0
+        test "should successfully divide for any other input" do
+          Assert.equal (Right 2) $ unwrap $ runExceptT $ safeDivide 6 3
       suite "parser" do
         let
           runParser p s = unwrap $ runExceptT $ runWriterT $ runStateT p s
@@ -145,35 +145,28 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
             $ runParser asOrBs "foobar"
 
     suite "Exercises Group - The RWS Monad" do
-      let 
+      let
         runGame :: Game Unit -> RWSResult GameState Unit (List String)
         runGame testGame = runRWS testGame env initialGameState
         env = GameEnvironment { debugMode: false, playerName: "Phil" }
 
-        playerHasAllItems (GameState {inventory}) = inventory == S.fromFoldable [Candle, Matches]  
+        playerHasAllItems (GameState {inventory}) = inventory == S.fromFoldable [Candle, Matches]
         mapIsEmpty (GameState {items}) = M.isEmpty items
         expectedLogs = ("You now have the Candle" : "You now have the Matches" : L.Nil)
 
-      test "adds all items to your inventory when cheating" do 
-        let (RWSResult actualState _ log) = runGame cheat 
-        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState
-        Assert.assert "Expected map to no longer have any items" $ mapIsEmpty actualState
-        Assert.equal expectedLogs $ L.sort log
+      suite "adds all items to your inventory when cheating" do
+        let
+          runCheatTest label testGame =
+            test label do
+              let (RWSResult actualState _ log) = runGame testGame
+              Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState
+              Assert.assert "Expected map to no longer have any items" $ mapIsEmpty actualState
+              Assert.equal expectedLogs $ L.sort log
 
-        let (RWSResult actualState _ log) = runGame (move 0 (-1) *> move 0 1 *> cheat)
-        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState
-        Assert.assert "Expected map to no longer have any items" $ mapIsEmpty actualState
-        Assert.equal expectedLogs $ L.sort log
-
-        let (RWSResult actualState _ log) = runGame (pickUp Matches *> cheat)
-        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState
-        Assert.assert "Expected map to no longer have any items" $ mapIsEmpty actualState
-        Assert.equal expectedLogs $ L.sort log
-
-        let (RWSResult actualState _ log) = runGame (pickUp Matches *> move 0 1 *> pickUp Candle *> cheat)
-        Assert.assert "Expected player to have both Candle and Matches" $ playerHasAllItems actualState
-        Assert.assert "Expected map to no longer have any items" $ mapIsEmpty actualState
-        Assert.equal expectedLogs $ L.sort log
+        runCheatTest "only cheat" cheat
+        runCheatTest "move and cheat" $ move 0 (-1) *> move 0 1 *> cheat
+        runCheatTest "pickup matches and cheat" $ pickUp Matches *> cheat
+        runCheatTest "pickup all, move, and cheat" $ pickUp Matches *> move 0 1 *> pickUp Candle *> cheat
 
 {- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}
