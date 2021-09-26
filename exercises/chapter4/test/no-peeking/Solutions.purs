@@ -2,13 +2,10 @@ module Test.NoPeeking.Solutions where
 
 import Prelude
 import Control.MonadZero (guard)
-import Data.Array (catMaybes, cons, filter, find, head, last, length, nub, null, tail, (..))
+import Data.Array (cons, filter, head, length, null, tail, (..), (:))
 import Data.Foldable (foldl)
-import Data.Int (rem, quot)
-import Data.Maybe (Maybe(..), fromMaybe, maybe)
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Path (Path, filename, isDirectory, ls, size)
-import Data.String.Common (split)
-import Data.String.Pattern (Pattern(..))
 import Data.Tuple (Tuple(..))
 import Test.Examples
 
@@ -111,17 +108,11 @@ whereIs path fileName = head $ do
   pure path'
 
 largestSmallest :: Path -> Array Path
-largestSmallest path =
-  let files = onlyFiles path
-      maybeSizes = map size files
-      maybeMax = foldl (outlier (>)) Nothing maybeSizes
-      maybeMin = foldl (outlier (<)) Nothing maybeSizes
-  in catMaybes $ map (findFileBySize files) $ nub $ [maybeMax, maybeMin]
-  where
-  outlier :: (Int -> Int -> Boolean) -> Maybe Int -> Maybe Int -> Maybe Int
-  outlier criteria Nothing Nothing = Nothing
-  outlier criteria (Just x) Nothing = Just x
-  outlier criteria Nothing (Just x) = Just x
-  outlier criteria (Just x1) (Just x2) = if criteria x1 x2 then Just x1 else Just x2
-  findFileBySize :: Array Path -> Maybe Int -> Maybe Path
-  findFileBySize files maybeSize = find (\file -> size file == maybeSize) files
+largestSmallest path = foldl loop [] (onlyFiles path) where
+  loop :: Array Path -> Path -> Array Path
+  loop [largest, smallest] current | size current < size smallest = [largest, current]
+                                   | size current > size largest  = [current, smallest]
+                                   | otherwise                    = [largest, smallest]
+  loop [last] current              | size current < size last     = [current, last]
+                                   | otherwise                    = [last, current]
+  loop arr current                                                = current : arr
