@@ -773,8 +773,8 @@ It defines the player name, and a flag which indicates whether or not the game i
 The mutable state is defined in a type called `GameState` in the `Data.GameState` module:
 
 ```haskell
-import qualified Data.Map as M
-import qualified Data.Set as S
+import Data.Map as M
+import Data.Set as S
 
 newtype GameState = GameState
   { items       :: M.Map Coords (S.Set GameItem)
