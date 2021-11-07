@@ -407,7 +407,7 @@ log :: String -> Effect Unit
 > log :: forall m. MonadEffect m => String -> m Unit
 > ```
 
-Now let's now consider an `Effect` that returns meaningful data. The `random` function from `Effect.Random` produces a random `Number`.
+Now let's consider an `Effect` that returns meaningful data. The `random` function from `Effect.Random` produces a random `Number`.
 
 ```hs
 random :: Effect Number
