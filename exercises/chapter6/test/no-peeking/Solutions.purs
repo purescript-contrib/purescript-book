@@ -198,16 +198,23 @@ instance monoidMultiply :: Monoid Multiply where
   mempty = Multiply 1
 
 instance actionMultiplyInt :: Action Multiply Int where
-  act (Multiply n) m = n * m
+  act (Multiply n) 1 = n
+  act m1 a           = act (m1 <> Multiply a) 1
 
 {-
 -- Alternative solution #1
+instance actionMultiplyInt :: Action Multiply Int where
+  act (Multiply n) m = n * m
+-}
+
+{-
+-- Alternative solution #2
 instance actionMultiplyInt :: Action Multiply Int where
   act (Multiply n) m = m / n
 -}
 
 {-
--- Alternative solution #2
+-- Alternative solution #3
 -- The module `Data.Int` is from the package `integers`.
 -- You can run `spago install integers` to use it.
 import Data.Int (pow)
