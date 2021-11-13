@@ -386,7 +386,7 @@ But `List Entry` is the same as `AddressBook`, so this is equivalent to
 Entry -> AddressBook -> AddressBook
 ```
 
-In our case, we already have the appropriate inputs: an `Entry`, and a `AddressBook`, so can apply `Cons` and get a new `AddressBook`, which is exactly what we wanted!
+In our case, we already have the appropriate inputs: an `Entry`, and an `AddressBook`, so can apply `Cons` and get a new `AddressBook`, which is exactly what we wanted!
 
 Here is our implementation of `insertEntry`:
 
