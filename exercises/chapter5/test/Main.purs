@@ -131,6 +131,8 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
           $ shapeBounds (Clipped samplePicture { x: 0.0, y: 0.0 } 4.0 4.0)
         Assert.equal { top: 3.0, left: 3.0, right: 7.0, bottom: 7.0 }
           $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 4.0 4.0)
+        Assert.equal { top: 2.0, left: 2.0, right: 7.0, bottom: 7.0 }
+          $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 6.0 6.0)
 
 {- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}
