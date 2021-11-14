@@ -569,7 +569,7 @@ true
 [/bin/,/etc/,/home/]
 ```
 
-The `Test.Solutions` module defines functions which use the `Data.Path` API. You do not need to modify the `Data.Path` module, or understand its implementation. We will work entirely in the `Test.Solutions` module.
+The `Test.Examples` module defines functions which use the `Data.Path` API. You do not need to modify the `Data.Path` module, or understand its implementation. We will work entirely in the `Test.Examples` module.
 
 ## Listing All Files
 
@@ -592,7 +592,7 @@ _Note_: the cons operator `:` actually has poor performance on immutable arrays,
 Let's try this function in PSCi:
 
 ```text
-> import Test.Solutions
+> import Test.Examples
 > import Data.Path
 
 > allFiles root
