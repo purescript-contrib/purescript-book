@@ -751,7 +751,9 @@ ctr <- getElementById "container" $ toNonElementParentNode doc
 Or consolidated even further to:
 
 ```hs
-ctr <- getElementById "container" =<< (map toNonElementParentNode $ document =<< window)
+ctr <- getElementById "container" <<< toNonElementParentNode =<< document =<< window
+-- or, equivalently:
+ctr <- window >>= document >>= toNonElementParentNode >>> getElementById "container"
 ```
 
 It is a matter of personal preference whether the intermediate `w` and `doc` variables aid in readability.
