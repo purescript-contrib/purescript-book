@@ -4,6 +4,11 @@
 #  - Removes lines with a note to delete them.
 #  - Moves the no-peeking directory outside of the compilation path.
 
+# Echo commands to shell
+set -x
+# Exit on first failure
+set -e
+
 # For all chapters
 for d in exercises/*; do
   # if directory (excludes LICENSE file)
