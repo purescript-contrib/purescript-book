@@ -651,7 +651,7 @@ Another reason to define a superclass relationship is in the case where there is
      
      Remember, your instance must satisfy the laws listed above.
 
-1. (Difficult) There are actually multiple ways to implement an instance of `Action Multiply Int`. How many can you think of? Purescript does not allow multiple implementations of a same instance, so you will have to replace your original implementation. _Note_: the tests cover 3 implementations.
+1. (Difficult) There are actually multiple ways to implement an instance of `Action Multiply Int`. How many can you think of? Purescript does not allow multiple implementations of a same instance, so you will have to replace your original implementation. _Note_: the tests cover 4 implementations.
 
 1. (Medium) Write an `Action` instance which repeats an input string some number of times:
 
