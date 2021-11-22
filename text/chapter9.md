@@ -147,7 +147,7 @@ We can also combine parallel computations with sequential portions of code, by u
 
 To demonstrate the difference between sequential and parallel execution, we'll create an array of 100 10-millisecond delays, then execute those delays with both techniques.
 You'll notice in the repl that `seqDelay` is much slower than `parDelay`.
-Note that parallel execution is enabled by simply by replacing `sequence_` with `parSequence_`.
+Note that parallel execution is enabled by simply replacing `sequence_` with `parSequence_`.
 
 ```hs
 {{#include ../exercises/chapter9/test/ParallelDelay.purs:delays}}
