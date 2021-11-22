@@ -162,7 +162,7 @@ $ spago repl
 Type -> Type -> Type -> Type
 ```
 
-`Fn2` takes three type arguments. `Fn2 a b c` is a type representing an uncurried function of two arguments of types `a` and `b`, that returns a value of type `c`. We used it to import `diagonalUncurried` from the foriegn module.
+`Fn2` takes three type arguments. `Fn2 a b c` is a type representing an uncurried function of two arguments of types `a` and `b`, that returns a value of type `c`. We used it to import `diagonalUncurried` from the foreign module.
 
 We can then call it with `runFn2` which takes the uncurried function then the arguments.
 
