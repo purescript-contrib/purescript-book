@@ -930,7 +930,7 @@ The `onChange` attribute allows us to describe how to respond to user input. We 
 handler :: forall a. EventFn SyntheticEvent a -> (a -> Effect Unit) -> EventHandler
 ```
 
-For the first argument to `handler` we use we use `targetValue`, which provides the value of the text within the HTML `input` element. It matches the signature expected by `handler` where the type variable `a` in this case is `Maybe String`:
+For the first argument to `handler` we use `targetValue`, which provides the value of the text within the HTML `input` element. It matches the signature expected by `handler` where the type variable `a` in this case is `Maybe String`:
 
 ```hs
 targetValue :: EventFn SyntheticEvent (Maybe String)
