@@ -818,7 +818,7 @@ In other examples, you may encounter the `/\` infix operator for `Tuple`. This i
 firstName /\ setFirstName <- useState p.firstName
 ```
 
-`useState` takes a default initial value and returns the current value and a way to update the value. We can check the type of `useState` to gain more insight the types of `person` and `setPerson`:
+`useState` takes a default initial value and returns the current value and a way to update the value. We can check the type of `useState` to gain more insight of the types `person` and `setPerson`:
 
 ```hs
 useState ::
