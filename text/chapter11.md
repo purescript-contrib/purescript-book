@@ -8,7 +8,7 @@ The goal of this chapter will be to learn about _monad transformers_, which prov
 
 This module's project introduces the following new dependencies:
 
-- `ordered-collections`, which provides data typs for immutable maps and sets
+- `ordered-collections`, which provides data types for immutable maps and sets
 - `transformers`, which provides implementations of standard monad transformers
 - `node-readline`, which provides FFI bindings to the [`readline`](https://nodejs.org/api/readline.html) interface provided by NodeJS
 - `optparse`, which provides applicative parsers for processing command line arguments
