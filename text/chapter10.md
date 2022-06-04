@@ -271,7 +271,7 @@ foreign import cumulativeSums :: Array Int -> Array Int
 ```
 
 ```js
-exports.cumulativeSums = arr => {
+export const cumulativeSums = arr => {
   let sum = 0
   let sums = []
   arr.forEach(x => {
@@ -302,7 +302,7 @@ foreign import addComplex :: Complex -> Complex -> Complex
 ```
 
 ```js
-exports.addComplex = a => b => {
+export const addComplex = a => b => {
   return {
     real: a.real + b.real,
     imag: a.imag + b.imag
@@ -331,7 +331,7 @@ We have seen examples of how to send and receive types with a native JavaScript 
 Suppose we wanted to recreate the `head` function on arrays by using a foreign declaration. In JavaScript, we might write the function as follows:
 
 ```javascript
-exports.head = arr =>
+export const head = arr =>
   arr[0];
 ```
 
@@ -350,7 +350,7 @@ But how do we return a `Maybe`? It is tempting to write the following:
 
 let Data_Maybe = require("../Data.Maybe")
 
-exports.maybeHead = arr => {
+export const maybeHead = arr => {
   if (arr.length) {
     return Data_Maybe.Just.create(arr[0]);
   } else {
@@ -364,7 +364,7 @@ Importing and using the `Data.Maybe` module directly in the foreign module isn't
 The recommended approach is to add extra parameters to our FFI-defined function to accept the functions we need.
 
 ```js
-exports.maybeHeadImpl = just => nothing => arr => {
+export const maybeHeadImpl = just => nothing => arr => {
   if (arr.length) {
     return just(arr[0]);
   } else {
@@ -420,7 +420,7 @@ The `data` keyword here indicates that we are defining a _type_, not a value. In
 We can now simply reuse our original definition for `head`:
 
 ```javascript
-exports.undefinedHead = arr =>
+export const undefinedHead = arr =>
   arr[0];
 ```
 
@@ -443,7 +443,7 @@ foreign import isUndefined :: forall a. Undefined a -> Boolean
 This is defined in our foreign JavaScript module as follows:
 
 ```javascript
-exports.isUndefined = value =>
+export const isUndefined = value =>
   value === undefined;
 ```
 
@@ -467,7 +467,7 @@ foreign import unsafeHead :: forall a. Array a -> a
 In our foreign JavaScript module, we can define `unsafeHead` as follows:
 
 ```javascript
-exports.unsafeHead = arr => {
+export const unsafeHead = arr => {
   if (arr.length) {
     return arr[0];
   } else {
@@ -508,7 +508,7 @@ Just like our earlier guide on passing the `Maybe` constructor over FFI, this is
 We start with writing a foreign JavaScript function which expects the appropriate instance of `show` to match the type of `x`.
 
 ```js
-exports.boldImpl = show => x =>
+export const boldImpl = show => x =>
   show(x).toUpperCase() + "!!!";
 ```
 
@@ -546,7 +546,7 @@ $ spago repl
 Here's another example demonstrating passing multiple functions, including a function of multiple arguments (`eq`):
 
 ```js
-exports.showEqualityImpl = eq => show => a => b => {
+export const showEqualityImpl = eq => show => a => b => {
   if (eq(a)(b)) {
     return "Equivalent";
   } else {
@@ -576,7 +576,7 @@ $ spago repl
 Let's extend our `bold` function to log to the console. Logging is an `Effect`, and `Effect`s are represented in JavaScript as a function of zero arguments, `()` with arrow notation:
 
 ```js
-exports.yellImpl = show => x => () =>
+export const yellImpl = show => x => () =>
   console.log(show(x).toUpperCase() + "!!!");
 ```
 
@@ -608,7 +608,7 @@ You'd generally only use these if you want to call existing JavaScript library A
 Instead, we'll modify our previous `diagonal` example to include logging in addition to returning the result:
 
 ```js
-exports.diagonalLog = function(w, h) {
+export const diagonalLog = function(w, h) {
   let result = Math.sqrt(w * w + h * h);
   console.log("Diagonal is " + result);
   return result;
@@ -642,7 +642,7 @@ const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 We just need to export it wrapped as an `Effect` (function of zero arguments):
 
 ```js
-exports.sleepImpl = ms => () =>
+export const sleepImpl = ms => () =>
   wait(ms);
 ```
 
@@ -685,7 +685,7 @@ async function diagonalWait(delay, w, h) {
   return Math.sqrt(w * w + h * h);
 }
 
-exports.diagonalAsyncImpl = delay => w => h => () =>
+export const diagonalAsyncImpl = delay => w => h => () =>
   diagonalWait(delay, w, h);
 ```
 
@@ -724,7 +724,7 @@ There are many reasons to use JSON in an application, for example, it's a common
 Let's revisit our earlier FFI functions `cumulativeSums` and `addComplex` and introduce a bug to each:
 
 ```js
-exports.cumulativeSumsBroken = arr => {
+export const cumulativeSumsBroken = arr => {
   let sum = 0
   let sums = []
   arr.forEach(x => {
@@ -735,7 +735,7 @@ exports.cumulativeSumsBroken = arr => {
   return sums;
 };
 
-exports.addComplexBroken = a => b => {
+export const addComplexBroken = a => b => {
   return {
     real: a.real + b.real,
     broken: a.imag + b.imag // Bug
@@ -794,8 +794,8 @@ foreign import addComplexJson :: Complex -> Complex -> Json
 Note that we're simply pointing to our existing broken functions:
 
 ```js
-exports.cumulativeSumsJson = exports.cumulativeSumsBroken
-exports.addComplexJson = exports.addComplexBroken
+export const cumulativeSumsJson = cumulativeSumsBroken
+export const addComplexJson = addComplexBroken
 ```
 
 And then write a wrapper to decode the returned foreign `Json` value:
@@ -825,8 +825,8 @@ If we call the working versions, a `Right` value is returned.
 Try this yourself by modifying `test/Examples.js` with the following change to point to the working versions before running the next repl block.
 
 ```js
-exports.cumulativeSumsJson = exports.cumulativeSums
-exports.addComplexJson = exports.addComplex
+export const cumulativeSumsJson = cumulativeSums
+export const addComplexJson = addComplex
 ```
 
 ```text
@@ -862,7 +862,7 @@ mapSetFoo = encodeJson >>> mapSetFooJson >>> decodeJson
 Here is the JavaScript implementation. Note the `Array.from` step which is necessary to convert the JavaScript `Map` into a JSON-friendly format before decoding converts it back to a PureScript `Map`.
 
 ```js
-exports.mapSetFooJson = j => {
+export const mapSetFooJson = j => {
   let m = new Map(j);
   m.set("Foo", 42);
   return Array.from(m);
@@ -941,10 +941,10 @@ foreign import getItem :: String -> Effect Json
 Here is the corresponding JavaScript implementation of these functions in `Effect/Storage.js`:
 
 ```js
-exports.setItem = key => value => () =>
+export const setItem = key => value => () =>
   window.localStorage.setItem(key, value);
 
-exports.getItem = key => () =>
+export const getItem = key => () =>
   window.localStorage.getItem(key);
 ```
 
@@ -1056,7 +1056,7 @@ foreign import alert :: String -> Effect Unit
 ```
 
 ```js
-exports.alert = msg => () =>
+export const alert = msg => () =>
   window.alert(msg);
 ```
 
@@ -1343,7 +1343,7 @@ foreign import random :: Effect Number
 The definition of the `random` function is given here:
 
 ```javascript
-exports.random = Math.random;
+export const random = Math.random;
 ```
 
 Notice that the `random` function is represented at runtime as a function of no arguments. It performs the side effect of generating a random number, and returns it, and the return value matches the runtime representation of the `Number` type: it is a non-null JavaScript number.
@@ -1357,7 +1357,7 @@ foreign import log :: String -> Effect Unit
 And here is its definition:
 
 ```javascript
-exports.log = function (s) {
+export const log = function (s) {
   return function () {
     console.log(s);
   };

@@ -16,8 +16,8 @@ let overrides =
           , "js-timers"
           , "avar"
           ]
-        , repo = "https://github.com/milesfrain/purescript-test-unit.git"
-        , version = "stackless-default"
+        , repo = "https://github.com/bodil/purescript-test-unit.git"
+        , version = "v17.0.0"
         }
       }
 
@@ -47,8 +47,8 @@ let additions =
           , "web-html"
           ]
         , repo =
-            "https://github.com/milesfrain/purescript-react-basic-hooks.git"
-        , version = "v6.3.0-ps-0.14"
+            "https://github.com/megamaddu/purescript-react-basic-hooks.git"
+        , version = "v8.0.0"
         }
       , react-basic-dom =
         { dependencies =
@@ -63,7 +63,7 @@ let additions =
           , "web-html"
           ]
         , repo = "https://github.com/lumihq/purescript-react-basic-dom.git"
-        , version = "v3.2.0"
+        , version = "v5.0.0"
         }
       , indexed-monad =
         { dependencies = [ "control", "newtype" ]

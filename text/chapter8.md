@@ -682,7 +682,7 @@ There are a number of PureScript packages for working directly with the DOM, or 
 There are also PureScript libraries which build abstractions on top of these libraries, such as
 
 - [`thermite`](https://github.com/paf31/purescript-thermite), which builds on [`react`](https://github.com/purescript-contrib/purescript-react)
-- [`react-basic-hooks`](https://github.com/spicydonuts/purescript-react-basic-hooks), which builds on [`react-basic`](https://github.com/lumihq/purescript-react-basic)
+- [`react-basic-hooks`](https://github.com/megamaddu/purescript-react-basic-hooks), which builds on [`react-basic`](https://github.com/lumihq/purescript-react-basic)
 - [`halogen`](https://github.com/purescript-halogen/purescript-halogen) which provides a type-safe set of abstractions on top of a custom virtual DOM library.
 
 In this chapter, we will use the `react-basic-hooks` library to add a user interface to our address book application, but the interested reader is encouraged to explore alternative approaches.
@@ -853,7 +853,7 @@ or as shorthand:
 setPerson _ {firstName = "NewName"}
 ```
 
-Non-`Record` states can also follow this update pattern. See [this guide](https://github.com/spicydonuts/purescript-react-basic-hooks/pull/24#issuecomment-620300541) for more details on best practices.
+Non-`Record` states can also follow this update pattern. See [this guide](https://github.com/megamaddu/purescript-react-basic-hooks/pull/24#issuecomment-620300541) for more details on best practices.
 
 Recall that `useState` is used within an `R.do` block. `R.do` is a special react hooks variant of `do`. The `R.` prefix "qualifies" this as coming from `React.Basic.Hooks`, and means we use their hooks-compatible version of `bind` in the `R.do` block. This is known as a "qualified do". It lets us ignore the `Hook (UseState state)` wrapping and bind the inner `Tuple` of values to variables.
 
