@@ -1,7 +1,7 @@
 "use strict";
 
-exports.setItem = key => value => () =>
+export const setItem = key => value => () =>
   window.localStorage.setItem(key, value);
 
-exports.getItem = key => () =>
+export const getItem = key => () =>
   window.localStorage.getItem(key);

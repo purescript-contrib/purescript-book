@@ -1,13 +1,13 @@
 "use strict";
 
 // ANCHOR: square
-exports.square = function (n) {
+export const square = function (n) {
   return n * n;
 };
 // ANCHOR_END: square
 
 // ANCHOR: diagonal
-exports.diagonal = function (w) {
+export const diagonal = function (w) {
   return function (h) {
     return Math.sqrt(w * w + h * h);
   };
@@ -15,17 +15,18 @@ exports.diagonal = function (w) {
 // ANCHOR_END: diagonal
 
 // ANCHOR: diagonal_arrow
-exports.diagonalArrow = w => h =>
+export const diagonalArrow = w => h =>
   Math.sqrt(w * w + h * h);
 // ANCHOR_END: diagonal_arrow
 
 // ANCHOR: diagonal_uncurried
-exports.diagonalUncurried = function (w, h) {
+export const diagonalUncurried = function (w, h) {
   return Math.sqrt(w * w + h * h);
 };
 // ANCHOR_END: diagonal_uncurried
 
-exports.cumulativeSums = arr => {
+export const cumulativeSums = arr => {
+  
   let sum = 0
   let sums = []
   arr.forEach(x => {
@@ -36,14 +37,14 @@ exports.cumulativeSums = arr => {
 };
 
 
-exports.addComplex = a => b => {
+export const addComplex = a => b => {
   return {
     real: a.real + b.real,
     imag: a.imag + b.imag
   }
 };
 
-exports.maybeHeadImpl = just => nothing => arr => {
+export const maybeHeadImpl = just => nothing => arr => {
   if (arr.length) {
     return just(arr[0]);
   } else {
@@ -51,13 +52,13 @@ exports.maybeHeadImpl = just => nothing => arr => {
   }
 };
 
-exports.undefinedHead = arr =>
+export const undefinedHead = arr =>
   arr[0];
 
-exports.isUndefined = value =>
+export const isUndefined = value =>
   value === undefined;
 
-exports.unsafeHead = arr => {
+export const unsafeHead = arr => {
   if (arr.length) {
     return arr[0];
   } else {
@@ -66,10 +67,10 @@ exports.unsafeHead = arr => {
 };
 
 
-exports.boldImpl = show => x =>
+export const boldImpl = show => x =>
   show(x).toUpperCase() + "!!!";
 
-exports.showEqualityImpl = eq => show => a => b => {
+export const showEqualityImpl = eq => show => a => b => {
   if (eq(a)(b)) {
     return "Equivalent";
   } else {
@@ -77,10 +78,10 @@ exports.showEqualityImpl = eq => show => a => b => {
   }
 }
 
-exports.yellImpl = show => x => () =>
+export const yellImpl = show => x => () =>
   console.log(show(x).toUpperCase() + "!!!");
 
-exports.diagonalLog = function (w, h) {
+export const diagonalLog = function (w, h) {
   let result = Math.sqrt(w * w + h * h);
   console.log("Diagonal is " + result);
   return result;
@@ -88,7 +89,7 @@ exports.diagonalLog = function (w, h) {
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-exports.sleepImpl = ms => () =>
+export const sleepImpl = ms => () =>
   wait(ms);
 
 async function diagonalWait(delay, w, h) {
@@ -96,11 +97,11 @@ async function diagonalWait(delay, w, h) {
   return Math.sqrt(w * w + h * h);
 }
 
-exports.diagonalAsyncImpl = delay => w => h => () =>
+export const diagonalAsyncImpl = delay => w => h => () =>
   diagonalWait(delay, w, h);
 
 
-exports.cumulativeSumsBroken = arr => {
+export const cumulativeSumsBroken = arr => {
   let sum = 0
   let sums = []
   arr.forEach(x => {
@@ -112,23 +113,23 @@ exports.cumulativeSumsBroken = arr => {
 };
 
 
-exports.addComplexBroken = a => b => {
+export const addComplexBroken = a => b => {
   return {
     real: a.real + b.real,
     broken: a.imag + b.imag // Bug
   }
 };
 
-exports.cumulativeSumsJson = exports.cumulativeSumsBroken
+export const cumulativeSumsJson = cumulativeSumsBroken
 // Try the non-broken version too
-//exports.cumulativeSumsJson = exports.cumulativeSums
+//export const cumulativeSumsJson = cumulativeSums
 
-exports.addComplexJson = exports.addComplexBroken
+export const addComplexJson = addComplexBroken
 // Try the non-broken version too
-//exports.addComplexJson = exports.addComplex
+//export const addComplexJson = addComplex
 
 
-exports.mapSetFooJson = j => {
+export const mapSetFooJson = j => {
   let m = new Map(j);
   m.set("Foo", 42);
   return Array.from(m);
@@ -140,7 +141,7 @@ to enable automated testing.
 The examples accompanying the text are meant to be swapped
 between versions by the reader.
 */
-exports.cumulativeSumsJsonBroken = exports.cumulativeSumsBroken
-exports.addComplexJsonBroken = exports.addComplexBroken
-exports.cumulativeSumsJsonWorking = exports.cumulativeSums
-exports.addComplexJsonWorking = exports.addComplex
+export const cumulativeSumsJsonBroken = cumulativeSumsBroken
+export const addComplexJsonBroken = addComplexBroken
+export const cumulativeSumsJsonWorking = cumulativeSums
+export const addComplexJsonWorking = addComplex

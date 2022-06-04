@@ -1,4 +1,4 @@
 "use strict";
 
-exports.alert = msg => () =>
+export const alert = msg => () =>
   window.alert(msg);

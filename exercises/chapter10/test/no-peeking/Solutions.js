@@ -1,13 +1,13 @@
 "use strict";
 
-exports.volumeFn = function (x, y, z) {
+export const volumeFn = function (x, y, z) {
   return x * y * z;
 }
 
-exports.volumeArrow = x => y => z =>
+export const volumeArrow = x => y => z =>
   x * y * z;
 
-exports.cumulativeSumsComplex = arr => {
+export const cumulativeSumsComplex = arr => {
   let sum = { real: 0, imag: 0 }
   let sums = []
   arr.forEach(x => {
@@ -20,7 +20,7 @@ exports.cumulativeSumsComplex = arr => {
   return sums;
 };
 
-exports.quadraticRootsImpl = mkPair => poly => {
+export const quadraticRootsImpl = mkPair => poly => {
   let { a, b, c } = poly;
   let radicand = b * b - 4 * a * c;
   if (radicand >= 0) {
@@ -36,7 +36,7 @@ exports.quadraticRootsImpl = mkPair => poly => {
   }
 };
 
-exports.toMaybeImpl = just => nothing => undefined$ => {
+export const toMaybeImpl = just => nothing => undefined$ => {
   if (undefined$ === undefined) {
     return nothing
   } else {
@@ -44,13 +44,13 @@ exports.toMaybeImpl = just => nothing => undefined$ => {
   }
 }
 
-exports.valuesOfMapJson = j => {
+export const valuesOfMapJson = j => {
   let m = new Map(j);
   let s = new Set(m.values())
   return Array.from(s);
 };
 
-exports.quadraticRootsSetJson = poly => {
+export const quadraticRootsSetJson = poly => {
   let { a, b, c } = poly;
   let radicand = b * b - 4 * a * c;
   if (radicand >= 0) {
@@ -66,7 +66,7 @@ exports.quadraticRootsSetJson = poly => {
   }
 };
 
-exports.quadraticRootsSafeJson = poly => {
+export const quadraticRootsSafeJson = poly => {
   let { a, b, c } = poly;
   let radicand = b * b - 4 * a * c;
   if (radicand >= 0) {
