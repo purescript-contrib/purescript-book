@@ -19,9 +19,11 @@ Functional programming techniques have been making appearances in JavaScript for
 - Asynchronous programming in NodeJS leans heavily on functions as first-class values to define callbacks.
 
     ```javascript
-    require('fs').readFile(sourceFile, function (error, data) {
+    import { readFile, writeFile } from 'fs'
+
+    readFile(sourceFile, function (error, data) {
       if (!error) {
-        require('fs').writeFile(destFile, data, function (error) {
+        writeFile(destFile, data, function (error) {
           if (!error) {
             console.log("File copied");
           }
@@ -83,7 +85,7 @@ The software requirements for this book are minimal: the first chapter will guid
 
 The PureScript compiler itself can be downloaded as a binary distribution, or built from source on any system running an up-to-date installation of the GHC Haskell compiler, and we will walk through this process in the next chapter.
 
-The code in this version of the book is compatible with versions `0.13.*` of
+The code in this version of the book is compatible with versions `0.15.*` of
 the PureScript compiler.
 
 ## About You
