@@ -11,12 +11,14 @@ First, work through this [Getting Started Guide](https://github.com/purescript/d
 ## Solving Exercises
 
 Now that you've installed the necessary development tools, clone this book's repo.
-```
+
+```sh
 git clone https://github.com/purescript-contrib/purescript-book.git
 ```
 
 The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter. There's some initial setup required to reset the exercise solutions so they are ready to be solved by you. Use the `resetSolutions.sh` script to simplify this process. While you're at it, you should also strip out all the anchor comments with the `removeAnchors.sh` script (these anchors are used for copying code snippets into the book's rendered markdown, and you probably don't need this clutter in your local repo):
-```
+
+```sh
 cd purescript-book
 ./scripts/resetSolutions.sh
 ./scripts/removeAnchors.sh
@@ -25,13 +27,15 @@ git commit --all --message "Exercises ready to be solved"
 ```
 
 Now run the tests for this chapter:
-```
+
+```sh
 cd exercises/chapter2
 spago test
 ```
 
 You should see the following successful test output:
-```
+
+```sh
 → Suite: Euler - Sum of Multiples
   ✓ Passed: below 10
   ✓ Passed: below 1000
@@ -45,12 +49,14 @@ The remainder of the book contains lots of exercises. If you write your solution
 
 Let's work through this next exercise together in test-driven-development style.
 
-## Exercise:
+## Exercise
+
 1. (Medium) Write a `diagonal` function to compute the length of the diagonal (or hypotenuse) of a right-angled triangle when given the lengths of the two other sides.
 
 ## Solution
 
 We'll start by enabling the tests for this exercise. Move the start of the block-comment down a few lines as shown below. Block comments start with `{-` and end with `-}`:
+
 ```hs
 {{#include ../exercises/chapter2/test/Main.purs:diagonalTests}}
     {-  Move this block comment starting point to enable more tests
@@ -58,7 +64,7 @@ We'll start by enabling the tests for this exercise. Move the start of the block
 
 If we attempt to run the test now, we'll encounter a compilation error because we have not yet implemented our `diagonal` function.
 
-```
+```sh
 $ spago test
 
 Error found:
@@ -69,6 +75,7 @@ at test/Main.purs:21:27 - 21:35 (line 21, column 27 - line 21, column 35)
 ```
 
 Let's first take a look at what happens with a faulty version of this function. Add the following code to `test/MySolutions.purs`:
+
 ```hs
 import Math (sqrt)
 
@@ -76,6 +83,7 @@ diagonal w h = sqrt (w * w + h)
 ```
 
 And check our work by running `spago test`:
+
 ```hs
 → Suite: diagonal
   ☠ Failed: 3 4 5 because expected 5.0, got 3.605551275463989
@@ -85,11 +93,13 @@ And check our work by running `spago test`:
 ```
 
 Uh-oh, that's not quite right. Let's fix this with the correct application of the Pythagorean formula by changing the function to:
+
 ```hs
 {{#include ../exercises/chapter2/test/no-peeking/Solutions.purs:diagonal}}
 ```
 
 Trying `spago test` again now shows all tests are passing:
+
 ```hs
 → Suite: Euler - Sum of Multiples
   ✓ Passed: below 10
