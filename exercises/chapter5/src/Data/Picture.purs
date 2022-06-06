@@ -6,7 +6,7 @@ import Data.Foldable (foldl)
 import Data.Number (infinity)
 -- ANCHOR_END: module_picture
 -- ANCHOR: picture_import_as
-import Math as Math
+import Data.Number as Math
 -- ANCHOR_END: picture_import_as
 
 -- ANCHOR: Point

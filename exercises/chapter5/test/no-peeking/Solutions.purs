@@ -16,7 +16,7 @@ import Data.Picture
   , origin
   )
 import Data.Picture as DataP
-import Math as Math
+import Data.Number as Math
 
 factorial :: Int -> Int
 factorial 0 = 1

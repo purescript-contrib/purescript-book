@@ -7,7 +7,7 @@ import Data.Array (concatMap, foldM)
 import Effect (Effect)
 import Graphics.Canvas (strokePath, setStrokeStyle, lineTo, moveTo,
                         getContext2D, getCanvasElementById)
-import Math as Math
+import Data.Number as Math
 import Partial.Unsafe (unsafePartial)
 
 -- ANCHOR: lsystem_anno

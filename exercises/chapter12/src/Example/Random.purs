@@ -9,7 +9,7 @@ import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Graphics.Canvas (strokePath, fillPath, arc, setStrokeStyle,
                         setFillStyle, getContext2D, getCanvasElementById)
-import Math as Math
+import Data.Number as Math
 import Partial.Unsafe (unsafePartial)
 
 main :: Effect Unit

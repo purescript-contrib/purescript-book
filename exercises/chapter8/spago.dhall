@@ -13,7 +13,7 @@ You can edit this file as you like.
   , "foldable-traversable"
   , "integers"
   , "lists"
-  , "math"
+  , "numbers"
   , "maybe"
   , "prelude"
   , "psci-support"

@@ -7,7 +7,7 @@ import Data.Maybe (Maybe(..))
 import Graphics.Canvas (closePath, lineTo, moveTo, fillPath,
                         setFillStyle, arc, rect, getContext2D,
                         getCanvasElementById)
-import Math as Math
+import Data.Number as Math
 import Partial.Unsafe (unsafePartial)
 
 -- ANCHOR: translate

@@ -34,7 +34,7 @@ The `Data.Picture` module also imports the `Math` module, but this time using th
 
 This makes the types and functions in that module available for use, but only by using the _qualified name_, like `Math.max`. This can be useful to avoid overlapping imports, or just to make it clearer which modules certain things are imported from.
 
-_Note_: it is not necessary to use the same module name as the original module for a qualified import. Shorter qualified names like `import Math as M` are possible, and quite common.
+_Note_: it is not necessary to use the same module name as the original module for a qualified import. Shorter qualified names like `import Data.Number as M` are possible, and quite common.
 
 ## Simple Pattern Matching
 

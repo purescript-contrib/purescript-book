@@ -77,7 +77,7 @@ at test/Main.purs:21:27 - 21:35 (line 21, column 27 - line 21, column 35)
 Let's first take a look at what happens with a faulty version of this function. Add the following code to `test/MySolutions.purs`:
 
 ```hs
-import Math (sqrt)
+import Data.Number (sqrt)
 
 diagonal w h = sqrt (w * w + h)
 ```
@@ -115,7 +115,7 @@ Success! Now you're ready to try these next exercises on your own.
 
 ## Exercises
 
- 1. (Easy) Write a function `circleArea` which computes the area of a circle with a given radius. Use the `pi` constant, which is defined in the `Math` module. _Hint_: don't forget to import `pi` by modifying the `import Math` statement.
+ 1. (Easy) Write a function `circleArea` which computes the area of a circle with a given radius. Use the `pi` constant, which is defined in the `Numbers` module. _Hint_: don't forget to import `pi` by modifying the `import Data.Number` statement.
  1. (Medium) Write a function `leftoverCents` which takes an `Int` and returns what's leftover after dividing by `100`. Use the `rem` function. Search [Pursuit](https://pursuit.purescript.org/) for this function to learn about usage and which module to import it from. _Note:_ Your IDE may support auto-importing of this function if you accept the auto-completion suggestion.
 
 ## Conclusion

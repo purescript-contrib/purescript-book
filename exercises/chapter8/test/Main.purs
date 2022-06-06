@@ -10,7 +10,7 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Exception (error, message, try)
 import Effect.Unsafe (unsafePerformEffect)
-import Math (abs, pi)
+import Data.Number (abs, pi)
 import Test.Examples (countThrows, safeDivide)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert

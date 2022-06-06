@@ -9,7 +9,6 @@ You can edit this file as you like.
   , "effect"
   , "foldable-traversable"
   , "integers"
-  , "math"
   , "maybe"
   , "numbers"
   , "partial"

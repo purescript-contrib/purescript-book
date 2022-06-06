@@ -10,7 +10,7 @@ import Data.Maybe (Maybe(..))
 import Graphics.Canvas (Context2D, getContext2D, getCanvasElementById,
                         rect, fillPath, translate, scale, rotate, withContext,
                         setFillStyle)
-import Math as Math
+import Data.Number as Math
 import Partial.Unsafe (unsafePartial)
 import Web.DOM.Document (toParentNode)
 import Web.DOM.Element (toEventTarget)
