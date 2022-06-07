@@ -3,6 +3,7 @@ module Test.NoPeeking.Solutions where
 import Prelude
 import Affjax as AX
 import Affjax.ResponseFormat as AXRF
+import Affjax.Node as AN
 import Control.Parallel (parOneOf, parTraverse)
 import Data.Array (concat, (:))
 import Data.Either (Either(..), hush)
@@ -36,7 +37,7 @@ countCharacters file =
 -- Group: HTTP
 writeGet :: String -> FilePath -> Aff Unit
 writeGet url out = do
-  result <- AX.get AXRF.string url
+  result <- AN.get AXRF.string url
   let
     str = case result of
       Left err -> "GET /api response failed to decode: " <> AX.printError err
@@ -52,7 +53,7 @@ concatenateManyParallel arr out = do
 getWithTimeout :: Number -> String -> Aff (Maybe String)
 getWithTimeout ms url =
   parOneOf
-    [ AX.get AXRF.string url <#> hush <#> map _.body
+    [ AN.get AXRF.string url <#> hush <#> map _.body
     , delay (Milliseconds ms) $> Nothing
     ]
 

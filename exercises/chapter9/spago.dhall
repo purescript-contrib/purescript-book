@@ -6,6 +6,7 @@ You can edit this file as you like.
 , dependencies =
   [ "aff"
   , "affjax"
+  , "affjax-node"
   , "arrays"
   , "bifunctors"
   , "console"
