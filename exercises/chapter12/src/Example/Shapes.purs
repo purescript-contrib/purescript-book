@@ -45,6 +45,7 @@ main = void $ unsafePartial do
     , radius: 50.0
     , start: 0.0
     , end: Math.tau * 2.0 / 3.0
+    , useCounterClockwise: false
     }
 
 -- ANCHOR: path
