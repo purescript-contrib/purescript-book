@@ -17,7 +17,7 @@ import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Effect.Uncurried (runEffectFn2)
-import Test.URI (encodeURIComponent)
+import Test.URI (_encodeURIComponent)
 import Test.Unit (TestF, suite, test)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -225,7 +225,7 @@ runChapterExamples =
   suite "Chapter Examples" do
     test "uri" do
       Assert.equal "Hello%20World"
-        $ encodeURIComponent "Hello World"
+        $ _encodeURIComponent "Hello World"
     test "square" do
       Assert.equal 25.0
         $ square 5.0

@@ -1,3 +1,3 @@
 "use strict";
 
-export const encodeURIComponent = encodeURIComponent;
+export const _encodeURIComponent = encodeURIComponent;

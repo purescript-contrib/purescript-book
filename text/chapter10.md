@@ -57,13 +57,14 @@ We can assign this type to the function with the following foreign import declar
 {{#include ../exercises/chapter10/test/URI.purs}}
 ```
 
-We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but extension changed from `.purs` to `.js`. If the Purescript module above is saved as `URI.purs`, then the foreign JavaScript module is saved as `URI.js`:
+We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but extension changed from `.purs` to `.js`. If the Purescript module above is saved as `URI.purs`, then the foreign JavaScript module is saved as `URI.js`.
+Since `encodeURIComponent` is already defined, we have to export it as `_encodeURIComponent`:
 
 ```javascript
 {{#include ../exercises/chapter10/test/URI.js}}
 ```
 
-Purescript uses the CommonJS module system when interoperating with JavaScript. In CommonJS, functions and values are exported from a module by assigning them to _properties_ of the `exports` object.
+Since version 0.15, Purescript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the `export` keyword on a object.
 
 With these two pieces in place, we can now use the `encodeURIComponent` function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:
 
@@ -1114,11 +1115,11 @@ This function finds the greatest common divisor of two numbers by repeated subtr
 To understand how this function can be called from JavaScript, it is important to realize that PureScript functions always get turned into JavaScript functions of a single argument, so we need to apply its arguments one-by-one:
 
 ```javascript
-var Test = require('Test');
+import Test from 'Test.js';
 Test.gcd(15)(20);
 ```
 
-Here, I am assuming that the code was compiled with `spago build`, which compiles PureScript modules to CommonJS modules. For that reason, I was able to reference the `gcd` function on the `Test` object, after importing the `Test` module using `require`.
+Here, I am assuming that the code was compiled with `spago build`, which compiles PureScript modules to ES modules. For that reason, I was able to reference the `gcd` function on the `Test` object, after importing the `Test` module using `import`.
 
 You might also like to bundle JavaScript code for the browser, using `spago bundle-app --to file.js`. In that case, you would access the `Test` module from the global PureScript namespace, which defaults to `PS`:
 
@@ -1322,7 +1323,7 @@ shout(require('Data.Show').showNumber)(42);
      ```
 
      What can you say about the expressions which have these types?
- 1. (Medium) Try using the functions defined in the `arrays` package, calling them from JavaScript, by compiling the library using `spago build` and importing modules using the `require` function in NodeJS. _Hint_: you may need to configure the output path so that the generated CommonJS modules are available on the NodeJS module path.
+ 1. (Medium) Try using the functions defined in the `arrays` package, calling them from JavaScript, by compiling the library using `spago build` and importing modules using the `import` function in NodeJS. _Hint_: you may need to configure the output path so that the generated ES modules are available on the NodeJS module path.
 
 ## Representing Side Effects
 

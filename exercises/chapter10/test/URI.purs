@@ -1,3 +1,3 @@
 module Test.URI where
 
-foreign import encodeURIComponent :: String -> String
+foreign import _encodeURIComponent :: String -> String
