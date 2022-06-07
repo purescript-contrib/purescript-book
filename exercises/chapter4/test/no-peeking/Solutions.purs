@@ -1,7 +1,7 @@
 module Test.NoPeeking.Solutions where
 
 import Prelude
-import Control.MonadZero (guard)
+import Control.Alternative (guard)
 import Data.Array (cons, filter, head, length, null, tail, (..), (:))
 import Data.Foldable (foldl)
 import Data.Maybe (Maybe(..), fromMaybe)
