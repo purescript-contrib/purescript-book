@@ -26,7 +26,7 @@ A convenient way to work with asynchronous code in JavaScript is with [`async` a
 Here is an example of using this technique to copy the contents of one file to another file:
 
 ```js
-var fsPromises = require('fs').promises;
+import { promises as fsPromises } from 'fs'
 
 async function copyFile(file1, file2) {
   let data = await fsPromises.readFile(file1, { encoding: 'utf-8' });
@@ -40,6 +40,7 @@ copyFile('file1.txt', 'file2.txt')
 ```
 
 It is also possible to use callbacks or synchronous functions, but those are less desireable because:
+
 - Callbacks lead to excessive nesting, known as "Callback Hell" or the "Pyramid of Doom".
 - Synchronous functions block execution of the other code in your app.
 
