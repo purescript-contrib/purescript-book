@@ -10,7 +10,7 @@ import Data.Maybe (Maybe(..))
 import Graphics.Canvas (Context2D, getContext2D, getCanvasElementById,
                         rect, fillPath, translate, scale, rotate, withContext,
                         setFillStyle)
-import Data.Number as Math
+import Data.Number as Number
 import Partial.Unsafe (unsafePartial)
 import Web.DOM.Document (toParentNode)
 import Web.DOM.Element (toEventTarget)
@@ -36,11 +36,11 @@ render ctx count = void do
 
 -- ANCHOR: withContext
   withContext ctx do
-    let scaleX = Math.sin (toNumber count * Math.tau / 8.0) + 1.5
-    let scaleY = Math.sin (toNumber count * Math.tau / 12.0) + 1.5
+    let scaleX = Number.sin (toNumber count * Number.tau / 8.0) + 1.5
+    let scaleY = Number.sin (toNumber count * Number.tau / 12.0) + 1.5
 
     translate ctx { translateX: 300.0, translateY:  300.0 }
-    rotate ctx (toNumber count * Math.tau / 36.0)
+    rotate ctx (toNumber count * Number.tau / 36.0)
     scale ctx { scaleX: scaleX, scaleY: scaleY }
     translate ctx { translateX: -100.0, translateY: -100.0 }
 

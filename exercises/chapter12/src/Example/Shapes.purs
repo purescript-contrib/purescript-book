@@ -7,7 +7,7 @@ import Data.Maybe (Maybe(..))
 import Graphics.Canvas (closePath, lineTo, moveTo, fillPath,
                         setFillStyle, arc, rect, getContext2D,
                         getCanvasElementById)
-import Data.Number as Math
+import Data.Number as Number
 import Partial.Unsafe (unsafePartial)
 
 -- ANCHOR: translate
@@ -44,7 +44,7 @@ main = void $ unsafePartial do
     , y: 300.0
     , radius: 50.0
     , start: 0.0
-    , end: Math.tau * 2.0 / 3.0
+    , end: Number.tau * 2.0 / 3.0
     , useCounterClockwise: false
     }
 

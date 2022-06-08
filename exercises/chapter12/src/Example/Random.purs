@@ -9,7 +9,7 @@ import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Graphics.Canvas (strokePath, fillPath, arc, setStrokeStyle,
                         setFillStyle, getContext2D, getCanvasElementById)
-import Data.Number as Math
+import Data.Number as Number
 import Partial.Unsafe (unsafePartial)
 
 main :: Effect Unit
@@ -37,7 +37,7 @@ main = void $ unsafePartial do
          , y                  : y * 600.0
          , radius             : r * 50.0
          , start              : 0.0
-         , end                : Math.tau
+         , end                : Number.tau
          , useCounterClockwise: false
          }
 

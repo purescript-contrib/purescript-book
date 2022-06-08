@@ -7,7 +7,7 @@ import Data.Array (concatMap, foldM)
 import Effect (Effect)
 import Graphics.Canvas (strokePath, setStrokeStyle, lineTo, moveTo,
                         getContext2D, getCanvasElementById)
-import Data.Number as Math
+import Data.Number as Number
 import Partial.Unsafe (unsafePartial)
 
 -- ANCHOR: lsystem_anno
@@ -74,13 +74,13 @@ main = void $ unsafePartial do
     interpret :: State -> Letter -> Effect State
     -- ANCHOR_END: interpret_anno
     -- ANCHOR: interpretLR
-    interpret state L = pure $ state { theta = state.theta - Math.tau / 6.0 }
-    interpret state R = pure $ state { theta = state.theta + Math.tau / 6.0 }
+    interpret state L = pure $ state { theta = state.theta - Number.tau / 6.0 }
+    interpret state R = pure $ state { theta = state.theta + Number.tau / 6.0 }
     -- ANCHOR_END: interpretLR
     -- ANCHOR: interpretF
     interpret state F = do
-      let x = state.x + Math.cos state.theta * 1.5
-          y = state.y + Math.sin state.theta * 1.5
+      let x = state.x + Number.cos state.theta * 1.5
+          y = state.y + Number.sin state.theta * 1.5
       moveTo ctx state.x state.y
       lineTo ctx x y
       pure { x, y, theta: state.theta }

@@ -6,7 +6,7 @@ import Data.Foldable (foldl)
 import Data.Number (infinity)
 -- ANCHOR_END: module_picture
 -- ANCHOR: picture_import_as
-import Data.Number as Math
+import Data.Number as Number
 -- ANCHOR_END: picture_import_as
 
 -- ANCHOR: Point
@@ -109,10 +109,10 @@ shapeBounds (Rectangle { x, y } w h) =
   , right:  x + w / 2.0
   }
 shapeBounds (Line p1 p2) =
-  { top:    Math.min p1.y p2.y
-  , left:   Math.min p1.x p2.x
-  , bottom: Math.max p1.y p2.y
-  , right:  Math.max p1.x p2.x
+  { top:    Number.min p1.y p2.y
+  , left:   Number.min p1.x p2.x
+  , bottom: Number.max p1.y p2.y
+  , right:  Number.max p1.x p2.x
   }
 shapeBounds (Text { x, y } _) =
   { top:    y
@@ -123,18 +123,18 @@ shapeBounds (Text { x, y } _) =
 
 union :: Bounds -> Bounds -> Bounds
 union b1 b2 =
-  { top:    Math.min b1.top    b2.top
-  , left:   Math.min b1.left   b2.left
-  , bottom: Math.max b1.bottom b2.bottom
-  , right:  Math.max b1.right  b2.right
+  { top:    Number.min b1.top    b2.top
+  , left:   Number.min b1.left   b2.left
+  , bottom: Number.max b1.bottom b2.bottom
+  , right:  Number.max b1.right  b2.right
   }
 
 intersect :: Bounds -> Bounds -> Bounds
 intersect b1 b2 =
-  { top:    Math.max b1.top    b2.top
-  , left:   Math.max b1.left   b2.left
-  , bottom: Math.min b1.bottom b2.bottom
-  , right:  Math.min b1.right  b2.right
+  { top:    Number.max b1.top    b2.top
+  , left:   Number.max b1.left   b2.left
+  , bottom: Number.min b1.bottom b2.bottom
+  , right:  Number.min b1.right  b2.right
   }
 
 emptyBounds :: Bounds

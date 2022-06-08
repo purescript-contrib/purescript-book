@@ -16,7 +16,7 @@ import Data.Picture
   , origin
   )
 import Data.Picture as DataP
-import Data.Number as Math
+import Data.Number as Number
 
 factorial :: Int -> Int
 factorial 0 = 1
@@ -82,7 +82,7 @@ shapeText (Text _ text) = Just text
 shapeText _ = Nothing
 
 area :: Shape -> Number
-area (Circle _ r) = Math.pi * r * r
+area (Circle _ r) = Number.pi * r * r
 area (Rectangle _ h w) = h * w
 area _ = 0.0
 
