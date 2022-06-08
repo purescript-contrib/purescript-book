@@ -64,15 +64,15 @@ Since `encodeURIComponent` is already defined, we have to export it as `_encodeU
 {{#include ../exercises/chapter10/test/URI.js}}
 ```
 
-Since version 0.15, Purescript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the `export` keyword on a object.
+Since version 0.15, Purescript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the `export` keyword on an object.
 
-With these two pieces in place, we can now use the `encodeURIComponent` function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:
+With these two pieces in place, we can now use the `_encodeURIComponent` function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:
 
 ```text
 $ spago repl
 
 > import Test.URI
-> encodeURIComponent "Hello World"
+> _encodeURIComponent "Hello World"
 "Hello%20World"
 ```
 
@@ -348,8 +348,7 @@ But how do we return a `Maybe`? It is tempting to write the following:
 
 ```js
 // Don't do this
-
-let Data_Maybe = require("../Data.Maybe")
+import Data_Maybe from '../Data.Maybe'
 
 export const maybeHead = arr => {
   if (arr.length) {
@@ -1309,7 +1308,9 @@ Notice that `shout` is compiled to a (curried) function of two arguments, not on
 We can call this function from JavaScript by passing an explicit type class dictionary from `Data.Show` as the first parameter:
 
 ```javascript
-shout(require('Data.Show').showNumber)(42);
+import { showNumber } from 'Data.Show'
+
+shout(showNumber)(42);
 ```
 
  ## Exercises
@@ -1370,7 +1371,9 @@ The representation of `log` at runtime is a JavaScript function of a single argu
 Expressions of type `Effect a` can be invoked from JavaScript like regular JavaScript methods. For example, since the `main` function is required to have type `Effect a` for some type `a`, it can be invoked as follows:
 
 ```javascript
-require('Main').main();
+import { main } from 'Main'
+
+main();
 ```
 
 When using `spago bundle-app --to` or `spago run`, this call to `main` is generated automatically, whenever the `Main` module is defined.
