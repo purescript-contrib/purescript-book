@@ -154,7 +154,7 @@
 <h2 id="asynchronous-javascript"><a class="header" href="#asynchronous-javascript">Asynchronous JavaScript</a></h2>
 <p>A convenient way to work with asynchronous code in JavaScript is with <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await"><code>async</code> and <code>await</code></a>. See <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Introducing">this article on asynchronous JavaScript</a> for more background information.</p>
 <p>Here is an example of using this technique to copy the contents of one file to another file:</p>
-<pre><code class="language-js">var fsPromises = require('fs').promises;
+<pre><code class="language-js">import { promises as fsPromises } from 'fs'
 
 async function copyFile(file1, file2) {
   let data = await fsPromises.readFile(file1, { encoding: 'utf-8' });
@@ -228,18 +228,20 @@ main = do
 <li><a href="https://github.com/JordanMartinez/purescript-jordans-reference/tree/latestRelease/21-Hello-World/02-Effect-and-Aff/src/03-Aff">Additional Aff Explanation and Examples</a></li>
 </ul>
 <h2 id="a-http-client"><a class="header" href="#a-http-client">A HTTP Client</a></h2>
-<p>The <code>affjax</code> library offers a convenient way to make asynchronous AJAX HTTP requests with <code>Aff</code>. Consult the <a href="https://pursuit.purescript.org/packages/purescript-affjax">Affjax docs</a> for more usage information. Here is an example that makes HTTP GET requests at a provided URL and returns the response body or an error message:</p>
+<p>The <code>affjax</code> library offers a convenient way to make asynchronous AJAX HTTP requests with <code>Aff</code>. Depending on what environment you are targeting you need to use either the <a href="https://github.com/purescript-contrib/purescript-affjax-web">purescript-affjax-web</a> or the <a href="https://github.com/purescript-contrib/purescript-affjax-node">purescript-affjax-node</a> library.
+In the rest of this chapter we will be targeting node and thus using <code>purescript-affjax-node</code>.
+Consult the <a href="https://pursuit.purescript.org/packages/purescript-affjax">Affjax docs</a> for more usage information. Here is an example that makes HTTP GET requests at a provided URL and returns the response body or an error message:</p>
 <pre><code class="language-hs">import Prelude
-import Affjax as AX
+import Affjax.Node as AN
 import Affjax.ResponseFormat as ResponseFormat
 import Data.Either (Either(..))
 import Effect.Aff (Aff)
 
 getUrl :: String -&gt; Aff String
 getUrl url = do
-  result &lt;- AX.get ResponseFormat.string url
+  result &lt;- AN.get ResponseFormat.string url
   pure case result of
-    Left err -&gt; &quot;GET /api response failed to decode: &quot; &lt;&gt; AX.printError err
+    Left err -&gt; &quot;GET /api response failed to decode: &quot; &lt;&gt; AN.printError err
     Right response -&gt; response.body
 </code></pre>
 <p>When calling this in the repl, <code>launchAff_</code> is required to convert the <code>Aff</code> to a repl-compatible <code>Effect</code>:</p>

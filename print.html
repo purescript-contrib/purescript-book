@@ -181,9 +181,11 @@
 </li>
 <li>
 <p>Asynchronous programming in NodeJS leans heavily on functions as first-class values to define callbacks.</p>
-<pre><code class="language-javascript">require('fs').readFile(sourceFile, function (error, data) {
+<pre><code class="language-javascript">import { readFile, writeFile } from 'fs'
+
+readFile(sourceFile, function (error, data) {
   if (!error) {
-    require('fs').writeFile(destFile, data, function (error) {
+    writeFile(destFile, data, function (error) {
       if (!error) {
         console.log(&quot;File copied&quot;);
       }
@@ -226,7 +228,7 @@ iterate f n x = iterate f (n - 1) (f x)
 <h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
 <p>The software requirements for this book are minimal: the first chapter will guide you through setting up a development environment from scratch, and the tools we will use are available in the standard repositories of most modern operating systems.</p>
 <p>The PureScript compiler itself can be downloaded as a binary distribution, or built from source on any system running an up-to-date installation of the GHC Haskell compiler, and we will walk through this process in the next chapter.</p>
-<p>The code in this version of the book is compatible with versions <code>0.13.*</code> of
+<p>The code in this version of the book is compatible with versions <code>0.15.*</code> of
 the PureScript compiler.</p>
 <h2 id="about-you"><a class="header" href="#about-you">About You</a></h2>
 <p>I will assume that you are familiar with the basics of JavaScript. Any prior familiarity with common tools from the JavaScript ecosystem, such as NPM and Gulp, will be beneficial if you wish to customize the standard setup to your own needs, but such knowledge is not necessary.</p>
@@ -255,7 +257,7 @@ main = log &quot;Hello, World!&quot;
 <h2 id="getting-help"><a class="header" href="#getting-help">Getting Help</a></h2>
 <p>If you get stuck at any point, there are a number of resources available online for learning PureScript:</p>
 <ul>
-<li>The <code>#purescript</code> and <code>#purescript-beginners</code> FP Slack channels are a great place to chat about issues you may be having. <a href="https://fpchat-invite.herokuapp.com/">Use this link</a> to gain access the Slack chatrooms.</li>
+<li>The <a href="https://discord.gg/vKn9up84bp">PureScript Discord server</a> is a great place to chat about issues you may be having. The server is dedicated to chat about PureScript</li>
 <li>The <a href="https://discourse.purescript.org/">Purescript Discourse Forum</a> is another good place to search for solutions to common problems. Questions you ask here will be available to help future readers, whereas on Slack, message history is only kept for approximately 2 weeks.</li>
 <li><a href="https://github.com/jordanmartinez/purescript-jordans-reference">PureScript: Jordan's Reference</a>  is an alternative learning resource that goes into great depth. If a concept in this book is difficult to understand, consider reading the corresponding section in that reference.</li>
 <li><a href="https://pursuit.purescript.org">Pursuit</a> is a searchable database of PureScript types and functions. Read Pursuit's help page to <a href="https://pursuit.purescript.org/help/users">learn what kinds of searches you can do</a>.</li>
@@ -281,21 +283,21 @@ main = log &quot;Hello, World!&quot;
 <p>First, work through this <a href="https://github.com/purescript/documentation/blob/master/guides/Getting-Started.md">Getting Started Guide</a> in the Documentation Repo to setup your environment and learn a few basics about the language. Don't worry if the code in the example solution to the <a href="http://projecteuler.net/problem=1">Project Euler</a> problem is confusing or contains unfamiliar syntax. We'll cover all of this in great detail in the upcoming chapters.</p>
 <h2 id="solving-exercises"><a class="header" href="#solving-exercises">Solving Exercises</a></h2>
 <p>Now that you've installed the necessary development tools, clone this book's repo.</p>
-<pre><code>git clone https://github.com/purescript-contrib/purescript-book.git
+<pre><code class="language-sh">git clone https://github.com/purescript-contrib/purescript-book.git
 </code></pre>
 <p>The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter. There's some initial setup required to reset the exercise solutions so they are ready to be solved by you. Use the <code>resetSolutions.sh</code> script to simplify this process. While you're at it, you should also strip out all the anchor comments with the <code>removeAnchors.sh</code> script (these anchors are used for copying code snippets into the book's rendered markdown, and you probably don't need this clutter in your local repo):</p>
-<pre><code>cd purescript-book
+<pre><code class="language-sh">cd purescript-book
 ./scripts/resetSolutions.sh
 ./scripts/removeAnchors.sh
 git add .
 git commit --all --message &quot;Exercises ready to be solved&quot;
 </code></pre>
 <p>Now run the tests for this chapter:</p>
-<pre><code>cd exercises/chapter2
+<pre><code class="language-sh">cd exercises/chapter2
 spago test
 </code></pre>
 <p>You should see the following successful test output:</p>
-<pre><code>→ Suite: Euler - Sum of Multiples
+<pre><code class="language-sh">→ Suite: Euler - Sum of Multiples
   ✓ Passed: below 10
   ✓ Passed: below 1000
 
@@ -304,7 +306,7 @@ All 2 tests passed! 🎉
 <p>Note that the <code>answer</code> function (found in <code>src/Euler.purs</code>) has been modified to find the multiples of 3 and 5 below any integer. The test suite (found in <code>test/Main.purs</code>) for this <code>answer</code> function is more comprehensive than the test in the earlier getting-started guide. Don't worry about understanding how this test framework code works while reading these early chapters.</p>
 <p>The remainder of the book contains lots of exercises. If you write your solutions in the <code>Test.MySolutions</code> module (<code>test/MySolutions.purs</code>), you can check your work against the provided test suite.</p>
 <p>Let's work through this next exercise together in test-driven-development style.</p>
-<h2 id="exercise"><a class="header" href="#exercise">Exercise:</a></h2>
+<h2 id="exercise"><a class="header" href="#exercise">Exercise</a></h2>
 <ol>
 <li>(Medium) Write a <code>diagonal</code> function to compute the length of the diagonal (or hypotenuse) of a right-angled triangle when given the lengths of the two other sides.</li>
 </ol>
@@ -318,7 +320,7 @@ All 2 tests passed! 🎉
     {-  Move this block comment starting point to enable more tests
 </code></pre>
 <p>If we attempt to run the test now, we'll encounter a compilation error because we have not yet implemented our <code>diagonal</code> function.</p>
-<pre><code>$ spago test
+<pre><code class="language-sh">$ spago test
 
 Error found:
 in module Test.Main
@@ -327,7 +329,7 @@ at test/Main.purs:21:27 - 21:35 (line 21, column 27 - line 21, column 35)
   Unknown value diagonal
 </code></pre>
 <p>Let's first take a look at what happens with a faulty version of this function. Add the following code to <code>test/MySolutions.purs</code>:</p>
-<pre><code class="language-hs">import Math (sqrt)
+<pre><code class="language-hs">import Data.Number (sqrt)
 
 diagonal w h = sqrt (w * w + h)
 </code></pre>
@@ -354,7 +356,7 @@ All 4 tests passed! 🎉
 <p>Success! Now you're ready to try these next exercises on your own.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
-<li>(Easy) Write a function <code>circleArea</code> which computes the area of a circle with a given radius. Use the <code>pi</code> constant, which is defined in the <code>Math</code> module. <em>Hint</em>: don't forget to import <code>pi</code> by modifying the <code>import Math</code> statement.</li>
+<li>(Easy) Write a function <code>circleArea</code> which computes the area of a circle with a given radius. Use the <code>pi</code> constant, which is defined in the <code>Numbers</code> module. <em>Hint</em>: don't forget to import <code>pi</code> by modifying the <code>import Data.Number</code> statement.</li>
 <li>(Medium) Write a function <code>leftoverCents</code> which takes an <code>Int</code> and returns what's leftover after dividing by <code>100</code>. Use the <code>rem</code> function. Search <a href="https://pursuit.purescript.org/">Pursuit</a> for this function to learn about usage and which module to import it from. <em>Note:</em> Your IDE may support auto-importing of this function if you accept the auto-completion suggestion.</li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
@@ -1299,11 +1301,7 @@ Nothing
 <p>Algebraic data types are a feature of the PureScript type system which enable a similar level of expressiveness in the language of types - they are closely related to pattern matching.</p>
 <p>The goal of the chapter will be to write a library to describe and manipulate simple vector graphics using algebraic types and pattern matching.</p>
 <h2 id="project-setup-2"><a class="header" href="#project-setup-2">Project Setup</a></h2>
-<p>The source code for this chapter is defined in the file <code>src/Data/Picture.purs</code>. </p>
-<p>The project uses some packages which we have already seen, and adds the following new dependency:</p>
-<ul>
-<li><code>math</code>, which provides access to the JavaScript <code>Math</code> module.</li>
-</ul>
+<p>The source code for this chapter is defined in the file <code>src/Data/Picture.purs</code>.</p>
 <p>The <code>Data.Picture</code> module defines a data type <code>Shape</code> for simple shapes, and a type <code>Picture</code> for collections of shapes, along with functions for working with those types.</p>
 <p>The module imports the <code>Data.Foldable</code> module, which provides functions for folding data structures:</p>
 <pre><code class="language-haskell">module Data.Picture where
@@ -1312,11 +1310,11 @@ import Prelude
 import Data.Foldable (foldl)
 import Data.Number (infinity)
 </code></pre>
-<p>The <code>Data.Picture</code> module also imports the <code>Math</code> module, but this time using the <code>as</code> keyword:</p>
-<pre><code class="language-haskell">import Math as Math
+<p>The <code>Data.Picture</code> module also imports the <code>Number</code> module, but this time using the <code>as</code> keyword:</p>
+<pre><code class="language-haskell">import Data.Number as Number
 </code></pre>
-<p>This makes the types and functions in that module available for use, but only by using the <em>qualified name</em>, like <code>Math.max</code>. This can be useful to avoid overlapping imports, or just to make it clearer which modules certain things are imported from.</p>
-<p><em>Note</em>: it is not necessary to use the same module name as the original module for a qualified import. Shorter qualified names like <code>import Math as M</code> are possible, and quite common.</p>
+<p>This makes the types and functions in that module available for use, but only by using the <em>qualified name</em>, like <code>Number.max</code>. This can be useful to avoid overlapping imports, or just to make it clearer which modules certain things are imported from.</p>
+<p><em>Note</em>: it is not necessary to use the same module name as the original module for a qualified import. Shorter qualified names like <code>import Data.Number as N</code> are possible, and quite common.</p>
 <h2 id="simple-pattern-matching"><a class="header" href="#simple-pattern-matching">Simple Pattern Matching</a></h2>
 <p>Let's begin by looking at an example. Here is a function which computes the greatest common divisor of two integers using pattern matching:</p>
 <pre><code class="language-haskell">gcd :: Int -&gt; Int -&gt; Int
@@ -3309,7 +3307,7 @@ simulate x0 v0 time =
 <p>There are also PureScript libraries which build abstractions on top of these libraries, such as</p>
 <ul>
 <li><a href="https://github.com/paf31/purescript-thermite"><code>thermite</code></a>, which builds on <a href="https://github.com/purescript-contrib/purescript-react"><code>react</code></a></li>
-<li><a href="https://github.com/spicydonuts/purescript-react-basic-hooks"><code>react-basic-hooks</code></a>, which builds on <a href="https://github.com/lumihq/purescript-react-basic"><code>react-basic</code></a></li>
+<li><a href="https://github.com/megamaddu/purescript-react-basic-hooks"><code>react-basic-hooks</code></a>, which builds on <a href="https://github.com/lumihq/purescript-react-basic"><code>react-basic</code></a></li>
 <li><a href="https://github.com/purescript-halogen/purescript-halogen"><code>halogen</code></a> which provides a type-safe set of abstractions on top of a custom virtual DOM library.</li>
 </ul>
 <p>In this chapter, we will use the <code>react-basic-hooks</code> library to add a user interface to our address book application, but the interested reader is encouraged to explore alternative approaches.</p>
@@ -3342,7 +3340,9 @@ $ npx parcel src/index.html --open
 &lt;/html&gt;
 </code></pre>
 <p>The <code>&lt;script</code> line includes the JavaScript entry point, <code>index.js</code>, which contains this single line:</p>
-<pre><code class="language-js">require(&quot;../output/Main/index.js&quot;).main();
+<pre><code class="language-js">import { main } from &quot;../output/Main/index.js&quot;;
+
+main();
 </code></pre>
 <p>It calls our generated JavaScript equivalent of the <code>main</code> function of <code>module Main</code> (<code>src/main.purs</code>). Recall that <code>spago build</code> puts all generated JavaScript in the <code>output</code> directory.</p>
 <p>The <code>main</code> function uses the DOM and HTML APIs to render our address book component within the <code>container</code> element we defined in <code>index.html</code>:</p>
@@ -3438,7 +3438,7 @@ setPerson :: (state -&gt; state) -&gt; Effect Unit
 <p>or as shorthand:</p>
 <pre><code class="language-hs">setPerson _ {firstName = &quot;NewName&quot;}
 </code></pre>
-<p>Non-<code>Record</code> states can also follow this update pattern. See <a href="https://github.com/spicydonuts/purescript-react-basic-hooks/pull/24#issuecomment-620300541">this guide</a> for more details on best practices.</p>
+<p>Non-<code>Record</code> states can also follow this update pattern. See <a href="https://github.com/megamaddu/purescript-react-basic-hooks/pull/24#issuecomment-620300541">this guide</a> for more details on best practices.</p>
 <p>Recall that <code>useState</code> is used within an <code>R.do</code> block. <code>R.do</code> is a special react hooks variant of <code>do</code>. The <code>R.</code> prefix &quot;qualifies&quot; this as coming from <code>React.Basic.Hooks</code>, and means we use their hooks-compatible version of <code>bind</code> in the <code>R.do</code> block. This is known as a &quot;qualified do&quot;. It lets us ignore the <code>Hook (UseState state)</code> wrapping and bind the inner <code>Tuple</code> of values to variables.</p>
 <p>Another possible state management strategy is with <code>useReducer</code>, but that is outside the scope of this chapter.</p>
 <p>Rendering <code>JSX</code> occurs here:</p>
@@ -3609,7 +3609,7 @@ type Errors = Array ValidationError
 <h2 id="asynchronous-javascript"><a class="header" href="#asynchronous-javascript">Asynchronous JavaScript</a></h2>
 <p>A convenient way to work with asynchronous code in JavaScript is with <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await"><code>async</code> and <code>await</code></a>. See <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Introducing">this article on asynchronous JavaScript</a> for more background information.</p>
 <p>Here is an example of using this technique to copy the contents of one file to another file:</p>
-<pre><code class="language-js">var fsPromises = require('fs').promises;
+<pre><code class="language-js">import { promises as fsPromises } from 'fs'
 
 async function copyFile(file1, file2) {
   let data = await fsPromises.readFile(file1, { encoding: 'utf-8' });
@@ -3683,18 +3683,20 @@ main = do
 <li><a href="https://github.com/JordanMartinez/purescript-jordans-reference/tree/latestRelease/21-Hello-World/02-Effect-and-Aff/src/03-Aff">Additional Aff Explanation and Examples</a></li>
 </ul>
 <h2 id="a-http-client"><a class="header" href="#a-http-client">A HTTP Client</a></h2>
-<p>The <code>affjax</code> library offers a convenient way to make asynchronous AJAX HTTP requests with <code>Aff</code>. Consult the <a href="https://pursuit.purescript.org/packages/purescript-affjax">Affjax docs</a> for more usage information. Here is an example that makes HTTP GET requests at a provided URL and returns the response body or an error message:</p>
+<p>The <code>affjax</code> library offers a convenient way to make asynchronous AJAX HTTP requests with <code>Aff</code>. Depending on what environment you are targeting you need to use either the <a href="https://github.com/purescript-contrib/purescript-affjax-web">purescript-affjax-web</a> or the <a href="https://github.com/purescript-contrib/purescript-affjax-node">purescript-affjax-node</a> library.
+In the rest of this chapter we will be targeting node and thus using <code>purescript-affjax-node</code>.
+Consult the <a href="https://pursuit.purescript.org/packages/purescript-affjax">Affjax docs</a> for more usage information. Here is an example that makes HTTP GET requests at a provided URL and returns the response body or an error message:</p>
 <pre><code class="language-hs">import Prelude
-import Affjax as AX
+import Affjax.Node as AN
 import Affjax.ResponseFormat as ResponseFormat
 import Data.Either (Either(..))
 import Effect.Aff (Aff)
 
 getUrl :: String -&gt; Aff String
 getUrl url = do
-  result &lt;- AX.get ResponseFormat.string url
+  result &lt;- AN.get ResponseFormat.string url
   pure case result of
-    Left err -&gt; &quot;GET /api response failed to decode: &quot; &lt;&gt; AX.printError err
+    Left err -&gt; &quot;GET /api response failed to decode: &quot; &lt;&gt; AN.printError err
     Right response -&gt; response.body
 </code></pre>
 <p>When calling this in the repl, <code>launchAff_</code> is required to convert the <code>Aff</code> to a repl-compatible <code>Effect</code>:</p>
@@ -3873,26 +3875,27 @@ node&gt; encodeURIComponent('Hello World')
 <p>We can assign this type to the function with the following foreign import declaration:</p>
 <pre><code class="language-haskell">module Test.URI where
 
-foreign import encodeURIComponent :: String -&gt; String
+foreign import _encodeURIComponent :: String -&gt; String
 </code></pre>
-<p>We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but extension changed from <code>.purs</code> to <code>.js</code>. If the Purescript module above is saved as <code>URI.purs</code>, then the foreign JavaScript module is saved as <code>URI.js</code>:</p>
+<p>We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but extension changed from <code>.purs</code> to <code>.js</code>. If the Purescript module above is saved as <code>URI.purs</code>, then the foreign JavaScript module is saved as <code>URI.js</code>.
+Since <code>encodeURIComponent</code> is already defined, we have to export it as <code>_encodeURIComponent</code>:</p>
 <pre><code class="language-javascript">&quot;use strict&quot;;
 
-exports.encodeURIComponent = encodeURIComponent;
+export const _encodeURIComponent = encodeURIComponent;
 </code></pre>
-<p>Purescript uses the CommonJS module system when interoperating with JavaScript. In CommonJS, functions and values are exported from a module by assigning them to <em>properties</em> of the <code>exports</code> object.</p>
-<p>With these two pieces in place, we can now use the <code>encodeURIComponent</code> function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:</p>
+<p>Since version 0.15, Purescript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the <code>export</code> keyword on an object.</p>
+<p>With these two pieces in place, we can now use the <code>_encodeURIComponent</code> function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:</p>
 <pre><code class="language-text">$ spago repl
 
 &gt; import Test.URI
-&gt; encodeURIComponent &quot;Hello World&quot;
+&gt; _encodeURIComponent &quot;Hello World&quot;
 &quot;Hello%20World&quot;
 </code></pre>
 <p>We can also define our own functions in foreign modules. Here's an example of how to create and call a custom JavaScript function that squares a <code>Number</code>:</p>
 <p><code>test/Examples.js</code>:</p>
 <pre><code class="language-js">&quot;use strict&quot;;
 
-exports.square = function (n) {
+export const square = function (n) {
   return n * n;
 };
 </code></pre>
@@ -3912,14 +3915,14 @@ foreign import square :: Number -&gt; Number
 <pre><code class="language-hs">foreign import diagonal :: Number -&gt; Number -&gt; Number
 </code></pre>
 <p>Recall that functions in PureScript are <em>curried</em>. <code>diagonal</code> is a function that takes a <code>Number</code> and returns a <em>function</em>, that takes a <code>Number</code> and returns a <code>Number</code>.</p>
-<pre><code class="language-js">exports.diagonal = function (w) {
+<pre><code class="language-js">export const diagonal = function (w) {
   return function (h) {
     return Math.sqrt(w * w + h * h);
   };
 };
 </code></pre>
 <p>Or with ES6 arrow syntax (see ES6 note below).</p>
-<pre><code class="language-js">exports.diagonalArrow = w =&gt; h =&gt;
+<pre><code class="language-js">export const diagonalArrow = w =&gt; h =&gt;
   Math.sqrt(w * w + h * h);
 </code></pre>
 <pre><code class="language-hs">foreign import diagonalArrow :: Number -&gt; Number -&gt; Number
@@ -3934,7 +3937,7 @@ foreign import square :: Number -&gt; Number
 </code></pre>
 <h2 id="uncurried-functions"><a class="header" href="#uncurried-functions">Uncurried Functions</a></h2>
 <p>Writing curried functions in JavaScript isn't always feasible, despite being scarcely idiomatic. A typical multi-argument JavaScript function would be of the <em>uncurried</em> form:</p>
-<pre><code class="language-js">exports.diagonalUncurried = function (w, h) {
+<pre><code class="language-js">export const diagonalUncurried = function (w, h) {
   return Math.sqrt(w * w + h * h);
 };
 </code></pre>
@@ -4022,7 +4025,7 @@ lebab --replace output/ --transform arrow,arrow-return
 <p>To demonstrate passing <code>Array</code>s, here's how to call a JavaScript function which takes an <code>Array</code> of <code>Int</code> and returns the cumulative sum as another array. Recall that, since JavaScript does not have a separate type for <code>Int</code>, both <code>Int</code> and <code>Number</code> in PureScript translate to <code>Number</code> in JavaScript.</p>
 <pre><code class="language-hs">foreign import cumulativeSums :: Array Int -&gt; Array Int
 </code></pre>
-<pre><code class="language-js">exports.cumulativeSums = arr =&gt; {
+<pre><code class="language-js">export const cumulativeSums = arr =&gt; {
   let sum = 0
   let sums = []
   arr.forEach(x =&gt; {
@@ -4046,7 +4049,7 @@ lebab --replace output/ --transform arrow,arrow-return
 
 foreign import addComplex :: Complex -&gt; Complex -&gt; Complex
 </code></pre>
-<pre><code class="language-js">exports.addComplex = a =&gt; b =&gt; {
+<pre><code class="language-js">export const addComplex = a =&gt; b =&gt; {
   return {
     real: a.real + b.real,
     imag: a.imag + b.imag
@@ -4067,7 +4070,7 @@ foreign import addComplex :: Complex -&gt; Complex -&gt; Complex
 <h2 id="beyond-simple-types"><a class="header" href="#beyond-simple-types">Beyond Simple Types</a></h2>
 <p>We have seen examples of how to send and receive types with a native JavaScript representation, such as <code>String</code>, <code>Number</code>, <code>Array</code>, and <code>Record</code>, over FFI. Now we'll cover how to use some of the other types available in PureScript, like <code>Maybe</code>.</p>
 <p>Suppose we wanted to recreate the <code>head</code> function on arrays by using a foreign declaration. In JavaScript, we might write the function as follows:</p>
-<pre><code class="language-javascript">exports.head = arr =&gt;
+<pre><code class="language-javascript">export const head = arr =&gt;
   arr[0];
 </code></pre>
 <p>How would we type this function? We might try to give it the type <code>forall a. Array a -&gt; a</code>, but for empty arrays, this function returns <code>undefined</code>. Therefore, the type <code>forall a. Array a -&gt; a</code> does not correctly represent this implementation.</p>
@@ -4076,10 +4079,9 @@ foreign import addComplex :: Complex -&gt; Complex -&gt; Complex
 </code></pre>
 <p>But how do we return a <code>Maybe</code>? It is tempting to write the following:</p>
 <pre><code class="language-js">// Don't do this
+import Data_Maybe from '../Data.Maybe'
 
-let Data_Maybe = require(&quot;../Data.Maybe&quot;)
-
-exports.maybeHead = arr =&gt; {
+export const maybeHead = arr =&gt; {
   if (arr.length) {
     return Data_Maybe.Just.create(arr[0]);
   } else {
@@ -4089,7 +4091,7 @@ exports.maybeHead = arr =&gt; {
 </code></pre>
 <p>Importing and using the <code>Data.Maybe</code> module directly in the foreign module isn't recommended as it makes our code brittle to changes in the code generator — <code>create</code> and <code>value</code> are not public APIs. Additionally, doing this can cause problems when using <code>purs bundle</code> for dead code elimination.</p>
 <p>The recommended approach is to add extra parameters to our FFI-defined function to accept the functions we need.</p>
-<pre><code class="language-js">exports.maybeHeadImpl = just =&gt; nothing =&gt; arr =&gt; {
+<pre><code class="language-js">export const maybeHeadImpl = just =&gt; nothing =&gt; arr =&gt; {
   if (arr.length) {
     return just(arr[0]);
   } else {
@@ -4123,7 +4125,7 @@ The <em>only</em> option for <code>(forall x. Maybe x)</code> is <code>Nothing</
 </code></pre>
 <p>The <code>data</code> keyword here indicates that we are defining a <em>type</em>, not a value. Instead of a type signature, we give the <em>kind</em> of the new type. In this case, we declare the kind of <code>Undefined</code> to be <code>Type -&gt; Type</code>. In other words, <code>Undefined</code> is a type constructor.</p>
 <p>We can now simply reuse our original definition for <code>head</code>:</p>
-<pre><code class="language-javascript">exports.undefinedHead = arr =&gt;
+<pre><code class="language-javascript">export const undefinedHead = arr =&gt;
   arr[0];
 </code></pre>
 <p>And in the PureScript module:</p>
@@ -4135,7 +4137,7 @@ The <em>only</em> option for <code>(forall x. Maybe x)</code> is <code>Nothing</
 <pre><code class="language-haskell">foreign import isUndefined :: forall a. Undefined a -&gt; Boolean
 </code></pre>
 <p>This is defined in our foreign JavaScript module as follows:</p>
-<pre><code class="language-javascript">exports.isUndefined = value =&gt;
+<pre><code class="language-javascript">export const isUndefined = value =&gt;
   value === undefined;
 </code></pre>
 <p>We can now use <code>isUndefined</code> and <code>undefinedHead</code> together from PureScript to define a useful function:</p>
@@ -4148,7 +4150,7 @@ isEmpty = isUndefined &lt;&lt;&lt; undefinedHead
 <pre><code class="language-haskell">foreign import unsafeHead :: forall a. Array a -&gt; a
 </code></pre>
 <p>In our foreign JavaScript module, we can define <code>unsafeHead</code> as follows:</p>
-<pre><code class="language-javascript">exports.unsafeHead = arr =&gt; {
+<pre><code class="language-javascript">export const unsafeHead = arr =&gt; {
   if (arr.length) {
     return arr[0];
   } else {
@@ -4182,7 +4184,7 @@ maybeHead = toMaybe &lt;&lt;&lt; undefinedHead
 <h2 id="using-type-class-member-functions"><a class="header" href="#using-type-class-member-functions">Using Type Class Member Functions</a></h2>
 <p>Just like our earlier guide on passing the <code>Maybe</code> constructor over FFI, this is another case of writing PureScript that calls JavaScript, which in turn calls PureScript functions again. Here we will explore how to pass type class member functions over the FFI.</p>
 <p>We start with writing a foreign JavaScript function which expects the appropriate instance of <code>show</code> to match the type of <code>x</code>.</p>
-<pre><code class="language-js">exports.boldImpl = show =&gt; x =&gt;
+<pre><code class="language-js">export const boldImpl = show =&gt; x =&gt;
   show(x).toUpperCase() + &quot;!!!&quot;;
 </code></pre>
 <p>Then we write the matching signature:</p>
@@ -4205,7 +4207,7 @@ bold = boldImpl show
 &quot;(TUPLE 1 \&quot;HAT\&quot;)!!!&quot;
 </code></pre>
 <p>Here's another example demonstrating passing multiple functions, including a function of multiple arguments (<code>eq</code>):</p>
-<pre><code class="language-js">exports.showEqualityImpl = eq =&gt; show =&gt; a =&gt; b =&gt; {
+<pre><code class="language-js">export const showEqualityImpl = eq =&gt; show =&gt; a =&gt; b =&gt; {
   if (eq(a)(b)) {
     return &quot;Equivalent&quot;;
   } else {
@@ -4227,7 +4229,7 @@ showEquality = showEqualityImpl eq show
 </code></pre>
 <h2 id="effectful-functions"><a class="header" href="#effectful-functions">Effectful Functions</a></h2>
 <p>Let's extend our <code>bold</code> function to log to the console. Logging is an <code>Effect</code>, and <code>Effect</code>s are represented in JavaScript as a function of zero arguments, <code>()</code> with arrow notation:</p>
-<pre><code class="language-js">exports.yellImpl = show =&gt; x =&gt; () =&gt;
+<pre><code class="language-js">export const yellImpl = show =&gt; x =&gt; () =&gt;
   console.log(show(x).toUpperCase() + &quot;!!!&quot;);
 </code></pre>
 <p>The new foreign import is the same as before, except that the return type changed from <code>String</code> to <code>Effect Unit</code>.</p>
@@ -4248,7 +4250,7 @@ unit
 <p>There are also <code>EffectFn</code> wrappers from <code>Effect.Uncurried</code>. These are similar to the <code>Fn</code> wrappers from <code>Data.Function.Uncurried</code> that we've already seen. These wrappers let you call uncurried effectful functions in PureScript.</p>
 <p>You'd generally only use these if you want to call existing JavaScript library APIs directly, rather than wrapping those APIs in curried functions. So it doesn't make much sense to present an example of uncurried <code>yell</code>, where the JavaScript relies on PureScript type class members, since you wouldn't find that in the existing JavaScript ecosystem.</p>
 <p>Instead, we'll modify our previous <code>diagonal</code> example to include logging in addition to returning the result:</p>
-<pre><code class="language-js">exports.diagonalLog = function(w, h) {
+<pre><code class="language-js">export const diagonalLog = function(w, h) {
   let result = Math.sqrt(w * w + h * h);
   console.log(&quot;Diagonal is &quot; + result);
   return result;
@@ -4270,7 +4272,7 @@ Diagonal is 5
 <pre><code class="language-js">const wait = ms =&gt; new Promise(resolve =&gt; setTimeout(resolve, ms));
 </code></pre>
 <p>We just need to export it wrapped as an <code>Effect</code> (function of zero arguments):</p>
-<pre><code class="language-js">exports.sleepImpl = ms =&gt; () =&gt;
+<pre><code class="language-js">export const sleepImpl = ms =&gt; () =&gt;
   wait(ms);
 </code></pre>
 <p>Then import it as follows:</p>
@@ -4303,7 +4305,7 @@ done waiting
   return Math.sqrt(w * w + h * h);
 }
 
-exports.diagonalAsyncImpl = delay =&gt; w =&gt; h =&gt; () =&gt;
+export const diagonalAsyncImpl = delay =&gt; w =&gt; h =&gt; () =&gt;
   diagonalWait(delay, w, h);
 </code></pre>
 <p>Since we're returning a <code>Number</code>, we represent this type in the <code>Promise</code> and <code>Aff</code> wrappers:</p>
@@ -4331,7 +4333,7 @@ unit
 <h2 id="json"><a class="header" href="#json">JSON</a></h2>
 <p>There are many reasons to use JSON in an application, for example, it's a common means of communicating with web APIs. This section will discuss other use-cases too, beginning with a technique to improve type safety when passing structural data over the FFI.</p>
 <p>Let's revisit our earlier FFI functions <code>cumulativeSums</code> and <code>addComplex</code> and introduce a bug to each:</p>
-<pre><code class="language-js">exports.cumulativeSumsBroken = arr =&gt; {
+<pre><code class="language-js">export const cumulativeSumsBroken = arr =&gt; {
   let sum = 0
   let sums = []
   arr.forEach(x =&gt; {
@@ -4342,7 +4344,7 @@ unit
   return sums;
 };
 
-exports.addComplexBroken = a =&gt; b =&gt; {
+export const addComplexBroken = a =&gt; b =&gt; {
   return {
     real: a.real + b.real,
     broken: a.imag + b.imag // Bug
@@ -4385,8 +4387,8 @@ TypeError: Cannot read property 'toString' of undefined
 foreign import addComplexJson :: Complex -&gt; Complex -&gt; Json
 </code></pre>
 <p>Note that we're simply pointing to our existing broken functions:</p>
-<pre><code class="language-js">exports.cumulativeSumsJson = exports.cumulativeSumsBroken
-exports.addComplexJson = exports.addComplexBroken
+<pre><code class="language-js">export const cumulativeSumsJson = cumulativeSumsBroken
+export const addComplexJson = addComplexBroken
 </code></pre>
 <p>And then write a wrapper to decode the returned foreign <code>Json</code> value:</p>
 <pre><code class="language-hs">cumulativeSumsDecoded :: Array Int -&gt; Either JsonDecodeError (Array Int)
@@ -4408,8 +4410,8 @@ addComplexDecoded a b = decodeJson $ addComplexJson a b
 </code></pre>
 <p>If we call the working versions, a <code>Right</code> value is returned.</p>
 <p>Try this yourself by modifying <code>test/Examples.js</code> with the following change to point to the working versions before running the next repl block.</p>
-<pre><code class="language-js">exports.cumulativeSumsJson = exports.cumulativeSums
-exports.addComplexJson = exports.addComplex
+<pre><code class="language-js">export const cumulativeSumsJson = cumulativeSums
+export const addComplexJson = addComplex
 </code></pre>
 <pre><code class="language-text">$ spago repl
 
@@ -4436,7 +4438,7 @@ mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
 mapSetFoo = encodeJson &gt;&gt;&gt; mapSetFooJson &gt;&gt;&gt; decodeJson
 </code></pre>
 <p>Here is the JavaScript implementation. Note the <code>Array.from</code> step which is necessary to convert the JavaScript <code>Map</code> into a JSON-friendly format before decoding converts it back to a PureScript <code>Map</code>.</p>
-<pre><code class="language-js">exports.mapSetFooJson = j =&gt; {
+<pre><code class="language-js">export const mapSetFooJson = j =&gt; {
   let m = new Map(j);
   m.set(&quot;Foo&quot;, 42);
   return Array.from(m);
@@ -4514,10 +4516,10 @@ Note that you'll also need generic instances of <code>Show</code> and <code>Eq</
 foreign import getItem :: String -&gt; Effect Json
 </code></pre>
 <p>Here is the corresponding JavaScript implementation of these functions in <code>Effect/Storage.js</code>:</p>
-<pre><code class="language-js">exports.setItem = key =&gt; value =&gt; () =&gt;
+<pre><code class="language-js">export const setItem = key =&gt; value =&gt; () =&gt;
   window.localStorage.setItem(key, value);
 
-exports.getItem = key =&gt; () =&gt;
+export const getItem = key =&gt; () =&gt;
   window.localStorage.getItem(key);
 </code></pre>
 <p>We'll create a save button like so:</p>
@@ -4598,7 +4600,7 @@ processItem item = do
 <p>That covers local storage. Next we'll implement the <code>alert</code> action, which is very similar to the <code>log</code> action from the <code>Effect.Console</code> module. The only difference is that the <code>alert</code> action uses the <code>window.alert</code> method, whereas the <code>log</code> action uses the <code>console.log</code> method. As such, <code>alert</code> can only be used in environments where <code>window.alert</code> is defined, such as a web browser.</p>
 <pre><code class="language-hs">foreign import alert :: String -&gt; Effect Unit
 </code></pre>
-<pre><code class="language-js">exports.alert = msg =&gt; () =&gt;
+<pre><code class="language-js">export const alert = msg =&gt; () =&gt;
   window.alert(msg);
 </code></pre>
 <p>We want this alert to appear when either:</p>
@@ -4641,10 +4643,10 @@ gcd n m
 </code></pre>
 <p>This function finds the greatest common divisor of two numbers by repeated subtraction. It is a nice example of a case where you might like to use PureScript to define the function, but have a requirement to call it from JavaScript: it is simple to define this function in PureScript using pattern matching and recursion, and the implementor can benefit from the use of the type checker.</p>
 <p>To understand how this function can be called from JavaScript, it is important to realize that PureScript functions always get turned into JavaScript functions of a single argument, so we need to apply its arguments one-by-one:</p>
-<pre><code class="language-javascript">var Test = require('Test');
+<pre><code class="language-javascript">import Test from 'Test.js';
 Test.gcd(15)(20);
 </code></pre>
-<p>Here, I am assuming that the code was compiled with <code>spago build</code>, which compiles PureScript modules to CommonJS modules. For that reason, I was able to reference the <code>gcd</code> function on the <code>Test</code> object, after importing the <code>Test</code> module using <code>require</code>.</p>
+<p>Here, I am assuming that the code was compiled with <code>spago build</code>, which compiles PureScript modules to ES modules. For that reason, I was able to reference the <code>gcd</code> function on the <code>Test</code> object, after importing the <code>Test</code> module using <code>import</code>.</p>
 <p>You might also like to bundle JavaScript code for the browser, using <code>spago bundle-app --to file.js</code>. In that case, you would access the <code>Test</code> module from the global PureScript namespace, which defaults to <code>PS</code>:</p>
 <pre><code class="language-javascript">var Test = PS.Test;
 Test.gcd(15)(20);
@@ -4755,7 +4757,9 @@ shout a = show a &lt;&gt; &quot;!!!&quot;
 </code></pre>
 <p>Notice that <code>shout</code> is compiled to a (curried) function of two arguments, not one. The first argument <code>dict</code> is the type class dictionary for the <code>Show</code> constraint. <code>dict</code> contains the implementation of the <code>show</code> function for the type <code>a</code>.</p>
 <p>We can call this function from JavaScript by passing an explicit type class dictionary from <code>Data.Show</code> as the first parameter:</p>
-<pre><code class="language-javascript">shout(require('Data.Show').showNumber)(42);
+<pre><code class="language-javascript">import { showNumber } from 'Data.Show'
+
+shout(showNumber)(42);
 </code></pre>
 <h2 id="exercises-32"><a class="header" href="#exercises-32">Exercises</a></h2>
 <ol>
@@ -4768,7 +4772,7 @@ forall a. Ord a =&gt; Array a -&gt; Boolean
 <p>What can you say about the expressions which have these types?</p>
 </li>
 <li>
-<p>(Medium) Try using the functions defined in the <code>arrays</code> package, calling them from JavaScript, by compiling the library using <code>spago build</code> and importing modules using the <code>require</code> function in NodeJS. <em>Hint</em>: you may need to configure the output path so that the generated CommonJS modules are available on the NodeJS module path.</p>
+<p>(Medium) Try using the functions defined in the <code>arrays</code> package, calling them from JavaScript, by compiling the library using <code>spago build</code> and importing modules using the <code>import</code> function in NodeJS. <em>Hint</em>: you may need to configure the output path so that the generated ES modules are available on the NodeJS module path.</p>
 </li>
 </ol>
 <h2 id="representing-side-effects"><a class="header" href="#representing-side-effects">Representing Side Effects</a></h2>
@@ -4780,14 +4784,14 @@ forall a. Ord a =&gt; Array a -&gt; Boolean
 <pre><code class="language-haskell">foreign import random :: Effect Number
 </code></pre>
 <p>The definition of the <code>random</code> function is given here:</p>
-<pre><code class="language-javascript">exports.random = Math.random;
+<pre><code class="language-javascript">export const random = Math.random;
 </code></pre>
 <p>Notice that the <code>random</code> function is represented at runtime as a function of no arguments. It performs the side effect of generating a random number, and returns it, and the return value matches the runtime representation of the <code>Number</code> type: it is a non-null JavaScript number.</p>
 <p>As a slightly more interesting example, consider the <code>log</code> function defined by the <code>Effect.Console</code> module in the <code>console</code> package. The <code>log</code> function has the following type:</p>
 <pre><code class="language-haskell">foreign import log :: String -&gt; Effect Unit
 </code></pre>
 <p>And here is its definition:</p>
-<pre><code class="language-javascript">exports.log = function (s) {
+<pre><code class="language-javascript">export const log = function (s) {
   return function () {
     console.log(s);
   };
@@ -4795,7 +4799,9 @@ forall a. Ord a =&gt; Array a -&gt; Boolean
 </code></pre>
 <p>The representation of <code>log</code> at runtime is a JavaScript function of a single argument, returning a function of no arguments. The inner function performs the side-effect of writing a message to the console.</p>
 <p>Expressions of type <code>Effect a</code> can be invoked from JavaScript like regular JavaScript methods. For example, since the <code>main</code> function is required to have type <code>Effect a</code> for some type <code>a</code>, it can be invoked as follows:</p>
-<pre><code class="language-javascript">require('Main').main();
+<pre><code class="language-javascript">import { main } from 'Main'
+
+main();
 </code></pre>
 <p>When using <code>spago bundle-app --to</code> or <code>spago run</code>, this call to <code>main</code> is generated automatically, whenever the <code>Main</code> module is defined.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="monadic-adventures"><a class="header" href="#monadic-adventures">Monadic Adventures</a></h1>
@@ -5678,11 +5684,12 @@ translate dx dy shape = shape
 </code></pre>
 <p>Next, for each circle, the code creates an <code>Arc</code> based on these parameters and finally fills and strokes the arc with the current styles:</p>
 <pre><code class="language-haskell">    let path = arc ctx
-         { x     : x * 600.0
-         , y     : y * 600.0
-         , radius: r * 50.0
-         , start : 0.0
-         , end   : Math.tau
+         { x                  : x * 600.0
+         , y                  : y * 600.0
+         , radius             : r * 50.0
+         , start              : 0.0
+         , end                : Number.tau
+         , useCounterClockwise: false
          }
 
     fillPath ctx path
@@ -5774,11 +5781,11 @@ Type -&gt; Type
 </code></pre>
 <p>In the <code>render</code> function, the click count is used to determine the transformation applied to a rectangle:</p>
 <pre><code class="language-haskell">  withContext ctx do
-    let scaleX = Math.sin (toNumber count * Math.tau / 8.0) + 1.5
-    let scaleY = Math.sin (toNumber count * Math.tau / 12.0) + 1.5
+    let scaleX = Number.sin (toNumber count * Number.tau / 8.0) + 1.5
+    let scaleY = Number.sin (toNumber count * Number.tau / 12.0) + 1.5
 
     translate ctx { translateX: 300.0, translateY:  300.0 }
-    rotate ctx (toNumber count * Math.tau / 36.0)
+    rotate ctx (toNumber count * Number.tau / 36.0)
     scale ctx { scaleX: scaleX, scaleY: scaleY }
     translate ctx { translateX: -100.0, translateY: -100.0 }
 
@@ -5917,13 +5924,13 @@ lsystem init prod interpret n state = go init n
 <pre><code class="language-haskell">    interpret :: State -&gt; Letter -&gt; Effect State
 </code></pre>
 <p>To implement this function, we need to handle the three data constructors of the <code>Letter</code> type. To interpret the letters <code>L</code> (move left) and <code>R</code> (move right), we simply have to update the state to change the angle <code>theta</code> appropriately:</p>
-<pre><code class="language-haskell">    interpret state L = pure $ state { theta = state.theta - Math.tau / 6.0 }
-    interpret state R = pure $ state { theta = state.theta + Math.tau / 6.0 }
+<pre><code class="language-haskell">    interpret state L = pure $ state { theta = state.theta - Number.tau / 6.0 }
+    interpret state R = pure $ state { theta = state.theta + Number.tau / 6.0 }
 </code></pre>
 <p>To interpret the letter <code>F</code> (move forward), we can calculate the new position of the path, render a line segment, and update the state, as follows:</p>
 <pre><code class="language-haskell">    interpret state F = do
-      let x = state.x + Math.cos state.theta * 1.5
-          y = state.y + Math.sin state.theta * 1.5
+      let x = state.x + Number.cos state.theta * 1.5
+          y = state.y + Number.sin state.theta * 1.5
       moveTo ctx state.x state.y
       lineTo ctx x y
       pure { x, y, theta: state.theta }

@@ -154,9 +154,11 @@
 </li>
 <li>
 <p>Asynchronous programming in NodeJS leans heavily on functions as first-class values to define callbacks.</p>
-<pre><code class="language-javascript">require('fs').readFile(sourceFile, function (error, data) {
+<pre><code class="language-javascript">import { readFile, writeFile } from 'fs'
+
+readFile(sourceFile, function (error, data) {
   if (!error) {
-    require('fs').writeFile(destFile, data, function (error) {
+    writeFile(destFile, data, function (error) {
       if (!error) {
         console.log(&quot;File copied&quot;);
       }
@@ -199,7 +201,7 @@ iterate f n x = iterate f (n - 1) (f x)
 <h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
 <p>The software requirements for this book are minimal: the first chapter will guide you through setting up a development environment from scratch, and the tools we will use are available in the standard repositories of most modern operating systems.</p>
 <p>The PureScript compiler itself can be downloaded as a binary distribution, or built from source on any system running an up-to-date installation of the GHC Haskell compiler, and we will walk through this process in the next chapter.</p>
-<p>The code in this version of the book is compatible with versions <code>0.13.*</code> of
+<p>The code in this version of the book is compatible with versions <code>0.15.*</code> of
 the PureScript compiler.</p>
 <h2 id="about-you"><a class="header" href="#about-you">About You</a></h2>
 <p>I will assume that you are familiar with the basics of JavaScript. Any prior familiarity with common tools from the JavaScript ecosystem, such as NPM and Gulp, will be beneficial if you wish to customize the standard setup to your own needs, but such knowledge is not necessary.</p>
@@ -228,7 +230,7 @@ main = log &quot;Hello, World!&quot;
 <h2 id="getting-help"><a class="header" href="#getting-help">Getting Help</a></h2>
 <p>If you get stuck at any point, there are a number of resources available online for learning PureScript:</p>
 <ul>
-<li>The <code>#purescript</code> and <code>#purescript-beginners</code> FP Slack channels are a great place to chat about issues you may be having. <a href="https://fpchat-invite.herokuapp.com/">Use this link</a> to gain access the Slack chatrooms.</li>
+<li>The <a href="https://discord.gg/vKn9up84bp">PureScript Discord server</a> is a great place to chat about issues you may be having. The server is dedicated to chat about PureScript</li>
 <li>The <a href="https://discourse.purescript.org/">Purescript Discourse Forum</a> is another good place to search for solutions to common problems. Questions you ask here will be available to help future readers, whereas on Slack, message history is only kept for approximately 2 weeks.</li>
 <li><a href="https://github.com/jordanmartinez/purescript-jordans-reference">PureScript: Jordan's Reference</a>  is an alternative learning resource that goes into great depth. If a concept in this book is difficult to understand, consider reading the corresponding section in that reference.</li>
 <li><a href="https://pursuit.purescript.org">Pursuit</a> is a searchable database of PureScript types and functions. Read Pursuit's help page to <a href="https://pursuit.purescript.org/help/users">learn what kinds of searches you can do</a>.</li>

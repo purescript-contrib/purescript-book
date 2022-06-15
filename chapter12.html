@@ -292,11 +292,12 @@ translate dx dy shape = shape
 </code></pre>
 <p>Next, for each circle, the code creates an <code>Arc</code> based on these parameters and finally fills and strokes the arc with the current styles:</p>
 <pre><code class="language-haskell">    let path = arc ctx
-         { x     : x * 600.0
-         , y     : y * 600.0
-         , radius: r * 50.0
-         , start : 0.0
-         , end   : Math.tau
+         { x                  : x * 600.0
+         , y                  : y * 600.0
+         , radius             : r * 50.0
+         , start              : 0.0
+         , end                : Number.tau
+         , useCounterClockwise: false
          }
 
     fillPath ctx path
@@ -388,11 +389,11 @@ Type -&gt; Type
 </code></pre>
 <p>In the <code>render</code> function, the click count is used to determine the transformation applied to a rectangle:</p>
 <pre><code class="language-haskell">  withContext ctx do
-    let scaleX = Math.sin (toNumber count * Math.tau / 8.0) + 1.5
-    let scaleY = Math.sin (toNumber count * Math.tau / 12.0) + 1.5
+    let scaleX = Number.sin (toNumber count * Number.tau / 8.0) + 1.5
+    let scaleY = Number.sin (toNumber count * Number.tau / 12.0) + 1.5
 
     translate ctx { translateX: 300.0, translateY:  300.0 }
-    rotate ctx (toNumber count * Math.tau / 36.0)
+    rotate ctx (toNumber count * Number.tau / 36.0)
     scale ctx { scaleX: scaleX, scaleY: scaleY }
     translate ctx { translateX: -100.0, translateY: -100.0 }
 
@@ -531,13 +532,13 @@ lsystem init prod interpret n state = go init n
 <pre><code class="language-haskell">    interpret :: State -&gt; Letter -&gt; Effect State
 </code></pre>
 <p>To implement this function, we need to handle the three data constructors of the <code>Letter</code> type. To interpret the letters <code>L</code> (move left) and <code>R</code> (move right), we simply have to update the state to change the angle <code>theta</code> appropriately:</p>
-<pre><code class="language-haskell">    interpret state L = pure $ state { theta = state.theta - Math.tau / 6.0 }
-    interpret state R = pure $ state { theta = state.theta + Math.tau / 6.0 }
+<pre><code class="language-haskell">    interpret state L = pure $ state { theta = state.theta - Number.tau / 6.0 }
+    interpret state R = pure $ state { theta = state.theta + Number.tau / 6.0 }
 </code></pre>
 <p>To interpret the letter <code>F</code> (move forward), we can calculate the new position of the path, render a line segment, and update the state, as follows:</p>
 <pre><code class="language-haskell">    interpret state F = do
-      let x = state.x + Math.cos state.theta * 1.5
-          y = state.y + Math.sin state.theta * 1.5
+      let x = state.x + Number.cos state.theta * 1.5
+          y = state.y + Number.sin state.theta * 1.5
       moveTo ctx state.x state.y
       lineTo ctx x y
       pure { x, y, theta: state.theta }

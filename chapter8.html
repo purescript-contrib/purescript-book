@@ -635,7 +635,7 @@ simulate x0 v0 time =
 <p>There are also PureScript libraries which build abstractions on top of these libraries, such as</p>
 <ul>
 <li><a href="https://github.com/paf31/purescript-thermite"><code>thermite</code></a>, which builds on <a href="https://github.com/purescript-contrib/purescript-react"><code>react</code></a></li>
-<li><a href="https://github.com/spicydonuts/purescript-react-basic-hooks"><code>react-basic-hooks</code></a>, which builds on <a href="https://github.com/lumihq/purescript-react-basic"><code>react-basic</code></a></li>
+<li><a href="https://github.com/megamaddu/purescript-react-basic-hooks"><code>react-basic-hooks</code></a>, which builds on <a href="https://github.com/lumihq/purescript-react-basic"><code>react-basic</code></a></li>
 <li><a href="https://github.com/purescript-halogen/purescript-halogen"><code>halogen</code></a> which provides a type-safe set of abstractions on top of a custom virtual DOM library.</li>
 </ul>
 <p>In this chapter, we will use the <code>react-basic-hooks</code> library to add a user interface to our address book application, but the interested reader is encouraged to explore alternative approaches.</p>
@@ -668,7 +668,9 @@ $ npx parcel src/index.html --open
 &lt;/html&gt;
 </code></pre>
 <p>The <code>&lt;script</code> line includes the JavaScript entry point, <code>index.js</code>, which contains this single line:</p>
-<pre><code class="language-js">require(&quot;../output/Main/index.js&quot;).main();
+<pre><code class="language-js">import { main } from &quot;../output/Main/index.js&quot;;
+
+main();
 </code></pre>
 <p>It calls our generated JavaScript equivalent of the <code>main</code> function of <code>module Main</code> (<code>src/main.purs</code>). Recall that <code>spago build</code> puts all generated JavaScript in the <code>output</code> directory.</p>
 <p>The <code>main</code> function uses the DOM and HTML APIs to render our address book component within the <code>container</code> element we defined in <code>index.html</code>:</p>
@@ -764,7 +766,7 @@ setPerson :: (state -&gt; state) -&gt; Effect Unit
 <p>or as shorthand:</p>
 <pre><code class="language-hs">setPerson _ {firstName = &quot;NewName&quot;}
 </code></pre>
-<p>Non-<code>Record</code> states can also follow this update pattern. See <a href="https://github.com/spicydonuts/purescript-react-basic-hooks/pull/24#issuecomment-620300541">this guide</a> for more details on best practices.</p>
+<p>Non-<code>Record</code> states can also follow this update pattern. See <a href="https://github.com/megamaddu/purescript-react-basic-hooks/pull/24#issuecomment-620300541">this guide</a> for more details on best practices.</p>
 <p>Recall that <code>useState</code> is used within an <code>R.do</code> block. <code>R.do</code> is a special react hooks variant of <code>do</code>. The <code>R.</code> prefix &quot;qualifies&quot; this as coming from <code>React.Basic.Hooks</code>, and means we use their hooks-compatible version of <code>bind</code> in the <code>R.do</code> block. This is known as a &quot;qualified do&quot;. It lets us ignore the <code>Hook (UseState state)</code> wrapping and bind the inner <code>Tuple</code> of values to variables.</p>
 <p>Another possible state management strategy is with <code>useReducer</code>, but that is outside the scope of this chapter.</p>
 <p>Rendering <code>JSX</code> occurs here:</p>

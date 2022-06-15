@@ -144,21 +144,21 @@
 <p>First, work through this <a href="https://github.com/purescript/documentation/blob/master/guides/Getting-Started.md">Getting Started Guide</a> in the Documentation Repo to setup your environment and learn a few basics about the language. Don't worry if the code in the example solution to the <a href="http://projecteuler.net/problem=1">Project Euler</a> problem is confusing or contains unfamiliar syntax. We'll cover all of this in great detail in the upcoming chapters.</p>
 <h2 id="solving-exercises"><a class="header" href="#solving-exercises">Solving Exercises</a></h2>
 <p>Now that you've installed the necessary development tools, clone this book's repo.</p>
-<pre><code>git clone https://github.com/purescript-contrib/purescript-book.git
+<pre><code class="language-sh">git clone https://github.com/purescript-contrib/purescript-book.git
 </code></pre>
 <p>The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter. There's some initial setup required to reset the exercise solutions so they are ready to be solved by you. Use the <code>resetSolutions.sh</code> script to simplify this process. While you're at it, you should also strip out all the anchor comments with the <code>removeAnchors.sh</code> script (these anchors are used for copying code snippets into the book's rendered markdown, and you probably don't need this clutter in your local repo):</p>
-<pre><code>cd purescript-book
+<pre><code class="language-sh">cd purescript-book
 ./scripts/resetSolutions.sh
 ./scripts/removeAnchors.sh
 git add .
 git commit --all --message &quot;Exercises ready to be solved&quot;
 </code></pre>
 <p>Now run the tests for this chapter:</p>
-<pre><code>cd exercises/chapter2
+<pre><code class="language-sh">cd exercises/chapter2
 spago test
 </code></pre>
 <p>You should see the following successful test output:</p>
-<pre><code>→ Suite: Euler - Sum of Multiples
+<pre><code class="language-sh">→ Suite: Euler - Sum of Multiples
   ✓ Passed: below 10
   ✓ Passed: below 1000
 
@@ -167,7 +167,7 @@ All 2 tests passed! 🎉
 <p>Note that the <code>answer</code> function (found in <code>src/Euler.purs</code>) has been modified to find the multiples of 3 and 5 below any integer. The test suite (found in <code>test/Main.purs</code>) for this <code>answer</code> function is more comprehensive than the test in the earlier getting-started guide. Don't worry about understanding how this test framework code works while reading these early chapters.</p>
 <p>The remainder of the book contains lots of exercises. If you write your solutions in the <code>Test.MySolutions</code> module (<code>test/MySolutions.purs</code>), you can check your work against the provided test suite.</p>
 <p>Let's work through this next exercise together in test-driven-development style.</p>
-<h2 id="exercise"><a class="header" href="#exercise">Exercise:</a></h2>
+<h2 id="exercise"><a class="header" href="#exercise">Exercise</a></h2>
 <ol>
 <li>(Medium) Write a <code>diagonal</code> function to compute the length of the diagonal (or hypotenuse) of a right-angled triangle when given the lengths of the two other sides.</li>
 </ol>
@@ -181,7 +181,7 @@ All 2 tests passed! 🎉
     {-  Move this block comment starting point to enable more tests
 </code></pre>
 <p>If we attempt to run the test now, we'll encounter a compilation error because we have not yet implemented our <code>diagonal</code> function.</p>
-<pre><code>$ spago test
+<pre><code class="language-sh">$ spago test
 
 Error found:
 in module Test.Main
@@ -190,7 +190,7 @@ at test/Main.purs:21:27 - 21:35 (line 21, column 27 - line 21, column 35)
   Unknown value diagonal
 </code></pre>
 <p>Let's first take a look at what happens with a faulty version of this function. Add the following code to <code>test/MySolutions.purs</code>:</p>
-<pre><code class="language-hs">import Math (sqrt)
+<pre><code class="language-hs">import Data.Number (sqrt)
 
 diagonal w h = sqrt (w * w + h)
 </code></pre>
@@ -217,7 +217,7 @@ All 4 tests passed! 🎉
 <p>Success! Now you're ready to try these next exercises on your own.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
-<li>(Easy) Write a function <code>circleArea</code> which computes the area of a circle with a given radius. Use the <code>pi</code> constant, which is defined in the <code>Math</code> module. <em>Hint</em>: don't forget to import <code>pi</code> by modifying the <code>import Math</code> statement.</li>
+<li>(Easy) Write a function <code>circleArea</code> which computes the area of a circle with a given radius. Use the <code>pi</code> constant, which is defined in the <code>Numbers</code> module. <em>Hint</em>: don't forget to import <code>pi</code> by modifying the <code>import Data.Number</code> statement.</li>
 <li>(Medium) Write a function <code>leftoverCents</code> which takes an <code>Int</code> and returns what's leftover after dividing by <code>100</code>. Use the <code>rem</code> function. Search <a href="https://pursuit.purescript.org/">Pursuit</a> for this function to learn about usage and which module to import it from. <em>Note:</em> Your IDE may support auto-importing of this function if you accept the auto-completion suggestion.</li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
