@@ -13,7 +13,6 @@ You can edit this file as you like.
   , "lists"
   , "maybe"
   , "prelude"
-  , "psci-support"
   , "strings"
   , "test-unit"
   , "transformers"

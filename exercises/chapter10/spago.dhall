@@ -22,7 +22,6 @@ You can edit this file as you like.
   , "ordered-collections"
   , "pairs"
   , "prelude"
-  , "psci-support"
   , "react-basic"
   , "react-basic-dom"
   , "react-basic-hooks"

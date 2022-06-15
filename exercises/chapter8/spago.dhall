@@ -16,7 +16,6 @@ You can edit this file as you like.
   , "numbers"
   , "maybe"
   , "prelude"
-  , "psci-support"
   , "random"
   , "react-basic"
   , "react-basic-dom"

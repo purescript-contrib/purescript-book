@@ -12,7 +12,6 @@ You can edit this file as you like.
   , "integers"
   , "maybe"
   , "prelude"
-  , "psci-support"
   , "strings"
   , "test-unit"
   , "tuples"

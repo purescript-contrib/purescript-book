@@ -11,7 +11,6 @@ You can edit this file as you like.
   , "lists"
   , "numbers"
   , "prelude"
-  , "psci-support"
   , "test-unit"
   ]
 , packages = ./packages.dhall

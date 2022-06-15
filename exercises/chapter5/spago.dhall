@@ -13,7 +13,6 @@ You can edit this file as you like.
   , "numbers"
   , "partial"
   , "prelude"
-  , "psci-support"
   , "test-unit"
   ]
 , packages = ./packages.dhall

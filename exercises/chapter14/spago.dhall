@@ -11,7 +11,6 @@ You can edit this file as you like.
   , "free"
   , "maybe"
   , "prelude"
-  , "psci-support"
   , "strings"
   , "transformers"
   ]

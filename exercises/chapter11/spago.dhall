@@ -18,7 +18,6 @@ You can edit this file as you like.
   , "optparse"
   , "ordered-collections"
   , "prelude"
-  , "psci-support"
   , "strings"
   , "test-unit"
   , "transformers"

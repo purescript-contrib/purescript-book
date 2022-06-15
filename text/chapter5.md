@@ -14,10 +14,6 @@ The goal of the chapter will be to write a library to describe and manipulate si
 
 The source code for this chapter is defined in the file `src/Data/Picture.purs`.
 
-The project uses some packages which we have already seen, and adds the following new dependency:
-
-- `numbers`, which provides access to the JavaScript `Math` module.
-
 The `Data.Picture` module defines a data type `Shape` for simple shapes, and a type `Picture` for collections of shapes, along with functions for working with those types.
 
 The module imports the `Data.Foldable` module, which provides functions for folding data structures:

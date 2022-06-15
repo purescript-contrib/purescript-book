@@ -11,7 +11,6 @@ You can edit this file as you like.
   , "functions"
   , "lists"
   , "prelude"
-  , "psci-support"
   , "quickcheck"
   ]
 , packages = ./packages.dhall

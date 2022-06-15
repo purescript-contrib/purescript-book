@@ -22,7 +22,6 @@ You can edit this file as you like.
   , "ordered-collections"
   , "parallel"
   , "prelude"
-  , "psci-support"
   , "strings"
   , "test-unit"
   ]
