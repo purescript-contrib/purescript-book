@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
+-- import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 import Data.AddressBook (AddressBook, Entry, emptyBook, findEntry, insertEntry)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
