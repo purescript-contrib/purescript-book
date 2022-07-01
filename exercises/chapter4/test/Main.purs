@@ -1,4 +1,8 @@
-module Test.Main where
+module Test.Main
+  ( allFileAndDirectoryNames
+  , runChapterExamples
+  )
+  where
 
 import Prelude
 import Test.Examples
