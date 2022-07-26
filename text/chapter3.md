@@ -550,7 +550,7 @@ findEntry firstName lastName book = head (filter filterEntry book)
 
 Let's go over this code step by step.
 
-`findEntry` brings three names into scope: `firstName`, and `lastName`, both representing strings, and `book`, an `AddressBook`.
+`findEntry` brings three names into scope: `firstName` and `lastName`, both representing strings, and `book`, an `AddressBook`.
 
 The right hand side of the definition combines the `filter` and `head` functions: first, the list of entries is filtered, and the `head` function is applied to the result.
 
