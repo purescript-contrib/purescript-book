@@ -488,7 +488,7 @@ head :: AddressBook -&gt; Maybe Entry
     filterEntry entry = entry.firstName == firstName &amp;&amp; entry.lastName == lastName
 </code></pre>
 <p>Let's go over this code step by step.</p>
-<p><code>findEntry</code> brings three names into scope: <code>firstName</code>, and <code>lastName</code>, both representing strings, and <code>book</code>, an <code>AddressBook</code>.</p>
+<p><code>findEntry</code> brings three names into scope: <code>firstName</code> and <code>lastName</code>, both representing strings, and <code>book</code>, an <code>AddressBook</code>.</p>
 <p>The right hand side of the definition combines the <code>filter</code> and <code>head</code> functions: first, the list of entries is filtered, and the <code>head</code> function is applied to the result.</p>
 <p>The predicate function <code>filterEntry</code> is defined as an auxiliary declaration inside a <code>where</code> clause. This way, the <code>filterEntry</code> function is available inside the definition of our function, but not outside it. Also, it can depend on the arguments to the enclosing function, which is essential here because <code>filterEntry</code> uses the <code>firstName</code> and <code>lastName</code> arguments to filter the specified <code>Entry</code>.</p>
 <p>Note that, just like for top-level declarations, it was not necessary to specify a type signature for <code>filterEntry</code>. However, doing so is recommended as a form of documentation.</p>
