@@ -106,20 +106,17 @@ $ spago repl
 
 Let's rewrite our `diagonal` function from Chapter 2 in a foreign module. This function calculates the diagonal of a right-angled triangle.
 
-
 ```hs
 {{#include ../exercises/chapter10/test/Examples.purs:diagonal}}
 ```
 
 Recall that functions in PureScript are _curried_. `diagonal` is a function that takes a `Number` and returns a _function_, that takes a `Number` and returns a `Number`.
 
-
 ```js
 {{#include ../exercises/chapter10/test/Examples.js:diagonal}}
 ```
 
 Or with ES6 arrow syntax (see ES6 note below).
-
 
 ```js
 {{#include ../exercises/chapter10/test/Examples.js:diagonal_arrow}}
@@ -403,7 +400,7 @@ which returns `Just 1000` for any array input.
 This vulnerability is allowed because `(\_ -> Just 1000)` and `Just 1000` match the signatures of `(a -> Maybe a)` and `Maybe a` respectively when `a` is `Int` (based on input array).
 
 In the more secure type signature, even when `a` is determined to be `Int` based on the input array, we still need to provide valid functions matching the signatures involving `forall x`.
-The *only* option for `(forall x. Maybe x)` is `Nothing`, since a `Just` value would assume a type for `x` and will no longer be valid for all `x`. The only options for `(forall x. x -> Maybe x)` are `Just` (our desired argument) and `(\_ -> Nothing)`, which is the only remaining vulnerability.
+The _only_ option for `(forall x. Maybe x)` is `Nothing`, since a `Just` value would assume a type for `x` and will no longer be valid for all `x`. The only options for `(forall x. x -> Maybe x)` are `Just` (our desired argument) and `(\_ -> Nothing)`, which is the only remaining vulnerability.
 
 ## Defining Foreign Types
 
@@ -488,7 +485,7 @@ export const unsafeHead = arr => {
     }
     ```
 
-    Write a JavaScript function `quadraticRootsImpl` and a wrapper `quadraticRoots :: Quadratic -> Pair Complex` that uses the quadratic formula to find the roots of this polynomial. Return the two roots as a `Pair` of `Complex` numbers. *Hint:* Use the `quadraticRoots` wrapper to pass a constructor for `Pair` to `quadraticRootsImpl`.
+    Write a JavaScript function `quadraticRootsImpl` and a wrapper `quadraticRoots :: Quadratic -> Pair Complex` that uses the quadratic formula to find the roots of this polynomial. Return the two roots as a `Pair` of `Complex` numbers. _Hint:_ Use the `quadraticRoots` wrapper to pass a constructor for `Pair` to `quadraticRootsImpl`.
 
 1. (Medium) Write the function `toMaybe :: forall a. Undefined a -> Maybe a`. This function converts `undefined` to `Nothing` and `a` values to `Just`s.
 
@@ -675,7 +672,7 @@ unit
 done waiting
 ```
 
-Note that asynchronous logging in the repl just waits to print until the entire block has finished executing. This code behaves more predictably when run with `spago test` where there is a slight delay *between* prints.
+Note that asynchronous logging in the repl just waits to print until the entire block has finished executing. This code behaves more predictably when run with `spago test` where there is a slight delay _between_ prints.
 
 Let's look at another example where we return a value from a promise. This function is written with `async` and `await`, which is just syntactic sugar for promises.
 
@@ -715,6 +712,7 @@ unit
 ```
 
 ## Exercises
+
 Exercises for the above sections are still on the ToDo list. If you have any ideas for good exercises, please make a suggestion.
 
 ## JSON
@@ -1073,7 +1071,7 @@ Left errs -> alert $ "There are " <> show (length errs) <> " validation errors."
 alert $ "Error: " <> err <> ". Loading examplePerson"
 ```
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a wrapper for the `removeItem` method on the `localStorage` object, and add your foreign function to the `Effect.Storage` module.
  1. (Medium) Add a "Reset" button that, when clicked, calls the newly-created `removeItem` function to delete the "person" entry from local storage.
@@ -1090,9 +1088,9 @@ In this chapter, we've learned how to work with foreign JavaScript code from Pur
 
 For more examples, the `purescript`, `purescript-contrib` and `purescript-node` GitHub organizations provide plenty of examples of libraries which use the FFI. In the remaining chapters, we will see some of these libraries put to use to solve real-world problems in a type-safe way.
 
-# Addendum
+## Addendum
 
-## Calling PureScript from JavaScript
+### Calling PureScript from JavaScript
 
 Calling a PureScript function from JavaScript is very simple, at least for functions with simple types.
 
@@ -1127,7 +1125,7 @@ var Test = PS.Test;
 Test.gcd(15)(20);
 ```
 
-## Understanding Name Generation
+### Understanding Name Generation
 
 PureScript aims to preserve names during code generation as much as possible. In particular, most identifiers which are neither PureScript nor JavaScript keywords can be expected to be preserved, at least for names of top-level declarations.
 
@@ -1157,7 +1155,7 @@ var example$prime = 100;
 
 Where compiled PureScript code is intended to be called from JavaScript, it is recommended that identifiers only use alphanumeric characters, and avoid JavaScript keywords. If user-defined operators are provided for use in PureScript code, it is good practice to provide an alternative function with an alphanumeric name for use in JavaScript.
 
-## Runtime Data Representation
+### Runtime Data Representation
 
 Types allow us to reason at compile-time that our programs are "correct" in some sense - that is, they will not break at runtime. But what does that mean? In PureScript, it means that the type of an expression should be compatible with its representation at runtime.
 
@@ -1179,7 +1177,7 @@ As you might expect, PureScript's arrays correspond to JavaScript arrays. But re
 
 We've already seen that PureScript's records evaluate to JavaScript objects. Just as for functions and arrays, we can reason about the runtime representation of data in a record's fields by considering the types associated with its labels. Of course, the fields of a record are not required to be of the same type.
 
-## Representing ADTs
+### Representing ADTs
 
 For every constructor of an algebraic data type, the PureScript compiler creates a new JavaScript object type by defining a function. Its constructors correspond to functions which create new JavaScript objects based on those prototypes.
 
@@ -1243,7 +1241,7 @@ newtype PhoneNumber = PhoneNumber String
 
 is actually represented as a JavaScript string at runtime. This is useful for designing libraries, since newtypes provide an additional layer of type safety, but without the runtime overhead of another function call.
 
-## Representing Quantified Types
+### Representing Quantified Types
 
 Expressions with quantified (polymorphic) types have restrictive representations at runtime. In practice, this means that there are relatively few expressions with a given quantified type, but that we can reason about them quite effectively.
 
@@ -1282,7 +1280,7 @@ Without being able to inspect the runtime type of our function argument, our onl
 
 A full discussion of _parametric polymorphism_ and _parametricity_ is beyond the scope of this book. Note however, that since PureScript's types are _erased_ at runtime, a polymorphic function in PureScript _cannot_ inspect the runtime representation of its arguments (without using the FFI), and so this representation of polymorphic data is appropriate.
 
-## Representing Constrained Types
+### Representing Constrained Types
 
 Functions with a type class constraint have an interesting representation at runtime. Because the behavior of the function might depend on the type class instance chosen by the compiler, the function is given an additional argument, called a _type class dictionary_, which contains the implementation of the type class functions provided by the chosen instance.
 
@@ -1313,7 +1311,7 @@ import { showNumber } from 'Data.Show'
 shout(showNumber)(42);
 ```
 
- ## Exercises
+### Exercises
 
  1. (Easy) What are the runtime representations of these types?
 
@@ -1326,7 +1324,7 @@ shout(showNumber)(42);
      What can you say about the expressions which have these types?
  1. (Medium) Try using the functions defined in the `arrays` package, calling them from JavaScript, by compiling the library using `spago build` and importing modules using the `import` function in NodeJS. _Hint_: you may need to configure the output path so that the generated ES modules are available on the NodeJS module path.
 
-## Representing Side Effects
+### Representing Side Effects
 
 The `Effect` monad is also defined as a foreign type. Its runtime representation is quite simple - an expression of type `Effect a` should evaluate to a JavaScript function of **no arguments**, which performs any side-effects and returns a value with the correct runtime representation for type `a`.
 

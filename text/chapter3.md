@@ -27,8 +27,8 @@ Notice that the imports for these modules are listed explicitly in parentheses. 
 Assuming you have cloned the book's source code repository, the project for this chapter can be built using Spago, with the following commands:
 
 ```text
-$ cd chapter3
-$ spago build
+cd chapter3
+spago build
 ```
 
 ## Simple Types
@@ -311,7 +311,7 @@ The PSCi interactive mode allows for rapid prototyping with immediate feedback, 
 First, build the code you've written:
 
 ```text
-$ spago build
+spago build
 ```
 
 Next, load PSCi, and use the `import` command to import your new module:
@@ -623,6 +623,7 @@ book6 = john ++ peggy ++ ned ++ emptyBook
 Another common technique for eliminating parens is to use `apply`'s infix operator `$`, along with your standard prefix functions.
 
 For example, the earlier `book3` example could be rewritten as:
+
 ```haskell
 book7 = insertEntry john $ insertEntry peggy $ insertEntry ned emptyBook
 ```
@@ -641,9 +642,11 @@ infixr 0 apply as $
 The `apply` function takes another function (of type `(a -> b)`) as its first argument and a value (of type `a`) as its second argument, then calls that function with that value. If it seems like this function doesn't contribute anything meaningful, you are absolutely correct! Your program is logically identical without it (see [referential transparency](https://en.wikipedia.org/wiki/Referential_transparency)). The syntactic utility of this function comes from the special properties assigned to its infix operator. `$` is a right-associative (`infixr`), low precedence (`0`) operator, which lets us remove sets of parentheses for deeply-nested applications.
 
 Another parens-busting opportunity for the `$` operator is in our earlier `findEntry` function:
+
 ```haskell
 findEntry firstName lastName book = head $ filter filterEntry book
 ```
+
 We'll see an even more elegant way to rewrite this line with "function composition" in the next section.
 
 If you'd like to use a concise infix operator alias as a prefix function, you can surround it in parentheses:
@@ -687,7 +690,7 @@ In PureScript, the function composition operators are `<<<` and `>>>`. The first
 
 We can rewrite the right-hand side of `findEntry` using either operator. Using backwards-composition, the right-hand side would be
 
-```
+```haskell
 (head <<< filter filterEntry) book
 ```
 

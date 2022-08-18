@@ -115,7 +115,7 @@ main = log "Hello, World!"
 Commands which should be typed at the command line will be preceded by a dollar symbol:
 
 ```text
-$ spago build
+spago build
 ```
 
 Usually, these commands will be tailored to Linux/Mac OS users, so Windows users may need to make small changes such as modifying the file separator, or replacing shell built-ins with their Windows equivalents.

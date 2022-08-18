@@ -85,6 +85,7 @@ A guard is a boolean-valued expression which must be satisfied in addition to th
 ```
 
 In this case, the third line uses a guard to impose the extra condition that the first argument is strictly larger than the second. The guard in the final line uses the expression `otherwise`, which might seem like a keyword, but is in fact just a regular binding in `Prelude`:
+
 ```text
 > :type otherwise
 Boolean
@@ -174,7 +175,7 @@ We are able to append additional fields to the record, and the `showPerson` func
 Type of expression lacks required label "last"
 ```
 
-We can read the new type signature of `showPerson` as "takes any record with `first` and `last` fields which are `Strings` _and any other fields_, and returns a `String`". This function is polymorphic in the _row_ `r` of record fields, hence the name _row polymorphism_.  Note that this behavior is different than that of the original `showPerson`. Without the row variable `r`, `showPerson` only accepts records with _exactly_ a `first` and `last` field and no others. 
+We can read the new type signature of `showPerson` as "takes any record with `first` and `last` fields which are `Strings` _and any other fields_, and returns a `String`". This function is polymorphic in the _row_ `r` of record fields, hence the name _row polymorphism_.  Note that this behavior is different than that of the original `showPerson`. Without the row variable `r`, `showPerson` only accepts records with _exactly_ a `first` and `last` field and no others.
 
 Note that we could have also written
 
@@ -452,6 +453,7 @@ newtype CouldError err a = CouldError (Either err a)
 ```
 
 Also note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:
+
 ```haskell
 {{#include ../exercises/chapter5/src/ChapterExamples.purs:Coulomb}}
 ```
@@ -463,9 +465,11 @@ Another application of newtypes is to attach different _behavior_ to an existing
 ## Exercises
 
 1. (Easy) Define `Watt` as a `newtype` of `Number`. Then define a `calculateWattage` function using this new `Watt` type and the above definitions `Amp` and `Volt`:
+
 ```haskell
 calculateWattage :: Amp -> Volt -> Watt
 ```
+
 A wattage in `Watt`s can be calculated as the product of a given current in `Amp`s and a given voltage in `Volt`s.
 
 ## A Library for Vector Graphics

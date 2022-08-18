@@ -39,6 +39,7 @@ For example, to provide the player name using the `-p` option:
 $ spago run -a "-p Phil"
 >
 ```
+
 ```text
 $ spago bundle-app 
 $ node index.js -p Phil
@@ -136,7 +137,7 @@ Given the `sumArray` function above, we could use `execState` in PSCi to sum the
 21
 ```
 
- ## Exercises
+## Exercises
 
  1. (Easy) What is the result of replacing `execState` with `runState` or `evalState` in our example above?
  1. (Medium) A string of parentheses is _balanced_ if it is obtained by either concatenating zero-or-more shorter balanced
@@ -220,7 +221,7 @@ To run a computation in the `Reader` monad, the `runReader` function can be used
 runReader :: forall r a. Reader r a -> r -> a
 ```
 
- ## Exercises
+## Exercises
 
  In these exercises, we will use the `Reader` monad to build a small library for rendering documents with indentation. The "global configuration" will be a number indicating the current indentation level:
 
@@ -339,7 +340,7 @@ We can test our modified function in PSCi:
 Tuple 3 ["gcdLog 21 15","gcdLog 6 15","gcdLog 6 9","gcdLog 6 3","gcdLog 3 3"]
 ```
 
- ## Exercises
+## Exercises
 
  1. (Medium) Rewrite the `sumArray` function above using the `Writer` monad and the `Additive Int` monoid from the `monoid` package.
  1. (Medium) The _Collatz_ function is defined on natural numbers `n` as `n / 2` when `n` is even, and `3 * n + 1` when `n` is odd. For example, the iterated Collatz sequence starting at `10` is as follows:
@@ -545,7 +546,7 @@ One problem with this code is that we have to use the `lift` function multiple t
 
 Fortunately, as we will see, we can use the automatic code generation provided by type class inference to do most of this "heavy lifting" for us.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Use the `ExceptT` monad transformer over the `Identity` functor to write a function `safeDivide` which divides two numbers, throwing an error (as the String "Divide by zero!") if the denominator is zero.
  1. (Medium) Write a parser
@@ -712,7 +713,7 @@ We can even use `many` to fully split a string into its lower and upper case com
 
 Again, this illustrates the power of reusability that monad transformers bring - we were able to write a backtracking parser in a declarative style with only a few lines of code, by reusing standard abstractions!
 
- ## Exercises
+## Exercises
 
  1. (Easy) Remove the calls to the `lift` function from your implementation of the `string` parser. Verify that the new implementation type checks, and convince yourself that it should.
  1. (Medium) Use your `string` parser with the `some` combinator to write a parser `asFollowedByBs` which recognizes strings consisting of several copies of the string `"a"` followed by several copies of the string `"b"`.
@@ -911,7 +912,7 @@ The `runGame` function finally attaches the initial line handler to the console 
 {{#include ../exercises/chapter11/src/Main.purs:runGame_attach_handler}}
 ```
 
- ## Exercises
+## Exercises
 
  1. (Medium) Implement a new command `cheat`, which moves all game items from the game grid into the user's inventory. Create a function `cheat :: Game Unit` in the `Game` module, and use this function from `game`.
  1. (Difficult) The `Writer` component of the `RWS` monad is currently used for two types of messages: error messages and informational messages. Because of this, several parts of the code use case statements to handle error cases.
@@ -937,13 +938,14 @@ This is best illustrated by example. The application's `main` function is define
 The first argument is used to configure the `optparse` library. In our case, we simply configure it to show the help message when the application is run without any arguments (instead of showing a "missing argument" error) by using `OP.prefs OP.showHelpOnEmpty`, but the `Options.Applicative.Builder` module provides several other options.
 
 The second argument is the complete description of our parser program:
-```haskell 
+
+```haskell
 {{#include ../exercises/chapter11/src/Main.purs:argParser}}
 
 {{#include ../exercises/chapter11/src/Main.purs:parserOptions}}
 ```
 
-Here `OP.info` combines a `Parser` with a set of options for how the help message is formatted. `env <**> OP.helper` takes any command line argument `Parser` named `env` and adds a `--help` option to it automatically. Options for the help message are of type `InfoMod`, which is a monoid, so we can use the `fold` function to add several options together. 
+Here `OP.info` combines a `Parser` with a set of options for how the help message is formatted. `env <**> OP.helper` takes any command line argument `Parser` named `env` and adds a `--help` option to it automatically. Options for the help message are of type `InfoMod`, which is a monoid, so we can use the `fold` function to add several options together.
 
 The interesting part of our parser is constructing the `GameEnvironment`:
 
@@ -955,7 +957,7 @@ The interesting part of our parser is constructing the `GameEnvironment`:
 
 Notice how we were able to use the notation afforded by the applicative operators to give a compact, declarative specification of our command line interface. In addition, it is simple to add new command line arguments, simply by adding a new function argument to `runGame`, and then using `<*>` to lift `runGame` over an additional argument in the definition of `env`.
 
- ## Exercises
+## Exercises
 
  1. (Medium) Add a new Boolean-valued property `cheatMode` to the `GameEnvironment` record. Add a new command line flag `-c` to the `optparse` configuration which enables cheat mode. The `cheat` command from the previous exercise should be disallowed if cheat mode is not enabled.
 
@@ -968,4 +970,3 @@ Because we separated our implementation from the user interface, it would be pos
 We have seen how monad transformers allow us to write safe code in an imperative style, where effects are tracked by the type system. In addition, type classes provide a powerful way to abstract over the actions provided by a monad, enabling code reuse. We were able to use standard abstractions like `Alternative` and `MonadPlus` to build useful monads by combining standard monad transformers.
 
 Monad transformers are an excellent demonstration of the sort of expressive code that can be written by relying on advanced type system features such as higher-kinded polymorphism and multi-parameter type classes.
-

@@ -378,7 +378,7 @@ But the `combineList` function works for any `Applicative`! We can use it to com
 
 We will see the `combineList` function again later, when we consider `Traversable` functors.
 
- ## Exercises
+## Exercises
 
  1. (Medium) Write versions of the numeric operators `+`, `-`, `*` and `/` which work with optional arguments (i.e. arguments wrapped in `Maybe`) and return a value wrapped in `Maybe`. Name these functions `addMaybe`, `subMaybe`, `mulMaybe`, and `divMaybe`. _Hint_: Use `lift2`.
  1. (Medium) Extend the above exercise to work with all `Apply` types (not just `Maybe`). Name these new functions `addApply`, `subApply`, `mulApply`, and `divApply`.
@@ -537,7 +537,7 @@ pure ({ type: HomePhone, number: "555-555-5555" })
 invalid (["Field 'Number' did not match the required format"])
 ```
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a regular expression `stateRegex :: Regex` to check that a string only contains two alphabetic characters. _Hint_: see the source code for `phoneNumberRegex`.
  1. (Medium) Write a regular expression `nonEmptyRegex :: Regex` to check that a string is not entirely whitespace. _Hint_: If you need help developing this regex expression, check out [RegExr](https://regexr.com) which has a great cheatsheet and interactive test environment.
@@ -639,7 +639,7 @@ These examples show that traversing the `Nothing` value returns `Nothing` with n
 
 Other traversable functors include `Array`, and `Tuple a` and `Either a` for any type `a`. Generally, most "container" data type constructors have `Traversable` instances. As an example, the exercises will include writing a `Traversable` instance for a type of binary trees.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write `Eq` and `Show` instances for the following binary tree data structure:
 
@@ -651,7 +651,7 @@ Other traversable functors include `Array`, and `Tuple a` and `Either a` for any
 
      There are many "correct" formatting options for `Show` output. The test for this exercise expects the following whitespace style. This happens to match the default formatting of generic show, so you only need to make note of this if you're planning on writing this instance manually.
 
-     ```
+     ```haskell
      (Branch (Branch Leaf 8 Leaf) 42 Leaf)
      ```
 

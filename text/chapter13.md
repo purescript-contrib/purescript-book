@@ -87,7 +87,7 @@ not equal to expected:
 
 Notice how the input `xs` and `ys` were generated as arrays of randomly-selected integers.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a property which asserts that merging an array with the empty array does not modify the original array. _Note_: This new property is redundant, since this situation is already covered by our existing property. We're just trying to give you readers a simple way to practice using quickCheck.
  1. (Easy) Add an appropriate error message to the remaining property for `merge`.
@@ -134,7 +134,7 @@ quickCheck \xs ys ->
 
 Here, `xs` and `ys` both have type `Array Int`, since the `ints` function has been used to disambiguate the unknown type.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a function `bools` which forces the types of `xs` and `ys` to be `Array Boolean`, and add additional properties which test `mergePoly` at that type.
  1. (Medium) Choose a pure function from the core libraries (for example, from the `arrays` package), and write a QuickCheck property for it, including an appropriate error message. Your property should use a helper function to fix any polymorphic type arguments to either `Int` or `Boolean`.
@@ -241,7 +241,7 @@ quickCheck \t a ->
 
 Here, the argument `t` is a randomly-generated tree of type `Tree Int`, where the type argument disambiguated by the identity function `treeOfInt`.
 
- ## Exercises
+## Exercises
 
  1. (Medium) Create a newtype for `String` with an associated `Arbitrary` instance which generates collections of randomly-selected characters in the range `a-z`. _Hint_: use the `elements` and `arrayOf` functions from the `Test.QuickCheck.Gen` module.
  1. (Difficult) Write a property which asserts that a value inserted into a tree is still a member of that tree after arbitrarily many more insertions.
@@ -384,7 +384,7 @@ Success : Success : ...
 
 `quickCheckPure` might be useful in other situations, such as generating random input data for performance benchmarks, or generating sample form data for web applications.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write `Coarbitrary` instances for the `Byte` and `Sorted` type constructors.
  1. (Medium) Write a (higher-order) property which asserts associativity of the `mergeWith f` function for any function `f`. Test your property in PSCi using `quickCheckPure`.

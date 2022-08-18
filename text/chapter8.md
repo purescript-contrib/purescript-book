@@ -305,7 +305,7 @@ Try writing `userCity` using only `pure` and `apply`: you will see that it is im
 
 In the last chapter, we saw that the `Applicative` type class can be used to express parallelism. This was precisely because the function arguments being lifted were independent of one another. Since the `Monad` type class allows computations to depend on the results of previous computations, the same does not apply - a monad has to combine its side-effects in sequence.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type. _Hint:_ Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `arrays` package. Use do notation with the `Maybe` monad to combine these functions.
  1. (Medium) Write a function `possibleSums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
@@ -402,7 +402,7 @@ log :: String -> Effect Unit
 ```
 
 > _Aside:_ You may encounter IDE suggestions for the more general (and more elaborately typed) `log` function from `Effect.Class.Console`. This is interchangeable with the one from `Effect.Console` when dealing with the basic `Effect` monad. Reasons for the more general version will become clearer after reading about "Monad Transformers" in the "Monadic Adventures" chapter. For the curious (and impatient), this works because there's a `MonadEffect` instance for `Effect`.
-
+>
 > ```hs
 > log :: forall m. MonadEffect m => String -> m Unit
 > ```
@@ -428,7 +428,7 @@ main = random >>= logShow
 
 Try running this yourself with:
 
-```
+```shell
 spago run --main Test.Random
 ```
 
@@ -462,7 +462,7 @@ main = do
 
 We encounter the following exception:
 
-```
+```text
     throw err;
     ^
 Error: ENOENT: no such file or directory, open 'iDoNotExist.md'
@@ -699,10 +699,10 @@ To keep things simple, the form will have a fixed shape: the different phone num
 
 You can launch the web app from the `exercises/chapter8` directory with the following commands:
 
-```
-$ npm install
-$ npx spago build
-$ npx parcel src/index.html --open
+```shell
+npm install
+npx spago build
+npx parcel src/index.html --open
 ```
 
 If development tools such as `spago` and `parcel` are installed globally, then the `npx` prefix may be omitted. You have likely already installed `spago` globally with `npm i -g spago`, and the same can be done for `parcel`.
@@ -894,9 +894,9 @@ pure
 
 Here we produce `JSX` which represents the intended state of the DOM. This JSX is typically created by applying functions corresponding to HTML tags (e.g. `div`, `form`, `h3`, `li`, `ul`, `label`, `input`) which create single HTML elements. These HTML elements are actually React components themselves, converted to JSX. There are usually three variants of each of these functions:
 
-* `div_`: Accepts an array of child elements. Uses default attributes.
-* `div`: Accepts a `Record` of attributes. An array of child elements may be passed to the `children` field of this record.
-* `div'`: Same as `div`, but returns the `ReactComponent` before conversion to `JSX`.
+- `div_`: Accepts an array of child elements. Uses default attributes.
+- `div`: Accepts a `Record` of attributes. An array of child elements may be passed to the `children` field of this record.
+- `div'`: Same as `div`, but returns the `ReactComponent` before conversion to `JSX`.
 
 To display validation errors (if any) at the top of our form, we create a `renderValidationErrors` helper function that turns the `Errors` structure into an array of JSX. This array is prepended to the rest of our form.
 

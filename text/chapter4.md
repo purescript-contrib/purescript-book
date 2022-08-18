@@ -67,7 +67,7 @@ The `tail` function returns a `Maybe` wrapping the given array without its first
 
 This example is obviously a very impractical way to find the length of an array in JavaScript, but should provide enough help to allow you to complete the following exercises:
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a recursive function `isEven` which returns `true` if and only if its input is an even integer.
  2. (Medium) Write a recursive function `countEven` which counts the number of even integers in an array. _Hint_: the function `head` (also available in `Data.Array`) can be used to find the first element in a non-empty array.
@@ -178,14 +178,14 @@ For example, suppose we wanted to compute an array of all numbers between 1 and 
 [2,4,6,8,10]
 ```
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a function `squared` which calculates the squares of an array of numbers. _Hint_: Use the `map` or `<$>` function.
  1. (Easy) Write a function `keepNonNegative` which removes the negative numbers from an array of numbers. _Hint_: Use the `filter` function.
  1. (Medium)
-    * Define an infix synonym `<$?>` for `filter`. _Note_: Infix synonyms may not be defined in the REPL, but you can define it in a file.
-    * Write a `keepNonNegativeRewrite` function, which is the same as `keepNonNegative`, but replaces `filter` with your new infix operator `<$?>`.
-    * Experiment with the precedence level and associativity of your operator in PSCi. _Note_: There are no unit tests for this step.
+    - Define an infix synonym `<$?>` for `filter`. _Note_: Infix synonyms may not be defined in the REPL, but you can define it in a file.
+    - Write a `keepNonNegativeRewrite` function, which is the same as `keepNonNegative`, but replaces `filter` with your new infix operator `<$?>`.
+    - Experiment with the precedence level and associativity of your operator in PSCi. _Note_: There are no unit tests for this step.
 
 ## Flattening Arrays
 
@@ -299,7 +299,7 @@ We can rewrite our `factors` function using do notation as follows:
 The keyword `do` introduces a block of code which uses do notation. The block consists of expressions of a few types:
 
 - Expressions which bind elements of an array to a name. These are indicated with the backwards-facing arrow `<-`, with a name on the left, and an expression on the right whose type is an array.
-- Expressions which do not bind elements of the array to names. The `do` *result* is an example of this kind of expression and is illustrated in the last line, `pure [i, j]`.
+- Expressions which do not bind elements of the array to names. The `do` _result_ is an example of this kind of expression and is illustrated in the last line, `pure [i, j]`.
 - Expressions which give names to expressions, using the `let` keyword.
 
 This new notation hopefully makes the structure of the algorithm clearer. If you mentally replace the arrow `<-` with the word "choose", you might read it as follows: "choose an element `i` between 1 and n, then choose an element `j` between `i` and `n`, and return `[i, j]`".
@@ -360,7 +360,7 @@ That is, if `guard` is passed an expression which evaluates to `true`, then it r
 
 This means that if the guard fails, then the current branch of the array comprehension will terminate early with no results. This means that a call to `guard` is equivalent to using `filter` on the intermediate array. Depending on the application, you might prefer to use `guard` instead of a `filter`. Try the two definitions of `factors` to verify that they give the same results.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a function `isPrime` which tests if its integer argument is prime or not. _Hint_: Use the `factors` function.
  1. (Medium) Write a function `cartesianProduct` which uses do notation to find the _cartesian product_ of two arrays, i.e. the set of all pairs of elements `a`, `b`, where `a` is an element of the first array, and `b` is an element of the second.
@@ -518,7 +518,7 @@ For example, we can reverse an array using `foldr`:
 
 Writing `reverse` in terms of `foldl` will be left as an exercise for the reader.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a function `allTrue` which uses `foldl` to test whether an array of boolean values are all true.
  2. (Medium - No Test) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns `true`. In other words, complete the sentence: "The function returns `true` when `xs` contains ..."
@@ -612,7 +612,7 @@ Here is the new version:
 
 Try out the new version in PSCi - you should get the same result. I'll let you decide which version you find clearer.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Write a function `onlyFiles` which returns all _files_ (not directories) in all subdirectories of a directory.
  2. (Medium) Write a function `whereIs` to search for a file by name. The function should return a value of type `Maybe Path`, indicating the directory containing the file, if it exists. It should behave as follows:

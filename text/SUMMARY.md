@@ -1,6 +1,7 @@
 # Summary
 
 [Foreword](../README.md)
+
 * [Introduction](chapter1.md)
 * [Getting Started](chapter2.md)
 * [Functions and Records](chapter3.md)

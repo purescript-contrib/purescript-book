@@ -8,7 +8,7 @@ This motivating example for this chapter will be a library for hashing data stru
 
 We will also see a collection of standard type classes from PureScript's Prelude and standard libraries. PureScript code leans heavily on the power of type classes to express ideas concisely, so it will be beneficial to familiarize yourself with these classes.
 
-If you come from an Object Oriented background, please note that the word "class" means something _very_ different in this context than what you're used to. A type class serves a purpose more similar to an OO interface. 
+If you come from an Object Oriented background, please note that the word "class" means something _very_ different in this context than what you're used to. A type class serves a purpose more similar to an OO interface.
 
 ## Project Setup
 
@@ -127,7 +127,7 @@ No type class instance was found for
 
 Type class instances can be defined in one of two places: in the same module that the type class is defined, or in the same module that the type "belonging to" the type class is defined. An instance defined in any other spot is called an ["orphan instance"](https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#orphan-instances) and is not allowed by the PureScript compiler. Some of the exercises in this chapter will require you to copy the definition of a type into your MySolutions module so that you can define type class instances for that type.
 
- ## Exercises
+## Exercises
 
 1. (Easy) Define a `Show` instance for `Point`. Match the same output as the `showPoint` function from the previous chapter. _Note:_ Point is now a `newtype` (instead of a `type` synonym), which allows us to customize how to `show` it. Otherwise, we'd be stuck with the default `Show` instance for records.
 
@@ -407,7 +407,6 @@ These two type class instances are provided in the `prelude` library.
 
 When the program is compiled, the correct type class instance for `Show` is chosen based on the inferred type of the argument to `show`. The selected instance might depend on many such instance relationships, but this complexity is not exposed to the developer.
 
-
 ## Exercises
 
 1. (Easy) The following declaration defines a type of non-empty arrays of elements of type `a`:
@@ -638,7 +637,7 @@ Another reason to define a superclass relationship is in the case where there is
     {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:Multiply_Action}}
       ...
     ```
-    
+
     Remember, your instance must satisfy the laws listed above.
 
 1. (Difficult) There are actually multiple ways to implement an instance of `Action Multiply Int`. How many can you think of? Purescript does not allow multiple implementations of a same instance, so you will have to replace your original implementation. _Note_: the tests cover 4 implementations.
@@ -649,7 +648,7 @@ Another reason to define a superclass relationship is in the case where there is
     {{#include ../exercises/chapter6/test/no-peeking/Solutions.purs:actionMultiplyString}}
       ...
     ```
-    
+
     _Hint_: Search Pursuit for a helper-function with the signature [`String -> Int -> String`](https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String). Note that `String` might appear as a more generic type (such as `Monoid`).
 
     Does this instance satisfy the laws listed above?
@@ -739,7 +738,7 @@ What about some more interesting types? To prove the type class law for the `Arr
 
 The source code for this chapter includes several other examples of `Hashable` instances, such as instances for the `Maybe` and `Tuple` type.
 
- ## Exercises
+## Exercises
 
  1. (Easy) Use PSCi to test the hash functions for each of the defined instances. _Note_: There is no provided unit test for this exercise.
  1. (Medium) Write a function `arrayHasDuplicates` which tests if an array has any duplicate elements based on both hash and value equality. First check for hash equality with the `hashEqual` function, then check for value equality with `==` if a duplicate pair of hashes is found. _Hint_: the `nubByEq` function in `Data.Array` should make this task much simpler.
