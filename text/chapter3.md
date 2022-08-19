@@ -27,8 +27,8 @@ Notice that the imports for these modules are listed explicitly in parentheses. 
 Assuming you have cloned the book's source code repository, the project for this chapter can be built using Spago, with the following commands:
 
 ```text
-cd chapter3
-spago build
+$ cd chapter3
+$ spago build
 ```
 
 ## Simple Types
@@ -311,7 +311,7 @@ The PSCi interactive mode allows for rapid prototyping with immediate feedback, 
 First, build the code you've written:
 
 ```text
-spago build
+$ spago build
 ```
 
 Next, load PSCi, and use the `import` command to import your new module:

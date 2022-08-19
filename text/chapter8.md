@@ -700,9 +700,9 @@ To keep things simple, the form will have a fixed shape: the different phone num
 You can launch the web app from the `exercises/chapter8` directory with the following commands:
 
 ```shell
-npm install
-npx spago build
-npx parcel src/index.html --open
+$ npm install
+$ npx spago build
+$ npx parcel src/index.html --open
 ```
 
 If development tools such as `spago` and `parcel` are installed globally, then the `npx` prefix may be omitted. You have likely already installed `spago` globally with `npm i -g spago`, and the same can be done for `parcel`.

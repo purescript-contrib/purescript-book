@@ -64,7 +64,7 @@ fillPath :: forall a. Context2D -> Effect a -> Effect a
 Build the rectangle example, providing `Example.Rectangle` as the name of the main module:
 
 ```text
-spago bundle-app --main Example.Rectangle --to dist/Main.js
+$ spago bundle-app --main Example.Rectangle --to dist/Main.js
 ```
 
 Now, open the `html/index.html` file and verify that this code renders a blue rectangle in the center of the canvas.
@@ -145,7 +145,7 @@ The result of this code snippet is to fill an isosceles triangle.
 Build the example by specifying `Example.Shapes` as the main module:
 
 ```text
-spago bundle-app --main Example.Shapes --to dist/Main.js
+$ spago bundle-app --main Example.Shapes --to dist/Main.js
 ```
 
 and open `html/index.html` again to see the result. You should see the three different types of shapes rendered to the canvas.
@@ -210,7 +210,7 @@ Next, for each circle, the code creates an `Arc` based on these parameters and f
 Build this example by specifying the `Example.Random` module as the main module:
 
 ```text
-spago bundle-app --main Example.Random --to dist/Main.js
+$ spago bundle-app --main Example.Random --to dist/Main.js
 ```
 
 and view the result by opening `html/index.html`.
@@ -353,7 +353,7 @@ This action uses `withContext` to preserve the original transformation, and then
 Build the example:
 
 ```text
-spago bundle-app --main Example.Refs --to dist/Main.js
+$ spago bundle-app --main Example.Refs --to dist/Main.js
 ```
 
 and open the `html/index.html` file. If you click the canvas repeatedly, you should see a green rectangle rotating around the center of the canvas.
@@ -547,7 +547,7 @@ To render this L-system, we can simply use the `strokePath` action:
 Compile the L-system example using
 
 ```text
-spago bundle-app --main Example.LSystem --to dist/Main.js
+$ spago bundle-app --main Example.LSystem --to dist/Main.js
 ```
 
 and open `html/index.html`. You should see the Koch curve rendered to the canvas.

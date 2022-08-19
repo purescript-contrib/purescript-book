@@ -1,5 +1,6 @@
 {
   "line-length": false,
   "no-duplicate-heading": false,
-  "no-trailing-punctuation": false
+  "no-trailing-punctuation": false,
+  "commands-show-output": false
 }
