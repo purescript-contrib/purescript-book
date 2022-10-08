@@ -1167,7 +1167,7 @@ The good news is that PureScript expressions have particularly simple representa
 
 For simple types, the correspondence is almost trivial. For example, if an expression has the type `Boolean`, then its value `v` at runtime should satisfy `typeof v === 'boolean'`. That is, expressions of type `Boolean` evaluate to one of the (JavaScript) values `true` or `false`. In particular, there is no PureScript expression of type `Boolean` which evaluates to `null` or `undefined`.
 
-A similar law holds for expressions of type `Int` `Number` and `String` - expressions of type `Int` or `Number` evaluate to non-null JavaScript numbers, and expressions of type `String` evaluate to non-null JavaScript strings. Expressions of type `Int` will evaluate to integers at runtime, even though they cannot not be distinguished from values of type `Number` by using `typeof`.
+A similar law holds for expressions of type `Int`, `Number`, and `String` - expressions of type `Int` or `Number` evaluate to non-null JavaScript numbers, and expressions of type `String` evaluate to non-null JavaScript strings. Expressions of type `Int` will evaluate to integers at runtime, even though they cannot be distinguished from values of type `Number` by using `typeof`.
 
 What about `Unit`? Well, since `Unit` has only one inhabitant (`unit`) and its value is not observable, it doesn't actually matter what it's represented with at runtime. Old code tends to represent it using `{}`. Newer code, however, tends to use `undefined`. So, although it doesn't really matter what you use to represent `Unit`, it is recommended to use `undefined` (not returning anything from a function also returns `undefined`).
 
