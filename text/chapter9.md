@@ -16,7 +16,7 @@ New PureScript libraries introduced in this chapter are:
 When running outside of the browser (such as in our Node.js environment), the `affjax` library requires the `xhr2` NPM module. Install that by running:
 
 ```shell
-$ npm install
+$ npm install xhr2
 ```
 
 ## Asynchronous JavaScript
