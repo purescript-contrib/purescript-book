@@ -13,10 +13,10 @@ New PureScript libraries introduced in this chapter are:
 - `affjax` - HTTP requests with AJAX and `Aff`.
 - `parallel` - parallel execution of `Aff`.
 
-When running outside of the browser (such as in our Node.js environment), the `affjax` library requires the `xhr2` NPM module. Install that by running:
+When running outside of the browser (such as in our Node.js environment), the `affjax` library requires the `xhr2` NPM module, which is listed as dependency in the `package.json` of this chapter. Install that by running:
 
 ```shell
-$ npm install xhr2
+$ npm install
 ```
 
 ## Asynchronous JavaScript
