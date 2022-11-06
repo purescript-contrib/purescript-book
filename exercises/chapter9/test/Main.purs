@@ -85,7 +85,7 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
       test "missing" do
         absolutePath <- realpath $ Path.concat [ inDir ]
         chars <- countCharacters $ Path.concat [ absolutePath, "foof.txt" ]
-        Assert.equal (Left ("ENOENT: no such file or directory, open '" <> absolutePath <> "/foof.txt'")) $ lmap message chars
+        Assert.equal (Left ("ENOENT: no such file or directory, open '" <> absolutePath <> Path.sep <> "foof.txt'")) $ lmap message chars
     test "writeGet" do
       let
         outFile = Path.concat [ outDir, "user.txt" ]
@@ -131,7 +131,7 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
         Assert.equal (Set.fromFoldable expected) $ Set.fromFoldable actualRelative
       test "one file" do
         let
-          file = Path.concat [ recurseDir, "c/unused.txt" ]
+          file = Path.concat [ recurseDir, "c", Path.sep, "unused.txt" ]
 
           expected = [ file ]
         actual <- recurseFiles file
