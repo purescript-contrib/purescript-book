@@ -131,7 +131,7 @@ This line should have been automatically deleted by resetSolutions.sh. See Chapt
         Assert.equal (Set.fromFoldable expected) $ Set.fromFoldable actualRelative
       test "one file" do
         let
-          file = Path.concat [ recurseDir, "c", Path.sep, "unused.txt" ]
+          file = Path.concat [ recurseDir, "c", "unused.txt" ]
 
           expected = [ file ]
         actual <- recurseFiles file
