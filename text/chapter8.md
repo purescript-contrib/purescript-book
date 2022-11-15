@@ -50,7 +50,7 @@ In the last chapter, we formed an intuition for the `Maybe` applicative functor,
 
 In general, a _monad_ for some type constructor `m` provides a way to use do notation with values of type `m a`. Note that in the array comprehension above, every line contains a computation of type `Array a` for some type `a`. In general, every line of a do notation block will contain a computation of type `m a` for some type `a` and our monad `m`. The monad `m` must be the same on every line (i.e. we fix the side-effect), but the types `a` can differ (i.e. individual computations can have different result types).
 
-Here is another example of do notation, this type applied to the type constructor `Maybe`. Suppose we have some type `XML` representing XML nodes, and a function
+Here is another example of do notation, this time applied to the type constructor `Maybe`. Suppose we have some type `XML` representing XML nodes, and a function
 
 ```hs
 child :: XML -> String -> Maybe XML
