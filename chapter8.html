@@ -180,7 +180,7 @@ countThrows n = do
 </code></pre>
 <p>In the last chapter, we formed an intuition for the <code>Maybe</code> applicative functor, embedding PureScript functions into a larger programming language supporting <em>optional values</em>. In the same way, we can form an intuition for the <em>array monad</em>, embedding PureScript functions into a larger programming language supporting <em>non-deterministic choice</em>.</p>
 <p>In general, a <em>monad</em> for some type constructor <code>m</code> provides a way to use do notation with values of type <code>m a</code>. Note that in the array comprehension above, every line contains a computation of type <code>Array a</code> for some type <code>a</code>. In general, every line of a do notation block will contain a computation of type <code>m a</code> for some type <code>a</code> and our monad <code>m</code>. The monad <code>m</code> must be the same on every line (i.e. we fix the side-effect), but the types <code>a</code> can differ (i.e. individual computations can have different result types).</p>
-<p>Here is another example of do notation, this type applied to the type constructor <code>Maybe</code>. Suppose we have some type <code>XML</code> representing XML nodes, and a function</p>
+<p>Here is another example of do notation, this time applied to the type constructor <code>Maybe</code>. Suppose we have some type <code>XML</code> representing XML nodes, and a function</p>
 <pre><code class="language-hs">child :: XML -&gt; String -&gt; Maybe XML
 </code></pre>
 <p>which looks for a child element of a node, and returns <code>Nothing</code> if no such element exists.</p>
