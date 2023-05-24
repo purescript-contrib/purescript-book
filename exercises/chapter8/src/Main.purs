@@ -127,6 +127,7 @@ mkAddressBookApp =
                                 ]
                               <> renderPhoneNumbers
                           ]
+                      , key: "person-form"
                       }
                   ]
           }
