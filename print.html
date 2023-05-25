@@ -3638,24 +3638,29 @@ copyFile('file1.txt', 'file2.txt')
 <p>The <code>Aff</code> monad in PureScript offers similar ergonomics of JavaScript's <code>async</code>/<code>await</code> syntax. Here is the same <code>copyFile</code> example from before, but rewritten in PureScript using <code>Aff</code>:</p>
 <pre><code class="language-hs">import Prelude
 import Data.Either (Either(..))
-import Effect.Aff (Aff, attempt, message)
+import Effect.Aff (Aff, attempt, message, launchAff_)
+import Effect (Effect)
 import Effect.Class.Console (log)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (readTextFile, writeTextFile)
 import Node.Path (FilePath)
 
-copyFile :: FilePath -&gt; FilePath -&gt; Aff Unit
-copyFile file1 file2 = do
-  my_data &lt;- readTextFile UTF8 file1
-  writeTextFile UTF8 file2 my_data
+main :: Effect Unit
+main = launchAff_ program
 
-main :: Aff Unit
-main = do
+program :: Aff Unit
+program = do
   result &lt;- attempt $ copyFile &quot;file1.txt&quot; &quot;file2.txt&quot;
   case result of
     Left e -&gt; log $ &quot;There was a problem with copyFile: &quot; &lt;&gt; message e
     _ -&gt; pure unit
+
+copyFile :: FilePath -&gt; FilePath -&gt; Aff Unit
+copyFile file1 file2 = do
+  my_data &lt;- readTextFile UTF8 file1
+  writeTextFile UTF8 file2 my_data
 </code></pre>
+<p>Note that we have to use <code>launchAff_</code> to convert the <code>Aff</code> to <code>Effect</code> because <code>main</code> must be <code>Effect Unit</code>.</p>
 <p>It is also possible to re-write the above snippet using callbacks or synchronous functions (for example with <code>Node.FS.Async</code> and <code>Node.FS.Sync</code> respectively), but those share the same downsides as discussed earlier with JavaScript, and so that coding style is not recommended.</p>
 <p>The syntax for working with <code>Aff</code> is very similar to working with <code>Effect</code>. They are both monads, and can therefore be written with do notation.</p>
 <p>For example, if we look at the signature of <code>readTextFile</code>, we see that it returns the file contents as a <code>String</code> wrapped in <code>Aff</code>:</p>
