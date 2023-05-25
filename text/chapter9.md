@@ -52,6 +52,8 @@ The `Aff` monad in PureScript offers similar ergonomics of JavaScript's `async`/
 {{#include ../exercises/chapter9/test/Copy.purs:copyFile}}
 ```
 
+Note that we have to use `launchAff_` to convert the `Aff` to `Effect` because `main` must be `Effect Unit`.
+
 It is also possible to re-write the above snippet using callbacks or synchronous functions (for example with `Node.FS.Async` and `Node.FS.Sync` respectively), but those share the same downsides as discussed earlier with JavaScript, and so that coding style is not recommended.
 
 The syntax for working with `Aff` is very similar to working with `Effect`. They are both monads, and can therefore be written with do notation.
