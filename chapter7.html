@@ -218,11 +218,11 @@ class Functor f &lt;= Apply f where
 <p>The <code>Apply</code> type class is a subclass of <code>Functor</code>, and defines an additional function <code>apply</code>. As <code>&lt;$&gt;</code> was defined as an alias for <code>map</code>, the <code>Prelude</code> module defines <code>&lt;*&gt;</code> as an alias for <code>apply</code>. As we'll see, these two operators are often used together.</p>
 <p>Note that this <a href="https://pursuit.purescript.org/packages/purescript-prelude/docs/Control.Apply#v:apply"><code>apply</code></a> is different than the <a href="https://pursuit.purescript.org/packages/purescript-prelude/docs/Data.Function#v:apply"><code>apply</code></a> from <code>Data.Function</code> (infixed as <code>$</code>). Luckily, infix notation is almost always used for the latter, so you don't need to worry about name collisions.</p>
 <p>The type of <code>apply</code> looks a lot like the type of <code>map</code>. The difference between <code>map</code> and <code>apply</code> is that <code>map</code> takes a function as an argument, whereas the first argument to <code>apply</code> is wrapped in the type constructor <code>f</code>. We'll see how this is used soon, but first, let's see how to implement the <code>Apply</code> type class for the <code>Maybe</code> type:</p>
-<pre><code class="language-haskell">instance functorMaybe :: Functor Maybe where
+<pre><code class="language-haskell">instance Functor Maybe where
   map f (Just a) = Just (f a)
   map f Nothing  = Nothing
 
-instance applyMaybe :: Apply Maybe where
+instance Apply Maybe where
   apply (Just f) (Just x) = Just (f x)
   apply _        _        = Nothing
 </code></pre>
@@ -271,7 +271,7 @@ lift3 f x y z = ado
 </code></pre>
 <p><code>Applicative</code> is a subclass of <code>Apply</code> and defines the <code>pure</code> function. <code>pure</code> takes a value and returns a value whose type has been wrapped with the type constructor <code>f</code>.</p>
 <p>Here is the <code>Applicative</code> instance for <code>Maybe</code>:</p>
-<pre><code class="language-haskell">instance applicativeMaybe :: Applicative Maybe where
+<pre><code class="language-haskell">instance Applicative Maybe where
   pure x = Just x
 </code></pre>
 <p>If we think of applicative functors as functors which allow lifting of functions, then <code>pure</code> can be thought of as lifting functions of zero arguments.</p>
@@ -603,7 +603,7 @@ validatePersonAdo p = ado
 </code></pre>
 <p>Traversable functors capture the idea of traversing a data structure, collecting a set of effectful computations, and combining their effects. In fact, <code>sequence</code> and <code>traverse</code> are equally important to the definition of <code>Traversable</code> - each can be implemented in terms of each other. This is left as an exercise for the interested reader.</p>
 <p>The <code>Traversable</code> instance for lists given in the <code>Data.List</code> module is:</p>
-<pre><code class="language-haskell">instance traversableList :: Traversable List where
+<pre><code class="language-haskell">instance Traversable List where
 -- traverse :: forall a b m. Applicative m =&gt; (a -&gt; m b) -&gt; List a -&gt; m (List b)
 traverse _ Nil         = pure Nil
 traverse f (Cons x xs) = Cons &lt;$&gt; f x &lt;*&gt; traverse f xs

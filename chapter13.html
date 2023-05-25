@@ -250,7 +250,7 @@ ints = id
 <p>For example, we can use the <code>Arbitrary</code> instance for the <code>Int</code> type, provided in the <code>quickcheck</code> library, to create a distribution on the 256 byte values, using the <code>Functor</code> instance for <code>Gen</code> to map a function from integers to bytes over arbitrary integer values:</p>
 <pre><code class="language-haskell">newtype Byte = Byte Int
 
-instance arbitraryByte :: Arbitrary Byte where
+instance Arbitrary Byte where
   arbitrary = map intToByte arbitrary
     where
     intToByte n | n &gt;= 0 = Byte (n `mod` 256)
@@ -267,7 +267,7 @@ instance arbitraryByte :: Arbitrary Byte where
 sorted :: forall a. Sorted a -&gt; Array a
 sorted (Sorted xs) = xs
 
-instance arbSorted :: (Arbitrary a, Ord a) =&gt; Arbitrary (Sorted a) where
+instance (Arbitrary a, Ord a) =&gt; Arbitrary (Sorted a) where
   arbitrary = map (Sorted &lt;&lt;&lt; sort) arbitrary
 </code></pre>
 <p>With this type constructor, we can modify our test as follows:</p>
@@ -296,7 +296,7 @@ true
 false
 </code></pre>
 <p>The <code>toArray</code> and <code>fromArray</code> functions can be used to convert sorted trees to and from arrays. We can use <code>fromArray</code> to write an <code>Arbitrary</code> instance for trees:</p>
-<pre><code class="language-haskell">instance arbTree :: (Arbitrary a, Ord a) =&gt; Arbitrary (Tree a) where
+<pre><code class="language-haskell">instance (Arbitrary a, Ord a) =&gt; Arbitrary (Tree a) where
   arbitrary = map fromArray arbitrary
 </code></pre>
 <p>We can now use <code>Tree a</code> as the type of an argument to our test properties, whenever there is an <code>Arbitrary</code> instance available for the type <code>a</code>. For example, we can test that the <code>member</code> test always returns <code>true</code> after inserting a value:</p>
@@ -327,7 +327,7 @@ false
 </code></pre>
 <p>The <code>coarbitrary</code> function takes a function argument of type <code>t</code>, and a random generator for a function result of type <code>r</code>, and uses the function argument to <em>perturb</em> the random generator. That is, it uses the function argument to modify the random output of the random generator for the result.</p>
 <p>In addition, there is a type class instance which gives us <code>Arbitrary</code> functions if the function domain is <code>Coarbitrary</code> and the function codomain is <code>Arbitrary</code>:</p>
-<pre><code class="language-haskell">instance arbFunction :: (Coarbitrary a, Arbitrary b) =&gt; Arbitrary (a -&gt; b)
+<pre><code class="language-haskell">instance (Coarbitrary a, Arbitrary b) =&gt; Arbitrary (a -&gt; b)
 </code></pre>
 <p>In practice, this means that we can write properties which take functions as arguments. In the case of the <code>mergeWith</code> function, we can generate the first argument randomly, modifying our tests to take account of the new argument.</p>
 <p>We cannot guarantee that the result will be sorted - we do not even necessarily have an <code>Ord</code> instance - but we can expect that the result be sorted with respect to the function <code>f</code> that we pass in as an argument. In addition, we need the two input arrays to be sorted with respect to <code>f</code>, so we use the <code>sortBy</code> function to sort <code>xs</code> and <code>ys</code> based on comparison after the function <code>f</code> has been applied:</p>
@@ -349,13 +349,13 @@ false
 intToBool = id
 </code></pre>
 <p>In addition to being <code>Arbitrary</code>, functions are also <code>Coarbitrary</code>:</p>
-<pre><code class="language-haskell">instance coarbFunction :: (Arbitrary a, Coarbitrary b) =&gt; Coarbitrary (a -&gt; b)
+<pre><code class="language-haskell">instance (Arbitrary a, Coarbitrary b) =&gt; Coarbitrary (a -&gt; b)
 </code></pre>
 <p>This means that we are not limited to just values and functions - we can also randomly generate <em>higher-order functions</em>, or functions whose arguments are higher-order functions, and so on.</p>
 <h2 id="writing-coarbitrary-instances"><a class="header" href="#writing-coarbitrary-instances">Writing Coarbitrary Instances</a></h2>
 <p>Just as we can write <code>Arbitrary</code> instances for our data types by using the <code>Monad</code> and <code>Applicative</code> instances of <code>Gen</code>, we can write our own <code>Coarbitrary</code> instances as well. This allows us to use our own data types as the domain of randomly-generated functions.</p>
 <p>Let's write a <code>Coarbitrary</code> instance for our <code>Tree</code> type. We will need a <code>Coarbitrary</code> instance for the type of the elements stored in the branches:</p>
-<pre><code class="language-haskell">instance coarbTree :: Coarbitrary a =&gt; Coarbitrary (Tree a) where
+<pre><code class="language-haskell">instance Coarbitrary a =&gt; Coarbitrary (Tree a) where
 </code></pre>
 <p>We have to write a function which perturbs a random generator given a value of type <code>Tree a</code>. If the input value is a <code>Leaf</code>, then we will just return the generator unchanged:</p>
 <pre><code class="language-haskell">  coarbitrary Leaf = id

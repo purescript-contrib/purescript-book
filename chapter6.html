@@ -173,7 +173,7 @@
 <p>This code declares a new <em>type class</em> called <code>Show</code>, which is parameterized by the type variable <code>a</code>.</p>
 <p>A type class <em>instance</em> contains implementations of the functions defined in a type class, specialized to a particular type.</p>
 <p>For example, here is the definition of the <code>Show</code> type class instance for <code>Boolean</code> values, taken from the Prelude:</p>
-<pre><code class="language-haskell">instance showBoolean :: Show Boolean where
+<pre><code class="language-haskell">instance Show Boolean where
   show true = &quot;true&quot;
   show false = &quot;false&quot;
 </code></pre>
@@ -428,12 +428,12 @@ forall a. Semiring a =&gt; a -&gt; a
 <h2 id="instance-dependencies"><a class="header" href="#instance-dependencies">Instance Dependencies</a></h2>
 <p>Just as the implementation of functions can depend on type class instances using constrained types, so can the implementation of type class instances depend on other type class instances. This provides a powerful form of program inference, in which the implementation of a program can be inferred using its types.</p>
 <p>For example, consider the <code>Show</code> type class. We can write a type class instance to <code>show</code> arrays of elements, as long as we have a way to <code>show</code> the elements themselves:</p>
-<pre><code class="language-haskell">instance showArray :: Show a =&gt; Show (Array a) where
+<pre><code class="language-haskell">instance Show a =&gt; Show (Array a) where
   ...
 </code></pre>
 <p>If a type class instance depends on multiple other instances, those instances should be grouped in parentheses and separated by
 commas on the left hand side of the <code>=&gt;</code> symbol:</p>
-<pre><code class="language-haskell">instance showEither :: (Show a, Show b) =&gt; Show (Either a b) where
+<pre><code class="language-haskell">instance (Show a, Show b) =&gt; Show (Either a b) where
   ...
 </code></pre>
 <p>These two type class instances are provided in the <code>prelude</code> library.</p>
@@ -466,7 +466,7 @@ commas on the left hand side of the <code>=&gt;</code> symbol:</p>
 <pre><code class="language-haskell">data OneMore f a = OneMore a (f a)
 </code></pre>
 <p>The container <code>OneMore f</code> also has an ordering, where the new element comes before any element of <code>f</code>. Write a <code>Foldable</code> instance for <code>OneMore f</code>:</p>
-<pre><code class="language-haskell">instance foldableOneMore :: Foldable f =&gt; Foldable (OneMore f) where
+<pre><code class="language-haskell">instance Foldable f =&gt; Foldable (OneMore f) where
   ...
 </code></pre>
 </li>
@@ -489,10 +489,10 @@ import Data.String.CodeUnits as String
 class Stream stream element where
   uncons :: stream -&gt; Maybe { head :: element, tail :: stream }
 
-instance streamArray :: Stream (Array a) a where
+instance Stream (Array a) a where
   uncons = Array.uncons
 
-instance streamString :: Stream String Char where
+instance Stream String Char where
   uncons = String.uncons
 </code></pre>
 <p>The <code>Stream</code> module defines a class <code>Stream</code> which identifies types which look like streams of elements, where elements can be pulled from the front of the stream using the <code>uncons</code> function.</p>
@@ -597,14 +597,14 @@ secondElement xs = head (tail xs)
 <p>For example, the natural numbers form a monoid under multiplication:</p>
 <pre><code class="language-haskell">newtype Multiply = Multiply Int
 
-instance semigroupMultiply :: Semigroup Multiply where
+instance Semigroup Multiply where
   append (Multiply n) (Multiply m) = Multiply (n * m)
 
-instance monoidMultiply :: Monoid Multiply where
+instance Monoid Multiply where
   mempty = Multiply 1
 </code></pre>
 <p>Write an instance which implements this action:</p>
-<pre><code class="language-haskell">instance actionMultiplyInt :: Action Multiply Int where
+<pre><code class="language-haskell">instance Action Multiply Int where
   ...
 </code></pre>
 <p>Remember, your instance must satisfy the laws listed above.</p>
@@ -614,7 +614,7 @@ instance monoidMultiply :: Monoid Multiply where
 </li>
 <li>
 <p>(Medium) Write an <code>Action</code> instance which repeats an input string some number of times:</p>
-<pre><code class="language-haskell">instance actionMultiplyString :: Action Multiply String where
+<pre><code class="language-haskell">instance Action Multiply String where
   ...
 </code></pre>
 <p><em>Hint</em>: Search Pursuit for a helper-function with the signature <a href="https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String"><code>String -&gt; Int -&gt; String</code></a>. Note that <code>String</code> might appear as a more generic type (such as <code>Monoid</code>).</p>
@@ -644,7 +644,7 @@ instance monoidMultiply :: Monoid Multiply where
 <p>The first property looks a lot like a law for a type class, whereas the second property is more along the lines of an informal contract, and certainly would not be enforceable by PureScript's type system. However, this should provide the intuition for the following type class:</p>
 <pre><code class="language-haskell">newtype HashCode = HashCode Int
 
-instance hashCodeEq :: Eq HashCode where
+instance Eq HashCode where
   eq (HashCode a) (HashCode b) = a == b
 
 hashCode :: Int -&gt; HashCode
@@ -666,24 +666,24 @@ hashEqual = eq `on` hash
 </code></pre>
 <p>This function uses the <code>on</code> function from <code>Data.Function</code> to define hash-equality in terms of equality of hash codes, and should read like a declarative definition of hash-equality: two values are &quot;hash-equal&quot; if they are equal after each value has been passed through the <code>hash</code> function.</p>
 <p>Let's write some <code>Hashable</code> instances for some primitive types. Let's start with an instance for integers. Since a <code>HashCode</code> is really just a wrapped integer, this is simple - we can use the <code>hashCode</code> helper function:</p>
-<pre><code class="language-haskell">instance hashInt :: Hashable Int where
+<pre><code class="language-haskell">instance Hashable Int where
   hash = hashCode
 </code></pre>
 <p>We can also define a simple instance for <code>Boolean</code> values using pattern matching:</p>
-<pre><code class="language-haskell">instance hashBoolean :: Hashable Boolean where
+<pre><code class="language-haskell">instance Hashable Boolean where
   hash false = hashCode 0
   hash true  = hashCode 1
 </code></pre>
 <p>With an instance for hashing integers, we can create an instance for hashing <code>Char</code>s by using the <code>toCharCode</code> function from <code>Data.Char</code>:</p>
-<pre><code class="language-haskell">instance hashChar :: Hashable Char where
+<pre><code class="language-haskell">instance Hashable Char where
   hash = hash &lt;&lt;&lt; toCharCode
 </code></pre>
 <p>To define an instance for arrays, we can <code>map</code> the <code>hash</code> function over the elements of the array (if the element type is also an instance of <code>Hashable</code>) and then perform a left fold over the resulting hashes using the <code>combineHashes</code> function:</p>
-<pre><code class="language-haskell">instance hashArray :: Hashable a =&gt; Hashable (Array a) where
+<pre><code class="language-haskell">instance Hashable a =&gt; Hashable (Array a) where
   hash = foldl combineHashes (hashCode 0) &lt;&lt;&lt; map hash
 </code></pre>
 <p>Notice how we build up instances using the simpler instances we have already written. Let's use our new <code>Array</code> instance to define an instance for <code>String</code>s, by turning a <code>String</code> into an array of <code>Char</code>s:</p>
-<pre><code class="language-haskell">instance hashString :: Hashable String where
+<pre><code class="language-haskell">instance Hashable String where
   hash = hash &lt;&lt;&lt; toCharArray
 </code></pre>
 <p>How can we prove that these <code>Hashable</code> instances satisfy the type class law that we stated above? We need to make sure that equal values have equal hash codes. In cases like <code>Int</code>, <code>Char</code>, <code>String</code> and <code>Boolean</code>, this is simple because there are no values of those types which are equal in the sense of <code>Eq</code> but not equal identically.</p>
@@ -701,7 +701,7 @@ hashEqual = eq `on` hash
 <p>(Medium) Write a <code>Hashable</code> instance for the following newtype which satisfies the type class law:</p>
 <pre><code class="language-haskell">newtype Hour = Hour Int
 
-instance eqHour :: Eq Hour where
+instance Eq Hour where
   eq (Hour n) (Hour m) = mod n 12 == mod m 12
 </code></pre>
 <p>The newtype <code>Hour</code> and its <code>Eq</code> instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.</p>

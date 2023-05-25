@@ -467,7 +467,7 @@ Left &quot;Empty string&quot;
   throwError :: forall a. e -&gt; m a
   catchError :: forall a. m a -&gt; (e -&gt; m a) -&gt; m a
 
-instance monadErrorExceptT :: Monad m =&gt; MonadError e (ExceptT e m)
+instance Monad m =&gt; MonadError e (ExceptT e m)
 
 runExceptT :: forall e m a. ExceptT e m a -&gt; m (Either e a)
 </code></pre>

@@ -384,10 +384,10 @@ attribute (AttributeKey key) value = Attribute
   toValue :: a -&gt; String
 </code></pre>
 <p>We also provide type class instances for the <code>String</code> and <code>Int</code> types:</p>
-<pre><code class="language-haskell">instance stringIsValue :: IsValue String where
+<pre><code class="language-haskell">instance IsValue String where
   toValue = id
 
-instance intIsValue :: IsValue Int where
+instance IsValue Int where
   toValue = show
 </code></pre>
 <p>We also have to update our <code>AttributeKey</code> constants so that their types reflect the new type parameter:</p>
@@ -468,7 +468,7 @@ data False
   = TextContent String a
   | ElementContent Element a
 
-instance functorContentF :: Functor ContentF where
+instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
 </code></pre>
@@ -598,7 +598,7 @@ runName (Name n) = n
 </code></pre>
 <p>Again, we define this as a newtype around <code>String</code>, but we must be careful not to export the data constructor in the module's export lists.</p>
 <p>Next, we define an instance for the <code>IsValue</code> type class for our new type, so that we are able to use names in attribute values:</p>
-<pre><code class="language-haskell">instance nameIsValue :: IsValue Name where
+<pre><code class="language-haskell">instance IsValue Name where
   toValue (Name n) = n
 </code></pre>
 <p>We also define a new data type for hyperlinks which can appear in <code>a</code> elements, as follows:</p>
@@ -606,7 +606,7 @@ runName (Name n) = n
   = URLHref String
   | AnchorHref Name
 
-instance hrefIsValue :: IsValue Href where
+instance IsValue Href where
   toValue (URLHref url) = url
   toValue (AnchorHref (Name nm)) = &quot;#&quot; &lt;&gt; nm
 </code></pre>
@@ -625,7 +625,7 @@ name = AttributeKey &quot;name&quot;
 </code></pre>
 <p>The <code>NewName</code> data constructor corresponds to an action which returns a value of type <code>Name</code>. Notice that instead of requiring a <code>Name</code> as a data constructor argument, we require the user to provide a <em>function</em> of type <code>Name -&gt; a</code>. Remembering that the type <code>a</code> represents the <em>rest of the computation</em>, we can see that this function provides a way to continue computation after a value of type <code>Name</code> has been returned.</p>
 <p>We also need to update the <code>Functor</code> instance for <code>ContentF</code>, taking into account the new data constructor, as follows:</p>
-<pre><code class="language-haskell">instance functorContentF :: Functor ContentF where
+<pre><code class="language-haskell">instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
   map f (NewName k) = NewName (f &lt;&lt;&lt; k)

@@ -1750,7 +1750,7 @@ bounds = foldl combine emptyBounds
 <p>This code declares a new <em>type class</em> called <code>Show</code>, which is parameterized by the type variable <code>a</code>.</p>
 <p>A type class <em>instance</em> contains implementations of the functions defined in a type class, specialized to a particular type.</p>
 <p>For example, here is the definition of the <code>Show</code> type class instance for <code>Boolean</code> values, taken from the Prelude:</p>
-<pre><code class="language-haskell">instance showBoolean :: Show Boolean where
+<pre><code class="language-haskell">instance Show Boolean where
   show true = &quot;true&quot;
   show false = &quot;false&quot;
 </code></pre>
@@ -2005,12 +2005,12 @@ forall a. Semiring a =&gt; a -&gt; a
 <h2 id="instance-dependencies"><a class="header" href="#instance-dependencies">Instance Dependencies</a></h2>
 <p>Just as the implementation of functions can depend on type class instances using constrained types, so can the implementation of type class instances depend on other type class instances. This provides a powerful form of program inference, in which the implementation of a program can be inferred using its types.</p>
 <p>For example, consider the <code>Show</code> type class. We can write a type class instance to <code>show</code> arrays of elements, as long as we have a way to <code>show</code> the elements themselves:</p>
-<pre><code class="language-haskell">instance showArray :: Show a =&gt; Show (Array a) where
+<pre><code class="language-haskell">instance Show a =&gt; Show (Array a) where
   ...
 </code></pre>
 <p>If a type class instance depends on multiple other instances, those instances should be grouped in parentheses and separated by
 commas on the left hand side of the <code>=&gt;</code> symbol:</p>
-<pre><code class="language-haskell">instance showEither :: (Show a, Show b) =&gt; Show (Either a b) where
+<pre><code class="language-haskell">instance (Show a, Show b) =&gt; Show (Either a b) where
   ...
 </code></pre>
 <p>These two type class instances are provided in the <code>prelude</code> library.</p>
@@ -2043,7 +2043,7 @@ commas on the left hand side of the <code>=&gt;</code> symbol:</p>
 <pre><code class="language-haskell">data OneMore f a = OneMore a (f a)
 </code></pre>
 <p>The container <code>OneMore f</code> also has an ordering, where the new element comes before any element of <code>f</code>. Write a <code>Foldable</code> instance for <code>OneMore f</code>:</p>
-<pre><code class="language-haskell">instance foldableOneMore :: Foldable f =&gt; Foldable (OneMore f) where
+<pre><code class="language-haskell">instance Foldable f =&gt; Foldable (OneMore f) where
   ...
 </code></pre>
 </li>
@@ -2066,10 +2066,10 @@ import Data.String.CodeUnits as String
 class Stream stream element where
   uncons :: stream -&gt; Maybe { head :: element, tail :: stream }
 
-instance streamArray :: Stream (Array a) a where
+instance Stream (Array a) a where
   uncons = Array.uncons
 
-instance streamString :: Stream String Char where
+instance Stream String Char where
   uncons = String.uncons
 </code></pre>
 <p>The <code>Stream</code> module defines a class <code>Stream</code> which identifies types which look like streams of elements, where elements can be pulled from the front of the stream using the <code>uncons</code> function.</p>
@@ -2174,14 +2174,14 @@ secondElement xs = head (tail xs)
 <p>For example, the natural numbers form a monoid under multiplication:</p>
 <pre><code class="language-haskell">newtype Multiply = Multiply Int
 
-instance semigroupMultiply :: Semigroup Multiply where
+instance Semigroup Multiply where
   append (Multiply n) (Multiply m) = Multiply (n * m)
 
-instance monoidMultiply :: Monoid Multiply where
+instance Monoid Multiply where
   mempty = Multiply 1
 </code></pre>
 <p>Write an instance which implements this action:</p>
-<pre><code class="language-haskell">instance actionMultiplyInt :: Action Multiply Int where
+<pre><code class="language-haskell">instance Action Multiply Int where
   ...
 </code></pre>
 <p>Remember, your instance must satisfy the laws listed above.</p>
@@ -2191,7 +2191,7 @@ instance monoidMultiply :: Monoid Multiply where
 </li>
 <li>
 <p>(Medium) Write an <code>Action</code> instance which repeats an input string some number of times:</p>
-<pre><code class="language-haskell">instance actionMultiplyString :: Action Multiply String where
+<pre><code class="language-haskell">instance Action Multiply String where
   ...
 </code></pre>
 <p><em>Hint</em>: Search Pursuit for a helper-function with the signature <a href="https://pursuit.purescript.org/search?q=String%20-%3E%20Int%20-%3E%20String"><code>String -&gt; Int -&gt; String</code></a>. Note that <code>String</code> might appear as a more generic type (such as <code>Monoid</code>).</p>
@@ -2221,7 +2221,7 @@ instance monoidMultiply :: Monoid Multiply where
 <p>The first property looks a lot like a law for a type class, whereas the second property is more along the lines of an informal contract, and certainly would not be enforceable by PureScript's type system. However, this should provide the intuition for the following type class:</p>
 <pre><code class="language-haskell">newtype HashCode = HashCode Int
 
-instance hashCodeEq :: Eq HashCode where
+instance Eq HashCode where
   eq (HashCode a) (HashCode b) = a == b
 
 hashCode :: Int -&gt; HashCode
@@ -2243,24 +2243,24 @@ hashEqual = eq `on` hash
 </code></pre>
 <p>This function uses the <code>on</code> function from <code>Data.Function</code> to define hash-equality in terms of equality of hash codes, and should read like a declarative definition of hash-equality: two values are &quot;hash-equal&quot; if they are equal after each value has been passed through the <code>hash</code> function.</p>
 <p>Let's write some <code>Hashable</code> instances for some primitive types. Let's start with an instance for integers. Since a <code>HashCode</code> is really just a wrapped integer, this is simple - we can use the <code>hashCode</code> helper function:</p>
-<pre><code class="language-haskell">instance hashInt :: Hashable Int where
+<pre><code class="language-haskell">instance Hashable Int where
   hash = hashCode
 </code></pre>
 <p>We can also define a simple instance for <code>Boolean</code> values using pattern matching:</p>
-<pre><code class="language-haskell">instance hashBoolean :: Hashable Boolean where
+<pre><code class="language-haskell">instance Hashable Boolean where
   hash false = hashCode 0
   hash true  = hashCode 1
 </code></pre>
 <p>With an instance for hashing integers, we can create an instance for hashing <code>Char</code>s by using the <code>toCharCode</code> function from <code>Data.Char</code>:</p>
-<pre><code class="language-haskell">instance hashChar :: Hashable Char where
+<pre><code class="language-haskell">instance Hashable Char where
   hash = hash &lt;&lt;&lt; toCharCode
 </code></pre>
 <p>To define an instance for arrays, we can <code>map</code> the <code>hash</code> function over the elements of the array (if the element type is also an instance of <code>Hashable</code>) and then perform a left fold over the resulting hashes using the <code>combineHashes</code> function:</p>
-<pre><code class="language-haskell">instance hashArray :: Hashable a =&gt; Hashable (Array a) where
+<pre><code class="language-haskell">instance Hashable a =&gt; Hashable (Array a) where
   hash = foldl combineHashes (hashCode 0) &lt;&lt;&lt; map hash
 </code></pre>
 <p>Notice how we build up instances using the simpler instances we have already written. Let's use our new <code>Array</code> instance to define an instance for <code>String</code>s, by turning a <code>String</code> into an array of <code>Char</code>s:</p>
-<pre><code class="language-haskell">instance hashString :: Hashable String where
+<pre><code class="language-haskell">instance Hashable String where
   hash = hash &lt;&lt;&lt; toCharArray
 </code></pre>
 <p>How can we prove that these <code>Hashable</code> instances satisfy the type class law that we stated above? We need to make sure that equal values have equal hash codes. In cases like <code>Int</code>, <code>Char</code>, <code>String</code> and <code>Boolean</code>, this is simple because there are no values of those types which are equal in the sense of <code>Eq</code> but not equal identically.</p>
@@ -2278,7 +2278,7 @@ hashEqual = eq `on` hash
 <p>(Medium) Write a <code>Hashable</code> instance for the following newtype which satisfies the type class law:</p>
 <pre><code class="language-haskell">newtype Hour = Hour Int
 
-instance eqHour :: Eq Hour where
+instance Eq Hour where
   eq (Hour n) (Hour m) = mod n 12 == mod m 12
 </code></pre>
 <p>The newtype <code>Hour</code> and its <code>Eq</code> instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.</p>
@@ -2361,11 +2361,11 @@ class Functor f &lt;= Apply f where
 <p>The <code>Apply</code> type class is a subclass of <code>Functor</code>, and defines an additional function <code>apply</code>. As <code>&lt;$&gt;</code> was defined as an alias for <code>map</code>, the <code>Prelude</code> module defines <code>&lt;*&gt;</code> as an alias for <code>apply</code>. As we'll see, these two operators are often used together.</p>
 <p>Note that this <a href="https://pursuit.purescript.org/packages/purescript-prelude/docs/Control.Apply#v:apply"><code>apply</code></a> is different than the <a href="https://pursuit.purescript.org/packages/purescript-prelude/docs/Data.Function#v:apply"><code>apply</code></a> from <code>Data.Function</code> (infixed as <code>$</code>). Luckily, infix notation is almost always used for the latter, so you don't need to worry about name collisions.</p>
 <p>The type of <code>apply</code> looks a lot like the type of <code>map</code>. The difference between <code>map</code> and <code>apply</code> is that <code>map</code> takes a function as an argument, whereas the first argument to <code>apply</code> is wrapped in the type constructor <code>f</code>. We'll see how this is used soon, but first, let's see how to implement the <code>Apply</code> type class for the <code>Maybe</code> type:</p>
-<pre><code class="language-haskell">instance functorMaybe :: Functor Maybe where
+<pre><code class="language-haskell">instance Functor Maybe where
   map f (Just a) = Just (f a)
   map f Nothing  = Nothing
 
-instance applyMaybe :: Apply Maybe where
+instance Apply Maybe where
   apply (Just f) (Just x) = Just (f x)
   apply _        _        = Nothing
 </code></pre>
@@ -2414,7 +2414,7 @@ lift3 f x y z = ado
 </code></pre>
 <p><code>Applicative</code> is a subclass of <code>Apply</code> and defines the <code>pure</code> function. <code>pure</code> takes a value and returns a value whose type has been wrapped with the type constructor <code>f</code>.</p>
 <p>Here is the <code>Applicative</code> instance for <code>Maybe</code>:</p>
-<pre><code class="language-haskell">instance applicativeMaybe :: Applicative Maybe where
+<pre><code class="language-haskell">instance Applicative Maybe where
   pure x = Just x
 </code></pre>
 <p>If we think of applicative functors as functors which allow lifting of functions, then <code>pure</code> can be thought of as lifting functions of zero arguments.</p>
@@ -2746,7 +2746,7 @@ validatePersonAdo p = ado
 </code></pre>
 <p>Traversable functors capture the idea of traversing a data structure, collecting a set of effectful computations, and combining their effects. In fact, <code>sequence</code> and <code>traverse</code> are equally important to the definition of <code>Traversable</code> - each can be implemented in terms of each other. This is left as an exercise for the interested reader.</p>
 <p>The <code>Traversable</code> instance for lists given in the <code>Data.List</code> module is:</p>
-<pre><code class="language-haskell">instance traversableList :: Traversable List where
+<pre><code class="language-haskell">instance Traversable List where
 -- traverse :: forall a b m. Applicative m =&gt; (a -&gt; m b) -&gt; List a -&gt; m (List b)
 traverse _ Nil         = pure Nil
 traverse f (Cons x xs) = Cons &lt;$&gt; f x &lt;*&gt; traverse f xs
@@ -2886,12 +2886,12 @@ class (Applicative m, Bind m) &lt;= Monad m
 <p>The key function here is <code>bind</code>, defined in the <code>Bind</code> type class. Just like for the <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> operators in the <code>Functor</code> and <code>Apply</code> type classes, the Prelude defines an infix alias <code>&gt;&gt;=</code> for the <code>bind</code> function.</p>
 <p>The <code>Monad</code> type class extends <code>Bind</code> with the operations of the <code>Applicative</code> type class that we have already seen.</p>
 <p>It will be useful to see some examples of the <code>Bind</code> type class. A sensible definition for <code>Bind</code> on arrays can be given as follows:</p>
-<pre><code class="language-hs">instance bindArray :: Bind Array where
+<pre><code class="language-hs">instance Bind Array where
   bind xs f = concatMap f xs
 </code></pre>
 <p>This explains the connection between array comprehensions and the <code>concatMap</code> function that has been alluded to before.</p>
 <p>Here is an implementation of <code>Bind</code> for the <code>Maybe</code> type constructor:</p>
-<pre><code class="language-hs">instance bindMaybe :: Bind Maybe where
+<pre><code class="language-hs">instance Bind Maybe where
   bind Nothing  _ = Nothing
   bind (Just a) f = f a
 </code></pre>
@@ -4565,10 +4565,10 @@ import Data.Argonaut.Decode.Generic (genericDecodeJson)
 import Data.Argonaut.Encode.Generic (genericEncodeJson)
 import Data.Generic.Rep (class Generic)
 
-derive instance genericPhoneType :: Generic PhoneType _
+derive instance Generic PhoneType _
 
-instance encodeJsonPhoneType :: EncodeJson PhoneType where encodeJson = genericEncodeJson
-instance decodeJsonPhoneType :: DecodeJson PhoneType where decodeJson = genericDecodeJson
+instance EncodeJson PhoneType where encodeJson = genericEncodeJson
+instance DecodeJson PhoneType where decodeJson = genericDecodeJson
 </code></pre>
 <p>Now we can save our <code>person</code> to local storage, but this isn't very useful unless we can retrieve the data. We'll tackle that next.</p>
 <p>We'll start with retrieving the &quot;person&quot; string from local storage:</p>
@@ -5133,7 +5133,7 @@ Left &quot;Empty string&quot;
   throwError :: forall a. e -&gt; m a
   catchError :: forall a. m a -&gt; (e -&gt; m a) -&gt; m a
 
-instance monadErrorExceptT :: Monad m =&gt; MonadError e (ExceptT e m)
+instance Monad m =&gt; MonadError e (ExceptT e m)
 
 runExceptT :: forall e m a. ExceptT e m a -&gt; m (Either e a)
 </code></pre>
@@ -6109,7 +6109,7 @@ ints = id
 <p>For example, we can use the <code>Arbitrary</code> instance for the <code>Int</code> type, provided in the <code>quickcheck</code> library, to create a distribution on the 256 byte values, using the <code>Functor</code> instance for <code>Gen</code> to map a function from integers to bytes over arbitrary integer values:</p>
 <pre><code class="language-haskell">newtype Byte = Byte Int
 
-instance arbitraryByte :: Arbitrary Byte where
+instance Arbitrary Byte where
   arbitrary = map intToByte arbitrary
     where
     intToByte n | n &gt;= 0 = Byte (n `mod` 256)
@@ -6126,7 +6126,7 @@ instance arbitraryByte :: Arbitrary Byte where
 sorted :: forall a. Sorted a -&gt; Array a
 sorted (Sorted xs) = xs
 
-instance arbSorted :: (Arbitrary a, Ord a) =&gt; Arbitrary (Sorted a) where
+instance (Arbitrary a, Ord a) =&gt; Arbitrary (Sorted a) where
   arbitrary = map (Sorted &lt;&lt;&lt; sort) arbitrary
 </code></pre>
 <p>With this type constructor, we can modify our test as follows:</p>
@@ -6155,7 +6155,7 @@ true
 false
 </code></pre>
 <p>The <code>toArray</code> and <code>fromArray</code> functions can be used to convert sorted trees to and from arrays. We can use <code>fromArray</code> to write an <code>Arbitrary</code> instance for trees:</p>
-<pre><code class="language-haskell">instance arbTree :: (Arbitrary a, Ord a) =&gt; Arbitrary (Tree a) where
+<pre><code class="language-haskell">instance (Arbitrary a, Ord a) =&gt; Arbitrary (Tree a) where
   arbitrary = map fromArray arbitrary
 </code></pre>
 <p>We can now use <code>Tree a</code> as the type of an argument to our test properties, whenever there is an <code>Arbitrary</code> instance available for the type <code>a</code>. For example, we can test that the <code>member</code> test always returns <code>true</code> after inserting a value:</p>
@@ -6186,7 +6186,7 @@ false
 </code></pre>
 <p>The <code>coarbitrary</code> function takes a function argument of type <code>t</code>, and a random generator for a function result of type <code>r</code>, and uses the function argument to <em>perturb</em> the random generator. That is, it uses the function argument to modify the random output of the random generator for the result.</p>
 <p>In addition, there is a type class instance which gives us <code>Arbitrary</code> functions if the function domain is <code>Coarbitrary</code> and the function codomain is <code>Arbitrary</code>:</p>
-<pre><code class="language-haskell">instance arbFunction :: (Coarbitrary a, Arbitrary b) =&gt; Arbitrary (a -&gt; b)
+<pre><code class="language-haskell">instance (Coarbitrary a, Arbitrary b) =&gt; Arbitrary (a -&gt; b)
 </code></pre>
 <p>In practice, this means that we can write properties which take functions as arguments. In the case of the <code>mergeWith</code> function, we can generate the first argument randomly, modifying our tests to take account of the new argument.</p>
 <p>We cannot guarantee that the result will be sorted - we do not even necessarily have an <code>Ord</code> instance - but we can expect that the result be sorted with respect to the function <code>f</code> that we pass in as an argument. In addition, we need the two input arrays to be sorted with respect to <code>f</code>, so we use the <code>sortBy</code> function to sort <code>xs</code> and <code>ys</code> based on comparison after the function <code>f</code> has been applied:</p>
@@ -6208,13 +6208,13 @@ false
 intToBool = id
 </code></pre>
 <p>In addition to being <code>Arbitrary</code>, functions are also <code>Coarbitrary</code>:</p>
-<pre><code class="language-haskell">instance coarbFunction :: (Arbitrary a, Coarbitrary b) =&gt; Coarbitrary (a -&gt; b)
+<pre><code class="language-haskell">instance (Arbitrary a, Coarbitrary b) =&gt; Coarbitrary (a -&gt; b)
 </code></pre>
 <p>This means that we are not limited to just values and functions - we can also randomly generate <em>higher-order functions</em>, or functions whose arguments are higher-order functions, and so on.</p>
 <h2 id="writing-coarbitrary-instances"><a class="header" href="#writing-coarbitrary-instances">Writing Coarbitrary Instances</a></h2>
 <p>Just as we can write <code>Arbitrary</code> instances for our data types by using the <code>Monad</code> and <code>Applicative</code> instances of <code>Gen</code>, we can write our own <code>Coarbitrary</code> instances as well. This allows us to use our own data types as the domain of randomly-generated functions.</p>
 <p>Let's write a <code>Coarbitrary</code> instance for our <code>Tree</code> type. We will need a <code>Coarbitrary</code> instance for the type of the elements stored in the branches:</p>
-<pre><code class="language-haskell">instance coarbTree :: Coarbitrary a =&gt; Coarbitrary (Tree a) where
+<pre><code class="language-haskell">instance Coarbitrary a =&gt; Coarbitrary (Tree a) where
 </code></pre>
 <p>We have to write a function which perturbs a random generator given a value of type <code>Tree a</code>. If the input value is a <code>Leaf</code>, then we will just return the generator unchanged:</p>
 <pre><code class="language-haskell">  coarbitrary Leaf = id
@@ -6521,10 +6521,10 @@ attribute (AttributeKey key) value = Attribute
   toValue :: a -&gt; String
 </code></pre>
 <p>We also provide type class instances for the <code>String</code> and <code>Int</code> types:</p>
-<pre><code class="language-haskell">instance stringIsValue :: IsValue String where
+<pre><code class="language-haskell">instance IsValue String where
   toValue = id
 
-instance intIsValue :: IsValue Int where
+instance IsValue Int where
   toValue = show
 </code></pre>
 <p>We also have to update our <code>AttributeKey</code> constants so that their types reflect the new type parameter:</p>
@@ -6605,7 +6605,7 @@ data False
   = TextContent String a
   | ElementContent Element a
 
-instance functorContentF :: Functor ContentF where
+instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
 </code></pre>
@@ -6735,7 +6735,7 @@ runName (Name n) = n
 </code></pre>
 <p>Again, we define this as a newtype around <code>String</code>, but we must be careful not to export the data constructor in the module's export lists.</p>
 <p>Next, we define an instance for the <code>IsValue</code> type class for our new type, so that we are able to use names in attribute values:</p>
-<pre><code class="language-haskell">instance nameIsValue :: IsValue Name where
+<pre><code class="language-haskell">instance IsValue Name where
   toValue (Name n) = n
 </code></pre>
 <p>We also define a new data type for hyperlinks which can appear in <code>a</code> elements, as follows:</p>
@@ -6743,7 +6743,7 @@ runName (Name n) = n
   = URLHref String
   | AnchorHref Name
 
-instance hrefIsValue :: IsValue Href where
+instance IsValue Href where
   toValue (URLHref url) = url
   toValue (AnchorHref (Name nm)) = &quot;#&quot; &lt;&gt; nm
 </code></pre>
@@ -6762,7 +6762,7 @@ name = AttributeKey &quot;name&quot;
 </code></pre>
 <p>The <code>NewName</code> data constructor corresponds to an action which returns a value of type <code>Name</code>. Notice that instead of requiring a <code>Name</code> as a data constructor argument, we require the user to provide a <em>function</em> of type <code>Name -&gt; a</code>. Remembering that the type <code>a</code> represents the <em>rest of the computation</em>, we can see that this function provides a way to continue computation after a value of type <code>Name</code> has been returned.</p>
 <p>We also need to update the <code>Functor</code> instance for <code>ContentF</code>, taking into account the new data constructor, as follows:</p>
-<pre><code class="language-haskell">instance functorContentF :: Functor ContentF where
+<pre><code class="language-haskell">instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
   map f (NewName k) = NewName (f &lt;&lt;&lt; k)

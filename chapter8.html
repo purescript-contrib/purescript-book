@@ -214,12 +214,12 @@ class (Applicative m, Bind m) &lt;= Monad m
 <p>The key function here is <code>bind</code>, defined in the <code>Bind</code> type class. Just like for the <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> operators in the <code>Functor</code> and <code>Apply</code> type classes, the Prelude defines an infix alias <code>&gt;&gt;=</code> for the <code>bind</code> function.</p>
 <p>The <code>Monad</code> type class extends <code>Bind</code> with the operations of the <code>Applicative</code> type class that we have already seen.</p>
 <p>It will be useful to see some examples of the <code>Bind</code> type class. A sensible definition for <code>Bind</code> on arrays can be given as follows:</p>
-<pre><code class="language-hs">instance bindArray :: Bind Array where
+<pre><code class="language-hs">instance Bind Array where
   bind xs f = concatMap f xs
 </code></pre>
 <p>This explains the connection between array comprehensions and the <code>concatMap</code> function that has been alluded to before.</p>
 <p>Here is an implementation of <code>Bind</code> for the <code>Maybe</code> type constructor:</p>
-<pre><code class="language-hs">instance bindMaybe :: Bind Maybe where
+<pre><code class="language-hs">instance Bind Maybe where
   bind Nothing  _ = Nothing
   bind (Just a) f = f a
 </code></pre>
