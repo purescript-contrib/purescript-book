@@ -166,7 +166,7 @@ These `instance`s are to enable testing.
 Feel free to ignore these.
 They'll make more sense in the next chapter.
 -}
-derive instance shapeEq :: Eq Shape
+derive instance Eq Shape
 
-instance shapeShow :: Show Shape where
+instance Show Shape where
   show shape = showShape shape

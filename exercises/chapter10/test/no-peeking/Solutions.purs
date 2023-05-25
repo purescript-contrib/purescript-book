@@ -62,7 +62,7 @@ foreign import quadraticRootsSafeJson :: Json -> Json
 newtype WrapPair a
   = WrapPair (Pair a)
 
-instance decodeJsonWrapPair :: DecodeJson a => DecodeJson (WrapPair a) where
+instance DecodeJson a => DecodeJson (WrapPair a) where
   decodeJson j = do
     decoded <- decodeJson j
     case decoded of
@@ -86,39 +86,39 @@ data Tree a
   = Leaf a
   | Branch (Tree a) (Tree a)
 
-derive instance genericTree :: Generic (Tree a) _
+derive instance Generic (Tree a) _
 
-instance encodeJsonTree :: EncodeJson a => EncodeJson (Tree a) where
+instance EncodeJson a => EncodeJson (Tree a) where
   encodeJson t = genericEncodeJson t
 
-instance decodeJsonTree :: DecodeJson a => DecodeJson (Tree a) where
+instance DecodeJson a => DecodeJson (Tree a) where
   decodeJson t = genericDecodeJson t
 
-instance eqTree :: Eq a => Eq (Tree a) where
+instance Eq a => Eq (Tree a) where
   eq t = genericEq t
 
-instance showTree :: Show a => Show (Tree a) where
+instance Show a => Show (Tree a) where
   show t = genericShow t
 
 data IntOrString
   = IntOrString_Int Int
   | IntOrString_String String
 
-instance encodeJsonIntOrString :: EncodeJson IntOrString where
+instance EncodeJson IntOrString where
   encodeJson (IntOrString_Int i) = encodeJson i
   encodeJson (IntOrString_String s) = encodeJson s
 
-instance decodeJsonIntOrString :: DecodeJson IntOrString where
+instance DecodeJson IntOrString where
   decodeJson j =
     foldr alt (Left $ TypeMismatch "Not Int or String")
       [ map IntOrString_Int $ decodeJson j
       , map IntOrString_String $ decodeJson j
       ]
 
-derive instance genericIntOrString :: Generic IntOrString _
+derive instance Generic IntOrString _
 
-instance eqIntOrString :: Eq IntOrString where
+instance Eq IntOrString where
   eq = genericEq
 
-instance showIntOrString :: Show IntOrString where
+instance Show IntOrString where
   show = genericShow

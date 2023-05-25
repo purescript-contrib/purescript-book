@@ -91,7 +91,7 @@ The `Monad` type class extends `Bind` with the operations of the `Applicative` t
 It will be useful to see some examples of the `Bind` type class. A sensible definition for `Bind` on arrays can be given as follows:
 
 ```hs
-instance bindArray :: Bind Array where
+instance Bind Array where
   bind xs f = concatMap f xs
 ```
 
@@ -100,7 +100,7 @@ This explains the connection between array comprehensions and the `concatMap` fu
 Here is an implementation of `Bind` for the `Maybe` type constructor:
 
 ```hs
-instance bindMaybe :: Bind Maybe where
+instance Bind Maybe where
   bind Nothing  _ = Nothing
   bind (Just a) f = f a
 ```

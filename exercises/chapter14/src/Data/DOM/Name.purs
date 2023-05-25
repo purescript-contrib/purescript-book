@@ -50,7 +50,7 @@ data ContentF a
   | ElementContent Element a
   | NewName (Name -> a)
 
-instance functorContentF :: Functor ContentF where
+instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
   map f (NewName k) = NewName (f <<< k)
@@ -79,13 +79,13 @@ newName = liftF $ NewName identity
 class IsValue a where
   toValue :: a -> String
 
-instance stringIsValue :: IsValue String where
+instance IsValue String where
   toValue = identity
 
-instance intIsValue :: IsValue Int where
+instance IsValue Int where
   toValue = show
 
-instance nameIsValue :: IsValue Name where
+instance IsValue Name where
   toValue (Name n) = n
 
 attribute :: forall a. IsValue a => AttributeKey a -> a -> Attribute
@@ -109,7 +109,7 @@ data Href
   = URLHref String
   | AnchorHref Name
 
-instance hrefIsValue :: IsValue Href where
+instance IsValue Href where
   toValue (URLHref url) = url
   toValue (AnchorHref (Name nm)) = "#" <> nm
 

@@ -19,9 +19,9 @@ data PhoneType
   | CellPhone
   | OtherPhone
 
-derive instance genericPhoneType :: Generic PhoneType _
+derive instance Generic PhoneType _
 
-instance showPhoneType :: Show PhoneType where
+instance Show PhoneType where
   show = genericShow
 
 type PhoneNumber

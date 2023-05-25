@@ -159,7 +159,7 @@ For example, we can use the `Arbitrary` instance for the `Int` type, provided in
 ```haskell
 newtype Byte = Byte Int
 
-instance arbitraryByte :: Arbitrary Byte where
+instance Arbitrary Byte where
   arbitrary = map intToByte arbitrary
     where
     intToByte n | n >= 0 = Byte (n `mod` 256)
@@ -183,7 +183,7 @@ newtype Sorted a = Sorted (Array a)
 sorted :: forall a. Sorted a -> Array a
 sorted (Sorted xs) = xs
 
-instance arbSorted :: (Arbitrary a, Ord a) => Arbitrary (Sorted a) where
+instance (Arbitrary a, Ord a) => Arbitrary (Sorted a) where
   arbitrary = map (Sorted <<< sort) arbitrary
 ```
 
@@ -228,7 +228,7 @@ false
 The `toArray` and `fromArray` functions can be used to convert sorted trees to and from arrays. We can use `fromArray` to write an `Arbitrary` instance for trees:
 
 ```haskell
-instance arbTree :: (Arbitrary a, Ord a) => Arbitrary (Tree a) where
+instance (Arbitrary a, Ord a) => Arbitrary (Tree a) where
   arbitrary = map fromArray arbitrary
 ```
 
@@ -276,7 +276,7 @@ The `coarbitrary` function takes a function argument of type `t`, and a random g
 In addition, there is a type class instance which gives us `Arbitrary` functions if the function domain is `Coarbitrary` and the function codomain is `Arbitrary`:
 
 ```haskell
-instance arbFunction :: (Coarbitrary a, Arbitrary b) => Arbitrary (a -> b)
+instance (Coarbitrary a, Arbitrary b) => Arbitrary (a -> b)
 ```
 
 In practice, this means that we can write properties which take functions as arguments. In the case of the `mergeWith` function, we can generate the first argument randomly, modifying our tests to take account of the new argument.
@@ -308,7 +308,7 @@ intToBool = id
 In addition to being `Arbitrary`, functions are also `Coarbitrary`:
 
 ```haskell
-instance coarbFunction :: (Arbitrary a, Coarbitrary b) => Coarbitrary (a -> b)
+instance (Arbitrary a, Coarbitrary b) => Coarbitrary (a -> b)
 ```
 
 This means that we are not limited to just values and functions - we can also randomly generate _higher-order functions_, or functions whose arguments are higher-order functions, and so on.
@@ -320,7 +320,7 @@ Just as we can write `Arbitrary` instances for our data types by using the `Mona
 Let's write a `Coarbitrary` instance for our `Tree` type. We will need a `Coarbitrary` instance for the type of the elements stored in the branches:
 
 ```haskell
-instance coarbTree :: Coarbitrary a => Coarbitrary (Tree a) where
+instance Coarbitrary a => Coarbitrary (Tree a) where
 ```
 
 We have to write a function which perturbs a random generator given a value of type `Tree a`. If the input value is a `Leaf`, then we will just return the generator unchanged:

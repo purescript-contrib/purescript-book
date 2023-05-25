@@ -42,7 +42,7 @@ data ContentF a
   = TextContent String a
   | ElementContent Element a
 
-instance functorContentF :: Functor ContentF where
+instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
 
@@ -71,10 +71,10 @@ elem e = liftF $ ElementContent e unit
 class IsValue a where
   toValue :: a -> String
 
-instance stringIsValue :: IsValue String where
+instance IsValue String where
   toValue = identity
 
-instance intIsValue :: IsValue Int where
+instance IsValue Int where
   toValue = show
 
 attribute :: forall a. IsValue a => AttributeKey a -> a -> Attribute

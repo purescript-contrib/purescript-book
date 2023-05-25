@@ -28,16 +28,16 @@ Eq and Show instances are needed by unit tests to
 compare and report differences between PhoneType values
 (HomePhone, WorkPhone, etc).
 -}
-derive instance eqPhoneType :: Eq PhoneType
+derive instance Eq PhoneType
 
 -- Generic Show instance
-derive instance genericPhoneType :: Generic PhoneType _
+derive instance Generic PhoneType _
 
-instance showPhoneType :: Show PhoneType where
+instance Show PhoneType where
   show = genericShow
 {-
 -- Manually-written Show instance
-instance showPhoneType :: Show PhoneType where
+instance Show PhoneType where
   show HomePhone  = "HomePhone"
   show WorkPhone  = "WorkPhone"
   show CellPhone  = "CellPhone"

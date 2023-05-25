@@ -18,7 +18,7 @@ newtype GameState = GameState
   }
 -- ANCHOR_END: GameState
 
-instance showGameState :: Show GameState where
+instance Show GameState where
   show (GameState o) =
     "GameState " <>
     "{ items: "     <> show o.items <>

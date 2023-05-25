@@ -15,7 +15,7 @@ data Path
   = Directory String (Array Path)
   | File String Int
 
-instance showPath :: Show Path where
+instance Show Path where
   show = filename
 
 root :: Path

@@ -7,14 +7,14 @@ newtype Coords = Coords
   , y :: Int
   }
 
-instance showCoords :: Show Coords where
+instance Show Coords where
   show (Coords p) = "Coords " <>
                     "{ x: " <> show p.x <>
                     ", y: " <> show p.y <>
                     " }"
 
-derive instance eqCoords :: Eq Coords
-derive instance ordCoords :: Ord Coords
+derive instance Eq Coords
+derive instance Ord Coords
 
 coords :: Int -> Int -> Coords
 coords x y = Coords { x: x, y: y }

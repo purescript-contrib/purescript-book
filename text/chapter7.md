@@ -114,11 +114,11 @@ Note that this [`apply`](https://pursuit.purescript.org/packages/purescript-prel
 The type of `apply` looks a lot like the type of `map`. The difference between `map` and `apply` is that `map` takes a function as an argument, whereas the first argument to `apply` is wrapped in the type constructor `f`. We'll see how this is used soon, but first, let's see how to implement the `Apply` type class for the `Maybe` type:
 
 ```haskell
-instance functorMaybe :: Functor Maybe where
+instance Functor Maybe where
   map f (Just a) = Just (f a)
   map f Nothing  = Nothing
 
-instance applyMaybe :: Apply Maybe where
+instance Apply Maybe where
   apply (Just f) (Just x) = Just (f x)
   apply _        _        = Nothing
 ```
@@ -191,7 +191,7 @@ class Apply f <= Applicative f where
 Here is the `Applicative` instance for `Maybe`:
 
 ```haskell
-instance applicativeMaybe :: Applicative Maybe where
+instance Applicative Maybe where
   pure x = Just x
 ```
 
@@ -608,7 +608,7 @@ Traversable functors capture the idea of traversing a data structure, collecting
 The `Traversable` instance for lists given in the `Data.List` module is:
 
 ```haskell
-instance traversableList :: Traversable List where
+instance Traversable List where
 -- traverse :: forall a b m. Applicative m => (a -> m b) -> List a -> m (List b)
 traverse _ Nil         = pure Nil
 traverse f (Cons x xs) = Cons <$> f x <*> traverse f xs

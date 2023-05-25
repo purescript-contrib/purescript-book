@@ -61,10 +61,10 @@ elem = ElementContent
 class IsValue a where
   toValue :: a -> String
 
-instance stringIsValue :: IsValue String where
+instance IsValue String where
   toValue = identity
 
-instance intIsValue :: IsValue Int where
+instance IsValue Int where
   toValue = show
 
 attribute :: forall a. IsValue a => AttributeKey a -> a -> Attribute

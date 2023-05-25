@@ -8,12 +8,12 @@ import Data.Maybe (Maybe(..))
 data GameItem = Candle | Matches
 -- ANCHOR_END: GameItem
 
-instance showGameItem :: Show GameItem where
+instance Show GameItem where
   show Candle         = "Candle"
   show Matches        = "Matches"
 
-derive instance eqGameItem :: Eq GameItem
-derive instance ordGameItem :: Ord GameItem
+derive instance Eq GameItem
+derive instance Ord GameItem
 
 readItem :: String -> Maybe GameItem
 readItem "Candle" = Just Candle

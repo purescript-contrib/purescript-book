@@ -72,17 +72,17 @@ data Tree a
 
 -- Solution using derived instances:
 
-derive instance eqTree :: Eq a => Eq (Tree a)
+derive instance Eq a => Eq (Tree a)
 
-derive instance genericTree :: Generic (Tree a) _
+derive instance Generic (Tree a) _
 
-instance showTree :: Show a => Show (Tree a) where
+instance Show a => Show (Tree a) where
   show t = genericShow t
 
 {-
 -- Solution using manually-written instances:
 
-instance eqTree :: Eq a => Eq (Tree a) where
+instance Eq a => Eq (Tree a) where
   eq Leaf Leaf = true
   eq (Branch t1a va t2a) (Branch t1b vb t2b)
       =  t1a == t1b
@@ -90,18 +90,18 @@ instance eqTree :: Eq a => Eq (Tree a) where
       && t2a == t2b
   eq _ _ = false
 
-instance showTree :: Show a => Show (Tree a) where
+instance Show a => Show (Tree a) where
   show Leaf = "Leaf"
   show (Branch t1 v t2) =
     "(Branch " <> show t1 <> " " <> show v <> " " <> show t2 <> ")"
 -}
 
 -- Exercise 2
-instance functorTree :: Functor Tree where
+instance Functor Tree where
   map _ Leaf = Leaf
   map f (Branch t1 v t2) = Branch (map f t1) (f v) (map f t2)
 
-instance foldableTree :: Foldable Tree where
+instance Foldable Tree where
   foldl _ acc Leaf = acc
   foldl f acc (Branch t1 v t2) = foldl f (f (foldl f acc t1) v) t2
   foldr _ acc Leaf = acc
@@ -109,7 +109,7 @@ instance foldableTree :: Foldable Tree where
   foldMap _ Leaf = mempty
   foldMap f (Branch t1 v t2) = foldMap f t1 <> f v <> foldMap f t2
 
-instance traversableTree :: Traversable Tree where
+instance Traversable Tree where
   traverse _ Leaf = pure Leaf
   traverse f (Branch t1 v t2) = ado
     mt1 <- traverse f t1

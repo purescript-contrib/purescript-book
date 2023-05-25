@@ -9,10 +9,10 @@ data Tree a
   = Leaf
   | Branch (Tree a) a (Tree a)
 
-instance arbTree :: (Arbitrary a, Ord a) => Arbitrary (Tree a) where
+instance (Arbitrary a, Ord a) => Arbitrary (Tree a) where
   arbitrary = map fromArray arbitrary
 
-instance coarbTree :: (Coarbitrary a) => Coarbitrary (Tree a) where
+instance (Coarbitrary a) => Coarbitrary (Tree a) where
   coarbitrary Leaf = identity
   coarbitrary (Branch l a r) =
     coarbitrary l <<<

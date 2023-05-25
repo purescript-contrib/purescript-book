@@ -304,10 +304,10 @@ class IsValue a where
 We also provide type class instances for the `String` and `Int` types:
 
 ```haskell
-instance stringIsValue :: IsValue String where
+instance IsValue String where
   toValue = id
 
-instance intIsValue :: IsValue Int where
+instance IsValue Int where
   toValue = show
 ```
 
@@ -408,7 +408,7 @@ data ContentF a
   = TextContent String a
   | ElementContent Element a
 
-instance functorContentF :: Functor ContentF where
+instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
 ```
@@ -597,7 +597,7 @@ Again, we define this as a newtype around `String`, but we must be careful not t
 Next, we define an instance for the `IsValue` type class for our new type, so that we are able to use names in attribute values:
 
 ```haskell
-instance nameIsValue :: IsValue Name where
+instance IsValue Name where
   toValue (Name n) = n
 ```
 
@@ -608,7 +608,7 @@ data Href
   = URLHref String
   | AnchorHref Name
 
-instance hrefIsValue :: IsValue Href where
+instance IsValue Href where
   toValue (URLHref url) = url
   toValue (AnchorHref (Name nm)) = "#" <> nm
 ```
@@ -637,7 +637,7 @@ The `NewName` data constructor corresponds to an action which returns a value of
 We also need to update the `Functor` instance for `ContentF`, taking into account the new data constructor, as follows:
 
 ```haskell
-instance functorContentF :: Functor ContentF where
+instance Functor ContentF where
   map f (TextContent s x) = TextContent s (f x)
   map f (ElementContent e x) = ElementContent e (f x)
   map f (NewName k) = NewName (f <<< k)

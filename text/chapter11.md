@@ -454,7 +454,7 @@ class MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a
 
-instance monadErrorExceptT :: Monad m => MonadError e (ExceptT e m)
+instance Monad m => MonadError e (ExceptT e m)
 
 runExceptT :: forall e m a. ExceptT e m a -> m (Either e a)
 ```

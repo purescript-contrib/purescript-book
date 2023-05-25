@@ -42,7 +42,7 @@ A type class _instance_ contains implementations of the functions defined in a t
 For example, here is the definition of the `Show` type class instance for `Boolean` values, taken from the Prelude:
 
 ```haskell
-instance showBoolean :: Show Boolean where
+instance Show Boolean where
   show true = "true"
   show false = "false"
 ```
@@ -391,7 +391,7 @@ Just as the implementation of functions can depend on type class instances using
 For example, consider the `Show` type class. We can write a type class instance to `show` arrays of elements, as long as we have a way to `show` the elements themselves:
 
 ```haskell
-instance showArray :: Show a => Show (Array a) where
+instance Show a => Show (Array a) where
   ...
 ```
 
@@ -399,7 +399,7 @@ If a type class instance depends on multiple other instances, those instances sh
 commas on the left hand side of the `=>` symbol:
 
 ```haskell
-instance showEither :: (Show a, Show b) => Show (Either a b) where
+instance (Show a, Show b) => Show (Either a b) where
   ...
 ```
 
@@ -464,10 +464,10 @@ import Data.String.CodeUnits as String
 class Stream stream element where
   uncons :: stream -> Maybe { head :: element, tail :: stream }
 
-instance streamArray :: Stream (Array a) a where
+instance Stream (Array a) a where
   uncons = Array.uncons
 
-instance streamString :: Stream String Char where
+instance Stream String Char where
   uncons = String.uncons
 ```
 
