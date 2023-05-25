@@ -31,7 +31,7 @@ derive instance Generic PhoneType _
 instance EncodeJson PhoneType where encodeJson = genericEncodeJson
 instance DecodeJson PhoneType where decodeJson = genericDecodeJson
 -- ANCHOR_END: PhoneType_generic
-instance Show       PhoneType where show       = genericShow
+instance Show PhoneType where show = genericShow
 
 type PhoneNumber
   = { "type" :: PhoneType
