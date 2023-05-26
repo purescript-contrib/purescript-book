@@ -1243,7 +1243,7 @@ is actually represented as a JavaScript string at runtime. This is useful for de
 
 ### Representing Quantified Types
 
-Expressions with quantified (polymorphic) types have restrictive representations at runtime. In practice, this means that there are relatively few expressions with a given quantified type, but that we can reason about them quite effectively.
+Expressions with quantified (polymorphic) types have restrictive representations at runtime. In practice, there are relatively few expressions with a given quantified type, but we can reason about them quite effectively.
 
 Consider this polymorphic type, for example:
 
@@ -1251,14 +1251,16 @@ Consider this polymorphic type, for example:
 forall a. a -> a
 ```
 
-What sort of functions have this type? Well, there is certainly one function with this type - namely, the `identity` function, defined in the `Prelude`:
+What sort of functions have this type? Well, there is certainly one function with this type:
 
 ```haskell
-id :: forall a. a -> a
-id a = a
+identity :: forall a. a -> a
+identity a = a
 ```
 
-In fact, the `identity` function is the _only_ (total) function with this type! This certainly seems to be the case (try writing an expression with this type which is not observably equivalent to `identity`), but how can we be sure? We can be sure by considering the runtime representation of the type.
+> Note that the actual [`identity`](https://pursuit.purescript.org/packages/purescript-prelude/docs/Control.Category#v:identity) function defined in `Prelude` has a slightly different type.
+
+In fact, the `identity` function is the _only_ (total) function with this type! This certainly seems to be the case (try writing an expression with this type that is not observably equivalent to `identity`), but how can we be sure? We can be sure by considering the runtime representation of the type.
 
 What is the runtime representation of a quantified type `forall a. t`? Well, any expression with the runtime representation for this type must have the correct runtime representation for the type `t` for any choice of type `a`. In our example above, a function of type `forall a. a -> a` must have the correct runtime representation for the types `String -> String`, `Number -> Number`, `Array Boolean -> Array Boolean`, and so on. It must take strings to strings, numbers to numbers, etc.
 
