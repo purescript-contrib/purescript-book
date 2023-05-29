@@ -8,6 +8,14 @@ In this chapter, we'll set up a working PureScript development environment, solv
 
 First, work through this [Getting Started Guide](https://github.com/purescript/documentation/blob/master/guides/Getting-Started.md) in the Documentation Repo to setup your environment and learn a few basics about the language. Don't worry if the code in the example solution to the [Project Euler](http://projecteuler.net/problem=1) problem is confusing or contains unfamiliar syntax. We'll cover all of this in great detail in the upcoming chapters.
 
+### Editor support
+
+You can use your preferred editor to write PureScript (for example, to solve the book exercises). See [Editor Support Documentation](https://github.com/purescript/documentation/blob/master/ecosystem/Editor-and-tool-support.md#editor-support).
+
+> Note that some editors expect a `spago.dhall` file in the root of the opened project for full IDE support. For example, you should open the `chapter2` directory to work on the exercises in this chapter.
+>
+> If you use VS Code, you can use the provided workspace to open all the chapters simultaneously.
+
 ## Solving Exercises
 
 Now that you've installed the necessary development tools, clone this book's repo.
