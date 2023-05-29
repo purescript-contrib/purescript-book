@@ -1118,12 +1118,7 @@ Test.gcd(15)(20);
 
 Here, I am assuming that the code was compiled with `spago build`, which compiles PureScript modules to ES modules. For that reason, I was able to reference the `gcd` function on the `Test` object, after importing the `Test` module using `import`.
 
-You might also like to bundle JavaScript code for the browser, using `spago bundle-app --to file.js`. In that case, you would access the `Test` module from the global PureScript namespace, which defaults to `PS`:
-
-```javascript
-var Test = PS.Test;
-Test.gcd(15)(20);
-```
+You can also use the `spago bundle-app` and `spago bundle-module` commands to bundle your generated JavaScript into a single file.  Consult [the documentation](https://github.com/purescript/spago#bundle-a-project-into-a-single-js-file) for more information.
 
 ### Understanding Name Generation
 
