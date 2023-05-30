@@ -1029,15 +1029,18 @@ Two.create = function (value0) {
 </code></pre>
 <p>is actually represented as a JavaScript string at runtime. This is useful for designing libraries, since newtypes provide an additional layer of type safety, but without the runtime overhead of another function call.</p>
 <h3 id="representing-quantified-types"><a class="header" href="#representing-quantified-types">Representing Quantified Types</a></h3>
-<p>Expressions with quantified (polymorphic) types have restrictive representations at runtime. In practice, this means that there are relatively few expressions with a given quantified type, but that we can reason about them quite effectively.</p>
+<p>Expressions with quantified (polymorphic) types have restrictive representations at runtime. In practice, there are relatively few expressions with a given quantified type, but we can reason about them quite effectively.</p>
 <p>Consider this polymorphic type, for example:</p>
 <pre><code class="language-haskell">forall a. a -&gt; a
 </code></pre>
-<p>What sort of functions have this type? Well, there is certainly one function with this type - namely, the <code>identity</code> function, defined in the <code>Prelude</code>:</p>
-<pre><code class="language-haskell">id :: forall a. a -&gt; a
-id a = a
+<p>What sort of functions have this type? Well, there is certainly one function with this type:</p>
+<pre><code class="language-haskell">identity :: forall a. a -&gt; a
+identity a = a
 </code></pre>
-<p>In fact, the <code>identity</code> function is the <em>only</em> (total) function with this type! This certainly seems to be the case (try writing an expression with this type which is not observably equivalent to <code>identity</code>), but how can we be sure? We can be sure by considering the runtime representation of the type.</p>
+<blockquote>
+<p>Note that the actual <a href="https://pursuit.purescript.org/packages/purescript-prelude/docs/Control.Category#v:identity"><code>identity</code></a> function defined in <code>Prelude</code> has a slightly different type.</p>
+</blockquote>
+<p>In fact, the <code>identity</code> function is the <em>only</em> (total) function with this type! This certainly seems to be the case (try writing an expression with this type that is not observably equivalent to <code>identity</code>), but how can we be sure? We can be sure by considering the runtime representation of the type.</p>
 <p>What is the runtime representation of a quantified type <code>forall a. t</code>? Well, any expression with the runtime representation for this type must have the correct runtime representation for the type <code>t</code> for any choice of type <code>a</code>. In our example above, a function of type <code>forall a. a -&gt; a</code> must have the correct runtime representation for the types <code>String -&gt; String</code>, <code>Number -&gt; Number</code>, <code>Array Boolean -&gt; Array Boolean</code>, and so on. It must take strings to strings, numbers to numbers, etc.</p>
 <p>But that is not enough - the runtime representation of a quantified type is more strict than this. We require any expression to be <em>parametrically polymorphic</em> - that is, it cannot use any information about the type of its argument in its implementation. This additional condition prevents problematic implementations such as the following JavaScript function from inhabiting a polymorphic type:</p>
 <pre><code class="language-javascript">function invalid(a) {
