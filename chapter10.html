@@ -959,10 +959,7 @@ gcd n m
 Test.gcd(15)(20);
 </code></pre>
 <p>Here, I am assuming that the code was compiled with <code>spago build</code>, which compiles PureScript modules to ES modules. For that reason, I was able to reference the <code>gcd</code> function on the <code>Test</code> object, after importing the <code>Test</code> module using <code>import</code>.</p>
-<p>You might also like to bundle JavaScript code for the browser, using <code>spago bundle-app --to file.js</code>. In that case, you would access the <code>Test</code> module from the global PureScript namespace, which defaults to <code>PS</code>:</p>
-<pre><code class="language-javascript">var Test = PS.Test;
-Test.gcd(15)(20);
-</code></pre>
+<p>You can also use the <code>spago bundle-app</code> and <code>spago bundle-module</code> commands to bundle your generated JavaScript into a single file. Consult <a href="https://github.com/purescript/spago#bundle-a-project-into-a-single-js-file">the documentation</a> for more information.</p>
 <h3 id="understanding-name-generation"><a class="header" href="#understanding-name-generation">Understanding Name Generation</a></h3>
 <p>PureScript aims to preserve names during code generation as much as possible. In particular, most identifiers which are neither PureScript nor JavaScript keywords can be expected to be preserved, at least for names of top-level declarations.</p>
 <p>If you decide to use a JavaScript keyword as an identifier, the name will be escaped with a double dollar symbol. For example,</p>
