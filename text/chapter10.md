@@ -839,7 +839,7 @@ $ spago repl
 (Right { imag: 6.0, real: 4.0 })
 ```
 
-Using JSON is also the easiest way to pass other structural types, such as `Map` and `Set` through the FFI. Note that since JSON only consists of booleans, numbers, strings, arrays, and objects of other JSON values, we can't write a `Map` and `Set` directly in JSON. But we can represent these structures as arrays (assuming the keys and values can also be represented in JSON), and then decode them back to `Map` or `Set`.
+Using JSON is also the easiest way to pass other structural types, such as `Map` and `Set`, through the FFI. Since JSON only consists of booleans, numbers, strings, arrays, and objects of other JSON values, we can't write a `Map` and `Set` directly in JSON. But we can represent these structures as arrays (assuming the keys and values can also be represented in JSON) and then decode them back to `Map` or `Set`.
 
 Here's an example of a foreign function signature that modifies a `Map` of `String` keys and `Int` values, along with the wrapper function that handles JSON encoding and decoding.
 
@@ -857,7 +857,7 @@ mapSetFoo :: Map String Int -> Either JsonDecodeError (Map String Int)
 mapSetFoo = encodeJson >>> mapSetFooJson >>> decodeJson
 ```
 
-Here is the JavaScript implementation. Note the `Array.from` step which is necessary to convert the JavaScript `Map` into a JSON-friendly format before decoding converts it back to a PureScript `Map`.
+Here is the JavaScript implementation. Note the `Array.from` step, which is necessary to convert the JavaScript `Map` into a JSON-friendly format before decoding converts it back to a PureScript `Map`.
 
 ```js
 export const mapSetFooJson = j => {

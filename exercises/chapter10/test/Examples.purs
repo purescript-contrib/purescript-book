@@ -124,7 +124,7 @@ addComplexDecoded a b = decodeJson $ addComplexJson a b
 foreign import mapSetFooJson :: Json -> Json
 
 mapSetFoo :: Map String Int -> Either JsonDecodeError (Map String Int)
-mapSetFoo = encodeJson >>> mapSetFooJson >>> decodeJson
+mapSetFoo json = decodeJson $ mapSetFooJson $ encodeJson json
 -- ANCHOR_END: mapSetFooJson
 
 {-
