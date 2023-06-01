@@ -44,11 +44,12 @@ renderValidationErrors xs =
 -- ANCHOR: formField
 formField :: String -> String -> String -> (String -> Effect Unit) -> R.JSX
 formField name placeholder value setValue =
-  D.label
+  D.div
     { className: "form-group row"
     , children:
-        [ D.div
+        [ D.label
             { className: "col-sm col-form-label"
+            , htmlFor: name
             , children: [ D.text name ]
             }
         , D.div
@@ -56,6 +57,7 @@ formField name placeholder value setValue =
             , children:
                 [ D.input
                     { className: "form-control"
+                    , id: name
                     , placeholder
                     , value
                     , onChange:
