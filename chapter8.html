@@ -836,11 +836,12 @@ renderValidationErrors xs =
 <p>A second helper function is <code>formField</code>, which creates a text input for a single form field:</p>
 <pre><code class="language-hs">formField :: String -&gt; String -&gt; String -&gt; (String -&gt; Effect Unit) -&gt; R.JSX
 formField name placeholder value setValue =
-  D.label
+  D.div
     { className: &quot;form-group row&quot;
     , children:
-        [ D.div
+        [ D.label
             { className: &quot;col-sm col-form-label&quot;
+            , htmlFor: name
             , children: [ D.text name ]
             }
         , D.div
@@ -848,6 +849,7 @@ formField name placeholder value setValue =
             , children:
                 [ D.input
                     { className: &quot;form-control&quot;
+                    , id: name
                     , placeholder
                     , value
                     , onChange:
