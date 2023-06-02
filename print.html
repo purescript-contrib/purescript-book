@@ -4443,12 +4443,12 @@ export const addComplexJson = addComplex
 &gt; addComplexDecoded { real: 1.0, imag: 2.0 } { real: 3.0, imag: 4.0 }
 (Right { imag: 6.0, real: 4.0 })
 </code></pre>
-<p>Using JSON is also the easiest way to pass other structural types, such as <code>Map</code> and <code>Set</code> through the FFI. Note that since JSON only consists of booleans, numbers, strings, arrays, and objects of other JSON values, we can't write a <code>Map</code> and <code>Set</code> directly in JSON. But we can represent these structures as arrays (assuming the keys and values can also be represented in JSON), and then decode them back to <code>Map</code> or <code>Set</code>.</p>
+<p>Using JSON is also the easiest way to pass other structural types, such as <code>Map</code> and <code>Set</code>, through the FFI. Since JSON only consists of booleans, numbers, strings, arrays, and objects of other JSON values, we can't write a <code>Map</code> and <code>Set</code> directly in JSON. But we can represent these structures as arrays (assuming the keys and values can also be represented in JSON) and then decode them back to <code>Map</code> or <code>Set</code>.</p>
 <p>Here's an example of a foreign function signature that modifies a <code>Map</code> of <code>String</code> keys and <code>Int</code> values, along with the wrapper function that handles JSON encoding and decoding.</p>
 <pre><code class="language-hs">foreign import mapSetFooJson :: Json -&gt; Json
 
 mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
-mapSetFoo = encodeJson &gt;&gt;&gt; mapSetFooJson &gt;&gt;&gt; decodeJson
+mapSetFoo json = decodeJson $ mapSetFooJson $ encodeJson json
 </code></pre>
 <p>Note that this is a prime use case for function composition. Both of these alternatives are equivalent to the above:</p>
 <pre><code class="language-hs">mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
@@ -4457,7 +4457,7 @@ mapSetFoo = decodeJson &lt;&lt;&lt; mapSetFooJson &lt;&lt;&lt; encodeJson
 mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
 mapSetFoo = encodeJson &gt;&gt;&gt; mapSetFooJson &gt;&gt;&gt; decodeJson
 </code></pre>
-<p>Here is the JavaScript implementation. Note the <code>Array.from</code> step which is necessary to convert the JavaScript <code>Map</code> into a JSON-friendly format before decoding converts it back to a PureScript <code>Map</code>.</p>
+<p>Here is the JavaScript implementation. Note the <code>Array.from</code> step, which is necessary to convert the JavaScript <code>Map</code> into a JSON-friendly format before decoding converts it back to a PureScript <code>Map</code>.</p>
 <pre><code class="language-js">export const mapSetFooJson = j =&gt; {
   let m = new Map(j);
   m.set(&quot;Foo&quot;, 42);
