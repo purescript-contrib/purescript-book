@@ -1722,8 +1722,8 @@ bounds = foldl combine emptyBounds
 <p>The accumulating function <code>combine</code> is defined in a <code>where</code> block. <code>combine</code> takes a bounding rectangle computed from <code>foldl</code>'s recursive call, and the next <code>Shape</code> in the array, and uses the <code>union</code> function to compute the union of the two bounding rectangles. The <code>shapeBounds</code> function computes the bounds of a single shape using pattern matching.</p>
 <h2 id="exercises-11"><a class="header" href="#exercises-11">Exercises</a></h2>
 <ol>
-<li>(Medium) Extend the vector graphics library with a new operation <code>area</code> which computes the area of a <code>Shape</code>. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.</li>
-<li>(Difficult) Extend the <code>Shape</code> type with a new data constructor <code>Clipped</code>, which clips another <code>Picture</code> to a rectangle. Extend the <code>shapeBounds</code> function to compute the bounds of a clipped picture. Note that this makes <code>Shape</code> into a recursive data type.</li>
+<li>(Medium) Extend the vector graphics library with a new operation <code>area</code> that computes the area of a <code>Shape</code>. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.</li>
+<li>(Difficult) Extend the <code>Shape</code> type with a new data constructor <code>Clipped</code>, which clips another <code>Picture</code> to a rectangle. Extend the <code>shapeBounds</code> function to compute the bounds of a clipped picture. Note that this makes <code>Shape</code> into a recursive data type. <em>Hint</em>: The compiler will walk you through extending other functions as required.</li>
 </ol>
 <h2 id="conclusion-3"><a class="header" href="#conclusion-3">Conclusion</a></h2>
 <p>In this chapter, we covered pattern matching, a basic but powerful technique from functional programming. We saw how to use simple patterns as well as array and record patterns to match parts of deep data structures.</p>
