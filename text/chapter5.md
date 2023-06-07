@@ -523,8 +523,8 @@ The accumulating function `combine` is defined in a `where` block. `combine` tak
 
 ## Exercises
 
-1. (Medium) Extend the vector graphics library with a new operation `area` which computes the area of a `Shape`. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.
-1. (Difficult) Extend the `Shape` type with a new data constructor `Clipped`, which clips another `Picture` to a rectangle. Extend the `shapeBounds` function to compute the bounds of a clipped picture. Note that this makes `Shape` into a recursive data type.
+1. (Medium) Extend the vector graphics library with a new operation `area` that computes the area of a `Shape`. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.
+1. (Difficult) Extend the `Shape` type with a new data constructor `Clipped`, which clips another `Picture` to a rectangle. Extend the `shapeBounds` function to compute the bounds of a clipped picture. Note that this makes `Shape` into a recursive data type. _Hint_: The compiler will walk you through extending other functions as required.
 
 ## Conclusion
 
