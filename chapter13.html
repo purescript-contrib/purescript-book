@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -158,22 +180,22 @@
 <p>The <code>Merge</code> module implements a simple function <code>merge</code>, which we will use to demonstrate the features of the <code>quickcheck</code> library.</p>
 <pre><code class="language-haskell">merge :: Array Int -&gt; Array Int -&gt; Array Int
 </code></pre>
-<p><code>merge</code> takes two sorted arrays of integers, and merges their elements so that the result is also sorted. For example:</p>
+<p><code>merge</code> takes two sorted arrays of integers and merges their elements so that the result is also sorted. For example:</p>
 <pre><code class="language-text">&gt; import Merge
 &gt; merge [1, 3, 5] [2, 4, 5]
 
 [1, 2, 3, 4, 5, 5]
 </code></pre>
-<p>In a typical test suite, we might test <code>merge</code> by generating a few small test cases like this by hand, and asserting that the results were equal to the appropriate values. However, everything we need to know about the <code>merge</code> function can be summarized by this property:</p>
+<p>In a typical test suite, we might test <code>merge</code> by generating a few small test cases like this by hand and asserting that the results were equal to the appropriate values. However, everything we need to know about the <code>merge</code> function can be summarized by this property:</p>
 <ul>
 <li>If <code>xs</code> and <code>ys</code> are sorted, then <code>merge xs ys</code> is the sorted result of both arrays appended together.</li>
 </ul>
-<p><code>quickcheck</code> allows us to test this property directly, by generating random test cases. We simply state the properties that we want our code to have, as functions. In this case, we have a single property:</p>
+<p><code>quickcheck</code> allows us to test this property directly by generating random test cases. We state the properties we want our code to have as functions. In this case, we have a single property:</p>
 <pre><code class="language-haskell">main = do
   quickCheck \xs ys -&gt;
     eq (merge (sort xs) (sort ys)) (sort $ xs &lt;&gt; ys)
 </code></pre>
-<p>When we run this code, <code>quickcheck</code> will attempt to disprove the properties we claimed, by generating random inputs <code>xs</code> and <code>ys</code>, and passing them to our functions. If our function returns <code>false</code> for any inputs, the property will be incorrect, and the library will raise an error. Fortunately, the library is unable to disprove our properties after generating 100 random test cases:</p>
+<p>When we run this code, <code>quickcheck</code> will attempt to disprove the properties we claimed by generating random inputs <code>xs</code> and <code>ys</code> and passing them to our functions. If our function returns <code>false</code> for any inputs, the property will be incorrect, and the library will raise an error. Fortunately, the library is unable to disprove our properties after generating 100 random test cases:</p>
 <pre><code class="language-text">$ spago test
 
 Installation complete.
@@ -206,7 +228,7 @@ not equal to expected:
 <p>Notice how the input <code>xs</code> and <code>ys</code> were generated as arrays of randomly-selected integers.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
-<li>(Easy) Write a property which asserts that merging an array with the empty array does not modify the original array. <em>Note</em>: This new property is redundant, since this situation is already covered by our existing property. We're just trying to give you readers a simple way to practice using quickCheck.</li>
+<li>(Easy) Write a property that asserts that merging an array with an empty one does not modify the original array. <em>Note</em>: This new property is redundant since this situation is already covered by our existing property. We're just trying to give readers a simple way to practice using quickCheck.</li>
 <li>(Easy) Add an appropriate error message to the remaining property for <code>merge</code>.</li>
 </ol>
 <h2 id="testing-polymorphic-code"><a class="header" href="#testing-polymorphic-code">Testing Polymorphic Code</a></h2>
@@ -221,11 +243,11 @@ not equal to expected:
 The instance head contains unknown type variables.
 Consider adding a type annotation.
 </code></pre>
-<p>This error message indicates that the compiler could not generate random test cases, because it did not know what type of elements we wanted our arrays to have. In these sorts of cases, we can use type annotations to force the compiler to infer a particular type, such as <code>Array Int</code>:</p>
+<p>This error message indicates that the compiler could not generate random test cases because it did not know what type of elements we wanted our arrays to have. In these sorts of cases, we can use type annotations to force the compiler to infer a particular type, such as <code>Array Int</code>:</p>
 <pre><code class="language-haskell">quickCheck \xs ys -&gt;
   eq (mergePoly (sort xs) (sort ys) :: Array Int) (sort $ xs &lt;&gt; ys)
 </code></pre>
-<p>We can alternatively use a helper function to specify type, which may result in cleaner code. For example, if we define a function <code>ints</code> as a synonym for the identity function:</p>
+<p>We can alternatively use a helper function to specify the type, which may result in cleaner code. For example, if we define a function <code>ints</code> as a synonym for the identity function:</p>
 <pre><code class="language-haskell">ints :: Array Int -&gt; Array Int
 ints = id
 </code></pre>
@@ -233,21 +255,21 @@ ints = id
 <pre><code class="language-haskell">quickCheck \xs ys -&gt;
   eq (ints $ mergePoly (sort xs) (sort ys)) (sort $ xs &lt;&gt; ys)
 </code></pre>
-<p>Here, <code>xs</code> and <code>ys</code> both have type <code>Array Int</code>, since the <code>ints</code> function has been used to disambiguate the unknown type.</p>
+<p>Here, <code>xs</code> and <code>ys</code> have type <code>Array Int</code> since the <code>ints</code> function has been used to disambiguate the unknown type.</p>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
 <ol>
-<li>(Easy) Write a function <code>bools</code> which forces the types of <code>xs</code> and <code>ys</code> to be <code>Array Boolean</code>, and add additional properties which test <code>mergePoly</code> at that type.</li>
+<li>(Easy) Write a function <code>bools</code> that forces the types of <code>xs</code> and <code>ys</code> to be <code>Array Boolean</code>, and add additional properties that test <code>mergePoly</code> at that type.</li>
 <li>(Medium) Choose a pure function from the core libraries (for example, from the <code>arrays</code> package), and write a QuickCheck property for it, including an appropriate error message. Your property should use a helper function to fix any polymorphic type arguments to either <code>Int</code> or <code>Boolean</code>.</li>
 </ol>
 <h2 id="generating-arbitrary-data"><a class="header" href="#generating-arbitrary-data">Generating Arbitrary Data</a></h2>
-<p>Now we will see how the <code>quickcheck</code> library is able to randomly generate test cases for our properties.</p>
+<p>Now we will see how the <code>quickcheck</code> library can randomly generate test cases for our properties.</p>
 <p>Those types whose values can be randomly generated are captured by the <code>Arbitrary</code> type class:</p>
 <pre><code class="language-haskell">class Arbitrary t where
   arbitrary :: Gen t
 </code></pre>
 <p>The <code>Gen</code> type constructor represents the side-effects of <em>deterministic random data generation</em>. It uses a pseudo-random number generator to generate deterministic random function arguments from a seed value. The <code>Test.QuickCheck.Gen</code> module defines several useful combinators for building generators.</p>
 <p><code>Gen</code> is also a monad and an applicative functor, so we have the usual collection of combinators at our disposal for creating new instances of the <code>Arbitrary</code> type class.</p>
-<p>For example, we can use the <code>Arbitrary</code> instance for the <code>Int</code> type, provided in the <code>quickcheck</code> library, to create a distribution on the 256 byte values, using the <code>Functor</code> instance for <code>Gen</code> to map a function from integers to bytes over arbitrary integer values:</p>
+<p>For example, we can use the <code>Arbitrary</code> instance for the <code>Int</code> type, provided in the <code>quickcheck</code> library, to create a distribution on the 256-byte values, using the <code>Functor</code> instance for <code>Gen</code> to map a function from integers to bytes over arbitrary integer values:</p>
 <pre><code class="language-haskell">newtype Byte = Byte Int
 
 instance Arbitrary Byte where
@@ -261,7 +283,7 @@ instance Arbitrary Byte where
 <pre><code class="language-haskell">quickCheck \xs ys -&gt;
   eq (numbers $ mergePoly (sort xs) (sort ys)) (sort $ xs &lt;&gt; ys)
 </code></pre>
-<p>In this test, we generated arbitrary arrays <code>xs</code> and <code>ys</code>, but had to sort them, since <code>merge</code> expects sorted input. On the other hand, we could create a newtype representing sorted arrays, and write an <code>Arbitrary</code> instance which generates sorted data:</p>
+<p>In this test, we generated arbitrary arrays <code>xs</code> and <code>ys</code>, but had to sort them, since <code>merge</code> expects sorted input. On the other hand, we could create a newtype representing sorted arrays and write an <code>Arbitrary</code> instance that generates sorted data:</p>
 <pre><code class="language-haskell">newtype Sorted a = Sorted (Array a)
 
 sorted :: forall a. Sorted a -&gt; Array a
@@ -274,7 +296,7 @@ instance (Arbitrary a, Ord a) =&gt; Arbitrary (Sorted a) where
 <pre><code class="language-haskell">quickCheck \xs ys -&gt;
   eq (ints $ mergePoly (sorted xs) (sorted ys)) (sort $ sorted xs &lt;&gt; sorted ys)
 </code></pre>
-<p>This may look like a small change, but the types of <code>xs</code> and <code>ys</code> have changed to <code>Sorted Int</code>, instead of just <code>Array Int</code>. This communicates our <em>intent</em> in a clearer way - the <code>mergePoly</code> function takes sorted input. Ideally, the type of the <code>mergePoly</code> function itself would be updated to use the <code>Sorted</code> type constructor.</p>
+<p>This may look like a small change, but the types of <code>xs</code> and <code>ys</code> have changed to <code>Sorted Int</code> instead of just <code>Array Int</code>. This communicates our <em>intent</em> in a clearer way – the <code>mergePoly</code> function takes sorted input. Ideally, the type of the <code>mergePoly</code> function itself would be updated to use the <code>Sorted</code> type constructor.</p>
 <p>As a more interesting example, the <code>Tree</code> module defines a type of sorted binary trees with values at the branches:</p>
 <pre><code class="language-haskell">data Tree a
   = Leaf
@@ -286,7 +308,7 @@ member    :: forall a. Ord a =&gt; a -&gt; Tree a -&gt; Boolean
 fromArray :: forall a. Ord a =&gt; Array a -&gt; Tree a
 toArray   :: forall a. Tree a -&gt; Array a
 </code></pre>
-<p>The <code>insert</code> function is used to insert a new element into a sorted tree, and the <code>member</code> function can be used to query a tree for a particular value. For example:</p>
+<p>The <code>insert</code> function inserts a new element into a sorted tree, and the <code>member</code> function can query a tree for a particular value. For example:</p>
 <pre><code class="language-text">&gt; import Tree
 
 &gt; member 2 $ insert 1 $ insert 2 Leaf
@@ -295,11 +317,11 @@ true
 &gt; member 1 Leaf
 false
 </code></pre>
-<p>The <code>toArray</code> and <code>fromArray</code> functions can be used to convert sorted trees to and from arrays. We can use <code>fromArray</code> to write an <code>Arbitrary</code> instance for trees:</p>
+<p>The <code>toArray</code> and <code>fromArray</code> functions can convert sorted trees to and from arrays. We can use <code>fromArray</code> to write an <code>Arbitrary</code> instance for trees:</p>
 <pre><code class="language-haskell">instance (Arbitrary a, Ord a) =&gt; Arbitrary (Tree a) where
   arbitrary = map fromArray arbitrary
 </code></pre>
-<p>We can now use <code>Tree a</code> as the type of an argument to our test properties, whenever there is an <code>Arbitrary</code> instance available for the type <code>a</code>. For example, we can test that the <code>member</code> test always returns <code>true</code> after inserting a value:</p>
+<p>We can now use <code>Tree a</code> as the type of an argument to our test properties whenever there is an <code>Arbitrary</code> instance available for the type <code>a</code>. For example, we can test that the <code>member</code> test always returns <code>true</code> after inserting a value:</p>
 <pre><code class="language-haskell">quickCheck \t a -&gt;
   member a $ insert a $ treeOfInt t
 </code></pre>
@@ -307,11 +329,11 @@ false
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
 <ol>
 <li>(Medium) Create a newtype for <code>String</code> with an associated <code>Arbitrary</code> instance which generates collections of randomly-selected characters in the range <code>a-z</code>. <em>Hint</em>: use the <code>elements</code> and <code>arrayOf</code> functions from the <code>Test.QuickCheck.Gen</code> module.</li>
-<li>(Difficult) Write a property which asserts that a value inserted into a tree is still a member of that tree after arbitrarily many more insertions.</li>
+<li>(Difficult) Write a property that asserts that a value inserted into a tree is still a member of that tree after arbitrarily many more insertions.</li>
 </ol>
 <h2 id="testing-higher-order-functions"><a class="header" href="#testing-higher-order-functions">Testing Higher-Order Functions</a></h2>
-<p>The <code>Merge</code> module defines another generalization of the <code>merge</code> function - the <code>mergeWith</code> function takes an additional function as an argument which is used to determine the order in which elements should be merged. That is, <code>mergeWith</code> is a higher-order function.</p>
-<p>For example, we can pass the <code>length</code> function as the first argument, to merge two arrays which are already in length-increasing order. The result should also be in length-increasing order:</p>
+<p>The <code>Merge</code> module defines another generalization of the <code>merge</code> function – the <code>mergeWith</code> function takes an additional function as an argument to determine the order in which elements should be merged. That is, <code>mergeWith</code> is a higher-order function.</p>
+<p>For example, we can pass the <code>length</code> function as the first argument to merge two arrays already in length-increasing order. The result should also be in length-increasing order:</p>
 <pre><code class="language-haskell">&gt; import Data.String
 
 &gt; mergeWith length
@@ -320,17 +342,17 @@ false
 
 [&quot;&quot;,&quot;x&quot;,&quot;ab&quot;,&quot;xyz&quot;,&quot;abcd&quot;]
 </code></pre>
-<p>How might we test such a function? Ideally, we would like to generate values for all three arguments, including the first argument which is a function.</p>
-<p>There is a second type class which allows us to create randomly-generated functions. It is called <code>Coarbitrary</code>, and it is defined as follows:</p>
+<p>How might we test such a function? Ideally, we would like to generate values for all three arguments, including the first argument, which is a function.</p>
+<p>There is a second type class that allows us to create randomly-generated functions. It is called <code>Coarbitrary</code>, and it is defined as follows:</p>
 <pre><code class="language-haskell">class Coarbitrary t where
   coarbitrary :: forall r. t -&gt; Gen r -&gt; Gen r
 </code></pre>
-<p>The <code>coarbitrary</code> function takes a function argument of type <code>t</code>, and a random generator for a function result of type <code>r</code>, and uses the function argument to <em>perturb</em> the random generator. That is, it uses the function argument to modify the random output of the random generator for the result.</p>
-<p>In addition, there is a type class instance which gives us <code>Arbitrary</code> functions if the function domain is <code>Coarbitrary</code> and the function codomain is <code>Arbitrary</code>:</p>
+<p>The <code>coarbitrary</code> function takes a function argument of type <code>t</code> and a random generator for a function result of type <code>r</code>. It uses the function argument to <em>perturb</em> the random generator. That is, it uses the function argument to modify the random output of the random generator for the result.</p>
+<p>In addition, there is a type class instance that gives us <code>Arbitrary</code> functions if the function domain is <code>Coarbitrary</code> and the function codomain is <code>Arbitrary</code>:</p>
 <pre><code class="language-haskell">instance (Coarbitrary a, Arbitrary b) =&gt; Arbitrary (a -&gt; b)
 </code></pre>
-<p>In practice, this means that we can write properties which take functions as arguments. In the case of the <code>mergeWith</code> function, we can generate the first argument randomly, modifying our tests to take account of the new argument.</p>
-<p>We cannot guarantee that the result will be sorted - we do not even necessarily have an <code>Ord</code> instance - but we can expect that the result be sorted with respect to the function <code>f</code> that we pass in as an argument. In addition, we need the two input arrays to be sorted with respect to <code>f</code>, so we use the <code>sortBy</code> function to sort <code>xs</code> and <code>ys</code> based on comparison after the function <code>f</code> has been applied:</p>
+<p>In practice, we can write properties that take functions as arguments. In the case of the <code>mergeWith</code> function, we can generate the first argument randomly, modifying our tests to take account of the new argument.</p>
+<p>We cannot guarantee that the result will be sorted – we do not even necessarily have an <code>Ord</code> instance – but we can expect that the result be sorted with respect to the function <code>f</code> that we pass in as an argument. In addition, we need the two input arrays to be sorted concerning <code>f</code>, so we use the <code>sortBy</code> function to sort <code>xs</code> and <code>ys</code> based on comparison after the function <code>f</code> has been applied:</p>
 <pre><code class="language-haskell">quickCheck \xs ys f -&gt;
   let
     result =
@@ -351,13 +373,13 @@ intToBool = id
 <p>In addition to being <code>Arbitrary</code>, functions are also <code>Coarbitrary</code>:</p>
 <pre><code class="language-haskell">instance (Arbitrary a, Coarbitrary b) =&gt; Coarbitrary (a -&gt; b)
 </code></pre>
-<p>This means that we are not limited to just values and functions - we can also randomly generate <em>higher-order functions</em>, or functions whose arguments are higher-order functions, and so on.</p>
+<p>This means that we are not limited to just values and functions – we can also randomly generate <em>higher-order functions</em>, or functions whose arguments are higher-order functions, and so on.</p>
 <h2 id="writing-coarbitrary-instances"><a class="header" href="#writing-coarbitrary-instances">Writing Coarbitrary Instances</a></h2>
 <p>Just as we can write <code>Arbitrary</code> instances for our data types by using the <code>Monad</code> and <code>Applicative</code> instances of <code>Gen</code>, we can write our own <code>Coarbitrary</code> instances as well. This allows us to use our own data types as the domain of randomly-generated functions.</p>
 <p>Let's write a <code>Coarbitrary</code> instance for our <code>Tree</code> type. We will need a <code>Coarbitrary</code> instance for the type of the elements stored in the branches:</p>
 <pre><code class="language-haskell">instance Coarbitrary a =&gt; Coarbitrary (Tree a) where
 </code></pre>
-<p>We have to write a function which perturbs a random generator given a value of type <code>Tree a</code>. If the input value is a <code>Leaf</code>, then we will just return the generator unchanged:</p>
+<p>We have to write a function that perturbs a random generator given a value of type <code>Tree a</code>. If the input value is a <code>Leaf</code>, then we will return the generator unchanged:</p>
 <pre><code class="language-haskell">  coarbitrary Leaf = id
 </code></pre>
 <p>If the tree is a <code>Branch</code>, then we will perturb the generator using the left subtree, the value, and the right subtree. We use function composition to create our perturbing function:</p>
@@ -366,10 +388,10 @@ intToBool = id
     coarbitrary a &lt;&lt;&lt;
     coarbitrary r
 </code></pre>
-<p>Now we are free to write properties whose arguments include functions taking trees as arguments. For example, the <code>Tree</code> module defines a function <code>anywhere</code>, which tests if a predicate holds on any subtree of its argument:</p>
+<p>Now we can write properties whose arguments include functions taking trees as arguments. For example, the <code>Tree</code> module defines a function <code>anywhere</code>, which tests if a predicate holds on any subtree of its argument:</p>
 <pre><code class="language-haskell">anywhere :: forall a. (Tree a -&gt; Boolean) -&gt; Tree a -&gt; Boolean
 </code></pre>
-<p>Now we are able to generate the predicate function randomly. For example, we expect the <code>anywhere</code> function to <em>respect disjunction</em>:</p>
+<p>Now we can generate the predicate function randomly. For example, we expect the <code>anywhere</code> function to <em>respect disjunction</em>:</p>
 <pre><code class="language-haskell">quickCheck \f g t -&gt;
   anywhere (\s -&gt; f s || g s) t ==
     anywhere f (treeOfInt t) || anywhere g t
@@ -379,7 +401,7 @@ intToBool = id
 treeOfInt = id
 </code></pre>
 <h2 id="testing-without-side-effects"><a class="header" href="#testing-without-side-effects">Testing Without Side-Effects</a></h2>
-<p>For the purposes of testing, we usually include calls to the <code>quickCheck</code> function in the <code>main</code> action of our test suite. However, there is a variant of the <code>quickCheck</code> function, called <code>quickCheckPure</code> which does not use side-effects. Instead, it is a pure function which takes a random seed as an input, and returns an array of test results.</p>
+<p>For the purposes of testing, we usually include calls to the <code>quickCheck</code> function in the <code>main</code> action of our test suite. However, there is a variant of the <code>quickCheck</code> function, called <code>quickCheckPure</code> which does not use side-effects. Instead, it is a pure function that takes a random seed as an input and returns an array of test results.</p>
 <p>We can test <code>quickCheckPure</code> using PSCi. Here, we test that the <code>merge</code> operation is associative:</p>
 <pre><code class="language-text">&gt; import Prelude
 &gt; import Merge
@@ -395,7 +417,7 @@ treeOfInt = id
 Success : Success : ...
 </code></pre>
 <p><code>quickCheckPure</code> takes three arguments: the random seed, the number of test cases to generate, and the property to test. If all tests pass, you should see an array of <code>Success</code> data constructors printed to the console.</p>
-<p><code>quickCheckPure</code> might be useful in other situations, such as generating random input data for performance benchmarks, or generating sample form data for web applications.</p>
+<p><code>quickCheckPure</code> might be useful in other situations, such as generating random input data for performance benchmarks or sample form data for web applications.</p>
 <h2 id="exercises-3"><a class="header" href="#exercises-3">Exercises</a></h2>
 <ol>
 <li>
@@ -411,7 +433,7 @@ Success : Success : ...
 <p><em>Hint</em>: Use the <code>oneOf</code> function defined in <code>Test.QuickCheck.Gen</code> to define your <code>Arbitrary</code> instance.</p>
 </li>
 <li>
-<p>(Medium) Use <code>all</code> to simplify the result of the <code>quickCheckPure</code> function - your new function should have type <code>List Result -&gt; Boolean</code> and should return <code>true</code> if every test passes and <code>false</code> otherwise.</p>
+<p>(Medium) Use <code>all</code> to simplify the result of the <code>quickCheckPure</code> function – your new function should have the type <code>List Result -&gt; Boolean</code> and should return <code>true</code> if every test passes and <code>false</code> otherwise.</p>
 </li>
 <li>
 <p>(Medium) As another approach to simplifying the result of <code>quickCheckPure</code>, try writing a function <code>squashResults :: List Result -&gt; Result</code>. Consider using the <code>First</code> monoid from <code>Data.Maybe.First</code> with the <code>foldMap</code> function to preserve the first error in case of failure.</p>
@@ -421,8 +443,8 @@ Success : Success : ...
 <p>In this chapter, we met the <code>quickcheck</code> package, which can be used to write tests in a declarative way using the paradigm of <em>generative testing</em>. In particular:</p>
 <ul>
 <li>We saw how to automate QuickCheck tests using <code>spago test</code>.</li>
-<li>We saw how to write properties as functions, and how to use the <code>&lt;?&gt;</code> operator to improve error messages.</li>
-<li>We saw how the <code>Arbitrary</code> and <code>Coarbitrary</code> type classes enable generation of boilerplate testing code, and how they allow us to test higher-order properties.</li>
+<li>We saw how to write properties as functions and how to use the <code>&lt;?&gt;</code> operator to improve error messages.</li>
+<li>We saw how the <code>Arbitrary</code> and <code>Coarbitrary</code> type classes enable generation of boilerplate testing code and how they allow us to test higher-order properties.</li>
 <li>We saw how to implement custom <code>Arbitrary</code> and <code>Coarbitrary</code> instances for our own data types.</li>
 </ul>
 

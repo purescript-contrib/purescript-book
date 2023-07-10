@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -149,9 +171,9 @@
                     <main>
                         <h1 id="applicative-validation"><a class="header" href="#applicative-validation">Applicative Validation</a></h1>
 <h2 id="chapter-goals"><a class="header" href="#chapter-goals">Chapter Goals</a></h2>
-<p>In this chapter, we will meet an important new abstraction - the <em>applicative functor</em>, described by the <code>Applicative</code> type class. Don't worry if the name sounds confusing - we will motivate the concept with a practical example - validating form data. This technique allows us to convert code which usually involves a lot of boilerplate checking into a simple, declarative description of our form.</p>
+<p>In this chapter, we will meet an important new abstraction – the <em>applicative functor</em>, described by the <code>Applicative</code> type class. Don't worry if the name sounds confusing – we will motivate the concept with a practical example – validating form data. This technique allows us to convert code which usually involves a lot of boilerplate checking into a simple, declarative description of our form.</p>
 <p>We will also meet another type class, <code>Traversable</code>, which describes <em>traversable functors</em>, and see how this concept also arises very naturally from solutions to real-world problems.</p>
-<p>The example code for this chapter will be a continuation of the address book example from chapter 3. This time, we will extend our address book data types, and write functions to validate values for those types. The understanding is that these functions could be used, for example in a web user interface, to display errors to the user as part of a data entry form.</p>
+<p>The example code for this chapter will be a continuation of the address book example from Chapter 3. This time, we will extend our address book data types and write functions to validate values for those types. The understanding is that these functions could be used, for example, in a web user interface, to display errors to the user as part of a data entry form.</p>
 <h2 id="project-setup"><a class="header" href="#project-setup">Project Setup</a></h2>
 <p>The source code for this chapter is defined in the files <code>src/Data/AddressBook.purs</code> and <code>src/Data/AddressBook/Validation.purs</code>.</p>
 <p>The project has a number of dependencies, many of which we have seen before. There are two new dependencies:</p>
@@ -159,10 +181,10 @@
 <li><code>control</code>, which defines functions for abstracting control flow using type classes like <code>Applicative</code>.</li>
 <li><code>validation</code>, which defines a functor for <em>applicative validation</em>, the subject of this chapter.</li>
 </ul>
-<p>The <code>Data.AddressBook</code> module defines data types and <code>Show</code> instances for the types in our project, and the <code>Data.AddressBook.Validation</code> module contains validation rules for those types.</p>
+<p>The <code>Data.AddressBook</code> module defines data types and <code>Show</code> instances for the types in our project and the <code>Data.AddressBook.Validation</code> module contains validation rules for those types.</p>
 <h2 id="generalizing-function-application"><a class="header" href="#generalizing-function-application">Generalizing Function Application</a></h2>
 <p>To explain the concept of an <em>applicative functor</em>, let's consider the type constructor <code>Maybe</code> that we met earlier.</p>
-<p>The source code for this module defines a function <code>address</code> which has the following type:</p>
+<p>The source code for this module defines a function <code>address</code> that has the following type:</p>
 <pre><code class="language-haskell">address :: String -&gt; String -&gt; String -&gt; Address
 </code></pre>
 <p>This function is used to construct a value of type <code>Address</code> from three strings: a street name, a city, and a state.</p>
@@ -185,7 +207,7 @@ with type
 
   String
 </code></pre>
-<p>Of course, this is an expected type error - <code>address</code> takes strings as arguments, not values of type <code>Maybe String</code>.</p>
+<p>Of course, this is an expected type error – <code>address</code> takes strings as arguments, not values of type <code>Maybe String</code>.</p>
 <p>However, it is reasonable to expect that we should be able to &quot;lift&quot; the <code>address</code> function to work with optional values described by the <code>Maybe</code> type. In fact, we can, and the <code>Control.Apply</code> provides the function <code>lift3</code> function which does exactly what we need:</p>
 <pre><code class="language-text">&gt; import Control.Apply
 &gt; lift3 address (Just &quot;123 Fake St.&quot;) Nothing (Just &quot;CA&quot;)
@@ -207,7 +229,7 @@ forall a b c d f. Apply f =&gt; (a -&gt; b -&gt; c -&gt; d) -&gt; f a -&gt; f b 
 <p>In the <code>Maybe</code> example above, the type constructor <code>f</code> is <code>Maybe</code>, so that <code>lift3</code> is specialized to the following type:</p>
 <pre><code class="language-haskell">forall a b c d. (a -&gt; b -&gt; c -&gt; d) -&gt; Maybe a -&gt; Maybe b -&gt; Maybe c -&gt; Maybe d
 </code></pre>
-<p>This type says that we can take any function with three arguments, and lift it to give a new function whose argument and result types are wrapped with <code>Maybe</code>.</p>
+<p>This type says that we can take any function with three arguments and lift it to give a new function whose argument and result types are wrapped with <code>Maybe</code>.</p>
 <p>Certainly, this is not possible for every type constructor <code>f</code>, so what is it about the <code>Maybe</code> type which allowed us to do this? Well, in specializing the type above, we removed a type class constraint on <code>f</code> from the <code>Apply</code> type class. <code>Apply</code> is defined in the Prelude as follows:</p>
 <pre><code class="language-haskell">class Functor f where
   map :: forall a b. (a -&gt; b) -&gt; f a -&gt; f b
@@ -227,8 +249,8 @@ instance Apply Maybe where
   apply _        _        = Nothing
 </code></pre>
 <p>This type class instance says that we can apply an optional function to an optional value, and the result is defined only if both are defined.</p>
-<p>Now we'll see how <code>map</code> and <code>apply</code> can be used together to lift functions of arbitrary number of arguments.</p>
-<p>For functions of one argument, we can just use <code>map</code> directly.</p>
+<p>Now we'll see how <code>map</code> and <code>apply</code> can be used together to lift functions of an arbitrary number of arguments.</p>
+<p>For functions of one argument, we can use <code>map</code> directly.</p>
 <p>For functions of two arguments, we have a curried function <code>g</code> with type <code>a -&gt; b -&gt; c</code>, say. This is equivalent to the type <code>a -&gt; (b -&gt; c)</code>, so we can apply <code>map</code> to <code>g</code> to get a new function of type <code>f a -&gt; f (b -&gt; c)</code> for any type constructor <code>f</code> with a <code>Functor</code> instance. Partially applying this function to the first lifted argument (of type <code>f a</code>), we get a new wrapped function of type <code>f (b -&gt; c)</code>. If we also have an <code>Apply</code> instance for <code>f</code>, we can then use <code>apply</code> to apply the second lifted argument (of type <code>f b</code>) to get our final value of type <code>f c</code>.</p>
 <p>Putting this all together, we see that if we have values <code>x :: f a</code> and <code>y :: f b</code>, then the expression <code>(g &lt;$&gt; x) &lt;*&gt; y</code> has type <code>f c</code> (remember, this expression is equivalent to <code>apply (map g x) y</code>). The precedence rules defined in the Prelude allow us to remove the parentheses: <code>g &lt;$&gt; x &lt;*&gt; y</code>.</p>
 <p>In general, we can use <code>&lt;$&gt;</code> on the first argument, and <code>&lt;*&gt;</code> for the remaining arguments, as illustrated here for <code>lift3</code>:</p>
@@ -241,7 +263,9 @@ instance Apply Maybe where
       -&gt; f d
 lift3 f x y z = f &lt;$&gt; x &lt;*&gt; y &lt;*&gt; z
 </code></pre>
+<blockquote>
 <p>It is left as an exercise for the reader to verify the types involved in this expression.</p>
+</blockquote>
 <p>As an example, we can try lifting the address function over <code>Maybe</code>, directly using the <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> functions:</p>
 <pre><code class="language-text">&gt; address &lt;$&gt; Just &quot;123 Fake St.&quot; &lt;*&gt; Just &quot;Faketown&quot; &lt;*&gt; Just &quot;CA&quot;
 Just ({ street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &quot;CA&quot; })
@@ -250,7 +274,7 @@ Just ({ street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &qu
 Nothing
 </code></pre>
 <p>Try lifting some other functions of various numbers of arguments over <code>Maybe</code> in this way.</p>
-<p>Alternatively <em>applicative do notation</em> can be used for the same purpose in a way that looks similar to the familiar <em>do notation</em>. Here is <code>lift3</code> using <em>applicative do notation</em>. Note <code>ado</code> is used instead of <code>do</code>, and <code>in</code> is used on the final line to denote the yielded value:</p>
+<p>Alternatively, <em>applicative do notation</em> can be used for the same purpose in a way that looks similar to the familiar <em>do notation</em>. Here is <code>lift3</code> using <em>applicative do notation</em>. Note <code>ado</code> is used instead of <code>do</code>, and <code>in</code> is used on the final line to denote the yielded value:</p>
 <pre><code class="language-haskell">lift3 :: forall a b c d f
        . Apply f
       =&gt; (a -&gt; b -&gt; c -&gt; d)
@@ -274,12 +298,12 @@ lift3 f x y z = ado
 <pre><code class="language-haskell">instance Applicative Maybe where
   pure x = Just x
 </code></pre>
-<p>If we think of applicative functors as functors which allow lifting of functions, then <code>pure</code> can be thought of as lifting functions of zero arguments.</p>
+<p>If we think of applicative functors as functors that allow lifting of functions, then <code>pure</code> can be thought of as lifting functions of zero arguments.</p>
 <h2 id="intuition-for-applicative"><a class="header" href="#intuition-for-applicative">Intuition for Applicative</a></h2>
 <p>Functions in PureScript are pure and do not support side-effects. Applicative functors allow us to work in larger &quot;programming languages&quot; which support some sort of side-effect encoded by the functor <code>f</code>.</p>
-<p>As an example, the functor <code>Maybe</code> represents the side effect of possibly-missing values. Some other examples include <code>Either err</code>, which represents the side effect of possible errors of type <code>err</code>, and the arrow functor <code>r -&gt;</code> which represents the side-effect of reading from a global configuration. For now, we'll only consider the <code>Maybe</code> functor.</p>
+<p>As an example, the functor <code>Maybe</code> represents the side effect of possibly-missing values. Some other examples include <code>Either err</code>, which represents the side effect of possible errors of type <code>err</code>, and the arrow functor <code>r -&gt;</code>, which represents the side-effect of reading from a global configuration. For now, we'll only consider the <code>Maybe</code> functor.</p>
 <p>If the functor <code>f</code> represents this larger programming language with effects, then the <code>Apply</code> and <code>Applicative</code> instances allow us to lift values and function applications from our smaller programming language (PureScript) into the new language.</p>
-<p><code>pure</code> lifts pure (side-effect free) values into the larger language, and for functions, we can use <code>map</code> and <code>apply</code> as described above.</p>
+<p><code>pure</code> lifts pure (side-effect free) values into the larger language; for functions, we can use <code>map</code> and <code>apply</code> as described above.</p>
 <p>This raises a question: if we can use <code>Applicative</code> to embed PureScript functions and values into this new language, then how is the new language any larger? The answer depends on the functor <code>f</code>. If we can find expressions of type <code>f a</code> which cannot be expressed as <code>pure x</code> for some <code>x</code>, then that expression represents a term which only exists in the larger language.</p>
 <p>When <code>f</code> is <code>Maybe</code>, an example is the expression <code>Nothing</code>: we cannot write <code>Nothing</code> as <code>pure x</code> for any <code>x</code>. Therefore, we can think of PureScript as having been enlarged to include the new term <code>Nothing</code>, which represents a missing value.</p>
 <h2 id="more-effects"><a class="header" href="#more-effects">More Effects</a></h2>
@@ -292,7 +316,7 @@ lift3 f x y z = ado
 &gt; fullName &quot;Phillip&quot; &quot;A&quot; &quot;Freeman&quot;
 Freeman, Phillip A
 </code></pre>
-<p>Now suppose that this function forms the implementation of a (very simple!) web service with the three arguments provided as query parameters. We want to make sure that the user provided each of the three parameters, so we might use the <code>Maybe</code> type to indicate the presence or otherwise absence of a parameter. We can lift <code>fullName</code> over <code>Maybe</code> to create an implementation of the web service which checks for missing parameters:</p>
+<p>Suppose that this function forms the implementation of a (very simple!) web service with the three arguments provided as query parameters. We want to ensure that the user provided each of the three parameters, so we might use the Maybe type to indicate the presence or absence of a parameter. We can lift <code>fullName</code> over <code>Maybe</code> to create an implementation of the web service which checks for missing parameters:</p>
 <pre><code class="language-text">&gt; import Data.Maybe
 
 &gt; fullName &lt;$&gt; Just &quot;Phillip&quot; &lt;*&gt; Just &quot;A&quot; &lt;*&gt; Just &quot;Freeman&quot;
@@ -301,7 +325,7 @@ Just (&quot;Freeman, Phillip A&quot;)
 &gt; fullName &lt;$&gt; Just &quot;Phillip&quot; &lt;*&gt; Nothing &lt;*&gt; Just &quot;Freeman&quot;
 Nothing
 </code></pre>
-<p>or with <em>applicative do</em></p>
+<p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-text">&gt; import Data.Maybe
 
 &gt; :paste…
@@ -322,7 +346,7 @@ Nothing
 Nothing
 </code></pre>
 <p>Note that the lifted function returns <code>Nothing</code> if any of the arguments was <code>Nothing</code>.</p>
-<p>This is good, because now we can send an error response back from our web service if the parameters are invalid. However, it would be better if we could indicate which field was incorrect in the response.</p>
+<p>This is good because now we can send an error response back from our web service if the parameters are invalid. However, it would be better if we could indicate which field was incorrect in the response.</p>
 <p>Instead of lifting over <code>Maybe</code>, we can lift over <code>Either String</code>, which allows us to return an error message. First, let's write an operator to convert optional inputs into computations which can signal an error using <code>Either String</code>:</p>
 <pre><code class="language-text">&gt; import Data.Either
 &gt; :paste
@@ -339,7 +363,7 @@ Nothing
 …            &lt;*&gt; (last   `withError` &quot;Last name was missing&quot;)
 … ^D
 </code></pre>
-<p>or with <em>applicative do</em></p>
+<p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-text">&gt; :paste
 … fullNameEither first middle last = ado
 …  f &lt;- first  `withError` &quot;First name was missing&quot;
@@ -351,7 +375,7 @@ Nothing
 &gt; :type fullNameEither
 Maybe String -&gt; Maybe String -&gt; Maybe String -&gt; Either String String
 </code></pre>
-<p>Now our function takes three optional arguments using <code>Maybe</code>, and returns either a <code>String</code> error message or a <code>String</code> result.</p>
+<p>Now our function takes three optional arguments using <code>Maybe, and returns either a</code>String<code>error message or a</code>String` result.</p>
 <p>We can try out the function with different inputs:</p>
 <pre><code class="language-text">&gt; fullNameEither (Just &quot;Phillip&quot;) (Just &quot;A&quot;) (Just &quot;Freeman&quot;)
 (Right &quot;Freeman, Phillip A&quot;)
@@ -362,15 +386,15 @@ Maybe String -&gt; Maybe String -&gt; Maybe String -&gt; Either String String
 &gt; fullNameEither (Just &quot;Phillip&quot;) (Just &quot;A&quot;) Nothing
 (Left &quot;Last name was missing&quot;)
 </code></pre>
-<p>In this case, we see the error message corresponding to the first missing field, or a successful result if every field was provided. However, if we are missing multiple inputs, we still only see the first error:</p>
+<p>In this case, we see the error message corresponding to the first missing field or a successful result if every field was provided. However, if we are missing multiple inputs, we still only see the first error:</p>
 <pre><code class="language-text">&gt; fullNameEither Nothing Nothing Nothing
 (Left &quot;First name was missing&quot;)
 </code></pre>
 <p>This might be good enough, but if we want to see a list of <em>all</em> missing fields in the error, then we need something more powerful than <code>Either String</code>. We will see a solution later in this chapter.</p>
 <h2 id="combining-effects"><a class="header" href="#combining-effects">Combining Effects</a></h2>
-<p>As an example of working with applicative functors abstractly, this section will show how to write a function which will generically combine side-effects encoded by an applicative functor <code>f</code>.</p>
+<p>As an example of working with applicative functors abstractly, this section will show how to write a function that generically combines side-effects encoded by an applicative functor <code>f</code>.</p>
 <p>What does this mean? Well, suppose we have a list of wrapped arguments of type <code>f a</code> for some <code>a</code>. That is, suppose we have a list of type <code>List (f a)</code>. Intuitively, this represents a list of computations with side-effects tracked by <code>f</code>, each with return type <code>a</code>. If we could run all of these computations in order, we would obtain a list of results of type <code>List a</code>. However, we would still have side-effects tracked by <code>f</code>. That is, we expect to be able to turn something of type <code>List (f a)</code> into something of type <code>f (List a)</code> by &quot;combining&quot; the effects inside the original list.</p>
-<p>For any fixed list size <code>n</code>, there is a function of <code>n</code> arguments which builds a list of size <code>n</code> out of those arguments. For example, if <code>n</code> is <code>3</code>, the function is <code>\x y z -&gt; x : y : z : Nil</code>. This function has type <code>a -&gt; a -&gt; a -&gt; List a</code>. We can use the <code>Applicative</code> instance for <code>List</code> to lift this function over <code>f</code>, to get a function of type <code>f a -&gt; f a -&gt; f a -&gt; f (List a)</code>. But, since we can do this for any <code>n</code>, it makes sense that we should be able to perform the same lifting for any <em>list</em> of arguments.</p>
+<p>For any fixed list size <code>n</code>, there is a function of <code>n</code> arguments that builds a list of size <code>n</code> out of those arguments. For example, if <code>n</code> is <code>3</code>, the function is <code>\x y z -&gt; x : y : z : Nil</code>. This function has type <code>a -&gt; a -&gt; a -&gt; List a</code>. We can use the <code>Applicative</code> instance for <code>List</code> to lift this function over <code>f</code>, to get a function of type <code>f a -&gt; f a -&gt; f a -&gt; f (List a)</code>. But, since we can do this for any <code>n</code>, it makes sense that we should be able to perform the same lifting for any <em>list</em> of arguments.</p>
 <p>That means that we should be able to write a function</p>
 <pre><code class="language-haskell">combineList :: forall f a. Applicative f =&gt; List (f a) -&gt; f (List a)
 </code></pre>
@@ -393,31 +417,31 @@ Maybe String -&gt; Maybe String -&gt; Maybe String -&gt; Either String String
 &gt; combineList (fromFoldable [Just 1, Nothing, Just 2])
 Nothing
 </code></pre>
-<p>When specialized to <code>Maybe</code>, our function returns a <code>Just</code> only if every list element was <code>Just</code>, otherwise it returns <code>Nothing</code>. This is consistent with our intuition of working in a larger language supporting optional values - a list of computations which return optional results only has a result itself if every computation contained a result.</p>
-<p>But the <code>combineList</code> function works for any <code>Applicative</code>! We can use it to combine computations which possibly signal an error using <code>Either err</code>, or which read from a global configuration using <code>r -&gt;</code>.</p>
-<p>We will see the <code>combineList</code> function again later, when we consider <code>Traversable</code> functors.</p>
+<p>When specialized to <code>Maybe</code>, our function returns a <code>Just</code> only if every list element is <code>Just</code>; otherwise, it returns <code>Nothing</code>. This is consistent with our intuition of working in a larger language supporting optional values – a list of computations that produce optional results only has a result itself if every computation contained a result.</p>
+<p>But the <code>combineList</code> function works for any <code>Applicative</code>! We can use it to combine computations that possibly signal an error using <code>Either err</code>, or which read from a global configuration using <code>r -&gt;</code>.</p>
+<p>We will see the <code>combineList</code> function again later when we consider <code>Traversable</code> functors.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
-<li>(Medium) Write versions of the numeric operators <code>+</code>, <code>-</code>, <code>*</code> and <code>/</code> which work with optional arguments (i.e. arguments wrapped in <code>Maybe</code>) and return a value wrapped in <code>Maybe</code>. Name these functions <code>addMaybe</code>, <code>subMaybe</code>, <code>mulMaybe</code>, and <code>divMaybe</code>. <em>Hint</em>: Use <code>lift2</code>.</li>
+<li>(Medium) Write versions of the numeric operators <code>+</code>, <code>-</code>, <code>*</code>, and <code>/</code> which work with optional arguments (i.e., arguments wrapped in <code>Maybe</code>) and return a value wrapped in <code>Maybe</code>. Name these functions <code>addMaybe</code>, <code>subMaybe</code>, <code>mulMaybe</code>, and <code>divMaybe</code>. <em>Hint</em>: Use <code>lift2</code>.</li>
 <li>(Medium) Extend the above exercise to work with all <code>Apply</code> types (not just <code>Maybe</code>). Name these new functions <code>addApply</code>, <code>subApply</code>, <code>mulApply</code>, and <code>divApply</code>.</li>
-<li>(Difficult) Write a function <code>combineMaybe</code> which has type <code>forall a f. Applicative f =&gt; Maybe (f a) -&gt; f (Maybe a)</code>. This function takes an optional computation with side-effects, and returns a side-effecting computation which has an optional result.</li>
+<li>(Difficult) Write a function <code>combineMaybe</code> which has type <code>forall a f. Applicative f =&gt; Maybe (f a) -&gt; f (Maybe a)</code>. This function takes an optional computation with side-effects and returns a side-effecting computation with an optional result.</li>
 </ol>
 <h2 id="applicative-validation-1"><a class="header" href="#applicative-validation-1">Applicative Validation</a></h2>
-<p>The source code for this chapter defines several data types which might be used in an address book application. The details are omitted here, but the key functions which are exported by the <code>Data.AddressBook</code> module have the following types:</p>
+<p>The source code for this chapter defines several data types which might be used in an address book application. The details are omitted here, but the key functions exported by the <code>Data.AddressBook</code> module have the following types:</p>
 <pre><code class="language-haskell">address :: String -&gt; String -&gt; String -&gt; Address
 
 phoneNumber :: PhoneType -&gt; String -&gt; PhoneNumber
 
 person :: String -&gt; String -&gt; Address -&gt; Array PhoneNumber -&gt; Person
 </code></pre>
-<p>where <code>PhoneType</code> is defined as an algebraic data type:</p>
+<p>Where <code>PhoneType</code> is defined as an algebraic data type:</p>
 <pre><code class="language-haskell">data PhoneType
   = HomePhone
   | WorkPhone
   | CellPhone
   | OtherPhone
 </code></pre>
-<p>These functions can be used to construct a <code>Person</code> representing an address book entry. For example, the following value is defined in <code>Data.AddressBook</code>:</p>
+<p>These functions can construct a <code>Person</code> representing an address book entry. For example, the following value is defined in <code>Data.AddressBook</code>:</p>
 <pre><code class="language-haskell">examplePerson :: Person
 examplePerson =
   person &quot;John&quot; &quot;Smith&quot;
@@ -459,21 +483,21 @@ validatePerson1 p =
          &lt;*&gt; pure p.homeAddress
          &lt;*&gt; pure p.phones
 </code></pre>
-<p>or with <em>applicative do</em></p>
+<p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-haskell">validatePerson1Ado :: Person -&gt; Either String Person
 validatePerson1Ado p = ado
   f &lt;- nonEmpty1 p.firstName
   l &lt;- nonEmpty1 p.lastName
   in person f l p.homeAddress p.phones
 </code></pre>
-<p>In the first two lines, we use the <code>nonEmpty1</code> function to validate a non-empty string. <code>nonEmpty1</code> returns an error indicated with the <code>Left</code> constructor if its input is empty, otherwise it returns the value wrapped with the <code>Right</code> constructor.</p>
+<p>In the first two lines, we use the <code>nonEmpty1</code> function to validate a non-empty string. <code>nonEmpty1</code> returns an error indicated with the <code>Left</code> constructor if its input is empty. Otherwise, it returns the value wrapped with the <code>Right</code> constructor.</p>
 <p>The final lines do not perform any validation but simply provide the <code>address</code> and <code>phones</code> fields to the <code>person</code> function as the remaining arguments.</p>
-<p>This function can be seen to work in PSCi, but has a limitation which we have seen before:</p>
+<p>This function can be seen to work in PSCi, but it has a limitation that we have seen before:</p>
 <pre><code class="language-text">&gt; validatePerson $ person &quot;&quot; &quot;&quot; (address &quot;&quot; &quot;&quot; &quot;&quot;) []
 (Left &quot;Field cannot be empty&quot;)
 </code></pre>
-<p>The <code>Either String</code> applicative functor only provides the first error encountered. Given the input here, we would prefer to see two errors - one for the missing first name, and a second for the missing last name.</p>
-<p>There is another applicative functor which is provided by the <code>validation</code> library. This functor is called <code>V</code>, and it provides the ability to return errors in any <em>semigroup</em>. For example, we can use <code>V (Array String)</code> to return an array of <code>String</code>s as errors, concatenating new errors onto the end of the array.</p>
+<p>The <code>Either String</code> applicative functor only provides the first error encountered. Given the input here, we would prefer to see two errors – one for the missing first name and a second for the missing last name.</p>
+<p>There is another applicative functor that the <code>validation</code> library provides. This functor is called <code>V</code>, and it can return errors in any <em>semigroup</em>. For example, we can use <code>V (Array String)</code> to return an array of <code>String</code>s as errors, concatenating new errors onto the end of the array.</p>
 <p>The <code>Data.AddressBook.Validation</code> module uses the <code>V (Array String)</code> applicative functor to validate the data structures in the <code>Data.AddressBook</code> module.</p>
 <p>Here is an example of a validator taken from the <code>Data.AddressBook.Validation</code> module:</p>
 <pre><code class="language-haskell">type Errors
@@ -494,7 +518,7 @@ validateAddress a =
           &lt;*&gt; nonEmpty &quot;City&quot;    a.city
           &lt;*&gt; lengthIs &quot;State&quot; 2 a.state
 </code></pre>
-<p>or with <em>applicative do</em></p>
+<p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-haskell">validateAddressAdo :: Address -&gt; V Errors Address
 validateAddressAdo a = ado
   street &lt;- nonEmpty &quot;Street&quot;  a.street
@@ -502,7 +526,7 @@ validateAddressAdo a = ado
   state  &lt;- lengthIs &quot;State&quot; 2 a.state
   in address street city state
 </code></pre>
-<p><code>validateAddress</code> validates an <code>Address</code> structure. It checks that the <code>street</code> and <code>city</code> fields are non-empty, and checks that the string in the <code>state</code> field has length 2.</p>
+<p><code>validateAddress</code> validates an <code>Address</code> structure. It checks that the <code>street</code> and <code>city</code> fields are non-empty and that the string in the <code>state</code> field has length 2.</p>
 <p>Notice how the <code>nonEmpty</code> and <code>lengthIs</code> validator functions both use the <code>invalid</code> function provided by the <code>Data.Validation</code> module to indicate an error. Since we are working in the <code>Array String</code> semigroup, <code>invalid</code> takes an array of strings as its argument.</p>
 <p>We can try this function in PSCi:</p>
 <pre><code class="language-text">&gt; import Data.AddressBook
@@ -534,7 +558,7 @@ validatePhoneNumber pn =
   phoneNumber &lt;$&gt; pure pn.&quot;type&quot;
               &lt;*&gt; matches &quot;Number&quot; phoneNumberRegex pn.number
 </code></pre>
-<p>or with <em>applicative do</em></p>
+<p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-haskell">validatePhoneNumberAdo :: PhoneNumber -&gt; V Errors PhoneNumber
 validatePhoneNumberAdo pn = ado
   tpe    &lt;- pure pn.&quot;type&quot;
@@ -551,7 +575,7 @@ invalid ([&quot;Field 'Number' did not match the required format&quot;])
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
 <ol>
 <li>(Easy) Write a regular expression <code>stateRegex :: Regex</code> to check that a string only contains two alphabetic characters. <em>Hint</em>: see the source code for <code>phoneNumberRegex</code>.</li>
-<li>(Medium) Write a regular expression <code>nonEmptyRegex :: Regex</code> to check that a string is not entirely whitespace. <em>Hint</em>: If you need help developing this regex expression, check out <a href="https://regexr.com">RegExr</a> which has a great cheatsheet and interactive test environment.</li>
+<li>(Medium) Write a regular expression <code>nonEmptyRegex :: Regex</code> to check that a string is not entirely whitespace. <em>Hint</em>: If you need help developing this regex expression, check out <a href="https://regexr.com">RegExr</a>, which has a great cheatsheet and interactive test environment.</li>
 <li>(Medium) Write a function <code>validateAddressImproved</code> that is similar to <code>validateAddress</code>, but uses the above <code>stateRegex</code> to validate the <code>state</code> field and <code>nonEmptyRegex</code> to validate the <code>street</code> and <code>city</code> fields. <em>Hint</em>: see the source for <code>validatePhoneNumber</code> for an example of how to use <code>matches</code>.</li>
 </ol>
 <h2 id="traversable-functors"><a class="header" href="#traversable-functors">Traversable Functors</a></h2>
@@ -578,14 +602,14 @@ validatePersonAdo p = ado
   numbers   &lt;- validatePhoneNumbers &quot;Phone Numbers&quot; p.phones
   in person firstName lastName address numbers
 </code></pre>
-<p><code>validatePhoneNumbers</code> uses a new function we haven't seen before - <code>traverse</code>.</p>
+<p><code>validatePhoneNumbers</code> uses a new function we haven't seen before – <code>traverse</code>.</p>
 <p><code>traverse</code> is defined in the <code>Data.Traversable</code> module, in the <code>Traversable</code> type class:</p>
 <pre><code class="language-haskell">class (Functor t, Foldable t) &lt;= Traversable t where
   traverse :: forall a b m. Applicative m =&gt; (a -&gt; m b) -&gt; t a -&gt; m (t b)
   sequence :: forall a m. Applicative m =&gt; t (m a) -&gt; m (t a)
 </code></pre>
 <p><code>Traversable</code> defines the class of <em>traversable functors</em>. The types of its functions might look a little intimidating, but <code>validatePerson</code> provides a good motivating example.</p>
-<p>Every traversable functor is both a <code>Functor</code> and <code>Foldable</code> (recall that a <em>foldable functor</em> was a type constructor which supported a fold operation, reducing a structure to a single value). In addition, a traversable functor provides the ability to combine a collection of side-effects which depend on its structure.</p>
+<p>Every traversable functor is both a <code>Functor</code> and <code>Foldable</code> (recall that a <em>foldable functor</em> was a type constructor that supported a fold operation, reducing a structure to a single value). In addition, a traversable functor can combine a collection of side-effects that depend on its structure.</p>
 <p>This may sound complicated, but let's simplify things by specializing to the case of arrays. The array type constructor is traversable, which means that there is a function:</p>
 <pre><code class="language-haskell">traverse :: forall a b m. Applicative m =&gt; (a -&gt; m b) -&gt; Array a -&gt; m (Array b)
 </code></pre>
@@ -593,7 +617,7 @@ validatePersonAdo p = ado
 <p>Still not clear? Let's specialize further to the case where <code>m</code> is the <code>V Errors</code> applicative functor above. Now, we have a function of type</p>
 <pre><code class="language-haskell">traverse :: forall a b. (a -&gt; V Errors b) -&gt; Array a -&gt; V Errors (Array b)
 </code></pre>
-<p>This type signature says that if we have a validation function <code>m</code> for a type <code>a</code>, then <code>traverse m</code> is a validation function for arrays of type <code>Array a</code>. But that's exactly what we need to be able to validate the <code>phones</code> field of the <code>Person</code> data structure! We pass <code>validatePhoneNumber</code> to <code>traverse</code> to create a validation function which validates each element successively.</p>
+<p>This type signature says that if we have a validation function <code>m</code> for a type <code>a</code>, then <code>traverse m</code> is a validation function for arrays of type <code>Array a</code>. But that's exactly what we need to be able to validate the <code>phones</code> field of the <code>Person</code> data structure! We pass <code>validatePhoneNumber</code> to <code>traverse</code> to create a validation function that validates each element successively.</p>
 <p>In general, <code>traverse</code> walks over the elements of a data structure, performing computations with side-effects and accumulating a result.</p>
 <p>The type signature for <code>Traversable</code>'s other function <code>sequence</code> might look more familiar:</p>
 <pre><code class="language-haskell">sequence :: forall a m. Applicative m =&gt; t (m a) -&gt; m (t a)
@@ -601,7 +625,7 @@ validatePersonAdo p = ado
 <p>In fact, the <code>combineList</code> function that we wrote earlier is just a special case of the <code>sequence</code> function from the <code>Traversable</code> type class. Setting <code>t</code> to be the type constructor <code>List</code>, we recover the type of the <code>combineList</code> function:</p>
 <pre><code class="language-haskell">combineList :: forall f a. Applicative f =&gt; List (f a) -&gt; f (List a)
 </code></pre>
-<p>Traversable functors capture the idea of traversing a data structure, collecting a set of effectful computations, and combining their effects. In fact, <code>sequence</code> and <code>traverse</code> are equally important to the definition of <code>Traversable</code> - each can be implemented in terms of each other. This is left as an exercise for the interested reader.</p>
+<p>Traversable functors capture the idea of traversing a data structure, collecting a set of effectful computations, and combining their effects. In fact, <code>sequence</code> and <code>traverse</code> are equally important to the definition of <code>Traversable</code> – each can be implemented in terms of the other. This is left as an exercise for the interested reader.</p>
 <p>The <code>Traversable</code> instance for lists given in the <code>Data.List</code> module is:</p>
 <pre><code class="language-haskell">instance Traversable List where
 -- traverse :: forall a b m. Applicative m =&gt; (a -&gt; m b) -&gt; List a -&gt; m (List b)
@@ -609,7 +633,7 @@ traverse _ Nil         = pure Nil
 traverse f (Cons x xs) = Cons &lt;$&gt; f x &lt;*&gt; traverse f xs
 </code></pre>
 <p>(The actual definition was later modified to improve stack safety. You can read more about that change <a href="https://github.com/purescript/purescript-lists/pull/87">here</a>.)</p>
-<p>In the case of an empty list, we can simply return an empty list using <code>pure</code>. If the list is non-empty, we can use the function <code>f</code> to create a computation of type <code>f b</code> from the head element. We can also call <code>traverse</code> recursively on the tail. Finally, we can lift the <code>Cons</code> constructor over the applicative functor <code>m</code> to combine the two results.</p>
+<p>In the case of an empty list, we can return an empty list using <code>pure</code>. If the list is non-empty, we can use the function <code>f</code> to create a computation of type <code>f b</code> from the head element. We can also call <code>traverse</code> recursively on the tail. Finally, we can lift the <code>Cons</code> constructor over the applicative functor <code>m</code> to combine the two results.</p>
 <p>But there are more examples of traversable functors than just arrays and lists. The <code>Maybe</code> type constructor we saw earlier also has an instance for <code>Traversable</code>. We can try it in PSCi:</p>
 <pre><code class="language-text">&gt; import Data.Maybe
 &gt; import Data.Traversable
@@ -624,24 +648,24 @@ invalid ([&quot;Field 'Example' cannot be empty&quot;])
 &gt; traverse (nonEmpty &quot;Example&quot;) (Just &quot;Testing&quot;)
 pure ((Just &quot;Testing&quot;))
 </code></pre>
-<p>These examples show that traversing the <code>Nothing</code> value returns <code>Nothing</code> with no validation, and traversing <code>Just x</code> uses the validation function to validate <code>x</code>. That is, <code>traverse</code> takes a validation function for type <code>a</code> and returns a validation function for <code>Maybe a</code>, i.e. a validation function for optional values of type <code>a</code>.</p>
-<p>Other traversable functors include <code>Array</code>, and <code>Tuple a</code> and <code>Either a</code> for any type <code>a</code>. Generally, most &quot;container&quot; data type constructors have <code>Traversable</code> instances. As an example, the exercises will include writing a <code>Traversable</code> instance for a type of binary trees.</p>
+<p>These examples show that traversing the <code>Nothing</code> value returns <code>Nothing</code> with no validation, and traversing <code>Just x</code> uses the validation function to validate <code>x</code>. That is, <code>traverse</code> takes a validation function for type <code>a</code> and returns a validation function for <code>Maybe a</code>, i.e., a validation function for optional values of type <code>a</code>.</p>
+<p>Other traversable functors include <code>Array</code>, <code>Tuple a</code>, and <code>Either a</code> for any type <code>a</code>. Generally, most &quot;container&quot; data type constructors have <code>Traversable</code> instances. As an example, the exercises will include writing a <code>Traversable</code> instance for a type of binary trees.</p>
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
 <ol>
 <li>
 <p>(Easy) Write <code>Eq</code> and <code>Show</code> instances for the following binary tree data structure:</p>
 <pre><code class="language-haskell">data Tree a = Leaf | Branch (Tree a) a (Tree a)
 </code></pre>
-<p>Recall from the previous chapter that you may either write these instances manually or let the compiler derive them for you.</p>
-<p>There are many &quot;correct&quot; formatting options for <code>Show</code> output. The test for this exercise expects the following whitespace style. This happens to match the default formatting of generic show, so you only need to make note of this if you're planning on writing this instance manually.</p>
+<p>Recall from the previous chapter that you may either write these instances manually or let the compiler derive them.</p>
+<p>There are many &quot;correct&quot; formatting options for <code>Show</code> output. The test for this exercise expects the following whitespace style. This matches the default formatting of the generic show, so you only need to note this if you're planning on writing this instance manually.</p>
 <pre><code class="language-haskell">(Branch (Branch Leaf 8 Leaf) 42 Leaf)
 </code></pre>
 </li>
 <li>
-<p>(Medium) Write a <code>Traversable</code> instance for <code>Tree a</code>, which combines side-effects from left-to-right. <em>Hint</em>: There are some additional instance dependencies that need to be defined for <code>Traversable</code>.</p>
+<p>(Medium) Write a <code>Traversable</code> instance for <code>Tree a</code>, which combines side-effects left-to-right. <em>Hint</em>: There are some additional instance dependencies that need to be defined for <code>Traversable</code>.</p>
 </li>
 <li>
-<p>(Medium) Write a function <code>traversePreOrder :: forall a m b. Applicative m =&gt; (a -&gt; m b) -&gt; Tree a -&gt; m (Tree b)</code> that performs a pre-order traversal of the tree. This means the order of effect execution is root-left-right, instead of left-root-right as was done for the previous in-order traverse exercise. <em>Hint</em>: No additional instances need to be defined, and you don't need to call any of the the functions defined earlier. Applicative do notation (<code>ado</code>) is the easiest way to write this function.</p>
+<p>(Medium) Write a function <code>traversePreOrder :: forall a m b. Applicative m =&gt; (a -&gt; m b) -&gt; Tree a -&gt; m (Tree b)</code> that performs a pre-order traversal of the tree. This means the order of effect execution is root-left-right, instead of left-root-right as was done for the previous in-order traverse exercise. <em>Hint</em>: No additional instances need to be defined, and you don't need to call any of the functions defined earlier. Applicative do notation (<code>ado</code>) is the easiest way to write this function.</p>
 </li>
 <li>
 <p>(Medium) Write a function <code>traversePostOrder</code> that performs a post-order traversal of the tree where effects are executed left-right-root.</p>
@@ -658,23 +682,23 @@ pure ((Just &quot;Testing&quot;))
 </ol>
 <h2 id="applicative-functors-for-parallelism"><a class="header" href="#applicative-functors-for-parallelism">Applicative Functors for Parallelism</a></h2>
 <p>In the discussion above, I chose the word &quot;combine&quot; to describe how applicative functors &quot;combine side-effects&quot;. However, in all the examples given, it would be equally valid to say that applicative functors allow us to &quot;sequence&quot; effects. This would be consistent with the intuition that traversable functors provide a <code>sequence</code> function to combine effects in sequence based on a data structure.</p>
-<p>However, in general, applicative functors are more general than this. The applicative functor laws do not impose any ordering on the side-effects that their computations perform. In fact, it would be valid for an applicative functor to perform its side-effects in parallel.</p>
+<p>However, in general, applicative functors are more general than this. The applicative functor laws do not impose any ordering on the side-effects that their computations perform. It would be valid for an applicative functor to perform its side-effects in parallel.</p>
 <p>For example, the <code>V</code> validation functor returned an <em>array</em> of errors, but it would work just as well if we picked the <code>Set</code> semigroup, in which case it would not matter what order we ran the various validators. We could even run them in parallel over the data structure!</p>
-<p>As a second example, the <code>parallel</code> package provides a type class <code>Parallel</code> which supports <em>parallel computations</em>. <code>Parallel</code> provides a function <code>parallel</code> which uses some <code>Applicative</code> functor to compute the result of its input computation <em>in parallel</em>:</p>
+<p>As a second example, the <code>parallel</code> package provides a type class <code>Parallel</code> which supports <em>parallel computations</em>. <code>Parallel</code> provides a function <code>parallel</code> that uses some <code>Applicative</code> functor to compute the result of its input computation <em>in parallel</em>:</p>
 <pre><code class="language-haskell">f &lt;$&gt; parallel computation1
   &lt;*&gt; parallel computation2
 </code></pre>
 <p>This computation would start computing values asynchronously using <code>computation1</code> and <code>computation2</code>. When both results have been computed, they would be combined into a single result using the function <code>f</code>.</p>
 <p>We will see this idea in more detail when we apply applicative functors to the problem of <em>callback hell</em> later in the book.</p>
-<p>Applicative functors are a natural way to capture side-effects which can be combined in parallel.</p>
+<p>Applicative functors are a natural way to capture side-effects that can be combined in parallel.</p>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
 <p>In this chapter, we covered a lot of new ideas:</p>
 <ul>
-<li>We introduced the concept of an <em>applicative functor</em> which generalizes the idea of function application to type constructors which capture some notion of side-effect.</li>
-<li>We saw how applicative functors gave a solution to the problem of validating data structures, and how by switching the applicative functor we could change from reporting a single error to reporting all errors across a data structure.</li>
+<li>We introduced the concept of an <em>applicative functor</em> which generalizes the idea of function application to type constructors that captures some notion of side-effect.</li>
+<li>We saw how applicative functors solved the problem of validating data structures and how by switching the applicative functor, we could change from reporting a single error to reporting all errors across a data structure.</li>
 <li>We met the <code>Traversable</code> type class, which encapsulates the idea of a <em>traversable functor</em>, or a container whose elements can be used to combine values with side-effects.</li>
 </ul>
-<p>Applicative functors are an interesting abstraction which provide neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define <em>what</em> our validators should validate and not <em>how</em> they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of <em>domain specific languages</em>.</p>
+<p>Applicative functors are an interesting abstraction that provides neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define <em>what</em> our validators should validate and not <em>how</em> they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of _domain specific languages.</p>
 <p>In the next chapter, we will see a related idea, the class of <em>monads</em>, and extend our address book example to run in the browser!</p>
 
                     </main>

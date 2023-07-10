@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -162,7 +184,7 @@
 <p>Now that you've installed the necessary development tools, clone this book's repo.</p>
 <pre><code class="language-sh">git clone https://github.com/purescript-contrib/purescript-book.git
 </code></pre>
-<p>The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter. There's some initial setup required to reset the exercise solutions so they are ready to be solved by you. Use the <code>resetSolutions.sh</code> script to simplify this process. While you're at it, you should also strip out all the anchor comments with the <code>removeAnchors.sh</code> script (these anchors are used for copying code snippets into the book's rendered markdown, and you probably don't need this clutter in your local repo):</p>
+<p>The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter. There's some initial setup required to reset the exercise solutions so they are ready to be solved by you. Use the <code>resetSolutions.sh</code> script to simplify this process. While at it, you should also strip out all the anchor comments with the <code>removeAnchors.sh</code> script (these anchors are used for copying code snippets into the book's rendered markdown, and you probably don't need this clutter in your local repo):</p>
 <pre><code class="language-sh">cd purescript-book
 ./scripts/resetSolutions.sh
 ./scripts/removeAnchors.sh
@@ -180,15 +202,15 @@ spago test
 
 All 2 tests passed! 🎉
 </code></pre>
-<p>Note that the <code>answer</code> function (found in <code>src/Euler.purs</code>) has been modified to find the multiples of 3 and 5 below any integer. The test suite (found in <code>test/Main.purs</code>) for this <code>answer</code> function is more comprehensive than the test in the earlier getting-started guide. Don't worry about understanding how this test framework code works while reading these early chapters.</p>
+<p>Note that the <code>answer</code> function (found in <code>src/Euler.purs</code>) has been modified to find the multiples of 3 and 5 below any integer. The test suite (located in <code>test/Main.purs</code>) for this <code>answer</code> function is more comprehensive than the test in the earlier getting-started guide. Don't worry about understanding how this test framework code works while reading these early chapters.</p>
 <p>The remainder of the book contains lots of exercises. If you write your solutions in the <code>Test.MySolutions</code> module (<code>test/MySolutions.purs</code>), you can check your work against the provided test suite.</p>
-<p>Let's work through this next exercise together in test-driven-development style.</p>
+<p>Let's work through this next exercise together in a test-driven-development style.</p>
 <h2 id="exercise"><a class="header" href="#exercise">Exercise</a></h2>
 <ol>
 <li>(Medium) Write a <code>diagonal</code> function to compute the length of the diagonal (or hypotenuse) of a right-angled triangle when given the lengths of the two other sides.</li>
 </ol>
 <h2 id="solution"><a class="header" href="#solution">Solution</a></h2>
-<p>We'll start by enabling the tests for this exercise. Move the start of the block-comment down a few lines as shown below. Block comments start with <code>{-</code> and end with <code>-}</code>:</p>
+<p>We'll start by enabling the tests for this exercise. Move the start of the block-comment down a few lines, as shown below. Block comments start with <code>{-</code> and end with <code>-}</code>:</p>
 <pre><code class="language-hs">    suite &quot;diagonal&quot; do
       test &quot;3 4 5&quot; do
         Assert.equal 5.0 (diagonal 3.0 4.0)
@@ -205,7 +227,7 @@ at test/Main.purs:21:27 - 21:35 (line 21, column 27 - line 21, column 35)
 
   Unknown value diagonal
 </code></pre>
-<p>Let's first take a look at what happens with a faulty version of this function. Add the following code to <code>test/MySolutions.purs</code>:</p>
+<p>Let's first look at what happens with a faulty version of this function. Add the following code to <code>test/MySolutions.purs</code>:</p>
 <pre><code class="language-hs">import Data.Number (sqrt)
 
 diagonal w h = sqrt (w * w + h)
@@ -238,8 +260,8 @@ All 4 tests passed! 🎉
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
 <p>In this chapter, we installed the PureScript compiler and the Spago tool. We also learned how to write solutions to exercises and check these for correctness.</p>
-<p>There will be many more exercises in the chapters ahead, and working through those really helps with learning the material. If you're stumped by any of the exercises, please reach out to any of the community resources listed in the <a href="https://book.purescript.org/chapter1.html#getting-help">Getting Help</a> section of this book, or even file an issue in this <a href="https://github.com/purescript-contrib/purescript-book/issues">book's repo</a>. This reader feedback on which exercises could be made more approachable helps us improve the book.</p>
-<p>Once you solve all the exercises in a chapter, you may compare your answers against those in the <code>no-peeking/Solutions.purs</code>. No peeking please without putting in an honest effort to solve these yourself though. And even if you are stuck, try asking a community member for help first, as we would prefer to give you a small hint rather than spoil the exercise. If you found a more elegant solution (that still only requires knowledge of covered content), please send us a PR.</p>
+<p>There will be many more exercises in the chapters ahead, and working through those helps with learning the material. If any of the exercises stumps you, please reach out to any of the community resources listed in the <a href="https://book.purescript.org/chapter1.html#getting-help">Getting Help</a> section of this book, or even file an issue in this <a href="https://github.com/purescript-contrib/purescript-book/issues">book's repo</a>. This reader feedback on which exercises could be made more approachable helps us improve the book.</p>
+<p>Once you solve all the exercises in a chapter, you may compare your answers against those in the <code>no-peeking/Solutions.purs</code>. No peeking, please, without putting in an honest effort to solve these yourself. And even if you are stuck, try asking a community member for help first, as we would prefer to give you a small hint rather than spoil the exercise. If you found a more elegant solution (that only requires knowledge of the covered content), please send us a PR.</p>
 <p>The repo is continuously being revised, so be sure to check for updates before starting each new chapter.</p>
 
                     </main>

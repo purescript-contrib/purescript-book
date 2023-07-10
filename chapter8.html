@@ -88,11 +88,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -149,13 +171,13 @@
                     <main>
                         <h1 id="the-effect-monad"><a class="header" href="#the-effect-monad">The Effect Monad</a></h1>
 <h2 id="chapter-goals"><a class="header" href="#chapter-goals">Chapter Goals</a></h2>
-<p>In the last chapter, we introduced applicative functors, an abstraction which we used to deal with <em>side-effects</em>: optional values, error messages and validation. This chapter will introduce another abstraction for dealing with side-effects in a more expressive way: <em>monads</em>.</p>
-<p>The goal of this chapter is to explain why monads are a useful abstraction, and their connection with <em>do notation</em>.</p>
+<p>In the last chapter, we introduced applicative functors, an abstraction we used to deal with <em>side-effects</em>: optional values, error messages, and validation. This chapter will introduce another abstraction for dealing with side-effects more expressively: <em>monads</em>.</p>
+<p>The goal of this chapter is to explain why monads are a useful abstraction and their connection with <em>do notation</em>.</p>
 <h2 id="project-setup"><a class="header" href="#project-setup">Project Setup</a></h2>
 <p>The project adds the following dependencies:</p>
 <ul>
-<li><code>effect</code> - defines the <code>Effect</code> monad, the subject of the second half of the chapter. This dependency is often listed in every starter project (it's been a dependency of every chapter so far), so you'll rarely have to explicitly install it.</li>
-<li><code>react-basic-hooks</code> - a web framework that we will use for our Address Book app.</li>
+<li><code>effect</code> – defines the <code>Effect</code> monad, the subject of the second half of the chapter. This dependency is often listed in every starter project (it's been a dependency of every chapter so far), so you'll rarely have to install it explicitly.</li>
+<li><code>react-basic-hooks</code> – a web framework we will use for our Address Book app.</li>
 </ul>
 <h2 id="monads-and-do-notation"><a class="header" href="#monads-and-do-notation">Monads and Do Notation</a></h2>
 <p>Do notation was first introduced when we covered <em>array comprehensions</em>. Array comprehensions provide syntactic sugar for the <code>concatMap</code> function from the <code>Data.Array</code> module.</p>
@@ -163,9 +185,9 @@
 <ul>
 <li><em>Choose</em> the value <code>x</code> of the first throw.</li>
 <li><em>Choose</em> the value <code>y</code> of the second throw.</li>
-<li>If the sum of <code>x</code> and <code>y</code> is <code>n</code> then return the pair <code>[x, y]</code>, else fail.</li>
+<li>If the sum of <code>x</code> and <code>y</code> is <code>n</code>, return the pair <code>[x, y]</code>, else fail.</li>
 </ul>
-<p>Array comprehensions allow us to write this non-deterministic algorithm in a natural way:</p>
+<p>Array comprehensions allow us to write this non-deterministic algorithm naturally:</p>
 <pre><code class="language-hs">import Prelude
 
 import Control.Plus (empty)
@@ -189,12 +211,12 @@ countThrows n = do
 [[6,6]]
 </code></pre>
 <p>In the last chapter, we formed an intuition for the <code>Maybe</code> applicative functor, embedding PureScript functions into a larger programming language supporting <em>optional values</em>. In the same way, we can form an intuition for the <em>array monad</em>, embedding PureScript functions into a larger programming language supporting <em>non-deterministic choice</em>.</p>
-<p>In general, a <em>monad</em> for some type constructor <code>m</code> provides a way to use do notation with values of type <code>m a</code>. Note that in the array comprehension above, every line contains a computation of type <code>Array a</code> for some type <code>a</code>. In general, every line of a do notation block will contain a computation of type <code>m a</code> for some type <code>a</code> and our monad <code>m</code>. The monad <code>m</code> must be the same on every line (i.e. we fix the side-effect), but the types <code>a</code> can differ (i.e. individual computations can have different result types).</p>
+<p>Generally, a <em>monad</em> for some type constructor <code>m</code> provides a way to use do notation with values of type <code>m a</code>. Note that in the array comprehension above, every line contains a computation of type <code>Array a</code> for some type <code>a</code>. In general, every line of a do notation block will contain a computation of type <code>m a</code> for some type <code>a</code> and our monad <code>m</code>. The monad <code>m</code> must be the same on every line (i.e., we fix the side-effect), but the types <code>a</code> can differ (i.e., individual computations can have different result types).</p>
 <p>Here is another example of do notation, this time applied to the type constructor <code>Maybe</code>. Suppose we have some type <code>XML</code> representing XML nodes, and a function</p>
 <pre><code class="language-hs">child :: XML -&gt; String -&gt; Maybe XML
 </code></pre>
-<p>which looks for a child element of a node, and returns <code>Nothing</code> if no such element exists.</p>
-<p>In this case, we can look for a deeply-nested element by using do notation. Suppose we wanted to read a user's city from a user profile which had been encoded as an XML document:</p>
+<p>Which looks for a child element of a node and returns <code>Nothing</code> if no such element exists.</p>
+<p>In this case, we can look for a deeply-nested element using do notation. Suppose we wanted to read a user's city from a user profile that had been encoded as an XML document:</p>
 <pre><code class="language-hs">userCity :: XML -&gt; Maybe XML
 userCity root = do
   prof &lt;- child root &quot;profile&quot;
@@ -202,7 +224,7 @@ userCity root = do
   city &lt;- child addr &quot;city&quot;
   pure city
 </code></pre>
-<p>The <code>userCity</code> function looks for a child element <code>profile</code>, an element <code>address</code> inside the <code>profile</code> element, and finally an element <code>city</code> inside the <code>address</code> element. If any of these elements are missing, the return value will be <code>Nothing</code>. Otherwise, the return value is constructed using <code>Just</code> from the <code>city</code> node.</p>
+<p>The <code>userCity</code> function looks for a child element <code>profile</code>, an element <code>address</code> inside the <code>profile</code> element, and finally, an element <code>city</code> inside the <code>address</code> element. If any of these elements are missing, the return value will be <code>Nothing</code>. Otherwise, the return value is constructed using <code>Just</code> from the <code>city</code> node.</p>
 <p>Remember, the <code>pure</code> function in the last line is defined for every <code>Applicative</code> functor. Since <code>pure</code> is defined as <code>Just</code> for the <code>Maybe</code> applicative functor, it would be equally valid to change the last line to <code>Just city</code>.</p>
 <h2 id="the-monad-type-class"><a class="header" href="#the-monad-type-class">The Monad Type Class</a></h2>
 <p>The <code>Monad</code> type class is defined as follows:</p>
@@ -212,7 +234,7 @@ userCity root = do
 class (Applicative m, Bind m) &lt;= Monad m
 </code></pre>
 <p>The key function here is <code>bind</code>, defined in the <code>Bind</code> type class. Just like for the <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> operators in the <code>Functor</code> and <code>Apply</code> type classes, the Prelude defines an infix alias <code>&gt;&gt;=</code> for the <code>bind</code> function.</p>
-<p>The <code>Monad</code> type class extends <code>Bind</code> with the operations of the <code>Applicative</code> type class that we have already seen.</p>
+<p>The <code>Monad</code> type class extends <code>Bind</code> with the operations of the <code>Applicative</code> type class we've already seen.</p>
 <p>It will be useful to see some examples of the <code>Bind</code> type class. A sensible definition for <code>Bind</code> on arrays can be given as follows:</p>
 <pre><code class="language-hs">instance Bind Array where
   bind xs f = concatMap f xs
@@ -224,7 +246,7 @@ class (Applicative m, Bind m) &lt;= Monad m
   bind (Just a) f = f a
 </code></pre>
 <p>This definition confirms the intuition that missing values are propagated through a do notation block.</p>
-<p>Let's see how the <code>Bind</code> type class is related to do notation. Consider a simple do notation block which starts by binding a value from the result of some computation:</p>
+<p>Let's see how the <code>Bind</code> type class is related to do notation. Consider a simple do notation block that starts by binding a value from the result of some computation:</p>
 <pre><code class="language-hs">do value &lt;- someComputation
    whatToDoNext
 </code></pre>
@@ -243,7 +265,7 @@ userCity root =
       child addr &quot;city&quot; &gt;&gt;= \city -&gt;
         pure city
 </code></pre>
-<p>It is worth noting that code expressed using do notation is often much clearer than the equivalent code using the <code>&gt;&gt;=</code> operator. However, writing binds explicitly using <code>&gt;&gt;=</code> can often lead to opportunities to write code in <em>point-free</em> form - but the usual warnings about readability apply.</p>
+<p>Notably, code expressed using do notation is often much clearer than the equivalent code using the <code>&gt;&gt;=</code> operator. However, writing binds explicitly using <code>&gt;&gt;=</code> can often lead to opportunities to write code in <em>point-free</em> form – but the usual warnings about readability apply.</p>
 <h2 id="monad-laws"><a class="header" href="#monad-laws">Monad Laws</a></h2>
 <p>The <code>Monad</code> type class comes equipped with three laws, called the <em>monad laws</em>. These tell us what we can expect from sensible implementations of the <code>Monad</code> type class.</p>
 <p>It is simplest to explain these laws using do notation.</p>
@@ -273,9 +295,9 @@ userCity root =
   y &lt;- m2
   m3
 </code></pre>
-<p>Each of these computations involves three monadic expression <code>m1</code>, <code>m2</code> and <code>m3</code>. In each case, the result of <code>m1</code> is eventually bound to the name <code>x</code>, and the result of <code>m2</code> is bound to the name <code>y</code>.</p>
+<p>Each of these computations involves three monadic expressions <code>m1</code>, <code>m2</code>, and <code>m3</code>. In each case, the result of <code>m1</code> is eventually bound to the name <code>x</code>, and the result of <code>m2</code> is bound to the name <code>y</code>.</p>
 <p>In <code>c1</code>, the two expressions <code>m1</code> and <code>m2</code> are grouped into their own do notation block.</p>
-<p>In <code>c2</code>, all three expressions <code>m1</code>, <code>m2</code> and <code>m3</code> appear in the same do notation block.</p>
+<p>In <code>c2</code>, all three expressions <code>m1</code>, <code>m2</code>, and <code>m3</code> appear in the same do notation block.</p>
 <p>The associativity law tells us that it is safe to simplify nested do notation blocks in this way.</p>
 <p><em>Note</em> that by the definition of how do notation gets desugared into calls to <code>bind</code>, both of <code>c1</code> and <code>c2</code> are also equivalent to this code:</p>
 <pre><code class="language-hs">c3 = do
@@ -285,15 +307,15 @@ userCity root =
     m3
 </code></pre>
 <h2 id="folding-with-monads"><a class="header" href="#folding-with-monads">Folding With Monads</a></h2>
-<p>As an example of working with monads abstractly, this section will present a function which works with any type constructor in the <code>Monad</code> type class. This should serve to solidify the intuition that monadic code corresponds to programming &quot;in a larger language&quot; with side-effects, and also illustrate the generality which programming with monads brings.</p>
-<p>The function we will write is called <code>foldM</code>. It generalizes the <code>foldl</code> function that we met earlier to a monadic context. Here is its type signature:</p>
+<p>As an example of working with monads abstractly, this section will present a function that works with any type constructor in the <code>Monad</code> type class. This should solidify the intuition that monadic code corresponds to programming &quot;in a larger language&quot; with side-effects, and also illustrate the generality which programming with monads brings.</p>
+<p>The function we will write is called <code>foldM</code>. It generalizes the <code>foldl</code> function we met earlier to a monadic context. Here is its type signature:</p>
 <pre><code class="language-hs">foldM :: forall m a b. Monad m =&gt; (a -&gt; b -&gt; m a) -&gt; a -&gt; List b -&gt; m a
 foldl :: forall   a b.            (a -&gt; b -&gt;   a) -&gt; a -&gt; List b -&gt;   a
 </code></pre>
 <p>Notice that this is the same as the type of <code>foldl</code>, except for the appearance of the monad <code>m</code>.</p>
 <p>Intuitively, <code>foldM</code> performs a fold over a list in some context supporting some set of side-effects.</p>
-<p>For example, if we picked <code>m</code> to be <code>Maybe</code>, then our fold would be allowed to fail by returning <code>Nothing</code> at any stage - every step returns an optional result, and the result of the fold is therefore also optional.</p>
-<p>If we picked <code>m</code> to be the <code>Array</code> type constructor, then every step of the fold would be allowed to return zero or more results, and the fold would proceed to the next step independently for each result. At the end, the set of results would consist of all folds over all possible paths. This corresponds to a traversal of a graph!</p>
+<p>For example, if we picked <code>m</code> to be <code>Maybe</code>, then our fold would be allowed to fail by returning <code>Nothing</code> at any stage – every step returns an optional result, and the result of the fold is therefore also optional.</p>
+<p>If we picked <code>m</code> to be the <code>Array</code> type constructor, then every step of the fold would be allowed to return zero or more results, and the fold would proceed to the next step independently for each result. In the end, the set of results would consist of all folds over all possible paths. This corresponds to a traversal of a graph!</p>
 <p>To write <code>foldM</code>, we can simply break the input list into cases.</p>
 <p>If the list is empty, then to produce the result of type <code>a</code>, we only have one option: we have to return the second argument:</p>
 <pre><code class="language-hs">foldM _ a Nil = pure a
@@ -305,8 +327,8 @@ foldl :: forall   a b.            (a -&gt; b -&gt;   a) -&gt; a -&gt; List b -&g
   a' &lt;- f a b
   foldM f a' bs
 </code></pre>
-<p>Note that this implementation is almost identical to that of <code>foldl</code> on lists, with the exception of do notation.</p>
-<p>We can define and test this function in PSCi. Here is an example - suppose we defined a &quot;safe division&quot; function on integers, which tested for division by zero and used the <code>Maybe</code> type constructor to indicate failure:</p>
+<p>Note that this implementation is almost identical to that of <code>foldl</code> on lists, except for do notation.</p>
+<p>We can define and test this function in PSCi. Here is an example – suppose we defined a &quot;safe division&quot; function on integers, which tested for division by zero and used the <code>Maybe</code> type constructor to indicate failure:</p>
 <pre><code class="language-hs">safeDivide :: Int -&gt; Int -&gt; Maybe Int
 safeDivide _ 0 = Nothing
 safeDivide a b = Just (a / b)
@@ -321,7 +343,7 @@ safeDivide a b = Just (a / b)
 &gt; foldM safeDivide 100 (fromFoldable [2, 0, 4])
 Nothing
 </code></pre>
-<p>The <code>foldM safeDivide</code> function returns <code>Nothing</code> if a division by zero was attempted at any point. Otherwise it returns the result of repeatedly dividing the accumulator, wrapped in the <code>Just</code> constructor.</p>
+<p>The <code>foldM safeDivide</code> function returns <code>Nothing</code> if a division by zero was attempted at any point. Otherwise, it returns the result of repeatedly dividing the accumulator, wrapped in the <code>Just</code> constructor.</p>
 <h2 id="monads-and-applicatives"><a class="header" href="#monads-and-applicatives">Monads and Applicatives</a></h2>
 <p>Every instance of the <code>Monad</code> type class is also an instance of the <code>Apply</code> type class, by virtue of the superclass relationship between the two classes.</p>
 <p>However, there is also an implementation of the <code>Apply</code> type class which comes &quot;for free&quot; for any instance of <code>Monad</code>, given by the <code>ap</code> function:</p>
@@ -332,9 +354,9 @@ ap mf ma = do
   pure (f a)
 </code></pre>
 <p>If <code>m</code> is a law-abiding member of the <code>Monad</code> type class, then there is a valid <code>Apply</code> instance for <code>m</code> given by <code>ap</code>.</p>
-<p>The interested reader can check that <code>ap</code> agrees with <code>apply</code> for the monads we have already encountered: <code>Array</code>, <code>Maybe</code> and <code>Either e</code>.</p>
+<p>The interested reader can check that <code>ap</code> agrees with <code>apply</code> for the monads we have already encountered: <code>Array</code>, <code>Maybe</code>, and <code>Either e</code>.</p>
 <p>If every monad is also an applicative functor, then we should be able to apply our intuition for applicative functors to every monad. In particular, we can reasonably expect a monad to correspond, in some sense, to programming &quot;in a larger language&quot; augmented with some set of additional side-effects. We should be able to lift functions of arbitrary arities, using <code>map</code> and <code>apply</code>, into this new language.</p>
-<p>But monads allow us to do more than we could do with just applicative functors, and the key difference is highlighted by the syntax of do notation. Consider the <code>userCity</code> example again, in which we looked for a user's city in an XML document which encoded their user profile:</p>
+<p>But monads allow us to do more than we could do with just applicative functors, and the key difference is highlighted by the syntax of do notation. Consider the <code>userCity</code> example again, in which we looked for a user's city in an XML document that encoded their user profile:</p>
 <pre><code class="language-hs">userCity :: XML -&gt; Maybe XML
 userCity root = do
   prof &lt;- child root &quot;profile&quot;
@@ -344,11 +366,11 @@ userCity root = do
 </code></pre>
 <p>Do notation allows the second computation to depend on the result <code>prof</code> of the first, and the third computation to depend on the result <code>addr</code> of the second, and so on. This dependence on previous values is not possible using only the interface of the <code>Applicative</code> type class.</p>
 <p>Try writing <code>userCity</code> using only <code>pure</code> and <code>apply</code>: you will see that it is impossible. Applicative functors only allow us to lift function arguments which are independent of each other, but monads allow us to write computations which involve more interesting data dependencies.</p>
-<p>In the last chapter, we saw that the <code>Applicative</code> type class can be used to express parallelism. This was precisely because the function arguments being lifted were independent of one another. Since the <code>Monad</code> type class allows computations to depend on the results of previous computations, the same does not apply - a monad has to combine its side-effects in sequence.</p>
+<p>In the last chapter, we saw that the <code>Applicative</code> type class can be used to express parallelism. This was precisely because the function arguments being lifted were independent of one another. Since the <code>Monad</code> type class allows computations to depend on the results of previous computations, the same does not apply – a monad has to combine its side-effects in sequence.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
 <li>
-<p>(Easy) Write a function <code>third</code> which returns the third element of an array with three or more elements. Your function should return an appropriate <code>Maybe</code> type. <em>Hint:</em> Look up the types of the <code>head</code> and <code>tail</code> functions from the <code>Data.Array</code> module in the <code>arrays</code> package. Use do notation with the <code>Maybe</code> monad to combine these functions.</p>
+<p>(Easy) Write a function <code>third</code> that returns the third element of an array with three or more elements. Your function should return an appropriate <code>Maybe</code> type. <em>Hint:</em> Look up the types of the <code>head</code> and <code>tail</code> functions from the <code>Data.Array</code> module in the <code>arrays</code> package. Use do notation with the <code>Maybe</code> monad to combine these functions.</p>
 </li>
 <li>
 <p>(Medium) Write a function <code>possibleSums</code> which uses <code>foldM</code> to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:</p>
@@ -358,7 +380,7 @@ userCity root = do
 &gt; possibleSums [1, 2, 10]
 [0,1,2,3,10,11,12,13]
 </code></pre>
-<p><em>Hint</em>: This function can be written as a one-liner using <code>foldM</code>. You might want to use the <code>nub</code> and <code>sort</code> functions to remove duplicates and sort the result respectively.</p>
+<p><em>Hint</em>: This function can be written as a one-liner using <code>foldM</code>. You might want to use the <code>nub</code> and <code>sort</code> functions to remove duplicates and sort the result.</p>
 </li>
 <li>
 <p>(Medium) Confirm that the <code>ap</code> function and the <code>apply</code> operator agree for the <code>Maybe</code> monad. <em>Note:</em> There are no tests for this exercise.</p>
@@ -380,7 +402,7 @@ userCity root = do
 <p>Use the monad laws to prove that for any monad, the following holds:</p>
 <pre><code class="language-hs">lift2 f (pure a) (pure b) = pure (f a b)
 </code></pre>
-<p>where the <code>Apply</code> instance uses the <code>ap</code> function defined above. Recall that <code>lift2</code> was defined as follows:</p>
+<p>Where the <code>Apply</code> instance uses the <code>ap</code> function defined above. Recall that <code>lift2</code> was defined as follows:</p>
 <pre><code class="language-hs">lift2 :: forall f a b c. Apply f =&gt; (a -&gt; b -&gt; c) -&gt; f a -&gt; f b -&gt; f c
 lift2 f a b = f &lt;$&gt; a &lt;*&gt; b
 </code></pre>
@@ -388,9 +410,9 @@ lift2 f a b = f &lt;$&gt; a &lt;*&gt; b
 </li>
 </ol>
 <h2 id="native-effects"><a class="header" href="#native-effects">Native Effects</a></h2>
-<p>We will now look at one particular monad which is of central importance in PureScript - the <code>Effect</code> monad.</p>
+<p>We will now look at one particular monad of central importance in PureScript – the <code>Effect</code> monad.</p>
 <p>The <code>Effect</code> monad is defined in the <code>Effect</code> module. It is used to manage so-called <em>native</em> side-effects. If you are familiar with Haskell, it is the equivalent of the <code>IO</code> monad.</p>
-<p>What are native side-effects? They are the side-effects which distinguish JavaScript expressions from idiomatic PureScript expressions, which typically are free from side-effects. Some examples of native effects are:</p>
+<p>What are native side-effects? They are the side-effects that distinguish JavaScript expressions from idiomatic PureScript expressions, which typically are free from side-effects. Some examples of native effects are:</p>
 <ul>
 <li>Console IO</li>
 <li>Random number generation</li>
@@ -410,17 +432,17 @@ lift2 f a b = f &lt;$&gt; a &lt;*&gt; b
 <li>Errors, as represented by the <code>Either</code> data type</li>
 <li>Multi-functions, as represented by arrays or lists</li>
 </ul>
-<p>Note that the distinction is subtle. It is true, for example, that an error message is a possible side-effect of a JavaScript expression, in the form of an exception. In that sense, exceptions do represent native side-effects, and it is possible to represent them using <code>Effect</code>. However, error messages implemented using <code>Either</code> are not a side-effect of the JavaScript runtime, and so it is not appropriate to implement error messages in that style using <code>Effect</code>. So it is not the effect itself which is native, but rather how it is implemented at runtime.</p>
+<p>Note that the distinction is subtle. It is true, for example, that an error message is a possible side-effect of a JavaScript expression in the form of an exception. In that sense, exceptions do represent native side-effects, and it is possible to represent them using <code>Effect</code>. However, error messages implemented using <code>Either</code> are not a side-effect of the JavaScript runtime, and so it is not appropriate to implement error messages in that style using <code>Effect</code>. So it is not the effect itself, which is native, but rather how it is implemented at runtime.</p>
 <h2 id="side-effects-and-purity"><a class="header" href="#side-effects-and-purity">Side-Effects and Purity</a></h2>
-<p>In a pure language like PureScript, one question which presents itself is: without side-effects, how can one write useful real-world code?</p>
-<p>The answer is that PureScript does not aim to eliminate side-effects. It aims to represent side-effects in such a way that pure computations can be distinguished from computations with side-effects in the type system. In this sense, the language is still pure.</p>
-<p>Values with side-effects have different types from pure values. As such, it is not possible to pass a side-effecting argument to a function, for example, and have side-effects performed unexpectedly.</p>
-<p>The only way in which side-effects managed by the <code>Effect</code> monad will be presented is to run a computation of type <code>Effect a</code> from JavaScript.</p>
-<p>The Spago build tool (and other tools) provide a shortcut, by generating additional JavaScript to invoke the <code>main</code> computation when the application starts. <code>main</code> is required to be a computation in the <code>Effect</code> monad.</p>
+<p>In a pure language like PureScript, one question presents itself: without side-effects, how can one write useful real-world code?</p>
+<p>The answer is that PureScript does not aim to eliminate side-effects but to represent them in such a way that pure computations can be distinguished from computations with side-effects in the type system. In this sense, the language is still pure.</p>
+<p>Values with side-effects have different types from pure values. As such, it is impossible to pass a side-effecting argument to a function, for example, and have side-effects performed unexpectedly.</p>
+<p>The only way side-effects managed by the <code>Effect</code> monad will be presented is to run a computation of type <code>Effect a</code> from JavaScript.</p>
+<p>The Spago build tool (and other tools) provide a shortcut by generating additional JavaScript to invoke the <code>main</code> computation when the application starts. <code>main</code> is required to be a computation in the <code>Effect</code> monad.</p>
 <h2 id="the-effect-monad-1"><a class="header" href="#the-effect-monad-1">The Effect Monad</a></h2>
 <p>The <code>Effect</code> monad provides a well-typed API for computations with side-effects, while at the same time generating efficient JavaScript.</p>
-<p>Let's take a closer look at the return type of the familiar <code>log</code> function. <code>Effect</code> indicates that this function produces a native effect, console IO in this case.
-<code>Unit</code> indicates that no <em>meaningful</em> data is returned. You can think of <code>Unit</code> as being analogous to the <code>void</code> keyword in other languages, such as C, Java, etc.</p>
+<p>Let's look at the return type of the familiar <code>log</code> function. <code>Effect</code> indicates that this function produces a native effect, console IO in this case.</p>
+<p><code>Unit</code> indicates that no <em>meaningful</em> data is returned. You can think of <code>Unit</code> as analogous to the <code>void</code> keyword in other languages, such as C, Java, etc.</p>
 <pre><code class="language-hs">log :: String -&gt; Effect Unit
 </code></pre>
 <blockquote>
@@ -453,12 +475,12 @@ main = random &gt;&gt;= logShow
 </code></pre>
 <p>You should see a randomly chosen number between <code>0.0</code> and <code>1.0</code> printed to the console.</p>
 <blockquote>
-<p><em>Aside:</em> <code>spago run</code> defaults to searching in the <code>Main</code> module for a <code>main</code> function. You may also specify an alternate module as an entry point with the <code>--main</code> flag, as is done in the above example. Just be sure that this alternate module also contains a <code>main</code> function.</p>
+<p><em>Aside:</em> <code>spago run</code> defaults to searching in the <code>Main</code> module for a <code>main</code> function. You may also specify an alternate module as an entry point with the <code>--main</code> flag, as in the above example. Just be sure that this alternate module also contains a <code>main</code> function.</p>
 </blockquote>
 <p>Note that it's also possible to generate &quot;random&quot; (technically pseudorandom) data without resorting to impure effectful code. We'll cover these techniques in the &quot;Generative Testing&quot; chapter.</p>
-<p>As mentioned previously, the <code>Effect</code> monad is of central importance to PureScript. The reason why it's central is because it is the conventional way to interoperate with PureScript's <code>Foreign Function Interface</code>, which provides the mechanism to execute a program and perform side effects. While it's desireable to avoid using the <code>Foreign Function Interface</code>, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the <code>Effect</code> monad is fairly simple. It has a few helper functions, but aside from that it doesn't do much except encapsulate side effects.</p>
+<p>As mentioned previously, the <code>Effect</code> monad is of central importance to PureScript. The reason why it's central is that it is the conventional way to interoperate with PureScript's <code>Foreign Function Interface</code>, which provides the mechanism to execute a program and perform side effects. While it's desirable to avoid using the <code>Foreign Function Interface</code>, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the <code>Effect</code> monad is fairly simple. It has a few helper functions but doesn't do much except encapsulate side effects.</p>
 <h2 id="exceptions"><a class="header" href="#exceptions">Exceptions</a></h2>
-<p>Let's examine a function from the <code>node-fs</code> package that involves two <em>native</em> side effects: reading mutable state, and exceptions:</p>
+<p>Let's examine a function from the <code>node-fs</code> package that involves two <em>native</em> side effects: reading mutable state and exceptions:</p>
 <pre><code class="language-hs">readTextFile :: Encoding -&gt; String -&gt; Effect String
 </code></pre>
 <p>If we attempt to read a file that does not exist:</p>
@@ -491,7 +513,7 @@ main = do
 <p><code>try</code> runs an <code>Effect</code> and returns eventual exceptions as a <code>Left</code> value. If the computation succeeds, the result gets wrapped in a <code>Right</code>:</p>
 <pre><code class="language-hs">try :: forall a. Effect a -&gt; Effect (Either Error a)
 </code></pre>
-<p>We can also generate our own exceptions. Here is an alternative implementation of <code>Data.List.head</code> which throws an exception if the list is empty, rather than returning a <code>Maybe</code> value of <code>Nothing</code>.</p>
+<p>We can also generate our own exceptions. Here is an alternative implementation of <code>Data.List.head</code> that throws an exception if the list is empty rather than returning a <code>Maybe</code> value of <code>Nothing</code>.</p>
 <pre><code class="language-hs">exceptionHead :: List Int -&gt; Effect Int
 exceptionHead l = case l of
   x : _ -&gt; pure x
@@ -510,8 +532,8 @@ write :: forall a r. a -&gt; STRef r a -&gt; ST r a
 
 modify :: forall r a. (a -&gt; a) -&gt; STRef r a -&gt; ST r a
 </code></pre>
-<p><code>new</code> is used to create a new mutable reference cell of type <code>STRef r a</code>, which can be read using the <code>read</code> action, and modified using the <code>write</code> and <code>modify</code> actions. The type <code>a</code> is the type of the value stored in the cell, and the type <code>r</code> is used to indicate a <em>memory region</em> (or <em>heap</em>) in the type system.</p>
-<p>Here is an example. Suppose we want to simulate the movement of a particle falling under gravity by iterating a simple update function over a large number of small time steps.</p>
+<p><code>new</code> is used to create a new mutable reference cell of type <code>STRef r a</code>, which can be read using the <code>read</code> action and modified using the <code>write</code> and <code>modify</code> actions. The type <code>a</code> is the type of the value stored in the cell, and the type <code>r</code> is used to indicate a <em>memory region</em> (or <em>heap</em>) in the type system.</p>
+<p>Here is an example. Suppose we want to simulate the movement of a particle falling under gravity by iterating a simple update function over many small time steps.</p>
 <p>We can do this by creating a mutable reference cell to hold the position and velocity of the particle, and then using a <code>for</code> loop to update the value stored in that cell:</p>
 <pre><code class="language-hs">import Prelude
 
@@ -532,13 +554,13 @@ simulate x0 v0 time = do
   final &lt;- read ref
   pure final.x
 </code></pre>
-<p>At the end of the computation, we read the final value of the reference cell, and return the position of the particle.</p>
-<p>Note that even though this function uses mutable state, it is still a pure function, so long as the reference cell <code>ref</code> is not allowed to be used by other parts of the program. We will see that this is exactly what the <code>ST</code> effect disallows.</p>
+<p>At the end of the computation, we read the final value of the reference cell and return the position of the particle.</p>
+<p>Note that even though this function uses a mutable state, it is still a pure function, so long as the reference cell <code>ref</code> is not allowed to be used by other program parts. We will see that this is exactly what the <code>ST</code> effect disallows.</p>
 <p>To run a computation with the <code>ST</code> effect, we have to use the <code>run</code> function:</p>
 <pre><code class="language-hs">run :: forall a. (forall r. ST r a) -&gt; a
 </code></pre>
 <p>The thing to notice here is that the region type <code>r</code> is quantified <em>inside the parentheses</em> on the left of the function arrow. That means that whatever action we pass to <code>run</code> has to work with <em>any region</em> <code>r</code> whatsoever.</p>
-<p>However, once a reference cell has been created by <code>new</code>, its region type is already fixed, so it would be a type error to try to use the reference cell outside the code delimited by <code>run</code>.  This is what allows <code>run</code> to safely remove the <code>ST</code> effect, and turn <code>simulate</code> into a pure function!</p>
+<p>However, once a reference cell has been created by <code>new</code>, its region type is already fixed, so it would be a type error to try to use the reference cell outside the code delimited by <code>run</code>.  This allows <code>run</code> to safely remove the <code>ST</code> effect and turn <code>simulate</code> into a pure function!</p>
 <pre><code class="language-hs">simulate' :: Number -&gt; Number -&gt; Int -&gt; Number
 simulate' x0 v0 time = run (simulate x0 v0 time)
 </code></pre>
@@ -576,7 +598,7 @@ simulate x0 v0 time =
     final &lt;- read ref
     pure final.x
 </code></pre>
-<p>then the compiler will notice that the reference cell is not allowed to escape its scope, and can safely turn <code>ref</code> into a <code>var</code>. Here is the generated JavaScript for <code>simulate</code> inlined with <code>run</code>:</p>
+<p>Then the compiler will notice that the reference cell cannot escape its scope and can safely turn <code>ref</code> into a <code>var</code>. Here is the generated JavaScript for <code>simulate</code> inlined with <code>run</code>:</p>
 <pre><code class="language-javascript">var simulate = function (x0) {
   return function (v0) {
     return function (time) {
@@ -600,7 +622,9 @@ simulate x0 v0 time =
   };
 };
 </code></pre>
+<blockquote>
 <p>Note that this resulting JavaScript is not as optimal as it could be. See <a href="https://github.com/purescript-contrib/purescript-book/issues/121">this issue</a> for more details. The above snippet should be updated once that issue is resolved.</p>
+</blockquote>
 <p>For comparison, this is the generated JavaScript of the non-inlined form:</p>
 <pre><code class="language-js">var simulate = function (x0) {
   return function (v0) {
@@ -625,7 +649,7 @@ simulate x0 v0 time =
   };
 };
 </code></pre>
-<p>The <code>ST</code> effect is a good way to generate short JavaScript when working with locally-scoped mutable state, especially when used together with actions like <code>for</code>, <code>foreach</code>, and <code>while</code> which generate efficient loops.</p>
+<p>The <code>ST</code> effect is a good way to generate short JavaScript when working with locally-scoped mutable state, especially when used together with actions like <code>for</code>, <code>foreach</code>, and <code>while</code>, which generate efficient loops.</p>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
 <ol>
 <li>(Medium) Rewrite the <code>safeDivide</code> function as <code>exceptionDivide</code> and throw an exception using <code>throwException</code> with the message <code>&quot;div zero&quot;</code> if the denominator is zero.</li>
@@ -634,23 +658,23 @@ simulate x0 v0 time =
 </ol>
 <h2 id="dom-effects"><a class="header" href="#dom-effects">DOM Effects</a></h2>
 <p>In the final sections of this chapter, we will apply what we have learned about effects in the <code>Effect</code> monad to the problem of working with the DOM.</p>
-<p>There are a number of PureScript packages for working directly with the DOM, or with open-source DOM libraries. For example:</p>
+<p>There are several PureScript packages for working directly with the DOM or open-source DOM libraries. For example:</p>
 <ul>
-<li><a href="https://github.com/purescript-web/purescript-web-dom"><code>web-dom</code></a> provides type definitions and low level interface implementations for the W3C DOM spec.</li>
-<li><a href="https://github.com/purescript-web/purescript-web-html"><code>web-html</code></a> provides type definitions and low level interface implementations for the W3C HTML5 spec.</li>
+<li><a href="https://github.com/purescript-web/purescript-web-dom"><code>web-dom</code></a> provides type definitions and low-level interface implementations for the W3C DOM spec.</li>
+<li><a href="https://github.com/purescript-web/purescript-web-html"><code>web-html</code></a> provides type definitions and low-level interface implementations for the W3C HTML5 spec.</li>
 <li><a href="https://github.com/paf31/purescript-jquery"><code>jquery</code></a> is a set of bindings to the <a href="http://jquery.org">jQuery</a> library.</li>
 </ul>
-<p>There are also PureScript libraries which build abstractions on top of these libraries, such as</p>
+<p>There are also PureScript libraries that build abstractions on top of these libraries, such as</p>
 <ul>
-<li><a href="https://github.com/paf31/purescript-thermite"><code>thermite</code></a>, which builds on <a href="https://github.com/purescript-contrib/purescript-react"><code>react</code></a></li>
-<li><a href="https://github.com/megamaddu/purescript-react-basic-hooks"><code>react-basic-hooks</code></a>, which builds on <a href="https://github.com/lumihq/purescript-react-basic"><code>react-basic</code></a></li>
-<li><a href="https://github.com/purescript-halogen/purescript-halogen"><code>halogen</code></a> which provides a type-safe set of abstractions on top of a custom virtual DOM library.</li>
+<li><a href="https://github.com/paf31/purescript-thermite"><code>thermite</code></a> builds on <a href="https://github.com/purescript-contrib/purescript-react"><code>react</code></a></li>
+<li><a href="https://github.com/megamaddu/purescript-react-basic-hooks"><code>react-basic-hooks</code></a> builds on <a href="https://github.com/lumihq/purescript-react-basic"><code>react-basic</code></a></li>
+<li><a href="https://github.com/purescript-halogen/purescript-halogen"><code>halogen</code></a> provides a type-safe set of abstractions on top of a custom virtual DOM library.</li>
 </ul>
 <p>In this chapter, we will use the <code>react-basic-hooks</code> library to add a user interface to our address book application, but the interested reader is encouraged to explore alternative approaches.</p>
 <h2 id="an-address-book-user-interface"><a class="header" href="#an-address-book-user-interface">An Address Book User Interface</a></h2>
 <p>Using the <code>react-basic-hooks</code> library, we will define our application as a React <em>component</em>. React components describe HTML elements in code as pure data structures, which are then efficiently rendered to the DOM. In addition, components can respond to events like button clicks. The <code>react-basic-hooks</code> library uses the <code>Effect</code> monad to describe how to handle these events.</p>
 <p>A full tutorial for the React library is well beyond the scope of this chapter, but the reader is encouraged to consult its documentation where needed. For our purposes, React will provide a practical example of the <code>Effect</code> monad.</p>
-<p>We are going to build a form which will allow a user to add a new entry into our address book. The form will contain text boxes for the various fields (first name, last name, city, state, etc.), and an area in which validation errors will be displayed. As the user types text into the text boxes, the validation errors will be updated.</p>
+<p>We are going to build a form that will allow a user to add a new entry into our address book. The form will contain text boxes for the various fields (first name, last name, city, state, etc.) and an area where validation errors will be displayed. As the user types text into the text boxes, the validation errors will be updated.</p>
 <p>To keep things simple, the form will have a fixed shape: the different phone number types (home, cell, work, other) will be expanded into separate text boxes.</p>
 <p>You can launch the web app from the <code>exercises/chapter8</code> directory with the following commands:</p>
 <pre><code class="language-shell">$ npm install
@@ -658,8 +682,8 @@ $ npx spago build
 $ npx parcel src/index.html --open
 </code></pre>
 <p>If development tools such as <code>spago</code> and <code>parcel</code> are installed globally, then the <code>npx</code> prefix may be omitted. You have likely already installed <code>spago</code> globally with <code>npm i -g spago</code>, and the same can be done for <code>parcel</code>.</p>
-<p><code>parcel</code> should launch a browser window with our &quot;Address Book&quot; app. If you keep the <code>parcel</code> terminal open, and rebuild with <code>spago</code> in another terminal, the page should automatically refresh with your latest edits. You can also configure automatic rebuilds (and therefore automatic page refresh) on file-save if you're using an <a href="https://github.com/purescript/documentation/blob/master/ecosystem/Editor-and-tool-support.md#editors">editor</a> that supports <a href="https://github.com/purescript/purescript/tree/master/psc-ide"><code>purs ide</code></a> or are running <a href="https://github.com/kRITZCREEK/pscid"><code>pscid</code></a>.</p>
-<p>In this Address Book app, you should be able to enter some values into the form fields and see the validation errors printed onto the page.</p>
+<p><code>parcel</code> should launch a browser window with our &quot;Address Book&quot; app. If you keep the <code>parcel</code> terminal open and rebuild with <code>spago</code> in another terminal, the page should automatically refresh with your latest edits. You can also configure automatic rebuilds (and therefore automatic page refresh) on file-save if you're using an <a href="https://github.com/purescript/documentation/blob/master/ecosystem/Editor-and-tool-support.md#editors">editor</a> that supports <a href="https://github.com/purescript/purescript/tree/master/psc-ide"><code>purs ide</code></a> or are running <a href="https://github.com/kRITZCREEK/pscid"><code>pscid</code></a>.</p>
+<p>In this Address Book app, you can enter some values into the form fields and see the validation errors printed onto the page.</p>
 <p>Let's explore how it works.</p>
 <p>The <code>src/index.html</code> file is minimal:</p>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -717,7 +741,7 @@ ctr &lt;- getElementById &quot;container&quot; $ toNonElementParentNode doc
 ctr &lt;- window &gt;&gt;= document &gt;&gt;= toNonElementParentNode &gt;&gt;&gt; getElementById &quot;container&quot;
 </code></pre>
 <p>It is a matter of personal preference whether the intermediate <code>w</code> and <code>doc</code> variables aid in readability.</p>
-<p>Let's dig into our AddressBook <code>reactComponent</code>. We'll start with a simplified component, and then build up to the actual code in <code>Main.purs</code>.</p>
+<p>Let's dig into our AddressBook <code>reactComponent</code>. We'll start with a simplified component and then build up to the actual code in <code>Main.purs</code>.</p>
 <p>Take a look at this minimal component. Feel free to substitute the full component with this one to see it run:</p>
 <pre><code class="language-hs">mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
@@ -740,7 +764,7 @@ mkAddressBookApp =
 <pre><code class="language-hs">\props -&gt; pure $ D.text &quot;Hi! I'm an address book&quot;
 </code></pre>
 <p><code>props</code> are ignored, <code>D.text</code> returns <code>JSX</code>, and <code>pure</code> lifts to rendered JSX. Now <code>component</code> has everything it needs to produce the <code>ReactComponent</code>.</p>
-<p>Next we'll examine some of the additional complexities of the full Address Book component.</p>
+<p>Next, we'll examine some of the additional complexities of the full Address Book component.</p>
 <p>These are the first few lines of our full component:</p>
 <pre><code class="language-hs">mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
@@ -750,7 +774,7 @@ mkAddressBookApp = do
 <p>We track <code>person</code> as a piece of state with the <code>useState</code> hook.</p>
 <pre><code class="language-hs">Tuple person setPerson &lt;- useState examplePerson
 </code></pre>
-<p>Note that you are free to break-up component state into multiple pieces of state with multiple calls to <code>useState</code>. For example, we could rewrite this app to use a separate piece of state for each record field of <code>Person</code>, but that happens to result in a slightly less convenient architecture in this case.</p>
+<p>Note that you are free to break-up component state into multiple pieces of state with multiple calls to <code>useState</code>. For example, we could rewrite this app to use a separate piece of state for each record field of <code>Person</code>, but that results in a slightly less convenient architecture in this case.</p>
 <p>In other examples, you may encounter the <code>/\</code> infix operator for <code>Tuple</code>. This is equivalent to the above line:</p>
 <pre><code class="language-hs">firstName /\ setFirstName &lt;- useState p.firstName
 </code></pre>
@@ -767,11 +791,11 @@ setPerson :: (state -&gt; state) -&gt; Effect Unit
 </code></pre>
 <p>The specific type of <code>state</code> is determined by our initial default value. <code>Person</code> <code>Record</code> in this case because that is the type of <code>examplePerson</code>.</p>
 <p><code>person</code> is how we access the current state at each rerender.</p>
-<p><code>setPerson</code> is how we update the state. We simply provide a function that describes how to transform the current state to the new state. The record update syntax is perfect for this when the type of <code>state</code> happens to be a <code>Record</code>, for example:</p>
+<p><code>setPerson</code> is how we update the state. We provide a function describing how to transform the current state into the new one. The record update syntax is perfect for this when the type of <code>state</code> happens to be a <code>Record</code>, for example:</p>
 <pre><code class="language-hs">setPerson (\currentPerson -&gt; currentPerson {firstName = &quot;NewName&quot;})
 
 </code></pre>
-<p>or as shorthand:</p>
+<p>Or as shorthand:</p>
 <pre><code class="language-hs">setPerson _ {firstName = &quot;NewName&quot;}
 </code></pre>
 <p>Non-<code>Record</code> states can also follow this update pattern. See <a href="https://github.com/megamaddu/purescript-react-basic-hooks/pull/24#issuecomment-620300541">this guide</a> for more details on best practices.</p>
@@ -807,7 +831,7 @@ setPerson :: (state -&gt; state) -&gt; Effect Unit
               ]
       }
 </code></pre>
-<p>Here we produce <code>JSX</code> which represents the intended state of the DOM. This JSX is typically created by applying functions corresponding to HTML tags (e.g. <code>div</code>, <code>form</code>, <code>h3</code>, <code>li</code>, <code>ul</code>, <code>label</code>, <code>input</code>) which create single HTML elements. These HTML elements are actually React components themselves, converted to JSX. There are usually three variants of each of these functions:</p>
+<p>Here we produce <code>JSX</code>, which represents the intended state of the DOM. This JSX is typically created by applying functions corresponding to HTML tags (e.g., <code>div</code>, <code>form</code>, <code>h3</code>, <code>li</code>, <code>ul</code>, <code>label</code>, <code>input</code>) which create single HTML elements. These HTML elements are React components themselves, converted to JSX. There are usually three variants of each of these functions:</p>
 <ul>
 <li><code>div_</code>: Accepts an array of child elements. Uses default attributes.</li>
 <li><code>div</code>: Accepts a <code>Record</code> of attributes. An array of child elements may be passed to the <code>children</code> field of this record.</li>
@@ -872,7 +896,7 @@ formField name placeholder value setValue =
 <p>For the first argument to <code>handler</code> we use <code>targetValue</code>, which provides the value of the text within the HTML <code>input</code> element. It matches the signature expected by <code>handler</code> where the type variable <code>a</code> in this case is <code>Maybe String</code>:</p>
 <pre><code class="language-hs">targetValue :: EventFn SyntheticEvent (Maybe String)
 </code></pre>
-<p>In JavaScript, the <code>input</code> element's <code>onChange</code> event is actually accompanied by a <code>String</code> value, but since strings in JavaScript can be null, <code>Maybe</code> is used for safety.</p>
+<p>In JavaScript, the <code>input</code> element's <code>onChange</code> event is accompanied by a <code>String</code> value, but since strings in JavaScript can be null, <code>Maybe</code> is used for safety.</p>
 <p>The second argument to <code>handler</code>, <code>(a -&gt; Effect Unit)</code>, must therefore have this signature:</p>
 <pre><code class="language-hs">Maybe String -&gt; Effect Unit
 </code></pre>
@@ -890,7 +914,7 @@ formField name placeholder value setValue =
 <pre><code class="language-hs">onChange: handler targetValue $ traverse_ setValue
 </code></pre>
 <p>Feel free to investigate the definition of <code>traverse_</code> to see how both forms are indeed equivalent.</p>
-<p>That covers the basics of our component implementation. However, you should read the source accompanying this chapter in order to get a full understanding of the way the component works.</p>
+<p>That covers the basics of our component implementation. However, you should read the source accompanying this chapter to get a full understanding of the way the component works.</p>
 <p>Obviously, this user interface can be improved in a number of ways. The exercises will explore some ways in which we can make the application more usable.</p>
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
 <p>Modify <code>src/Main.purs</code> in the following exercises. There are no unit tests for these exercises.</p>
@@ -899,12 +923,12 @@ formField name placeholder value setValue =
 <p>(Easy) Modify the application to include a work phone number text box.</p>
 </li>
 <li>
-<p>(Medium) Right now the application shows validation errors collected in a single &quot;pink-alert&quot; background.  Modify to give each validation error its own pink-alert background by separating them  with blank lines.</p>
+<p>(Medium) Right now, the application shows validation errors collected in a single &quot;pink-alert&quot; background.  Modify to give each validation error its own pink-alert background by separating them with blank lines.</p>
 <p><em>Hint</em>: Instead of using a <code>ul</code> element to show the validation errors in a list, modify the code to create one <code>div</code> with the <code>alert</code> and <code>alert-danger</code> styles for each error.</p>
 </li>
 <li>
 <p>(Difficult, Extended) One problem with this user interface is that the validation errors are not displayed next to the form fields they originated from. Modify the code to fix this problem.</p>
-<p><em>Hint</em>: the error type returned by the validator should be extended to indicate which field caused the error. You might want to use the following modified <code>Errors</code> type:</p>
+<p><em>Hint</em>: The error type returned by the validator should be extended to indicate which field caused the error. You might want to use the following modified <code>Errors</code> type:</p>
 <pre><code class="language-hs">data Field = FirstNameField
            | LastNameField
            | StreetField
@@ -916,17 +940,17 @@ data ValidationError = ValidationError String Field
 
 type Errors = Array ValidationError
 </code></pre>
-<p>You will need to write a function which extracts the validation error for a particular <code>Field</code> from the <code>Errors</code> structure.</p>
+<p>You will need to write a function that extracts the validation error for a particular <code>Field</code> from the <code>Errors</code> structure.</p>
 </li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
 <p>This chapter has covered a lot of ideas about handling side-effects in PureScript:</p>
 <ul>
-<li>We met the <code>Monad</code> type class, and its connection to do notation.</li>
-<li>We introduced the monad laws, and saw how they allow us to transform code written using do notation.</li>
-<li>We saw how monads can be used abstractly, to write code which works with different side-effects.</li>
+<li>We met the <code>Monad</code> type class and its connection to do notation.</li>
+<li>We introduced the monad laws and saw how they allow us to transform code written using do notation.</li>
+<li>We saw how monads can be used abstractly to write code that works with different side-effects.</li>
 <li>We saw how monads are examples of applicative functors, how both allow us to compute with side-effects, and the differences between the two approaches.</li>
-<li>The concept of native effects was defined, and we met the <code>Effect</code> monad, which is used to handle native side-effects.</li>
+<li>The concept of native effects was defined, and we met the <code>Effect</code> monad, which handles native side-effects.</li>
 <li>We used the <code>Effect</code> monad to handle a variety of effects: random number generation, exceptions, console IO, mutable state, and DOM manipulation using React.</li>
 </ul>
 <p>The <code>Effect</code> monad is a fundamental tool in real-world PureScript code. It will be used in the rest of the book to handle side-effects in a number of other use-cases.</p>
