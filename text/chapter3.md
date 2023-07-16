@@ -173,7 +173,7 @@ Could not match type Int with type String
 
 PureScript code is _indentation-sensitive_, just like Haskell, but unlike JavaScript. This means that the whitespace in your code is not meaningless, but rather is used to group regions of code, just like curly braces in C-like languages.
 
-If a declaration spans multiple lines, then any lines except the first must be indented past the indentation level of the first line.
+If a declaration spans multiple lines, any lines except the first must be indented past the indentation level of the first line.
 
 Therefore, the following is a valid PureScript code:
 
@@ -209,18 +209,29 @@ But this is not:
 … ^D
 ```
 
-Certain PureScript keywords (such as `where`, `of` and `let`) introduce a new block of code, in which declarations must be further-indented:
+Certain PureScript keywords introduce a new block of code, in which declarations must be further-indented:
 
 ```haskell
-example x y z = foo + bar
-  where
+example x y z =
+  let
     foo = x * y
     bar = y * z
+  in
+    foo + bar
 ```
 
-Note how the declarations for `foo` and `bar` are indented past the declaration of `example`.
+This doesn't compile:
 
-The only exception to this rule is the `where` keyword in the initial `module` declaration at the top of a source file.
+```haskell
+example x y z =
+  let
+    foo = x * y
+  bar = y * z
+  in
+    foo + bar
+```
+
+If you want to learn more (or encounter any problems), see the [Syntax](https://github.com/purescript/documentation/blob/master/language/Syntax.md#syntax) documentation.
 
 ## Defining Our Types
 
