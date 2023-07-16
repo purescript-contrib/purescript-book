@@ -18,11 +18,12 @@ The source code for this chapter is contained in the file `src/Data/AddressBook.
 
 Here, we import several modules:
 
+- The `Prelude` module, which contains a small set of standard definitions and functions. It re-exports many foundational modules from the `purescript-prelude` library.
 - The `Control.Plus` module, which defines the `empty` value.
 - The `Data.List` module, provided by the `lists` package, which can be installed using Spago. It contains a few functions that we will need for working with linked lists.
 - The `Data.Maybe` module, which defines data types and functions for working with optional values.
 
-Notice that the imports for these modules are listed explicitly in parentheses. This is generally a good practice, as it helps to avoid conflicting imports.
+Notice that the imports for these modules are listed explicitly in parentheses (except for `Prelude`, which is typically imported as an open import). This is generally a good practice, as it helps to avoid conflicting imports.
 
 Assuming you have cloned the book's source code repository, the project for this chapter can be built using Spago, with the following commands:
 
@@ -102,18 +103,7 @@ Fields of records can be accessed using a dot, followed by the label of the fiel
 ["Functional Programming","JavaScript"]
 ```
 
-PureScript's functions correspond to JavaScript's functions. The PureScript standard libraries provide plenty of examples of functions, and we will see more in this chapter:
-
-```text
-> import Prelude
-> :type flip
-forall a b c. (a -> b -> c) -> b -> a -> c
-
-> :type const
-forall a b. a -> b -> a
-```
-
-Functions can be defined at the top-level of a file by specifying arguments before the equals sign:
+PureScript's functions correspond to JavaScript's functions. Functions can be defined at the top-level of a file by specifying arguments before the equals sign:
 
 ```haskell
 add :: Int -> Int -> Int
@@ -134,39 +124,6 @@ Having defined this function in PSCi, we can _apply_ it to its arguments by sepa
 ```text
 > add 10 20
 30
-```
-
-## Quantified Types
-
-In the previous section, we saw the types of some functions defined in the Prelude. For example, the `flip` function had the following type:
-
-```text
-> :type flip
-forall a b c. (a -> b -> c) -> b -> a -> c
-```
-
-The keyword `forall` here indicates that `flip` has a _universally quantified type_. It means we can substitute any types for `a`, `b`, and `c`, and `flip` will work with those types.
-
-For example, we might choose the type `a` to be `Int`, `b` to be `String`, and `c` to be `String`. In that case, we could _specialize_ the type of `flip` to
-
-```text
-(Int -> String -> String) -> String -> Int -> String
-```
-
-We don't have to indicate in code that we want to specialize a quantified type – it happens automatically. For example, we can use `flip` as if it had this type already:
-
-```text
-> flip (\n s -> show n <> s) "Ten" 10
-
-"10Ten"
-```
-
-While we can choose any types for `a`, `b`, and `c`, we have to be consistent. The type of function passed to `flip` had to be consistent with the types of the other arguments. That is why we passed the string `"Ten"` as the second argument and the number `10` as the third. It would not work if the arguments were reversed:
-
-```text
-> flip (\n s -> show n <> s) 10 "Ten"
-
-Could not match type Int with type String
 ```
 
 ## Notes On Indentation
@@ -281,6 +238,52 @@ Type
 ```
 
 PureScript's _kind system_ supports other interesting kinds, which we will see later in the book.
+
+## Quantified Types
+
+For illustration purposes, let's define a primitive function that takes any two arguments and returns the first one:
+
+```text
+> :paste
+… constantlyFirst :: forall a b. a -> b -> a
+… constantlyFirst = \a b -> a
+… ^D
+```
+
+> Note that if you use `:type` to ask about the type of `constantlyFirst`, it will be more verbose:
+>
+> ```text
+> : type constantlyFirst
+> forall (a :: Type) (b :: Type). a -> b -> a
+> ```
+>
+> The type signature contains additional kind information, which explicitly notes that `a` and `b` should be concrete types.
+
+The keyword `forall` indicates that `constantlyFirst` has a _universally quantified type_. It means we can substitute any types for `a` and `b` – `constantlyFirst` will work with these types.
+
+For example, we might choose the type `a` to be `Int` and `b` – `String`. In that case, we can _specialize_ the type of `constantlyFirst` to
+
+```text
+Int -> String -> Int
+```
+
+We don't have to indicate in code that we want to specialize a quantified type – it happens automatically. For example, we can use `constantlyFirst` as if it had this type already:
+
+```text
+> constantlyFirst 3 "ignored"
+
+3
+```
+
+While we can choose any types for `a` and `b`, the return type of `constantlyFirst` has to be the same as the types of the first argument (because both of them are "tied" to the same `a`):
+
+```text
+:type constantlyFirst true "ignored"
+Boolean
+
+:type constantlyFirst "string" 3
+String
+```
 
 ## Displaying Address Book Entries
 
