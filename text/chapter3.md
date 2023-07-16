@@ -371,7 +371,7 @@ $ spago repl
 > import Data.List
 > :type Cons
 
-forall a. a -> List a -> List a
+forall (a :: Type). a -> List a -> List a
 ```
 
 This type signature says that `Cons` takes a value of some type `a`, takes a list of elements of type `a`, and returns a new list with entries of the same type. Let's specialize this with `a` as our `Entry` type:
@@ -506,11 +506,11 @@ $ spago repl
 > import Data.List
 > :type filter
 
-forall a. (a -> Boolean) -> List a -> List a
+forall (a :: Type). (a -> Boolean) -> List a -> List a
 
 > :type head
 
-forall a. List a -> Maybe a
+forall (a :: Type). List a -> Maybe a
 ```
 
 Let's pick apart these two types to understand their meaning.

@@ -381,7 +381,7 @@ To see this, try using one of the standard type classes like `Semiring` in PSCi:
 > import Prelude
 
 > :type \x -> x + x
-forall a. Semiring a => a -> a
+forall (a :: Type). Semiring a => a -> a
 ```
 
 Here, we might have annotated this function as `Int -> Int` or `Number -> Number`, but PSCi shows us that the most general type works for any `Semiring`, allowing us to use our function with both `Int`s and `Number.
@@ -540,7 +540,7 @@ This hint is enough for the compiler to infer the correct type for our generic t
 
 ```text
 > :type genericTail
-forall stream element. Stream stream element => stream -> Maybe stream
+forall (stream :: Type) (element :: Type). Stream stream element => stream -> Maybe stream
 
 > genericTail "testing"
 (Just "esting")

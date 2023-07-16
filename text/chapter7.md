@@ -86,7 +86,7 @@ It is instructive to look at the type of `lift3`:
 
 ```text
 > :type lift3
-forall a b c d f. Apply f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+forall (a :: Type) (b :: Type) (c :: Type) (d :: Type) (f :: Type -> Type). Apply f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
 ```
 
 In the `Maybe` example above, the type constructor `f` is `Maybe`, so that `lift3` is specialized to the following type:

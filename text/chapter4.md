@@ -112,13 +112,13 @@ Let's look at the type of `map`:
 
 ```text
 > :type map
-forall a b f. Functor f => (a -> b) -> f a -> f b
+forall (f :: Type -> Type) (a :: Type) (b :: Type). Functor f => (a -> b) -> f a -> f b
 ```
 
 The type of `map` is actually more general than we need in this chapter. For our purposes, we can treat `map` as if it had the following less general type:
 
 ```text
-forall a b. (a -> b) -> Array a -> Array b
+forall (a :: Type) (b :: Type). (a -> b) -> Array a -> Array b
 ```
 
 This type says that we can choose any two types, `a` and `b`, with which to apply the `map` function. `a` is the type of elements in the source array, and `b` is the type of elements in the target array. In particular, there is no reason why `map` has to preserve the type of the array elements. We can use `map` or `<$>` to transform integers to strings, for example:
@@ -195,7 +195,7 @@ Another standard function on arrays is the `concat` function, defined in `Data.A
 > import Data.Array
 
 > :type concat
-forall a. Array (Array a) -> Array a
+forall (a :: Type). Array (Array a) -> Array a
 
 > concat [[1, 2, 3], [4, 5], [6]]
 [1, 2, 3, 4, 5, 6]
@@ -209,7 +209,7 @@ Let's see it in action:
 > import Data.Array
 
 > :type concatMap
-forall a b. (a -> Array b) -> Array a -> Array b
+forall (a :: Type) (b :: Type). (a -> Array b) -> Array a -> Array b
 
 > concatMap (\n -> [n, n * n]) (1 .. 5)
 [1,1,2,4,3,9,4,16,5,25]
@@ -335,7 +335,7 @@ Just like `pure`, we can apply the `guard` function in PSCi to understand how it
 > import Control.Alternative
 
 > :type guard
-forall m. Alternative m => Boolean -> m Unit
+forall (m :: Type -> Type). Alternative m => Boolean -> m Unit
 ```
 
 In our case, we can assume that PSCi reported the following type:
@@ -377,19 +377,19 @@ Start by importing the `Data.Foldable` module and inspecting the types of the `f
 > import Data.Foldable
 
 > :type foldl
-forall a b f. Foldable f => (b -> a -> b) -> b -> f a -> b
+forall (f :: Type -> Type) (a :: Type) (b :: Type). Foldable f => (b -> a -> b) -> b -> f a -> b
 
 > :type foldr
-forall a b f. Foldable f => (a -> b -> b) -> b -> f a -> b
+forall (f :: Type -> Type) (a :: Type) (b :: Type). Foldable f => (a -> b -> b) -> b -> f a -> b
 ```
 
-These types are more general than we are interested in right now. For this chapter, we can assume that PSCi has given the following (more specific) answer:
+These types are more general than we are interested in right now. For this chapter, we can simplify and assume the following (more specific) type signatures:
 
 ```text
-> :type foldl
+-- foldl
 forall a b. (b -> a -> b) -> b -> Array a -> b
 
-> :type foldr
+-- foldr
 forall a b. (a -> b -> b) -> b -> Array a -> b
 ```
 
