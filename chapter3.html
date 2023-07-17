@@ -186,11 +186,12 @@ import Data.Maybe (Maybe)
 </code></pre>
 <p>Here, we import several modules:</p>
 <ul>
+<li>The <code>Prelude</code> module, which contains a small set of standard definitions and functions. It re-exports many foundational modules from the <code>purescript-prelude</code> library.</li>
 <li>The <code>Control.Plus</code> module, which defines the <code>empty</code> value.</li>
 <li>The <code>Data.List</code> module, provided by the <code>lists</code> package, which can be installed using Spago. It contains a few functions that we will need for working with linked lists.</li>
 <li>The <code>Data.Maybe</code> module, which defines data types and functions for working with optional values.</li>
 </ul>
-<p>Notice that the imports for these modules are listed explicitly in parentheses. This is generally a good practice, as it helps to avoid conflicting imports.</p>
+<p>Notice that the imports for these modules are listed explicitly in parentheses (except for <code>Prelude</code>, which is typically imported as an open import). This is generally a good practice, as it helps to avoid conflicting imports.</p>
 <p>Assuming you have cloned the book's source code repository, the project for this chapter can be built using Spago, with the following commands:</p>
 <pre><code class="language-text">$ cd chapter3
 $ spago build
@@ -244,15 +245,7 @@ Could not match type Int with type Boolean.
 &gt; author.interests
 [&quot;Functional Programming&quot;,&quot;JavaScript&quot;]
 </code></pre>
-<p>PureScript's functions correspond to JavaScript's functions. The PureScript standard libraries provide plenty of examples of functions, and we will see more in this chapter:</p>
-<pre><code class="language-text">&gt; import Prelude
-&gt; :type flip
-forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
-
-&gt; :type const
-forall a b. a -&gt; b -&gt; a
-</code></pre>
-<p>Functions can be defined at the top-level of a file by specifying arguments before the equals sign:</p>
+<p>PureScript's functions correspond to JavaScript's functions. Functions can be defined at the top-level of a file by specifying arguments before the equals sign:</p>
 <pre><code class="language-haskell">add :: Int -&gt; Int -&gt; Int
 add x y = x + y
 </code></pre>
@@ -265,25 +258,6 @@ add x y = x + y
 <p>Having defined this function in PSCi, we can <em>apply</em> it to its arguments by separating the two arguments from the function name by whitespace:</p>
 <pre><code class="language-text">&gt; add 10 20
 30
-</code></pre>
-<h2 id="quantified-types"><a class="header" href="#quantified-types">Quantified Types</a></h2>
-<p>In the previous section, we saw the types of some functions defined in the Prelude. For example, the <code>flip</code> function had the following type:</p>
-<pre><code class="language-text">&gt; :type flip
-forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
-</code></pre>
-<p>The keyword <code>forall</code> here indicates that <code>flip</code> has a <em>universally quantified type</em>. It means we can substitute any types for <code>a</code>, <code>b</code>, and <code>c</code>, and <code>flip</code> will work with those types.</p>
-<p>For example, we might choose the type <code>a</code> to be <code>Int</code>, <code>b</code> to be <code>String</code>, and <code>c</code> to be <code>String</code>. In that case, we could <em>specialize</em> the type of <code>flip</code> to</p>
-<pre><code class="language-text">(Int -&gt; String -&gt; String) -&gt; String -&gt; Int -&gt; String
-</code></pre>
-<p>We don't have to indicate in code that we want to specialize a quantified type – it happens automatically. For example, we can use <code>flip</code> as if it had this type already:</p>
-<pre><code class="language-text">&gt; flip (\n s -&gt; show n &lt;&gt; s) &quot;Ten&quot; 10
-
-&quot;10Ten&quot;
-</code></pre>
-<p>While we can choose any types for <code>a</code>, <code>b</code>, and <code>c</code>, we have to be consistent. The type of function passed to <code>flip</code> had to be consistent with the types of the other arguments. That is why we passed the string <code>&quot;Ten&quot;</code> as the second argument and the number <code>10</code> as the third. It would not work if the arguments were reversed:</p>
-<pre><code class="language-text">&gt; flip (\n s -&gt; show n &lt;&gt; s) 10 &quot;Ten&quot;
-
-Could not match type Int with type String
 </code></pre>
 <h2 id="notes-on-indentation"><a class="header" href="#notes-on-indentation">Notes On Indentation</a></h2>
 <p>PureScript code is <em>indentation-sensitive</em>, just like Haskell, but unlike JavaScript. This means that the whitespace in your code is not meaningless, but rather is used to group regions of code, just like curly braces in C-like languages.</p>
@@ -369,6 +343,36 @@ Type -&gt; Type
 Type
 </code></pre>
 <p>PureScript's <em>kind system</em> supports other interesting kinds, which we will see later in the book.</p>
+<h2 id="quantified-types"><a class="header" href="#quantified-types">Quantified Types</a></h2>
+<p>For illustration purposes, let's define a primitive function that takes any two arguments and returns the first one:</p>
+<pre><code class="language-text">&gt; :paste
+… constantlyFirst :: forall a b. a -&gt; b -&gt; a
+… constantlyFirst = \a b -&gt; a
+… ^D
+</code></pre>
+<blockquote>
+<p>Note that if you use <code>:type</code> to ask about the type of <code>constantlyFirst</code>, it will be more verbose:</p>
+<pre><code class="language-text">: type constantlyFirst
+forall (a :: Type) (b :: Type). a -&gt; b -&gt; a
+</code></pre>
+<p>The type signature contains additional kind information, which explicitly notes that <code>a</code> and <code>b</code> should be concrete types.</p>
+</blockquote>
+<p>The keyword <code>forall</code> indicates that <code>constantlyFirst</code> has a <em>universally quantified type</em>. It means we can substitute any types for <code>a</code> and <code>b</code> – <code>constantlyFirst</code> will work with these types.</p>
+<p>For example, we might choose the type <code>a</code> to be <code>Int</code> and <code>b</code> – <code>String</code>. In that case, we can <em>specialize</em> the type of <code>constantlyFirst</code> to</p>
+<pre><code class="language-text">Int -&gt; String -&gt; Int
+</code></pre>
+<p>We don't have to indicate in code that we want to specialize a quantified type – it happens automatically. For example, we can use <code>constantlyFirst</code> as if it had this type already:</p>
+<pre><code class="language-text">&gt; constantlyFirst 3 &quot;ignored&quot;
+
+3
+</code></pre>
+<p>While we can choose any types for <code>a</code> and <code>b</code>, the return type of <code>constantlyFirst</code> has to be the same as the type of the first argument (because both of them are &quot;tied&quot; to the same <code>a</code>):</p>
+<pre><code class="language-text">:type constantlyFirst true &quot;ignored&quot;
+Boolean
+
+:type constantlyFirst &quot;keep&quot; 3
+String
+</code></pre>
 <h2 id="displaying-address-book-entries"><a class="header" href="#displaying-address-book-entries">Displaying Address Book Entries</a></h2>
 <p>Let's write our first function, which will render an address book entry as a string. We start by giving the function a type. This is optional, but good practice, since it acts as a form of documentation. In fact, the PureScript compiler will give a warning if a top-level declaration does not contain a type annotation. A type declaration separates the name of a function from its type with the <code>::</code> symbol:</p>
 <pre><code class="language-haskell">showEntry :: Entry -&gt; String
