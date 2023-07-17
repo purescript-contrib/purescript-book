@@ -523,7 +523,7 @@ Could not match type Int with type String
 </code></pre>
 <h2 id="notes-on-indentation"><a class="header" href="#notes-on-indentation">Notes On Indentation</a></h2>
 <p>PureScript code is <em>indentation-sensitive</em>, just like Haskell, but unlike JavaScript. This means that the whitespace in your code is not meaningless, but rather is used to group regions of code, just like curly braces in C-like languages.</p>
-<p>If a declaration spans multiple lines, then any lines except the first must be indented past the indentation level of the first line.</p>
+<p>If a declaration spans multiple lines, any lines except the first must be indented past the indentation level of the first line.</p>
 <p>Therefore, the following is a valid PureScript code:</p>
 <pre><code class="language-haskell">add x y z = x +
   y + z
@@ -545,14 +545,23 @@ y + z
 …  y = 2
 … ^D
 </code></pre>
-<p>Certain PureScript keywords (such as <code>where</code>, <code>of</code> and <code>let</code>) introduce a new block of code, in which declarations must be further-indented:</p>
-<pre><code class="language-haskell">example x y z = foo + bar
-  where
+<p>Certain PureScript keywords introduce a new block of code, in which declarations must be further-indented:</p>
+<pre><code class="language-haskell">example x y z =
+  let
     foo = x * y
     bar = y * z
+  in
+    foo + bar
 </code></pre>
-<p>Note how the declarations for <code>foo</code> and <code>bar</code> are indented past the declaration of <code>example</code>.</p>
-<p>The only exception to this rule is the <code>where</code> keyword in the initial <code>module</code> declaration at the top of a source file.</p>
+<p>This doesn't compile:</p>
+<pre><code class="language-haskell">example x y z =
+  let
+    foo = x * y
+  bar = y * z
+  in
+    foo + bar
+</code></pre>
+<p>If you want to learn more (or encounter any problems), see the <a href="https://github.com/purescript/documentation/blob/master/language/Syntax.md#syntax">Syntax</a> documentation.</p>
 <h2 id="defining-our-types"><a class="header" href="#defining-our-types">Defining Our Types</a></h2>
 <p>A good first step when tackling a new problem in PureScript is to write out type definitions for any values you will be working with. First, let's define a type for records in our address book:</p>
 <pre><code class="language-haskell">type Entry =
