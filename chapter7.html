@@ -224,7 +224,7 @@ Just ({ street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &qu
 <p>So, we can lift functions with small numbers of arguments by using <code>lift2</code>, <code>lift3</code>, etc. But how can we generalize this to arbitrary functions?</p>
 <p>It is instructive to look at the type of <code>lift3</code>:</p>
 <pre><code class="language-text">&gt; :type lift3
-forall a b c d f. Apply f =&gt; (a -&gt; b -&gt; c -&gt; d) -&gt; f a -&gt; f b -&gt; f c -&gt; f d
+forall (a :: Type) (b :: Type) (c :: Type) (d :: Type) (f :: Type -&gt; Type). Apply f =&gt; (a -&gt; b -&gt; c -&gt; d) -&gt; f a -&gt; f b -&gt; f c -&gt; f d
 </code></pre>
 <p>In the <code>Maybe</code> example above, the type constructor <code>f</code> is <code>Maybe</code>, so that <code>lift3</code> is specialized to the following type:</p>
 <pre><code class="language-haskell">forall a b c d. (a -&gt; b -&gt; c -&gt; d) -&gt; Maybe a -&gt; Maybe b -&gt; Maybe c -&gt; Maybe d

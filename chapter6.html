@@ -447,7 +447,7 @@ of multiple arguments. But remember not to confuse the two symbols:</p>
 <pre><code class="language-text">&gt; import Prelude
 
 &gt; :type \x -&gt; x + x
-forall a. Semiring a =&gt; a -&gt; a
+forall (a :: Type). Semiring a =&gt; a -&gt; a
 </code></pre>
 <p>Here, we might have annotated this function as <code>Int -&gt; Int</code> or <code>Number -&gt; Number</code>, but PSCi shows us that the most general type works for any <code>Semiring</code>, allowing us to use our function with both <code>Int</code>s and `Number.</p>
 <h2 id="instance-dependencies"><a class="header" href="#instance-dependencies">Instance Dependencies</a></h2>
@@ -562,7 +562,7 @@ has type variables which are not mentioned in the body of the type. Consider add
 <p>Here, <code>stream -&gt; element</code> is called a <em>functional dependency</em>. A functional dependency asserts a functional relationship between the type arguments of a multi-parameter type class. This functional dependency tells the compiler that there is a function from stream types to (unique) element types, so if the compiler knows the stream type, then it can commit to the element type.</p>
 <p>This hint is enough for the compiler to infer the correct type for our generic tail function above:</p>
 <pre><code class="language-text">&gt; :type genericTail
-forall stream element. Stream stream element =&gt; stream -&gt; Maybe stream
+forall (stream :: Type) (element :: Type). Stream stream element =&gt; stream -&gt; Maybe stream
 
 &gt; genericTail &quot;testing&quot;
 (Just &quot;esting&quot;)

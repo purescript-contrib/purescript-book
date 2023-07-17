@@ -652,7 +652,7 @@ emptyBook = empty
 &gt; import Data.List
 &gt; :type Cons
 
-forall a. a -&gt; List a -&gt; List a
+forall (a :: Type). a -&gt; List a -&gt; List a
 </code></pre>
 <p>This type signature says that <code>Cons</code> takes a value of some type <code>a</code>, takes a list of elements of type <code>a</code>, and returns a new list with entries of the same type. Let's specialize this with <code>a</code> as our <code>Entry</code> type:</p>
 <pre><code class="language-haskell">Entry -&gt; List Entry -&gt; List Entry
@@ -729,11 +729,11 @@ insertEntry = Cons
 &gt; import Data.List
 &gt; :type filter
 
-forall a. (a -&gt; Boolean) -&gt; List a -&gt; List a
+forall (a :: Type). (a -&gt; Boolean) -&gt; List a -&gt; List a
 
 &gt; :type head
 
-forall a. List a -&gt; Maybe a
+forall (a :: Type). List a -&gt; Maybe a
 </code></pre>
 <p>Let's pick apart these two types to understand their meaning.</p>
 <p><code>filter</code> is a curried function of two arguments. Its first argument is a function, which takes an element of the list and returns a <code>Boolean</code> value. Its second argument is a list of elements, and the return value is another list.</p>
@@ -956,10 +956,10 @@ length arr =
 </code></pre>
 <p>Let's look at the type of <code>map</code>:</p>
 <pre><code class="language-text">&gt; :type map
-forall a b f. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </code></pre>
 <p>The type of <code>map</code> is actually more general than we need in this chapter. For our purposes, we can treat <code>map</code> as if it had the following less general type:</p>
-<pre><code class="language-text">forall a b. (a -&gt; b) -&gt; Array a -&gt; Array b
+<pre><code class="language-text">forall (a :: Type) (b :: Type). (a -&gt; b) -&gt; Array a -&gt; Array b
 </code></pre>
 <p>This type says that we can choose any two types, <code>a</code> and <code>b</code>, with which to apply the <code>map</code> function. <code>a</code> is the type of elements in the source array, and <code>b</code> is the type of elements in the target array. In particular, there is no reason why <code>map</code> has to preserve the type of the array elements. We can use <code>map</code> or <code>&lt;$&gt;</code> to transform integers to strings, for example:</p>
 <pre><code class="language-text">&gt; show &lt;$&gt; [1, 2, 3, 4, 5]
@@ -1013,7 +1013,7 @@ forall a b f. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 <pre><code class="language-text">&gt; import Data.Array
 
 &gt; :type concat
-forall a. Array (Array a) -&gt; Array a
+forall (a :: Type). Array (Array a) -&gt; Array a
 
 &gt; concat [[1, 2, 3], [4, 5], [6]]
 [1, 2, 3, 4, 5, 6]
@@ -1023,7 +1023,7 @@ forall a. Array (Array a) -&gt; Array a
 <pre><code class="language-text">&gt; import Data.Array
 
 &gt; :type concatMap
-forall a b. (a -&gt; Array b) -&gt; Array a -&gt; Array b
+forall (a :: Type) (b :: Type). (a -&gt; Array b) -&gt; Array a -&gt; Array b
 
 &gt; concatMap (\n -&gt; [n, n * n]) (1 .. 5)
 [1,1,2,4,3,9,4,16,5,25]
@@ -1119,7 +1119,7 @@ factorsV3 n = do
 <pre><code class="language-text">&gt; import Control.Alternative
 
 &gt; :type guard
-forall m. Alternative m =&gt; Boolean -&gt; m Unit
+forall (m :: Type -&gt; Type). Alternative m =&gt; Boolean -&gt; m Unit
 </code></pre>
 <p>In our case, we can assume that PSCi reported the following type:</p>
 <pre><code class="language-haskell">Boolean -&gt; Array Unit
@@ -1148,16 +1148,16 @@ forall m. Alternative m =&gt; Boolean -&gt; m Unit
 <pre><code class="language-text">&gt; import Data.Foldable
 
 &gt; :type foldl
-forall a b f. Foldable f =&gt; (b -&gt; a -&gt; b) -&gt; b -&gt; f a -&gt; b
+forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Foldable f =&gt; (b -&gt; a -&gt; b) -&gt; b -&gt; f a -&gt; b
 
 &gt; :type foldr
-forall a b f. Foldable f =&gt; (a -&gt; b -&gt; b) -&gt; b -&gt; f a -&gt; b
+forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Foldable f =&gt; (a -&gt; b -&gt; b) -&gt; b -&gt; f a -&gt; b
 </code></pre>
-<p>These types are more general than we are interested in right now. For this chapter, we can assume that PSCi has given the following (more specific) answer:</p>
-<pre><code class="language-text">&gt; :type foldl
+<p>These types are more general than we are interested in right now. For this chapter, we can simplify and assume the following (more specific) type signatures:</p>
+<pre><code class="language-text">-- foldl
 forall a b. (b -&gt; a -&gt; b) -&gt; b -&gt; Array a -&gt; b
 
-&gt; :type foldr
+-- foldr
 forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Array a -&gt; b
 </code></pre>
 <p>In both cases, the type <code>a</code> corresponds to the type of elements of our array. The type <code>b</code> can be thought of as the type of an &quot;accumulator&quot;, which will accumulate a result as we traverse the array.</p>
@@ -1466,7 +1466,7 @@ showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
 <pre><code class="language-text">&gt; showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
 
 &gt; :type showPerson
-forall r. { first :: String, last :: String | r } -&gt; String
+forall (r :: Row Type). { first :: String, last :: String | r } -&gt; String
 </code></pre>
 <p>What is the type variable <code>r</code> here? Well, if we try <code>showPerson</code> in PSCi, we see something interesting:</p>
 <pre><code class="language-text">&gt; showPerson { first: &quot;Phil&quot;, last: &quot;Freeman&quot; }
@@ -2045,7 +2045,7 @@ of multiple arguments. But remember not to confuse the two symbols:</p>
 <pre><code class="language-text">&gt; import Prelude
 
 &gt; :type \x -&gt; x + x
-forall a. Semiring a =&gt; a -&gt; a
+forall (a :: Type). Semiring a =&gt; a -&gt; a
 </code></pre>
 <p>Here, we might have annotated this function as <code>Int -&gt; Int</code> or <code>Number -&gt; Number</code>, but PSCi shows us that the most general type works for any <code>Semiring</code>, allowing us to use our function with both <code>Int</code>s and `Number.</p>
 <h2 id="instance-dependencies"><a class="header" href="#instance-dependencies">Instance Dependencies</a></h2>
@@ -2160,7 +2160,7 @@ has type variables which are not mentioned in the body of the type. Consider add
 <p>Here, <code>stream -&gt; element</code> is called a <em>functional dependency</em>. A functional dependency asserts a functional relationship between the type arguments of a multi-parameter type class. This functional dependency tells the compiler that there is a function from stream types to (unique) element types, so if the compiler knows the stream type, then it can commit to the element type.</p>
 <p>This hint is enough for the compiler to infer the correct type for our generic tail function above:</p>
 <pre><code class="language-text">&gt; :type genericTail
-forall stream element. Stream stream element =&gt; stream -&gt; Maybe stream
+forall (stream :: Type) (element :: Type). Stream stream element =&gt; stream -&gt; Maybe stream
 
 &gt; genericTail &quot;testing&quot;
 (Just &quot;esting&quot;)
@@ -2392,7 +2392,7 @@ Just ({ street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &qu
 <p>So, we can lift functions with small numbers of arguments by using <code>lift2</code>, <code>lift3</code>, etc. But how can we generalize this to arbitrary functions?</p>
 <p>It is instructive to look at the type of <code>lift3</code>:</p>
 <pre><code class="language-text">&gt; :type lift3
-forall a b c d f. Apply f =&gt; (a -&gt; b -&gt; c -&gt; d) -&gt; f a -&gt; f b -&gt; f c -&gt; f d
+forall (a :: Type) (b :: Type) (c :: Type) (d :: Type) (f :: Type -&gt; Type). Apply f =&gt; (a -&gt; b -&gt; c -&gt; d) -&gt; f a -&gt; f b -&gt; f c -&gt; f d
 </code></pre>
 <p>In the <code>Maybe</code> example above, the type constructor <code>f</code> is <code>Maybe</code>, so that <code>lift3</code> is specialized to the following type:</p>
 <pre><code class="language-haskell">forall a b c d. (a -&gt; b -&gt; c -&gt; d) -&gt; Maybe a -&gt; Maybe b -&gt; Maybe c -&gt; Maybe d

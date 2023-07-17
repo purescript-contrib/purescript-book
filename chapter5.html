@@ -292,7 +292,7 @@ showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
 <pre><code class="language-text">&gt; showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
 
 &gt; :type showPerson
-forall r. { first :: String, last :: String | r } -&gt; String
+forall (r :: Row Type). { first :: String, last :: String | r } -&gt; String
 </code></pre>
 <p>What is the type variable <code>r</code> here? Well, if we try <code>showPerson</code> in PSCi, we see something interesting:</p>
 <pre><code class="language-text">&gt; showPerson { first: &quot;Phil&quot;, last: &quot;Freeman&quot; }

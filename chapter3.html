@@ -416,7 +416,7 @@ emptyBook = empty
 &gt; import Data.List
 &gt; :type Cons
 
-forall a. a -&gt; List a -&gt; List a
+forall (a :: Type). a -&gt; List a -&gt; List a
 </code></pre>
 <p>This type signature says that <code>Cons</code> takes a value of some type <code>a</code>, takes a list of elements of type <code>a</code>, and returns a new list with entries of the same type. Let's specialize this with <code>a</code> as our <code>Entry</code> type:</p>
 <pre><code class="language-haskell">Entry -&gt; List Entry -&gt; List Entry
@@ -493,11 +493,11 @@ insertEntry = Cons
 &gt; import Data.List
 &gt; :type filter
 
-forall a. (a -&gt; Boolean) -&gt; List a -&gt; List a
+forall (a :: Type). (a -&gt; Boolean) -&gt; List a -&gt; List a
 
 &gt; :type head
 
-forall a. List a -&gt; Maybe a
+forall (a :: Type). List a -&gt; Maybe a
 </code></pre>
 <p>Let's pick apart these two types to understand their meaning.</p>
 <p><code>filter</code> is a curried function of two arguments. Its first argument is a function, which takes an element of the list and returns a <code>Boolean</code> value. Its second argument is a list of elements, and the return value is another list.</p>
