@@ -106,6 +106,8 @@ Fields of records can be accessed using a dot, followed by the label of the fiel
 PureScript's functions correspond to JavaScript's functions. Functions can be defined at the top-level of a file by specifying arguments before the equals sign:
 
 ```haskell
+import Prelude -- bring the (+) operator into scope
+
 add :: Int -> Int -> Int
 add x y = x + y
 ```
