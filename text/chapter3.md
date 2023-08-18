@@ -115,6 +115,7 @@ add x y = x + y
 Alternatively, functions can be defined inline using a backslash character followed by a space-delimited list of argument names. To enter a multi-line declaration in PSCi, we can enter "paste mode" using the `:paste` command. In this mode, declarations are terminated using the _Control-D_ key sequence:
 
 ```text
+> import Prelude
 > :paste
 … add :: Int -> Int -> Int
 … add = \x y -> x + y
