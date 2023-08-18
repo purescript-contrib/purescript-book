@@ -415,15 +415,58 @@ This brings the two arguments `entry` and `book` into scope – on the left-hand
 
 ## Curried Functions
 
-Functions in PureScript take exactly one argument. While it looks like the `insertEntry` function takes two arguments, it is an example of a _curried function_.
+Functions in PureScript take exactly one argument. While it looks like the `insertEntry` function takes two arguments, it is an example of a _curried function_. In PureScript, all functions are considered curried.
 
-The `->` operator in the type of `insertEntry` associates to the right, which means that the compiler parses the type as
+Currying means converting a function that takes multiple arguments into a function that takes them one at a time. When we call a function, we pass it one argument, and it returns another function that also takes one argument until all arguments are passed.
+
+For example, when we pass `5`  to `add`, we get another function, which takes an int, adds 5 to it, and returns the sum as a result:
+
+```haskell
+add :: Int -> Int -> Int
+add x y = x + y
+
+addFive :: Int -> Int
+addFive = add 5
+```
+
+`addFive` is the result of _partial application_, which means we pass less than the total number of arguments to a function that takes multiple arguments. Let's give it a try:
+
+> Note that you must define the `add` function if you haven't already:
+>
+> ```text
+> > import Prelude
+> > :paste
+>… add :: Int -> Int -> Int
+>… add x y = x + y
+>… ^D
+> ```
+
+```text
+> :paste
+… addFive :: Int -> Int
+… addFive = add 5
+… ^D
+
+> addFive 1
+6
+
+> add 5 1
+6
+```
+
+To better understand currying and partial application, try making a few other functions, for example, out of `add`. And when you're done, let's return to the `insertEntry`.
+
+```haskell
+{{#include ../exercises/chapter3/src/Data/AddressBook.purs:insertEntry_signature}}
+```
+
+The `->` operator (in the type signature) associates to the right, which means that the compiler parses the type as
 
 ```haskell
 Entry -> (AddressBook -> AddressBook)
 ```
 
-That is, `insertEntry` is a function that returns a function! It takes a single argument, an `Entry`, and returns a new function, which in turn takes a single `AddressBook` argument and returns a new `AddressBook`.
+`insertEntry` takes a single argument, an `Entry`, and returns a new function, which in turn takes a single `AddressBook` argument and returns a new `AddressBook`.
 
 This means we can _partially apply_ `insertEntry` by specifying only its first argument, for example. In PSCi, we can see the result type:
 
