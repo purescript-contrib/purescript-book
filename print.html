@@ -482,7 +482,9 @@ Could not match type Int with type Boolean.
 [&quot;Functional Programming&quot;,&quot;JavaScript&quot;]
 </code></pre>
 <p>PureScript's functions correspond to JavaScript's functions. Functions can be defined at the top-level of a file by specifying arguments before the equals sign:</p>
-<pre><code class="language-haskell">add :: Int -&gt; Int -&gt; Int
+<pre><code class="language-haskell">import Prelude -- bring the (+) operator into scope
+
+add :: Int -&gt; Int -&gt; Int
 add x y = x + y
 </code></pre>
 <p>Alternatively, functions can be defined inline using a backslash character followed by a space-delimited list of argument names. To enter a multi-line declaration in PSCi, we can enter &quot;paste mode&quot; using the <code>:paste</code> command. In this mode, declarations are terminated using the <em>Control-D</em> key sequence:</p>
