@@ -682,11 +682,43 @@ forall (a :: Type). a -&gt; List a -&gt; List a
 </code></pre>
 <p>This brings the two arguments <code>entry</code> and <code>book</code> into scope – on the left-hand side of the equals symbol – and then applies the <code>Cons</code> function to create the result.</p>
 <h2 id="curried-functions"><a class="header" href="#curried-functions">Curried Functions</a></h2>
-<p>Functions in PureScript take exactly one argument. While it looks like the <code>insertEntry</code> function takes two arguments, it is an example of a <em>curried function</em>.</p>
-<p>The <code>-&gt;</code> operator in the type of <code>insertEntry</code> associates to the right, which means that the compiler parses the type as</p>
+<p>Functions in PureScript take exactly one argument. While it looks like the <code>insertEntry</code> function takes two arguments, it is an example of a <em>curried function</em>. In PureScript, all functions are considered curried.</p>
+<p>Currying means converting a function that takes multiple arguments into a function that takes them one at a time. When we call a function, we pass it one argument, and it returns another function that also takes one argument until all arguments are passed.</p>
+<p>For example, when we pass <code>5</code>  to <code>add</code>, we get another function, which takes an int, adds 5 to it, and returns the sum as a result:</p>
+<pre><code class="language-haskell">add :: Int -&gt; Int -&gt; Int
+add x y = x + y
+
+addFive :: Int -&gt; Int
+addFive = add 5
+</code></pre>
+<p><code>addFive</code> is the result of <em>partial application</em>, which means we pass less than the total number of arguments to a function that takes multiple arguments. Let's give it a try:</p>
+<blockquote>
+<p>Note that you must define the <code>add</code> function if you haven't already:</p>
+<pre><code class="language-text">&gt; import Prelude
+&gt; :paste
+… add :: Int -&gt; Int -&gt; Int
+… add x y = x + y
+… ^D
+</code></pre>
+</blockquote>
+<pre><code class="language-text">&gt; :paste
+… addFive :: Int -&gt; Int
+… addFive = add 5
+… ^D
+
+&gt; addFive 1
+6
+
+&gt; add 5 1
+6
+</code></pre>
+<p>To better understand currying and partial application, try making a few other functions, for example, out of <code>add</code>. And when you're done, let's return to the <code>insertEntry</code>.</p>
+<pre><code class="language-haskell">insertEntry :: Entry -&gt; AddressBook -&gt; AddressBook
+</code></pre>
+<p>The <code>-&gt;</code> operator (in the type signature) associates to the right, which means that the compiler parses the type as</p>
 <pre><code class="language-haskell">Entry -&gt; (AddressBook -&gt; AddressBook)
 </code></pre>
-<p>That is, <code>insertEntry</code> is a function that returns a function! It takes a single argument, an <code>Entry</code>, and returns a new function, which in turn takes a single <code>AddressBook</code> argument and returns a new <code>AddressBook</code>.</p>
+<p><code>insertEntry</code> takes a single argument, an <code>Entry</code>, and returns a new function, which in turn takes a single <code>AddressBook</code> argument and returns a new <code>AddressBook</code>.</p>
 <p>This means we can <em>partially apply</em> <code>insertEntry</code> by specifying only its first argument, for example. In PSCi, we can see the result type:</p>
 <pre><code class="language-text">&gt; :type insertEntry entry
 
