@@ -99,7 +99,7 @@ This example demonstrates that guards appear on the left of the equals symbol, s
 ## Exercises
 
 1. (Easy) Write the `factorial` function using pattern matching. _Hint_: Consider the two corner cases of zero and non-zero inputs. _Note_: This is a repeat of an example from the previous chapter, but see if you can rewrite it here on your own.
-1. (Medium) Write a function `binomial` which finds the coefficient of the x^`k`th term in the polynomial expansion of (1 + x)^`n`. This is the same as the number of ways to choose a subset of `k` elements from a set of `n` elements. Use the formula `n! / k! (n - k)!`, where `!` is the factorial function written earlier. _Hint_: Use pattern matching to handle corner cases. If it takes a long time to complete or crashes with an error about the call stack, try adding more corner cases.
+1. (Medium) Write a function `binomial` which finds the coefficient of the \\( x ^ k \\)th term in the polynomial expansion of \\( ( 1 + x ) ^ n \\). This is the same as the number of ways to choose a subset of \\( k \\) elements from a set of \\( n \\) elements. Use the formula \\( n! \\: / \\: k! \\, (n - k)! \\), where \\( ! \\) is the factorial function written earlier. _Hint_: Use pattern matching to handle corner cases. If it takes a long time to complete or crashes with an error about the call stack, try adding more corner cases.
 1. (Medium) Write a function `pascal` which uses [_Pascal`s Rule_](https://en.wikipedia.org/wiki/Pascal%27s_rule) for computing the same binomial coefficients as the previous exercise.
 
 ## Array Patterns

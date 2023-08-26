@@ -342,15 +342,15 @@ Tuple 3 ["gcdLog 21 15","gcdLog 6 15","gcdLog 6 9","gcdLog 6 3","gcdLog 3 3"]
 ## Exercises
 
  1. (Medium) Rewrite the `sumArray` function above using the `Writer` monad and the `Additive Int` monoid from the `monoid` package.
- 1. (Medium) The _Collatz_ function is defined on natural numbers `n` as `n / 2` when `n` is even and `3 * n + 1` when `n` is odd. For example, the iterated Collatz sequence starting at `10` is as follows:
+ 1. (Medium) The _Collatz_ function is defined on natural numbers \\( n \\) as \\( n / 2 \\) when \\( n \\) is even and \\( 3 n + 1 \\) when \\( n \\) is odd. For example, the iterated Collatz sequence starting at \\( 10 \\) is as follows:
 
      ```text
      10, 5, 16, 8, 4, 2, 1, ...
      ```
 
-     It is conjectured that the iterated Collatz sequence always reaches `1` after some finite number of applications of the Collatz function.
+     It is conjectured that the iterated Collatz sequence always reaches \\( 1 \\) after some finite number of applications of the Collatz function.
 
-     Write a function that uses recursion to calculate how many iterations of the Collatz function are required before the sequence reaches `1`.
+     Write a function that uses recursion to calculate how many iterations of the Collatz function are required before the sequence reaches \\( 1 \\).
 
      Modify your function to use the `Writer` monad to log each application of the Collatz function.
 

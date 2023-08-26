@@ -477,7 +477,7 @@ export const unsafeHead = arr => {
 
 ## Exercises
 
-1. (Medium) Given a record that represents a quadratic polynomial `a*x^2 + b*x + c = 0`:
+1. (Medium) Given a record that represents a quadratic polynomial \\( a x ^ 2 + b x + c = 0 \\):
 
     ```hs
     type Quadratic = {

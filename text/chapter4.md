@@ -364,7 +364,7 @@ This means that if the guard fails, then the current branch of the array compreh
 
  1. (Easy) Write a function `isPrime`, which tests whether its integer argument is prime. _Hint_: Use the `factors` function.
  1. (Medium) Write a function `cartesianProduct` which uses do notation to find the _cartesian product_ of two arrays, i.e., the set of all pairs of elements `a`, `b`, where `a` is an element of the first array, and `b` is an element of the second.
- 1. (Medium) Write a function `triples :: Int -> Array (Array Int)`, which takes a number `n` and returns all Pythagorean triples whose components (the `a`, `b`, and `c` values) are each less than or equal to `n`. A _Pythagorean triple_ is an array of numbers `[a, b, c]` such that `a² + b² = c²`. _Hint_: Use the `guard` function in an array comprehension.
+ 1. (Medium) Write a function `triples :: Int -> Array (Array Int)`, which takes a number \\( n \\) and returns all Pythagorean triples whose components (the \\( a \\), \\( b \\), and \\( c \\) values) are each less than or equal to \\( n \\). A _Pythagorean triple_ is an array of numbers \\( [ a, b, c ] \\) such that \\( a ^ 2 + b ^ 2 = c ^ 2 \\). _Hint_: Use the `guard` function in an array comprehension.
  1. (Difficult) Write a function `primeFactors` which produces the [prime factorization](https://www.mathsisfun.com/prime-factorization.html) of `n`, i.e., the array of prime integers whose product is `n`. _Hint_: for an integer greater than 1, break the problem into two subproblems: finding the first factor and the remaining factors.
 
 ## Folds

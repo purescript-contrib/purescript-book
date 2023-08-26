@@ -558,7 +558,7 @@ and open `html/index.html`. You should see the Koch curve rendered to the canvas
  1. (Easy) Try changing the various numerical constants in the code to understand their effect on the rendered system.
  1. (Medium) Break the `lsystem` function into two smaller functions. The first should build the final sentence using repeated application of `concatMap`, and the second should use `foldM` to interpret the result.
  1. (Medium) Add a drop shadow to the filled shape using the `setShadowOffsetX`, `setShadowOffsetY`, `setShadowBlur`, and `setShadowColor` actions. _Hint_: use PSCi to find the types of these functions.
- 1. (Medium) The angle of the corners is currently a constant (`tau/6`). Instead, it can be moved into the `Letter` data type, which allows it to be changed by the production rules:
+ 1. (Medium) The angle of the corners is currently a constant \\( \\tau / 6 \\). Instead, it can be moved into the `Letter` data type, which allows it to be changed by the production rules:
 
      ```haskell
      type Angle = Number

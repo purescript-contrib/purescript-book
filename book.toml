@@ -6,3 +6,4 @@ src = "text"
 title = "PureScript by Example"
 [output.html]
 git-repository-url = "https://github.com/purescript-contrib/purescript-book"
+mathjax-support = true
