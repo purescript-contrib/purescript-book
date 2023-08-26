@@ -16,6 +16,11 @@ jobs:
         with:
           mdbook-version: 'latest'
 
+      - name: Add publish date
+        run: |
+          today=$(date -I)
+          echo -e "\n\nPublished on $today." >> README.md
+
       - run: mdbook build
 
       - name: Deploy
