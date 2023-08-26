@@ -375,7 +375,7 @@ Nothing
 &gt; :type fullNameEither
 Maybe String -&gt; Maybe String -&gt; Maybe String -&gt; Either String String
 </code></pre>
-<p>Now our function takes three optional arguments using <code>Maybe, and returns either a</code>String<code>error message or a</code>String` result.</p>
+<p>Now our function takes three optional arguments using <code>Maybe</code>, and returns either a <code>String</code> error message or a <code>String</code> result.</p>
 <p>We can try out the function with different inputs:</p>
 <pre><code class="language-text">&gt; fullNameEither (Just &quot;Phillip&quot;) (Just &quot;A&quot;) (Just &quot;Freeman&quot;)
 (Right &quot;Freeman, Phillip A&quot;)
@@ -698,7 +698,7 @@ pure ((Just &quot;Testing&quot;))
 <li>We saw how applicative functors solved the problem of validating data structures and how by switching the applicative functor, we could change from reporting a single error to reporting all errors across a data structure.</li>
 <li>We met the <code>Traversable</code> type class, which encapsulates the idea of a <em>traversable functor</em>, or a container whose elements can be used to combine values with side-effects.</li>
 </ul>
-<p>Applicative functors are an interesting abstraction that provides neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define <em>what</em> our validators should validate and not <em>how</em> they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of _domain specific languages.</p>
+<p>Applicative functors are an interesting abstraction that provides neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define <em>what</em> our validators should validate and not <em>how</em> they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of <em>domain specific languages</em>.</p>
 <p>In the next chapter, we will see a related idea, the class of <em>monads</em>, and extend our address book example to run in the browser!</p>
 
                     </main>

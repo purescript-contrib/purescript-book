@@ -845,7 +845,7 @@ runGame env = do
 <h2 id="handling-command-line-options"><a class="header" href="#handling-command-line-options">Handling Command Line Options</a></h2>
 <p>The final piece of the application is responsible for parsing command line options and creating the <code>GameEnvironment</code> configuration record. For this, we use the <code>optparse</code> package.</p>
 <p><code>optparse</code> is an example of <em>applicative command line option parsing</em>. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the <code>optparse</code> package, the functor we are interested in is the <code>Parser</code> functor (imported from the optparse module <code>Options.Applicative</code>, not to be confused with our <code>Parser</code> that we defined in the <code>Split</code> module), which adds the side-effect of reading from command line options. It provides the following handler:</p>
-<pre><code class="language-haskell">customExecParser :: forall a. ParserPrefs → ParserInfo a → Effect a
+<pre><code class="language-haskell">customExecParser :: forall a. ParserPrefs -&gt; ParserInfo a -&gt; Effect a
 </code></pre>
 <p>This is best illustrated by example. The application's <code>main</code> function is defined using <code>customExecParser</code> as follows:</p>
 <pre><code class="language-haskell">main = OP.customExecParser prefs argParser &gt;&gt;= runGame 

@@ -361,7 +361,7 @@ forall (a :: Type) (b :: Type). a -&gt; b -&gt; a
 <p>The type signature contains additional kind information, which explicitly notes that <code>a</code> and <code>b</code> should be concrete types.</p>
 </blockquote>
 <p>The keyword <code>forall</code> indicates that <code>constantlyFirst</code> has a <em>universally quantified type</em>. It means we can substitute any types for <code>a</code> and <code>b</code> – <code>constantlyFirst</code> will work with these types.</p>
-<p>For example, we might choose the type <code>a</code> to be <code>Int</code> and <code>b</code> – <code>String</code>. In that case, we can <em>specialize</em> the type of <code>constantlyFirst</code> to</p>
+<p>For example, we might choose the type <code>a</code> to be <code>Int</code> and <code>b</code> to be <code>String</code>. In that case, we can <em>specialize</em> the type of <code>constantlyFirst</code> to</p>
 <pre><code class="language-text">Int -&gt; String -&gt; Int
 </code></pre>
 <p>We don't have to indicate in code that we want to specialize a quantified type – it happens automatically. For example, we can use <code>constantlyFirst</code> as if it had this type already:</p>

@@ -293,7 +293,7 @@ main = log &quot;Hello, World!&quot;
 <p>If you get stuck at any point, there are a number of resources available online for learning PureScript:</p>
 <ul>
 <li>The <a href="https://discord.gg/vKn9up84bp">PureScript Discord server</a> is a great place to chat about issues you may be having. The server is dedicated to chatting about PureScript</li>
-<li>The <a href="https://discourse.purescript.org/">Purescript Discourse Forum</a> is another good place to search for solutions to common problems.</li>
+<li>The <a href="https://discourse.purescript.org/">PureScript Discourse Forum</a> is another good place to search for solutions to common problems.</li>
 <li><a href="https://github.com/jordanmartinez/purescript-jordans-reference">PureScript: Jordan's Reference</a>  is an alternative learning resource that goes into great depth. If a concept in this book is difficult to understand, consider reading the corresponding section in that reference.</li>
 <li><a href="https://pursuit.purescript.org">Pursuit</a> is a searchable database of PureScript types and functions. Read Pursuit's help page to <a href="https://pursuit.purescript.org/help/users">learn what kinds of searches you can do</a>.</li>
 <li>The unofficial <a href="https://github.com/JordanMartinez/purescript-cookbook">PureScript Cookbook</a> provides answers via code to &quot;How do I do X?&quot;-type questions.</li>
@@ -597,7 +597,7 @@ forall (a :: Type) (b :: Type). a -&gt; b -&gt; a
 <p>The type signature contains additional kind information, which explicitly notes that <code>a</code> and <code>b</code> should be concrete types.</p>
 </blockquote>
 <p>The keyword <code>forall</code> indicates that <code>constantlyFirst</code> has a <em>universally quantified type</em>. It means we can substitute any types for <code>a</code> and <code>b</code> – <code>constantlyFirst</code> will work with these types.</p>
-<p>For example, we might choose the type <code>a</code> to be <code>Int</code> and <code>b</code> – <code>String</code>. In that case, we can <em>specialize</em> the type of <code>constantlyFirst</code> to</p>
+<p>For example, we might choose the type <code>a</code> to be <code>Int</code> and <code>b</code> to be <code>String</code>. In that case, we can <em>specialize</em> the type of <code>constantlyFirst</code> to</p>
 <pre><code class="language-text">Int -&gt; String -&gt; Int
 </code></pre>
 <p>We don't have to indicate in code that we want to specialize a quantified type – it happens automatically. For example, we can use <code>constantlyFirst</code> as if it had this type already:</p>
@@ -2280,7 +2280,7 @@ instance Monoid Multiply where
 <p>Remember, your instance must satisfy the laws listed above.</p>
 </li>
 <li>
-<p>(Difficult) There are multiple ways to implement an instance of <code>Action Multiply Int</code>. How many can you think of? Purescript does not allow multiple implementations of the same instance, so you will have to replace your original implementation. <em>Note</em>: the tests cover 4 implementations.</p>
+<p>(Difficult) There are multiple ways to implement an instance of <code>Action Multiply Int</code>. How many can you think of? PureScript does not allow multiple implementations of the same instance, so you will have to replace your original implementation. <em>Note</em>: the tests cover 4 implementations.</p>
 </li>
 <li>
 <p>(Medium) Write an <code>Action</code> instance that repeats an input string some number of times:</p>
@@ -2591,7 +2591,7 @@ Nothing
 &gt; :type fullNameEither
 Maybe String -&gt; Maybe String -&gt; Maybe String -&gt; Either String String
 </code></pre>
-<p>Now our function takes three optional arguments using <code>Maybe, and returns either a</code>String<code>error message or a</code>String` result.</p>
+<p>Now our function takes three optional arguments using <code>Maybe</code>, and returns either a <code>String</code> error message or a <code>String</code> result.</p>
 <p>We can try out the function with different inputs:</p>
 <pre><code class="language-text">&gt; fullNameEither (Just &quot;Phillip&quot;) (Just &quot;A&quot;) (Just &quot;Freeman&quot;)
 (Right &quot;Freeman, Phillip A&quot;)
@@ -2914,7 +2914,7 @@ pure ((Just &quot;Testing&quot;))
 <li>We saw how applicative functors solved the problem of validating data structures and how by switching the applicative functor, we could change from reporting a single error to reporting all errors across a data structure.</li>
 <li>We met the <code>Traversable</code> type class, which encapsulates the idea of a <em>traversable functor</em>, or a container whose elements can be used to combine values with side-effects.</li>
 </ul>
-<p>Applicative functors are an interesting abstraction that provides neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define <em>what</em> our validators should validate and not <em>how</em> they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of _domain specific languages.</p>
+<p>Applicative functors are an interesting abstraction that provides neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define <em>what</em> our validators should validate and not <em>how</em> they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of <em>domain specific languages</em>.</p>
 <p>In the next chapter, we will see a related idea, the class of <em>monads</em>, and extend our address book example to run in the browser!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="the-effect-monad"><a class="header" href="#the-effect-monad">The Effect Monad</a></h1>
 <h2 id="chapter-goals-6"><a class="header" href="#chapter-goals-6">Chapter Goals</a></h2>
@@ -3991,13 +3991,13 @@ node&gt; encodeURIComponent('Hello World')
 
 foreign import _encodeURIComponent :: String -&gt; String
 </code></pre>
-<p>We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but the extension changed from <code>.purs</code> to <code>.js</code>. If the Purescript module above is saved as <code>URI.purs</code>, then the foreign JavaScript module is saved as <code>URI.js</code>.
+<p>We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but the extension changed from <code>.purs</code> to <code>.js</code>. If the PureScript module above is saved as <code>URI.purs</code>, then the foreign JavaScript module is saved as <code>URI.js</code>.
 Since <code>encodeURIComponent</code> is already defined, we have to export it as <code>_encodeURIComponent</code>:</p>
 <pre><code class="language-javascript">&quot;use strict&quot;;
 
 export const _encodeURIComponent = encodeURIComponent;
 </code></pre>
-<p>Since version 0.15, Purescript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the <code>export</code> keyword on an object.</p>
+<p>Since version 0.15, PureScript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the <code>export</code> keyword on an object.</p>
 <p>With these two pieces in place, we can now use the <code>_encodeURIComponent</code> function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:</p>
 <pre><code class="language-text">$ spago repl
 
@@ -5595,7 +5595,7 @@ runGame env = do
 <h2 id="handling-command-line-options"><a class="header" href="#handling-command-line-options">Handling Command Line Options</a></h2>
 <p>The final piece of the application is responsible for parsing command line options and creating the <code>GameEnvironment</code> configuration record. For this, we use the <code>optparse</code> package.</p>
 <p><code>optparse</code> is an example of <em>applicative command line option parsing</em>. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the <code>optparse</code> package, the functor we are interested in is the <code>Parser</code> functor (imported from the optparse module <code>Options.Applicative</code>, not to be confused with our <code>Parser</code> that we defined in the <code>Split</code> module), which adds the side-effect of reading from command line options. It provides the following handler:</p>
-<pre><code class="language-haskell">customExecParser :: forall a. ParserPrefs → ParserInfo a → Effect a
+<pre><code class="language-haskell">customExecParser :: forall a. ParserPrefs -&gt; ParserInfo a -&gt; Effect a
 </code></pre>
 <p>This is best illustrated by example. The application's <code>main</code> function is defined using <code>customExecParser</code> as follows:</p>
 <pre><code class="language-haskell">main = OP.customExecParser prefs argParser &gt;&gt;= runGame 
@@ -5700,7 +5700,7 @@ getContext2D :: CanvasElement -&gt; Effect Context2D
   , height :: Number
   }
 </code></pre>
-<p>The <code>x</code> and <code>y</code> properties represent the location of the top-left corner, while the <code>w</code> and <code>h</code> properties represent the width and height, respectively.</p>
+<p>The <code>x</code> and <code>y</code> properties represent the location of the top-left corner, while the <code>width</code> and <code>height</code> properties represent the lengths of the rectangle, respectively.</p>
 <p>To render an arc segment, we can use the <code>arc</code> function, passing a record with the following type:</p>
 <pre><code class="language-haskell">type Arc =
   { x      :: Number
@@ -5710,7 +5710,7 @@ getContext2D :: CanvasElement -&gt; Effect Context2D
   , end    :: Number
   }
 </code></pre>
-<p>Here, the <code>x</code> and <code>y</code> properties represent the center point, <code>r</code> is the radius, <code>start</code> and <code>end</code> represent the endpoints of the arc in radians.</p>
+<p>Here, the <code>x</code> and <code>y</code> properties represent the center point, <code>radius</code> is the radius, <code>start</code> and <code>end</code> represent the endpoints of the arc in radians.</p>
 <p>For example, this code fills an arc segment centered at <code>(300, 300)</code> with radius <code>50</code>. The arc completes 2/3rds of a rotation. Note that the unit circle is flipped vertically since the y-axis increases towards the bottom of the canvas:</p>
 <pre><code class="language-haskell">  fillPath ctx $ arc ctx
     { x      : 300.0

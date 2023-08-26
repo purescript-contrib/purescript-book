@@ -210,13 +210,13 @@ node&gt; encodeURIComponent('Hello World')
 
 foreign import _encodeURIComponent :: String -&gt; String
 </code></pre>
-<p>We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but the extension changed from <code>.purs</code> to <code>.js</code>. If the Purescript module above is saved as <code>URI.purs</code>, then the foreign JavaScript module is saved as <code>URI.js</code>.
+<p>We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but the extension changed from <code>.purs</code> to <code>.js</code>. If the PureScript module above is saved as <code>URI.purs</code>, then the foreign JavaScript module is saved as <code>URI.js</code>.
 Since <code>encodeURIComponent</code> is already defined, we have to export it as <code>_encodeURIComponent</code>:</p>
 <pre><code class="language-javascript">&quot;use strict&quot;;
 
 export const _encodeURIComponent = encodeURIComponent;
 </code></pre>
-<p>Since version 0.15, Purescript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the <code>export</code> keyword on an object.</p>
+<p>Since version 0.15, PureScript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the <code>export</code> keyword on an object.</p>
 <p>With these two pieces in place, we can now use the <code>_encodeURIComponent</code> function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:</p>
 <pre><code class="language-text">$ spago repl
 

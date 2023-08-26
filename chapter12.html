@@ -227,7 +227,7 @@ getContext2D :: CanvasElement -&gt; Effect Context2D
   , height :: Number
   }
 </code></pre>
-<p>The <code>x</code> and <code>y</code> properties represent the location of the top-left corner, while the <code>w</code> and <code>h</code> properties represent the width and height, respectively.</p>
+<p>The <code>x</code> and <code>y</code> properties represent the location of the top-left corner, while the <code>width</code> and <code>height</code> properties represent the lengths of the rectangle, respectively.</p>
 <p>To render an arc segment, we can use the <code>arc</code> function, passing a record with the following type:</p>
 <pre><code class="language-haskell">type Arc =
   { x      :: Number
@@ -237,7 +237,7 @@ getContext2D :: CanvasElement -&gt; Effect Context2D
   , end    :: Number
   }
 </code></pre>
-<p>Here, the <code>x</code> and <code>y</code> properties represent the center point, <code>r</code> is the radius, <code>start</code> and <code>end</code> represent the endpoints of the arc in radians.</p>
+<p>Here, the <code>x</code> and <code>y</code> properties represent the center point, <code>radius</code> is the radius, <code>start</code> and <code>end</code> represent the endpoints of the arc in radians.</p>
 <p>For example, this code fills an arc segment centered at <code>(300, 300)</code> with radius <code>50</code>. The arc completes 2/3rds of a rotation. Note that the unit circle is flipped vertically since the y-axis increases towards the bottom of the canvas:</p>
 <pre><code class="language-haskell">  fillPath ctx $ arc ctx
     { x      : 300.0
