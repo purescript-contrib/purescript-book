@@ -138,7 +138,7 @@ This book aims to provide an introduction to the PureScript language for beginne
 If you get stuck at any point, there are a number of resources available online for learning PureScript:
 
 - The [PureScript Discord server](https://discord.gg/vKn9up84bp) is a great place to chat about issues you may be having. The server is dedicated to chatting about PureScript
-- The [Purescript Discourse Forum](https://discourse.purescript.org/) is another good place to search for solutions to common problems.
+- The [PureScript Discourse Forum](https://discourse.purescript.org/) is another good place to search for solutions to common problems.
 - [PureScript: Jordan's Reference](https://github.com/jordanmartinez/purescript-jordans-reference)  is an alternative learning resource that goes into great depth. If a concept in this book is difficult to understand, consider reading the corresponding section in that reference.
 - [Pursuit](https://pursuit.purescript.org) is a searchable database of PureScript types and functions. Read Pursuit's help page to [learn what kinds of searches you can do](https://pursuit.purescript.org/help/users).
 - The unofficial [PureScript Cookbook](https://github.com/JordanMartinez/purescript-cookbook) provides answers via code to "How do I do X?"-type questions.

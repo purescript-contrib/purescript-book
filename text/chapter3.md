@@ -275,7 +275,7 @@ For illustration purposes, let's define a primitive function that takes any two 
 
 The keyword `forall` indicates that `constantlyFirst` has a _universally quantified type_. It means we can substitute any types for `a` and `b` – `constantlyFirst` will work with these types.
 
-For example, we might choose the type `a` to be `Int` and `b` – `String`. In that case, we can _specialize_ the type of `constantlyFirst` to
+For example, we might choose the type `a` to be `Int` and `b` to be `String`. In that case, we can _specialize_ the type of `constantlyFirst` to
 
 ```text
 Int -> String -> Int

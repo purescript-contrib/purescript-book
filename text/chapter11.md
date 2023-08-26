@@ -925,7 +925,7 @@ The final piece of the application is responsible for parsing command line optio
 `optparse` is an example of _applicative command line option parsing_. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the `optparse` package, the functor we are interested in is the `Parser` functor (imported from the optparse module `Options.Applicative`, not to be confused with our `Parser` that we defined in the `Split` module), which adds the side-effect of reading from command line options. It provides the following handler:
 
 ```haskell
-customExecParser :: forall a. ParserPrefs → ParserInfo a → Effect a
+customExecParser :: forall a. ParserPrefs -> ParserInfo a -> Effect a
 ```
 
 This is best illustrated by example. The application's `main` function is defined using `customExecParser` as follows:

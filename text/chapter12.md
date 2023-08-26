@@ -86,7 +86,7 @@ type Rectangle =
   }
 ```
 
-The `x` and `y` properties represent the location of the top-left corner, while the `w` and `h` properties represent the width and height, respectively.
+The `x` and `y` properties represent the location of the top-left corner, while the `width` and `height` properties represent the lengths of the rectangle, respectively.
 
 To render an arc segment, we can use the `arc` function, passing a record with the following type:
 
@@ -100,7 +100,7 @@ type Arc =
   }
 ```
 
-Here, the `x` and `y` properties represent the center point, `r` is the radius, `start` and `end` represent the endpoints of the arc in radians.
+Here, the `x` and `y` properties represent the center point, `radius` is the radius, `start` and `end` represent the endpoints of the arc in radians.
 
 For example, this code fills an arc segment centered at `(300, 300)` with radius `50`. The arc completes 2/3rds of a rotation. Note that the unit circle is flipped vertically since the y-axis increases towards the bottom of the canvas:
 

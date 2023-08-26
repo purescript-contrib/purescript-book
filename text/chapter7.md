@@ -303,7 +303,7 @@ Or with _applicative do_:
 Maybe String -> Maybe String -> Maybe String -> Either String String
 ```
 
-Now our function takes three optional arguments using `Maybe, and returns either a`String` error message or a `String` result.
+Now our function takes three optional arguments using `Maybe`, and returns either a`String` error message or a `String` result.
 
 We can try out the function with different inputs:
 
@@ -696,6 +696,6 @@ In this chapter, we covered a lot of new ideas:
 - We saw how applicative functors solved the problem of validating data structures and how by switching the applicative functor, we could change from reporting a single error to reporting all errors across a data structure.
 - We met the `Traversable` type class, which encapsulates the idea of a _traversable functor_, or a container whose elements can be used to combine values with side-effects.
 
-Applicative functors are an interesting abstraction that provides neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define _what_ our validators should validate and not _how_ they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of _domain specific languages.
+Applicative functors are an interesting abstraction that provides neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define _what_ our validators should validate and not _how_ they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of _domain specific languages_.
 
 In the next chapter, we will see a related idea, the class of _monads_, and extend our address book example to run in the browser!

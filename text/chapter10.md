@@ -57,14 +57,14 @@ We can assign this type to the function with the following foreign import declar
 {{#include ../exercises/chapter10/test/URI.purs}}
 ```
 
-We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but the extension changed from `.purs` to `.js`. If the Purescript module above is saved as `URI.purs`, then the foreign JavaScript module is saved as `URI.js`.
+We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but the extension changed from `.purs` to `.js`. If the PureScript module above is saved as `URI.purs`, then the foreign JavaScript module is saved as `URI.js`.
 Since `encodeURIComponent` is already defined, we have to export it as `_encodeURIComponent`:
 
 ```javascript
 {{#include ../exercises/chapter10/test/URI.js}}
 ```
 
-Since version 0.15, Purescript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the `export` keyword on an object.
+Since version 0.15, PureScript uses the ES module system when interoperating with JavaScript. In ES modules, functions and values are exported from a module by providing the `export` keyword on an object.
 
 With these two pieces in place, we can now use the `_encodeURIComponent` function from PureScript like any function written in PureScript. For example, in PSCi, we can reproduce the calculation above:
 
