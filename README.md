@@ -4,6 +4,8 @@ This repository contains a [community fork](https://github.com/purescript-contri
 
 If you enjoyed the book or found it useful, please consider buying a copy of [the original on Leanpub](https://leanpub.com/purescript).
 
+Translations: [日本語 (Japanese)](https://gemmaro.github.io/purescript-book/)
+
 ## Status
 
 This book is being continuously updated as the language evolves, so please report any [issues](https://github.com/purescript-contrib/purescript-book/issues) you discover with the material. We appreciate any feedback you have to share, even if it's as simple as pointing out a confusing section that we could make more beginner-friendly.
