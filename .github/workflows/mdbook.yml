@@ -16,10 +16,13 @@ jobs:
         with:
           mdbook-version: 'latest'
 
-      - name: Add publish date
+      - name: Add version section
         run: |
+          version=$(purs --version)
           today=$(date -I)
-          echo -e "\n\nPublished on $today." >> README.md
+          echo -e "\n## Release\n" >> README.md
+          echo -e "PureScript v$version\n" >> README.md
+          echo -e "Published on $today" >> README.md
 
       - run: mdbook build
 
