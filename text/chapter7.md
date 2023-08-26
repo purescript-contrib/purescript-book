@@ -303,7 +303,7 @@ Or with _applicative do_:
 Maybe String -> Maybe String -> Maybe String -> Either String String
 ```
 
-Now our function takes three optional arguments using `Maybe`, and returns either a`String` error message or a `String` result.
+Now our function takes three optional arguments using `Maybe`, and returns either a `String` error message or a `String` result.
 
 We can try out the function with different inputs:
 
