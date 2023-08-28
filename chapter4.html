@@ -30,6 +30,8 @@
 
         <!-- Custom theme stylesheets -->
 
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
     <div id="body-container">
@@ -440,7 +442,7 @@ forall (m :: Type -&gt; Type). Alternative m =&gt; Boolean -&gt; m Unit
 <ol>
 <li>(Easy) Write a function <code>isPrime</code>, which tests whether its integer argument is prime. <em>Hint</em>: Use the <code>factors</code> function.</li>
 <li>(Medium) Write a function <code>cartesianProduct</code> which uses do notation to find the <em>cartesian product</em> of two arrays, i.e., the set of all pairs of elements <code>a</code>, <code>b</code>, where <code>a</code> is an element of the first array, and <code>b</code> is an element of the second.</li>
-<li>(Medium) Write a function <code>triples :: Int -&gt; Array (Array Int)</code>, which takes a number <code>n</code> and returns all Pythagorean triples whose components (the <code>a</code>, <code>b</code>, and <code>c</code> values) are each less than or equal to <code>n</code>. A <em>Pythagorean triple</em> is an array of numbers <code>[a, b, c]</code> such that <code>a² + b² = c²</code>. <em>Hint</em>: Use the <code>guard</code> function in an array comprehension.</li>
+<li>(Medium) Write a function <code>triples :: Int -&gt; Array (Array Int)</code>, which takes a number \( n \) and returns all Pythagorean triples whose components (the \( a \), \( b \), and \( c \) values) are each less than or equal to \( n \). A <em>Pythagorean triple</em> is an array of numbers \( [ a, b, c ] \) such that \( a ^ 2 + b ^ 2 = c ^ 2 \). <em>Hint</em>: Use the <code>guard</code> function in an array comprehension.</li>
 <li>(Difficult) Write a function <code>primeFactors</code> which produces the <a href="https://www.mathsisfun.com/prime-factorization.html">prime factorization</a> of <code>n</code>, i.e., the array of prime integers whose product is <code>n</code>. <em>Hint</em>: for an integer greater than 1, break the problem into two subproblems: finding the first factor and the remaining factors.</li>
 </ol>
 <h2 id="folds"><a class="header" href="#folds">Folds</a></h2>

@@ -31,6 +31,8 @@
 
         <!-- Custom theme stylesheets -->
 
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
     <div id="body-container">
@@ -1187,7 +1189,7 @@ forall (m :: Type -&gt; Type). Alternative m =&gt; Boolean -&gt; m Unit
 <ol>
 <li>(Easy) Write a function <code>isPrime</code>, which tests whether its integer argument is prime. <em>Hint</em>: Use the <code>factors</code> function.</li>
 <li>(Medium) Write a function <code>cartesianProduct</code> which uses do notation to find the <em>cartesian product</em> of two arrays, i.e., the set of all pairs of elements <code>a</code>, <code>b</code>, where <code>a</code> is an element of the first array, and <code>b</code> is an element of the second.</li>
-<li>(Medium) Write a function <code>triples :: Int -&gt; Array (Array Int)</code>, which takes a number <code>n</code> and returns all Pythagorean triples whose components (the <code>a</code>, <code>b</code>, and <code>c</code> values) are each less than or equal to <code>n</code>. A <em>Pythagorean triple</em> is an array of numbers <code>[a, b, c]</code> such that <code>a² + b² = c²</code>. <em>Hint</em>: Use the <code>guard</code> function in an array comprehension.</li>
+<li>(Medium) Write a function <code>triples :: Int -&gt; Array (Array Int)</code>, which takes a number \( n \) and returns all Pythagorean triples whose components (the \( a \), \( b \), and \( c \) values) are each less than or equal to \( n \). A <em>Pythagorean triple</em> is an array of numbers \( [ a, b, c ] \) such that \( a ^ 2 + b ^ 2 = c ^ 2 \). <em>Hint</em>: Use the <code>guard</code> function in an array comprehension.</li>
 <li>(Difficult) Write a function <code>primeFactors</code> which produces the <a href="https://www.mathsisfun.com/prime-factorization.html">prime factorization</a> of <code>n</code>, i.e., the array of prime integers whose product is <code>n</code>. <em>Hint</em>: for an integer greater than 1, break the problem into two subproblems: finding the first factor and the remaining factors.</li>
 </ol>
 <h2 id="folds"><a class="header" href="#folds">Folds</a></h2>
@@ -1473,7 +1475,7 @@ true
 <h2 id="exercises-7"><a class="header" href="#exercises-7">Exercises</a></h2>
 <ol>
 <li>(Easy) Write the <code>factorial</code> function using pattern matching. <em>Hint</em>: Consider the two corner cases of zero and non-zero inputs. <em>Note</em>: This is a repeat of an example from the previous chapter, but see if you can rewrite it here on your own.</li>
-<li>(Medium) Write a function <code>binomial</code> which finds the coefficient of the x^<code>k</code>th term in the polynomial expansion of (1 + x)^<code>n</code>. This is the same as the number of ways to choose a subset of <code>k</code> elements from a set of <code>n</code> elements. Use the formula <code>n! / k! (n - k)!</code>, where <code>!</code> is the factorial function written earlier. <em>Hint</em>: Use pattern matching to handle corner cases. If it takes a long time to complete or crashes with an error about the call stack, try adding more corner cases.</li>
+<li>(Medium) Write a function <code>binomial</code> which finds the coefficient of the \( x ^ k \)th term in the polynomial expansion of \( ( 1 + x ) ^ n \). This is the same as the number of ways to choose a subset of \( k \) elements from a set of \( n \) elements. Use the formula \( n! \: / \: k! \, (n - k)! \), where \( ! \) is the factorial function written earlier. <em>Hint</em>: Use pattern matching to handle corner cases. If it takes a long time to complete or crashes with an error about the call stack, try adding more corner cases.</li>
 <li>(Medium) Write a function <code>pascal</code> which uses <a href="https://en.wikipedia.org/wiki/Pascal%27s_rule"><em>Pascal`s Rule</em></a> for computing the same binomial coefficients as the previous exercise.</li>
 </ol>
 <h2 id="array-patterns"><a class="header" href="#array-patterns">Array Patterns</a></h2>
@@ -4276,7 +4278,7 @@ isEmpty = isUndefined &lt;&lt;&lt; undefinedHead
 <h2 id="exercises-28"><a class="header" href="#exercises-28">Exercises</a></h2>
 <ol>
 <li>
-<p>(Medium) Given a record that represents a quadratic polynomial <code>a*x^2 + b*x + c = 0</code>:</p>
+<p>(Medium) Given a record that represents a quadratic polynomial \( a x ^ 2 + b x + c = 0 \):</p>
 <pre><code class="language-hs">type Quadratic = {
   a :: Number,
   b :: Number,
@@ -5168,11 +5170,11 @@ Tuple 3 [&quot;gcdLog 21 15&quot;,&quot;gcdLog 6 15&quot;,&quot;gcdLog 6 9&quot;
 <p>(Medium) Rewrite the <code>sumArray</code> function above using the <code>Writer</code> monad and the <code>Additive Int</code> monoid from the <code>monoid</code> package.</p>
 </li>
 <li>
-<p>(Medium) The <em>Collatz</em> function is defined on natural numbers <code>n</code> as <code>n / 2</code> when <code>n</code> is even and <code>3 * n + 1</code> when <code>n</code> is odd. For example, the iterated Collatz sequence starting at <code>10</code> is as follows:</p>
+<p>(Medium) The <em>Collatz</em> function is defined on natural numbers \( n \) as \( n / 2 \) when \( n \) is even and \( 3 n + 1 \) when \( n \) is odd. For example, the iterated Collatz sequence starting at \( 10 \) is as follows:</p>
 <pre><code class="language-text">10, 5, 16, 8, 4, 2, 1, ...
 </code></pre>
-<p>It is conjectured that the iterated Collatz sequence always reaches <code>1</code> after some finite number of applications of the Collatz function.</p>
-<p>Write a function that uses recursion to calculate how many iterations of the Collatz function are required before the sequence reaches <code>1</code>.</p>
+<p>It is conjectured that the iterated Collatz sequence always reaches \( 1 \) after some finite number of applications of the Collatz function.</p>
+<p>Write a function that uses recursion to calculate how many iterations of the Collatz function are required before the sequence reaches \( 1 \).</p>
 <p>Modify your function to use the <code>Writer</code> monad to log each application of the Collatz function.</p>
 </li>
 </ol>
@@ -6071,7 +6073,7 @@ lsystem init prod interpret n state = go init n
 <p>(Medium) Add a drop shadow to the filled shape using the <code>setShadowOffsetX</code>, <code>setShadowOffsetY</code>, <code>setShadowBlur</code>, and <code>setShadowColor</code> actions. <em>Hint</em>: use PSCi to find the types of these functions.</p>
 </li>
 <li>
-<p>(Medium) The angle of the corners is currently a constant (<code>tau/6</code>). Instead, it can be moved into the <code>Letter</code> data type, which allows it to be changed by the production rules:</p>
+<p>(Medium) The angle of the corners is currently a constant \( \tau / 6 \). Instead, it can be moved into the <code>Letter</code> data type, which allows it to be changed by the production rules:</p>
 <pre><code class="language-haskell">type Angle = Number
 
 data Letter = L Angle | R Angle | F
@@ -6978,7 +6980,9 @@ unit
 
         <script>
         window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
         });
         </script>
 

@@ -30,6 +30,8 @@
 
         <!-- Custom theme stylesheets -->
 
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
     <div id="body-container">
@@ -598,7 +600,7 @@ lsystem init prod interpret n state = go init n
 <p>(Medium) Add a drop shadow to the filled shape using the <code>setShadowOffsetX</code>, <code>setShadowOffsetY</code>, <code>setShadowBlur</code>, and <code>setShadowColor</code> actions. <em>Hint</em>: use PSCi to find the types of these functions.</p>
 </li>
 <li>
-<p>(Medium) The angle of the corners is currently a constant (<code>tau/6</code>). Instead, it can be moved into the <code>Letter</code> data type, which allows it to be changed by the production rules:</p>
+<p>(Medium) The angle of the corners is currently a constant \( \tau / 6 \). Instead, it can be moved into the <code>Letter</code> data type, which allows it to be changed by the production rules:</p>
 <pre><code class="language-haskell">type Angle = Number
 
 data Letter = L Angle | R Angle | F

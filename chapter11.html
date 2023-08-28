@@ -30,6 +30,8 @@
 
         <!-- Custom theme stylesheets -->
 
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body>
     <div id="body-container">
@@ -418,11 +420,11 @@ Tuple 3 [&quot;gcdLog 21 15&quot;,&quot;gcdLog 6 15&quot;,&quot;gcdLog 6 9&quot;
 <p>(Medium) Rewrite the <code>sumArray</code> function above using the <code>Writer</code> monad and the <code>Additive Int</code> monoid from the <code>monoid</code> package.</p>
 </li>
 <li>
-<p>(Medium) The <em>Collatz</em> function is defined on natural numbers <code>n</code> as <code>n / 2</code> when <code>n</code> is even and <code>3 * n + 1</code> when <code>n</code> is odd. For example, the iterated Collatz sequence starting at <code>10</code> is as follows:</p>
+<p>(Medium) The <em>Collatz</em> function is defined on natural numbers \( n \) as \( n / 2 \) when \( n \) is even and \( 3 n + 1 \) when \( n \) is odd. For example, the iterated Collatz sequence starting at \( 10 \) is as follows:</p>
 <pre><code class="language-text">10, 5, 16, 8, 4, 2, 1, ...
 </code></pre>
-<p>It is conjectured that the iterated Collatz sequence always reaches <code>1</code> after some finite number of applications of the Collatz function.</p>
-<p>Write a function that uses recursion to calculate how many iterations of the Collatz function are required before the sequence reaches <code>1</code>.</p>
+<p>It is conjectured that the iterated Collatz sequence always reaches \( 1 \) after some finite number of applications of the Collatz function.</p>
+<p>Write a function that uses recursion to calculate how many iterations of the Collatz function are required before the sequence reaches \( 1 \).</p>
 <p>Modify your function to use the <code>Writer</code> monad to log each application of the Collatz function.</p>
 </li>
 </ol>
