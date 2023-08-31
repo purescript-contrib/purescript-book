@@ -24,12 +24,11 @@ Now that you've installed the necessary development tools, clone this book's rep
 git clone https://github.com/purescript-contrib/purescript-book.git
 ```
 
-The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter. There's some initial setup required to reset the exercise solutions so they are ready to be solved by you. Use the `resetSolutions.sh` script to simplify this process. While at it, you should also strip out all the anchor comments with the `removeAnchors.sh` script (these anchors are used for copying code snippets into the book's rendered markdown, and you probably don't need this clutter in your local repo):
+The book repo contains PureScript example code and unit tests for the exercises that accompany each chapter. There's some initial setup required to reset the exercise solutions so they are ready to be solved by you. Use the `prepareExercises.sh` script to simplify this process:
 
 ```sh
 cd purescript-book
-./scripts/resetSolutions.sh
-./scripts/removeAnchors.sh
+./scripts/prepareExercises.sh
 git add .
 git commit --all --message "Exercises ready to be solved"
 ```
