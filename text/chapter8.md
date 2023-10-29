@@ -668,7 +668,7 @@ The `ST` effect is a good way to generate short JavaScript when working with loc
 
 1. (Medium) Rewrite the `safeDivide` function as `exceptionDivide` and throw an exception using `throwException` with the message `"div zero"` if the denominator is zero.
 1. (Medium) Write a function `estimatePi :: Int -> Number` that uses `n` terms of the [Gregory Series](https://mathworld.wolfram.com/GregorySeries.html) to calculate an approximation of `pi`. _Hints:_ You can pattern your answer like the definition of `simulate` above. You might need to convert an `Int` into a `Number` using `toNumber :: Int -> Number` from `Data.Int`.
-1. (Medium) Write a function `fibonacci :: Int -> Int` to compute the `n`th Fibonacci number, using `ST` to track the values of the previous two Fibonacci numbers. Using PSCi, compare the speed of your new `ST`-based implementation against the recursive implementation (`fib`) from Chapter 4.
+1. (Medium) Write a function `fibonacci :: Int -> Int` to compute the `n`th Fibonacci number, using `ST` to track the values of the previous two Fibonacci numbers. Using PSCi, compare the speed of your new `ST`-based implementation against the recursive implementation (`fib`) from Chapter 5.
 
 ## DOM Effects
 
