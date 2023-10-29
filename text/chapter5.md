@@ -1,5 +1,7 @@
 # Recursion, Maps, And Folds
 
+> Temporary note: If you're working on this chapter, beware that chapters 4 and 5 were swapped in November 2023.
+
 ## Chapter Goals
 
 In this chapter, we will look at how recursive functions can be used to structure algorithms. Recursion is a basic technique used in functional programming, which we will use throughout this book.

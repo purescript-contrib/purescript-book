@@ -1,5 +1,7 @@
 # Pattern Matching
 
+> Temporary note: If you're working on this chapter, beware that chapters 4 and 5 were swapped in November 2023.
+
 ## Chapter Goals
 
 This chapter will introduce two new concepts: algebraic data types and pattern matching. We will also briefly cover an interesting feature of the PureScript type system: row polymorphism.
