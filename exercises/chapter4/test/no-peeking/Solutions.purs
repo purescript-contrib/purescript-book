@@ -1,118 +1,109 @@
 module Test.NoPeeking.Solutions where
 
 import Prelude
-import Control.Alternative (guard)
-import Data.Array (cons, filter, head, length, null, tail, (..), (:))
-import Data.Foldable (foldl)
-import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Path (Path, filename, isDirectory, ls, size)
-import Data.Tuple (Tuple(..))
-import Test.Examples
 
-isEven :: Int -> Boolean
-isEven n =
-  if n < 0
-    then isEven (-n)
-    else if n == 0
-      then true
-      else not (isEven (n - 1))
+import ChapterExamples (Amp(..), Volt(..), Coulomb(..))
+import Data.Maybe (Maybe(Just, Nothing))
+import Data.Person (Person)
+import Data.Picture
+  ( Bounds
+  , Picture
+  , Point
+  , Shape(Circle, Rectangle, Line, Text)
+  , bounds
+  , getCenter
+  , intersect
+  , origin
+  )
+import Data.Picture as DataP
+import Data.Number as Number
 
-oneIfEven :: Int -> Int
-oneIfEven n = if isEven n then 1 else 0
+factorial :: Int -> Int
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
 
-countEven :: Array Int -> Int
-countEven xs =
-    if null xs then 0
-    else oneIfEven (fromMaybe 1 $ head xs ) + countEven (fromMaybe [] $ tail xs)
+binomial :: Int -> Int -> Int
+binomial _ 0 = 1
+binomial 0 _ = 0
+binomial n k | n < k = 0
+  | otherwise = factorial n / (factorial k * (factorial (n - k)))
 
-squared :: Array Number -> Array Number
-squared arr = map (\n -> n * n) arr
+pascal :: Int -> Int -> Int
+pascal _ 0 = 1
+pascal 0 _ = 0
+pascal n k
+  = pascal (n-1) k + pascal (n - 1) (k - 1)
+{-
+Most general type for sameCity and livesInLA functions taking into account row polymorphism:
 
-keepNonNegative :: Array Number -> Array Number
-keepNonNegative arr = filter (\n -> n >= 0.0) arr
+sameCity
+  :: forall r1 s1. { address :: { city :: String | s1 } | r1 }
+  -> forall r2 s2. { address :: { city :: String | s2 } | r2 }
+  -> Boolean
 
-infix 4 filter as <$?>
+livesInLA
+  :: forall r s. { address :: { city :: String | s } | r }
+  -> Boolean
+-}
 
-keepNonNegativeRewrite :: Array Number -> Array Number
-keepNonNegativeRewrite arr = (\n -> n >= 0.0) <$?> arr
+sameCity :: Person -> Person -> Boolean
+sameCity { address: { city: c1 } } { address: { city: c2 } }
+  | c1 == c2 = true
+  | otherwise = false
 
-isPrime :: Int -> Boolean
-isPrime n = n > 1 && length (factors n) == 1
+fromSingleton :: forall a. a -> Array a -> a
+fromSingleton a [b] = b
+fromSingleton a _ = a
 
-cartesianProduct :: ∀ a. Array a -> Array a -> Array (Array a)
-cartesianProduct left right = do
-  a_ <- left
-  b_ <- right
-  [ [ a_, b_ ] ]
+circleAtOrigin :: Shape
+circleAtOrigin = Circle origin 10.0
 
-triples :: Int -> Array (Array Int)
-triples n = do
-  i <- 1 .. n
-  j <- i .. n
-  k <- j .. n
-  guard $ i * i + j * j == k * k
-  pure [ i, j, k ]
-
--- | Provide the prime numbers that, multiplied together, make the argument.
-primeFactors :: Int -> Array Int
-primeFactors n = factorize 2 n
+centerShape :: Shape -> Shape
+centerShape (Circle c r) = Circle origin r
+centerShape (Rectangle c w h) = Rectangle origin w h
+centerShape line@(Line s e) = Line (s - delta) (e - delta)
   where
-  factorize :: Int -> Int -> Array Int
-  factorize _ 1 = []
-  factorize divisor dividend =
-    if dividend `mod` divisor == 0 then
-      cons divisor $ factorize (divisor) (dividend / divisor)
-    else
-      factorize (divisor + 1) dividend
+  delta = getCenter line
+centerShape (Text loc text) = Text origin text
 
-allTrue :: Array Boolean -> Boolean
-allTrue bools = foldl (\acc bool -> acc && bool) true bools
+scaleShape :: Number -> Shape -> Shape
+scaleShape i (Circle c r) = Circle c (r * i)
+scaleShape i (Rectangle c w h) = Rectangle c (w * i) (h * i)
+scaleShape i (Line s e) = Line (s * scale) (e * scale)
+  where
+  scale = {x: i, y: i}
+scaleShape i text = text
+
+doubleScaleAndCenter :: Shape -> Shape
+doubleScaleAndCenter = centerShape <<< scaleShape 2.0
+
+shapeText :: Shape -> Maybe String
+shapeText (Text _ text) = Just text
+shapeText _ = Nothing
+
+area :: Shape -> Number
+area (Circle _ r) = Number.pi * r * r
+area (Rectangle _ h w) = h * w
+area _ = 0.0
 
 {-
-Answer to array characterization question:
-`foldl (==) false xs` returns true when `xs` contains ...
-... an odd number of `false` elements.
+The real solution for this exercise just requires adding the
+`Clipped` constructor to `Shape` directly in `Picture.purs`.
+But we're using `ShapeExt` here as a workaround so we don't need to edit
+code outside of this file.
 -}
-fibTailRec :: Int -> Int
-fibTailRec 0 = 0
-fibTailRec 1 = 1
-fibTailRec n = fib' n 2 0 1
-  where
-  fib' :: Int -> Int -> Int -> Int -> Int
-  fib' limit count n1 n2 =
-    if limit == count then
-      n1 + n2
-    else
-      fib' limit (count + 1) n2 (n1 + n2)
+data ShapeExt
+  = Clipped Picture Point Number Number
+  | Shape Shape
 
-reverse :: ∀ a. Array a -> Array a
-reverse = foldl (\xs x -> [ x ] <> xs) []
+{-
+Your solution should edit `shapeBounds` in `Picture.purs`.
+-}
+shapeBounds :: ShapeExt -> Bounds
+shapeBounds (Clipped pic pt w h) = intersect (bounds pic) (DataP.shapeBounds (Rectangle pt w h))
+shapeBounds (Shape shape) = DataP.shapeBounds shape
 
-onlyFiles :: Path -> Array Path
-onlyFiles path = filter (not isDirectory) (allFiles path)
+newtype Watt = Watt Number
 
-allSizes :: Array Path -> Array (Tuple String Int)
-allSizes paths =
-  map
-    ( \p -> case size p of
-        Just n -> Tuple (filename p) n
-        Nothing -> Tuple (filename p) 0
-    )
-    paths
-
-whereIs :: Path -> String -> Maybe Path
-whereIs path fileName = head $ do
-  path' <- allFiles path
-  child <- ls path'
-  guard $ filename child == filename path' <> fileName
-  pure path'
-
-largestSmallest :: Path -> Array Path
-largestSmallest path = foldl loop [] (onlyFiles path) where
-  loop :: Array Path -> Path -> Array Path
-  loop [largest, smallest] current | size current < size smallest = [largest, current]
-                                   | size current > size largest  = [current, smallest]
-                                   | otherwise                    = [largest, smallest]
-  loop [last] current              | size current < size last     = [current, last]
-                                   | otherwise                    = [last, current]
-  loop arr current                                                = current : arr
+calculateWattage :: Amp -> Volt -> Watt
+calculateWattage (Amp i) (Volt v) = Watt $ i * v

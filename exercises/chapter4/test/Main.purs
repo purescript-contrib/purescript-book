@@ -1,19 +1,34 @@
 module Test.Main where
 
-import Prelude
-import Test.Examples
+import Prelude hiding (gcd)
 import Test.MySolutions
 import Test.NoPeeking.Solutions  -- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
-import Data.Array (sort)
-import Data.Foldable (sequence_)
-import Data.Maybe (Maybe(..))
-import Data.Path (Path(..), filename, root)
-import Data.Tuple.Nested ((/\))
+
+import ChapterExamples (Amp(..), current, fromString, gcd, gcdV2, isEmpty, livesInLA, lzs, partialFunction, showPerson, showPersonV2, sortPair, takeFive, toString, unknownPerson, Volt(..))
+import Data.Int (round)
+import Data.Maybe (Maybe(Just, Nothing))
+import Data.Person (Person)
+import Data.Picture (Shape(..), Picture, getCenter, origin)
 import Effect (Effect)
 import Test.Unit (TestSuite, suite, test)
-import Test.Unit.Assert (assert, assertFalse)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
+
+john :: Person
+john = { name: "John Smith", address: { street: "123 Test Lane", city: "Los Angeles" } }
+
+rose :: Person
+rose = { name: "Rose Jackson", address: { street: "464 Sample Terrace", city: "Los Angeles" } }
+
+amy :: Person
+amy = { name: "Amy Lopez", address: { street: "10 Purs Street", city: "Omaha" } }
+
+samplePicture :: Picture
+samplePicture =
+  [ Circle origin 2.0
+  , Circle { x: 2.0, y: 2.0 } 3.0
+  , Rectangle { x: 5.0, y: 5.0 } 4.0 4.0
+  ]
 
 main :: Effect Unit
 main =
@@ -21,248 +36,146 @@ main =
     runChapterExamples
     {-  Move this block comment starting point to enable more tests
 This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. -}
-    suite "Exercise Group - Recursion" do
-      suite "Exercise - isEven" do
-        test "0 is even" do
-          Assert.equal true
-            $ isEven 0
-        test "1 is odd" do
-          Assert.equal false
-            $ isEven 1
-        test "20 is even" do
-          Assert.equal true
-            $ isEven 20
-        test "19 is odd" do
-          Assert.equal false
-            $ isEven 19
-        test "-1 is odd" do
-          Assert.equal false
-            $ isEven (-1)
-        test "-20 is even" do
-          Assert.equal true
-            $ isEven (-20)
-        test "-19 is odd" do
-          Assert.equal false
-            $ isEven (-19)
-      suite "Exercise - countEven" do
-        test "[] has none" do
-          Assert.equal 0
-            $ countEven []
-        test "[0] has 1" do
-          Assert.equal 1
-            $ countEven [ 0 ]
-        test "[1] has 0" do
-          Assert.equal 0
-            $ countEven [ 1 ]
-        test "[0, 1, 19, 20] has 2" do
-          Assert.equal 2
-            $ countEven [ 0, 1, 19, 20 ]
-    suite "Exercise Group - Maps, Infix Operators, and Filtering" do
-      suite "Exercise - squared" do
-        test "Do nothing with empty array" do
-          Assert.equal []
-            $ squared []
-        test "Calculate squares" do
-          Assert.equal [ 0.0, 1.0, 4.0, 9.0, 10000.0 ]
-            $ squared [ 0.0, 1.0, 2.0, 3.0, 100.0 ]
-      suite "Exercise - keepNonNegative" do
-        test "Do nothing with empty array" do
-          Assert.equal []
-            $ keepNonNegative []
-        test "Filter negative numbers" do
-          Assert.equal [ 0.0, 2.0, 3.0 ]
-            $ keepNonNegative [ -1.5, -1.0, 0.0, -0.1, 2.0, 3.0, -4.0 ]
-      suite "Exercise - <$?> infix operator for filter" do
-        test "Define <$?> operator for filter" do
-          Assert.equal [ 1, 1 ]
-            $ (_ == 1)
-            <$?> [ 1, 2, 3, 1, 2, 3 ]
-        test "keepNonNegativeRewrite " do
-          Assert.equal [ 0.0, 2.0, 3.0 ]
-            $ keepNonNegativeRewrite [ -1.5, -1.0, 0.0, -0.1, 2.0, 3.0, -4.0 ]
-    suite "Exercise Group - Flattening, Comprehensions, Do Notation, and Guards" do
-      test "Exercise - isPrime" do
-        assertFalse "0 is not prime"
-          $ isPrime 0
-        assertFalse "1 is not prime"
-          $ isPrime 1
-        assert "2 is prime"
-          $ isPrime 2
-        assertFalse "4 is not prime"
-          $ isPrime 4
-        assert "997 is prime"
-          $ isPrime 997
-      suite "Exercise - cartesianProduct" do
-        let
-          -- Don't worry if this this testing helper function signature looks confusing.
-          -- It will make more sense after chapter 6
-          testcp :: forall a. Eq a => Show a => Ord a => String -> Array (Array a) -> Array a -> Array a -> TestSuite
-          testcp label expected arr1 arr2 =
-            test label do
-              -- Sorting to allow any ordering
-              Assert.equal (sort expected)
-                $ sort
-                $ cartesianProduct arr1 arr2
-        testcp "Left array is empty" [] [] [ "five" ]
-        testcp "Right array is empty" [] [ "5" ] []
-        testcp "Two singleton arrays"
-          [ [ "5", "five" ] ]
-          [ "5" ]
-          [ "five" ]
-        testcp "Arrays larger than singletons"
-          [ [ "5", "five" ], [ "5", "six" ], [ "6", "five" ], [ "6", "six" ] ]
-          [ "5", "6" ]
-          [ "five", "six" ]
-      suite "Exercise - triples" do
-        -- Sorting to allow for any ordering
-        test "single element array result" do
-          Assert.equal (sort [ [ 3, 4, 5 ] ])
-            $ sort
-            $ triples 5
-        test "multiple element array result" do
-          Assert.equal (sort [ [ 3, 4, 5 ], [ 5, 12, 13 ], [ 6, 8, 10 ] ])
-            $ sort
-            $ triples 13
-      suite "Exercise - primeFactors" do
-        let
-          primeFactorsTest :: Int -> Array Int -> _
-          primeFactorsTest n xs =
-            test (show n) do
-              Assert.equal (sort xs)
-                $ sort
-                $ primeFactors n
-        primeFactorsTest 1 []
-        primeFactorsTest 2 [2]
-        primeFactorsTest 3 [3]
-        primeFactorsTest 4 [2, 2]
-        primeFactorsTest 6 [3, 2]
-        primeFactorsTest 18 [3, 3, 2]
-        primeFactorsTest 210 [ 7, 5, 3, 2 ]
-    suite "Exercise Group - Folds and Tail Recursion" do
-      test "Exercise - allTrue" do
-        assert "all elements true"
-          $ allTrue [ true, true, true ]
-        assertFalse "some elements false"
-          $ allTrue [ true, false, true ]
-      suite "Exercise - fibTailRec" do
-        test "Verify 0" do
-          Assert.equal 0
-            $ fibTailRec 0
-        test "Verify 9" do
-          Assert.equal 34
-            $ fibTailRec 9
-        test "Verify 44" do
-          Assert.equal 701408733
-            $ fibTailRec 44
-      suite "Exercise - reverse" do
-        test "Empty Array" do
-          Assert.equal ([] :: Array Int)
-            $ reverse []
-        test "Singleton Array" do
-          Assert.equal [ 1 ]
-            $ reverse [ 1 ]
-        test "More than 1 element" do
-          Assert.equal [ 3, 2, 1 ]
-            $ reverse [ 1, 2, 3 ]
-    suite "Exercise Group - Filesystem" do
-      test "Exercise - onlyFiles" do
-        Assert.equal
-          [ "/bin/cp"
-          , "/bin/ls"
-          , "/bin/mv"
-          , "/etc/hosts"
-          , "/home/user/todo.txt"
-          , "/home/user/code/js/test.js"
-          , "/home/user/code/haskell/test.hs"
-          ]
-          $ map filename
-          $ onlyFiles root
-      suite "Exercise - whereIs" do
-        test "locates a file"
-          $ Assert.equal (Just ("/bin/"))
-          $ map filename
-          $ whereIs root "ls"
-        test "doesn't locate a file"
-          $ Assert.equal (Nothing)
-          $ map filename
-          $ whereIs root "cat"
-      suite "Exercise - largestSmallest" do
-        let
-          testls :: String -> Array String -> Path -> TestSuite
-          testls label expected path =
-            test label do
-              Assert.equal expected
-              -- Sorting to allow any ordering
-                $ sort
-                $ map filename
-                $ largestSmallest path
-          oneFileDir = Directory "/etc/" [ File "/etc/hosts" 300 ]
-          emptyDir = Directory "/etc/" []
-        testls "works for root" ["/etc/hosts", "/home/user/code/js/test.js"] root
-        testls "works for a directory with one file" ["/etc/hosts"] oneFileDir
-        testls "works for an empty directory" [] emptyDir
+    suite "Exercise Group - Simple Pattern Matching" do
+      test "Exercise - factorial" do
+        Assert.equal 1
+          $ factorial 0
+        Assert.equal 1
+          $ factorial 1
+        Assert.equal 24
+          $ factorial 4
+        Assert.equal 3628800
+          $ factorial 10
+      test "Exercise - binomial" do
+        Assert.equal 1
+          $ binomial 10 0
+        Assert.equal 0
+          $ binomial 0 3
+        Assert.equal 0
+          $ binomial 2 5
+        Assert.equal 252
+          $ binomial 10 5
+        Assert.equal 1
+          $ binomial 5 5
+      test "Exercise - pascal" do
+        Assert.equal 1
+          $ pascal 10 0
+        Assert.equal 0
+          $ pascal 0 3
+        Assert.equal 0
+          $ pascal 2 5
+        Assert.equal 252
+          $ pascal 10 5
+        Assert.equal 1
+          $ pascal 5 5
+    suite "Exercise Group - Array and Record Patterns" do
+      test "Exercise - sameCity" do
+        Assert.equal true
+          $ sameCity john rose
+        Assert.equal false
+          $ sameCity amy rose
+      test "Exercise - fromSingleton" do
+        Assert.equal "default"
+          $ fromSingleton "default" []
+        Assert.equal "B"
+          $ fromSingleton "default" ["B"]
+        Assert.equal "default"
+          $ fromSingleton "default" ["B", "C", "D"]
+    suite "Exercise Group - Algebraic Data Types" do
+      test "Exercise - circleAtOrigin" do
+        Assert.equal origin
+          $ getCenter circleAtOrigin
+      test "Exercise - doubleScaleAndCenter" do
+        Assert.equal (Circle origin 10.0)
+          $ doubleScaleAndCenter $ Circle origin 5.0
+        Assert.equal (Circle origin 10.0)
+          $ doubleScaleAndCenter $ Circle { x: 2.0, y: 2.0 } 5.0
+        Assert.equal (Rectangle origin 10.0 10.0)
+          $ doubleScaleAndCenter $ Rectangle { x: 0.0, y: 0.0 } 5.0 5.0
+        Assert.equal (Rectangle origin 40.0 40.0)
+          $ doubleScaleAndCenter $ Rectangle { x: 30.0, y: 30.0 } 20.0 20.0
+        Assert.equal (Line { x: -4.0, y: -4.0 } { x: 4.0, y: 4.0 })
+          $ doubleScaleAndCenter $ Line { x: -2.0, y: -2.0 } { x: 2.0, y: 2.0 }
+        Assert.equal (Line { x: -4.0, y: -4.0 } { x: 4.0, y: 4.0 })
+          $ doubleScaleAndCenter $ Line { x: 0.0, y: 4.0 } { x: 4.0, y: 8.0 }
+        Assert.equal (Text { x: 0.0, y: 0.0 } "Hello .purs!" )
+          $ doubleScaleAndCenter $ Text { x: 4.0, y: 6.0 } "Hello .purs!"
+      test "Exercise - shapeText" do
+        Assert.equal (Just "Hello .purs!")
+          $ shapeText $ Text origin "Hello .purs!"
+        Assert.equal Nothing
+          $ shapeText $ Circle origin 1.0
+        Assert.equal Nothing
+          $ shapeText $ Rectangle origin 1.0 1.0
+        Assert.equal Nothing
+          $ shapeText $ Line origin { x: 1.0, y: 1.0 }
+    suite "Exercise Group - Newtype" do
+      test "Exercise - calculateWattage" do
+        Assert.equal 60.0
+          $ let (Watt w) = calculateWattage (Amp 0.5) (Volt 120.0)
+            in w
+    suite "Exercise Group - Vector Graphics" do
+      test "Exercise - area" do
+        Assert.equal 50
+          $ round $ area $ Circle origin 4.0
+        Assert.equal 40
+          $ round $ area $ Rectangle origin 4.0 10.0
+        Assert.equal 0
+          $ round $ area $ Line origin { x: 2.0, y: 2.0 }
+        Assert.equal 0
+          $ round $ area $ Text origin "Text has no area!"
+      test "Exercise - Clipped shapeBounds" do
+        Assert.equal { top: -2.0, left: -2.0, right: 2.0, bottom: 2.0 }
+          -- Note to users: You'll need to manually import shapeBounds
+          -- from Data.Picture. Don't import from Test.NoPeeking.Solutions.
+          $ shapeBounds (Clipped samplePicture { x: 0.0, y: 0.0 } 4.0 4.0)
+        Assert.equal { top: 3.0, left: 3.0, right: 7.0, bottom: 7.0 }
+          $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 4.0 4.0)
+        Assert.equal { top: 2.0, left: 2.0, right: 7.0, bottom: 7.0 }
+          $ shapeBounds (Clipped samplePicture { x: 5.0, y: 5.0 } 6.0 6.0)
 
 {- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions.
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =
   suite "Chapter Examples" do
-    test "factorial" do
-      Assert.equal 120
-        $ factorial 5
-    test "fib" do
-      Assert.equal 34
-        $ fib 9
-    test "length" do
-      Assert.equal 3
-        $ length [ 0, 0, 0 ]
-    sequence_ do
-      name /\ f <-
-        [ "factors" /\ factors
-        , "factorsV2" /\ factorsV2
-        , "factorsV3" /\ factorsV3
-        ]
-      n /\ xs <-
-        [ 1 /\ [[1,1]]
-        , 2 /\ [[1,2]]
-        , 3 /\ [[1,3]]
-        , 4 /\ [[1,4],[2,2]]
-        , 10 /\ [[1,10],[2,5]]
-        , 100 /\ [[1,100],[2,50],[4,25],[5,20],[10,10]]
-        ]
-      pure $ test (name <> " " <> show n) do
-        Assert.equal (sort $ map sort xs)
-          $ sort $ map sort f n
-    test "factorialTailRec" do
-      Assert.equal 120
-        $ factorialTailRec 5 1
-    test "lengthTailRec" do
-      Assert.equal 3
-        $ lengthTailRec [ 0, 0, 0 ]
-    test "allFiles" do
-      Assert.equal allFileAndDirectoryNames
-        $ filename
-        <$> allFiles root
-    test "allFiles'" do
-      Assert.equal allFileAndDirectoryNames
-        $ filename
-        <$> allFiles' root
-
-allFileAndDirectoryNames :: Array (String)
-allFileAndDirectoryNames =
-  [ "/"
-  , "/bin/"
-  , "/bin/cp"
-  , "/bin/ls"
-  , "/bin/mv"
-  , "/etc/"
-  , "/etc/hosts"
-  , "/home/"
-  , "/home/user/"
-  , "/home/user/todo.txt"
-  , "/home/user/code/"
-  , "/home/user/code/js/"
-  , "/home/user/code/js/test.js"
-  , "/home/user/code/haskell/"
-  , "/home/user/code/haskell/test.hs"
-  ]
+    test "gcd" do
+      Assert.equal 20
+        $ gcd 60 100
+    test "fromString" do
+      Assert.equal true
+        $ fromString "true"
+    test "toString" do
+      Assert.equal "false"
+        $ toString false
+    test "gcdV2" do
+      Assert.equal 20
+        $ gcdV2 60 100
+    test "isEmpty" do
+      Assert.equal false
+        $ isEmpty [2, 3]
+    test "takeFive" do
+      Assert.equal 6
+        $ takeFive [0, 1, 2, 3, 4]
+    test "showPerson" do
+      Assert.equal "Lovelace, Ada"
+        $ showPerson {first: "Ada", last: "Lovelace"}
+    test "showPersonV2" do
+      Assert.equal "Lovelace, Ada"
+        $ showPersonV2 {first: "Ada", last: "Lovelace"}
+    test "unknownPerson" do
+      Assert.equal {first: "Jane", last: "Doe"} unknownPerson
+    test "livesInLA" do
+      Assert.equal true
+        $ livesInLA {name: "Suraj", address: {street: "123 Main St", city: "Los Angeles"}}
+    test "sortPair" do
+      Assert.equal [1, 2]
+        $ sortPair [2, 1]
+    test "lzs" do
+      Assert.equal [-1, -2, 3]
+        $ lzs [1, -1, -2, 3]
+    test "partialFunction" do
+      Assert.equal true
+        $ partialFunction true
+    test "current" do
+      Assert.equal (Amp 0.003) current

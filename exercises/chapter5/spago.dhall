@@ -6,14 +6,15 @@ You can edit this file as you like.
 , dependencies =
   [ "arrays"
   , "console"
+  , "control"
   , "effect"
   , "foldable-traversable"
   , "integers"
   , "maybe"
-  , "numbers"
-  , "partial"
   , "prelude"
+  , "strings"
   , "test-unit"
+  , "tuples"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

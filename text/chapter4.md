@@ -1,633 +1,537 @@
-# Recursion, Maps, And Folds
+# Pattern Matching
 
 ## Chapter Goals
 
-In this chapter, we will look at how recursive functions can be used to structure algorithms. Recursion is a basic technique used in functional programming, which we will use throughout this book.
+This chapter will introduce two new concepts: algebraic data types and pattern matching. We will also briefly cover an interesting feature of the PureScript type system: row polymorphism.
 
-We will also cover some standard functions from PureScript's standard libraries. We will `map`, `fold`, and some useful special cases, like `filter` and `concatMap`.
+Pattern matching is a common technique in functional programming and allows the developer to write compact functions, which express potentially complex ideas by breaking their implementation down into multiple cases.
 
-The motivating example for this chapter is a library of functions for working with a virtual filesystem. We will apply the techniques learned in this chapter to write functions that compute properties of the files represented by a model of a filesystem.
+Algebraic data types are a feature of the PureScript type system, which enables a similar level of expressiveness in the language of types – they are closely related to pattern matching.
+
+The chapter's goal will be to write a library to describe and manipulate simple vector graphics using algebraic types and pattern matching.
 
 ## Project Setup
 
-The source code for this chapter is contained in `src/Data/Path.purs` and `test/Examples.purs`. The `Data.Path` module contains a model of a virtual filesystem. You do not need to modify the contents of this module. Implement your solutions to the exercises in the `Test.MySolutions` module. Enable accompanying tests in the `Test.Main` module as you complete each exercise and check your work by running `spago test`.
+The source code for this chapter is defined in the file `src/Data/Picture.purs`.
 
-The project has the following dependencies:
+The `Data.Picture` module defines a data type `Shape` for simple shapes and a type `Picture` for collections of shapes, along with functions for working with those types.
 
-- `maybe`, which defines the `Maybe` type constructor
-- `arrays`, which defines functions for working with arrays
-- `strings`, which defines functions for working with JavaScript strings
-- `foldable-traversable`, which defines functions for folding arrays and other data structures
-- `console`, which defines functions for printing to the console
-
-## Introduction
-
-Recursion is an important technique in programming in general, but particularly common in pure functional programming, because, as we will see in this chapter, recursion helps to reduce the mutable state in our programs.
-
-Recursion is closely linked to the _divide and conquer_ strategy: to solve a problem on certain inputs, we can break down the inputs into smaller parts, solve the problem on those parts, and then assemble a solution from the partial solutions.
-
-Let's see some simple examples of recursion in PureScript.
-
-Here is the usual _factorial function_ example:
+The module imports the `Data.Foldable` module, which provides functions for folding data structures:
 
 ```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:factorial}}
+{{#include ../exercises/chapter4/src/Data/Picture.purs:module_picture}}
 ```
 
-Here, we can see how the factorial function is computed by reducing the problem to a subproblem – computing the factorial of a smaller integer. When we reach zero, the answer is immediate.
-
-Here is another common example that computes the _Fibonacci function_:
+The `Data.Picture` module also imports the `Number` module, but this time using the `as` keyword:
 
 ```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:fib}}
+{{#include ../exercises/chapter4/src/Data/Picture.purs:picture_import_as}}
 ```
 
-Again, this problem is solved by considering the solutions to subproblems. In this case, there are two subproblems, corresponding to the expressions `fib (n - 1)` and `fib (n - 2)`. When these two subproblems are solved, we assemble the result by adding the partial results.
+This makes the types and functions in that module available for use, but only by using the _qualified name_, like `Number.max`. This can be useful to avoid overlapping imports or clarify which modules certain things are imported from.
 
-> Note that, while the above examples of `factorial` and `fib` work as intended, a more idiomatic implementation would use pattern matching instead of `if`/`then`/`else`. Pattern-matching techniques are discussed in a later chapter.
+> _Note_: Using the same module name as the original module for a qualified import is unnecessary  – shorter qualified names like `import Data.Number as N` are possible and quite common.
 
-## Recursion on Arrays
+## Simple Pattern Matching
 
-We are not limited to defining recursive functions over the `Int` type! We will see recursive functions defined over a wide array of data types when we cover _pattern matching_ later in the book, but for now, we will restrict ourselves to numbers and arrays.
-
-Just as we branch based on whether the input is non-zero, in the array case, we will branch based on whether the input is non-empty. Consider this function, which computes the length of an array using recursion:
+Let's begin by looking at an example. Here is a function that computes the greatest common divisor of two integers using pattern matching:
 
 ```haskell
-import Prelude
-
-import Data.Array (null, tail)
-import Data.Maybe (fromMaybe)
-
-{{#include ../exercises/chapter4/test/Examples.purs:length}}
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:gcd}}
 ```
 
-In this function, we use an `if .. then .. else` expression to branch based on the emptiness of the array. The `null` function returns `true` on an empty array. Empty arrays have a length of zero, and a non-empty array has a length that is one more than the length of its tail.
+This algorithm is called the Euclidean Algorithm. If you search for its definition online, you will likely find a set of mathematical equations that look like the code above. One benefit of pattern matching is that it allows you to define code by cases, writing simple, declarative code that looks like a mathematical function specification.
 
-The `tail` function returns a `Maybe` wrapping the given array without its first element. If the array is empty (i.e., it doesn't have a tail), `Nothing` is returned. The `fromMaybe` function takes a default value and a `Maybe` value. If the latter is `Nothing` it returns the default; in the other case, it returns the value wrapped by `Just`.
+A function written using pattern matching works by pairing sets of conditions with their results. Each line is called an _alternative_ or a _case_. The expressions on the left of the equals sign are called _patterns_, and each case consists of one or more patterns separated by spaces. Cases describe which conditions the arguments must satisfy before the expression on the right of the equals sign should be evaluated and returned. Each case is tried in order, and the first case whose patterns match their inputs determines the return value.
 
-This example is a very impractical way to find the length of an array in JavaScript, but it should provide enough help to allow you to complete the following exercises:
+For example, the `gcd` function is evaluated using the following steps:
 
-## Exercises
+- The first case is tried: if the second argument is zero, the function returns `n` (the first argument).
+- If not, the second case is tried: if the first argument is zero, the function returns `m` (the second argument).
+- Otherwise, the function evaluates and returns the expression in the last line.
 
- 1. (Easy) Write a recursive function `isEven` that returns `true` if and only if its input is an even integer.
- 2. (Medium) Write a recursive function `countEven` that counts the number of even integers in an array. _Hint_: the function `head` (also available in `Data.Array`) can be used to find the first element in a non-empty array.
+Note that patterns can bind values to names – each line in the example binds one or both of the names `n` and `m` to the input values. As we learn about different patterns, we will see that different patterns correspond to different ways to choose names from the input arguments.
 
-## Maps
+## Simple Patterns
 
-The `map` function is an example of a recursive function on arrays. It is used to transform the elements of an array by applying a function to each element in turn. Therefore, it changes the _contents_ of the array but preserves its _shape_ (i.e., its length).
+The example code above demonstrates two types of patterns:
 
-When we cover _type classes_ later in the book, we will see that the `map` function is an example of a more general pattern of shape-preserving functions which transform a class of type constructors called _functors_.
+- Integer literals patterns, which match something of type `Int`, only if the value matches exactly.
+- Variable patterns, which bind their argument to a name
 
-Let's try out the `map` function in PSCi:
+There are other types of simple patterns:
 
-```text
-$ spago repl
+- `Number`, `String`, `Char`, and `Boolean` literals
+- Wildcard patterns, indicated with an underscore (`_`), match any argument and do not bind any names.
 
-> import Prelude
-> map (\n -> n + 1) [1, 2, 3, 4, 5]
-[2, 3, 4, 5, 6]
-```
-
-Notice how `map` is used – we provide a function that should be "mapped over" the array in the first argument, and the array itself in its second.
-
-## Infix Operators
-
-The `map` function can also be written between the mapping function and the array, by wrapping the function name in backticks:
-
-```text
-> (\n -> n + 1) `map` [1, 2, 3, 4, 5]
-[2, 3, 4, 5, 6]
-```
-
-This syntax is called _infix function application_, and any function can be made infix in this way. It is usually most appropriate for functions with two arguments.
-
-There is an operator which is equivalent to the `map` function when used with arrays, called `<$>`.
-
-```text
-> (\n -> n + 1) <$> [1, 2, 3, 4, 5]
-[2, 3, 4, 5, 6]
-```
-
-Let's look at the type of `map`:
-
-```text
-> :type map
-forall (f :: Type -> Type) (a :: Type) (b :: Type). Functor f => (a -> b) -> f a -> f b
-```
-
-The type of `map` is actually more general than we need in this chapter. For our purposes, we can treat `map` as if it had the following less general type:
-
-```text
-forall (a :: Type) (b :: Type). (a -> b) -> Array a -> Array b
-```
-
-This type says that we can choose any two types, `a` and `b`, with which to apply the `map` function. `a` is the type of elements in the source array, and `b` is the type of elements in the target array. In particular, there is no reason why `map` has to preserve the type of the array elements. We can use `map` or `<$>` to transform integers to strings, for example:
-
-```text
-> show <$> [1, 2, 3, 4, 5]
-
-["1","2","3","4","5"]
-```
-
-Even though the infix operator `<$>` looks like special syntax, it is in fact just an alias for a regular PureScript function. The function is simply _applied_ using infix syntax. In fact, the function can be used like a regular function by enclosing its name in parentheses. This means that we can use the parenthesized name `(<$>)` in place of `map` on arrays:
-
-```text
-> (<$>) show [1, 2, 3, 4, 5]
-["1","2","3","4","5"]
-```
-
-Infix function names are defined as _aliases_ for existing function names. For example, the `Data.Array` module defines an infix operator `(..)` as a synonym for the `range` function, as follows:
+Here are two more examples that demonstrate using these simple patterns:
 
 ```haskell
-infix 8 range as ..
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:fromString}}
+
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:toString}}
 ```
 
-We can use this operator as follows:
-
-```text
-> import Data.Array
-
-> 1 .. 5
-[1, 2, 3, 4, 5]
-
-> show <$> (1 .. 5)
-["1","2","3","4","5"]
-```
-
-_Note_: Infix operators can be a great tool for defining domain-specific languages with a natural syntax. However, used excessively, they can render code unreadable to beginners, so it is wise to exercise caution when defining any new operators.
-
-In the example above, we parenthesized the expression `1 .. 5`, but this was actually not necessary, because the `Data.Array` module assigns a higher precedence level to the `..` operator than that assigned to the `<$>` operator. In the example above, the precedence of the `..` operator was defined as `8`, the number after the `infix` keyword. This is higher than the precedence level of `<$>`, meaning that we do not need to add parentheses:
-
-```text
-> show <$> 1 .. 5
-["1","2","3","4","5"]
-```
-
-If we wanted to assign an _associativity_ (left or right) to an infix operator, we could do so with the `infixl` and `infixr` keywords instead.  Using `infix` assigns no associativity, meaning that you must parenthesize any expression using the same operator multiple times or using multiple operators of the same precedence.
-
-## Filtering Arrays
-
-The `Data.Array` module provides another function `filter`, which is commonly used together with `map`. It provides the ability to create a new array from an existing array, keeping only those elements which match a predicate function.
-
-For example, suppose we wanted to compute an array of all numbers between 1 and 10 which were even. We could do so as follows:
-
-```text
-> import Data.Array
-
-> filter (\n -> n `mod` 2 == 0) (1 .. 10)
-[2,4,6,8,10]
-```
-
-## Exercises
-
- 1. (Easy) Write a function `squared` which calculates the squares of an array of numbers. _Hint_: Use the `map` or `<$>` function.
- 1. (Easy) Write a function `keepNonNegative` which removes the negative numbers from an array of numbers. _Hint_: Use the `filter` function.
- 1. (Medium)
-    - Define an infix synonym `<$?>` for `filter`. _Note_: Infix synonyms may not be defined in the REPL, but you can define it in a file.
-    - Write a `keepNonNegativeRewrite` function, which is the same as `keepNonNegative`, but replaces `filter` with your new infix operator `<$?>`.
-    - Experiment with the precedence level and associativity of your operator in PSCi. _Note_: There are no unit tests for this step.
-
-## Flattening Arrays
-
-Another standard function on arrays is the `concat` function, defined in `Data.Array`. `concat` flattens an array of arrays into a single array:
-
-```text
-> import Data.Array
-
-> :type concat
-forall (a :: Type). Array (Array a) -> Array a
-
-> concat [[1, 2, 3], [4, 5], [6]]
-[1, 2, 3, 4, 5, 6]
-```
-
-There is a related function called `concatMap` which is a combination of the `concat` and `map` functions. Where `map` takes a function from values to values (possibly of a different type), `concatMap` takes a function from values to arrays of values.
-
-Let's see it in action:
-
-```text
-> import Data.Array
-
-> :type concatMap
-forall (a :: Type) (b :: Type). (a -> Array b) -> Array a -> Array b
-
-> concatMap (\n -> [n, n * n]) (1 .. 5)
-[1,1,2,4,3,9,4,16,5,25]
-```
-
-Here, we call `concatMap` with the function `\n -> [n, n * n]` which sends an integer to the array of two elements consisting of that integer and its square. The result is an array of ten integers: the integers from 1 to 5 along with their squares.
-
-Note how `concatMap` concatenates its results. It calls the provided function once for each element of the original array, generating an array for each. Finally, it collapses all of those arrays into a single array, which is its result.
-
-`map`, `filter` and `concatMap` form the basis for a whole range of functions over arrays called "array comprehensions".
-
-## Array Comprehensions
-
-Suppose we wanted to find the factors of a number `n`. One simple way to do this would be by brute force: we could generate all pairs of numbers between 1 and `n`, and try multiplying them together. If the product was `n`, we would have found a pair of factors of `n`.
-
-We can perform this computation using array comprehension. We will do so in steps, using PSCi as our interactive development environment.
-
-The first step is to generate an array of pairs of numbers below `n`, which we can do using `concatMap`.
-
-Let's start by mapping each number to the array `1 .. n`:
-
-```text
-> pairs n = concatMap (\i -> 1 .. n) (1 .. n)
-```
-
-We can test our function
-
-```text
-> pairs 3
-[1,2,3,1,2,3,1,2,3]
-```
-
-This is not quite what we want. Instead of just returning the second element of each pair, we need to map a function over the inner copy of `1 .. n` which will allow us to keep the entire pair:
-
-```text
-> :paste
-… pairs' n =
-…   concatMap (\i ->
-…     map (\j -> [i, j]) (1 .. n)
-…   ) (1 .. n)
-… ^D
-
-> pairs' 3
-[[1,1],[1,2],[1,3],[2,1],[2,2],[2,3],[3,1],[3,2],[3,3]]
-```
-
-This is looking better. However, we are generating too many pairs: we keep both [1, 2] and [2, 1] for example. We can exclude the second case by making sure that `j` only ranges from `i` to `n`:
-
-```text
-> :paste
-… pairs'' n =
-…   concatMap (\i ->
-…     map (\j -> [i, j]) (i .. n)
-…   ) (1 .. n)
-… ^D
-> pairs'' 3
-[[1,1],[1,2],[1,3],[2,2],[2,3],[3,3]]
-```
-
-Great! Now that we have all of the pairs of potential factors, we can use `filter` to choose the pairs which multiply to give `n`:
-
-```text
-> import Data.Foldable
-
-> factors n = filter (\pair -> product pair == n) (pairs'' n)
-
-> factors 10
-[[1,10],[2,5]]
-```
-
-This code uses the `product` function from the `Data.Foldable` module in the `foldable-traversable` library.
-
-Excellent! We've managed to find the correct set of factor pairs without duplicates.
-
-## Do Notation
-
-However, we can improve the readability of our code considerably. `map` and `concatMap` are so fundamental, that they (or rather, their generalizations `map` and `bind`) form the basis of a special syntax called _do notation_.
-
-> _Note_: Just like `map` and `concatMap` allowed us to write _array comprehensions_, the more general operators `map` and `bind` allow us to write so-called _monad comprehensions_. We'll see plenty more examples of _monads_ later in the book, but in this chapter, we will only consider arrays.
-
-We can rewrite our `factors` function using do notation as follows:
-
-```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:factors}}
-```
-
-The keyword `do` introduces a block of code that uses do notation. The block consists of expressions of a few types:
-
-- Expressions that bind elements of an array to a name. These are indicated with the backwards-facing arrow `<-`, with a name on the left, and an expression on the right whose type is an array.
-- Expressions that do not bind elements of the array to names. The `do` _result_ is an example of this kind of expression and is illustrated in the last line, `pure [i, j]`.
-- Expressions that give names to expressions, using the `let` keyword.
-
-This new notation hopefully makes the structure of the algorithm clearer. If you mentally replace the arrow `<-` with the word "choose", you might read it as follows: "choose an element `i` between 1 and n, then choose an element `j` between `i` and `n`, and return `[i, j]`".
-
-In the last line, we use the `pure` function. This function can be evaluated in PSCi, but we have to provide a type:
-
-```text
-> pure [1, 2] :: Array (Array Int)
-[[1, 2]]
-```
-
-In the case of arrays, `pure` simply constructs a singleton array. We can modify our `factors` function to use this form, instead of using `pure`:
-
-```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:factorsV2}}
-```
-
-and the result would be the same.
+Try these functions in PSCi.
 
 ## Guards
 
-One further change we can make to the `factors` function is to move the filter inside the array comprehension. This is possible using the `guard` function from the `Control.Alternative` module (from the `control` package):
+In the Euclidean algorithm example, we used an `if .. then .. else` expression to switch between the two alternatives when `m > n` and `m <= n`. Another option, in this case, would be to use a _guard_.
+
+A guard is a boolean-valued expression that must be satisfied in addition to the constraints imposed by the patterns. Here is the Euclidean algorithm rewritten to use a guard:
 
 ```haskell
-import Control.Alternative (guard)
-
-{{#include ../exercises/chapter4/test/Examples.purs:factorsV3}}
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:gcdV2}}
 ```
 
-Just like `pure`, we can apply the `guard` function in PSCi to understand how it works. The type of the `guard` function is more general than we need here:
+In this case, the third line uses a guard to impose the extra condition that the first argument is strictly larger than the second. The guard in the final line uses the expression `otherwise`, which might seem like a keyword but is, in fact, just a regular binding in `Prelude`:
 
 ```text
-> import Control.Alternative
+> :type otherwise
+Boolean
 
-> :type guard
-forall (m :: Type -> Type). Alternative m => Boolean -> m Unit
+> otherwise
+true
 ```
 
-In our case, we can assume that PSCi reported the following type:
+This example demonstrates that guards appear on the left of the equals symbol, separated from the list of patterns by a pipe character (`|`).
+
+## Exercises
+
+1. (Easy) Write the `factorial` function using pattern matching. _Hint_: Consider the two corner cases of zero and non-zero inputs. _Note_: This is a repeat of an example from the previous chapter, but see if you can rewrite it here on your own.
+1. (Medium) Write a function `binomial` which finds the coefficient of the \\( x ^ k \\)th term in the polynomial expansion of \\( ( 1 + x ) ^ n \\). This is the same as the number of ways to choose a subset of \\( k \\) elements from a set of \\( n \\) elements. Use the formula \\( n! \\: / \\: k! \\, (n - k)! \\), where \\( ! \\) is the factorial function written earlier. _Hint_: Use pattern matching to handle corner cases. If it takes a long time to complete or crashes with an error about the call stack, try adding more corner cases.
+1. (Medium) Write a function `pascal` which uses [_Pascal`s Rule_](https://en.wikipedia.org/wiki/Pascal%27s_rule) for computing the same binomial coefficients as the previous exercise.
+
+## Array Patterns
+
+_Array literal patterns_ provide a way to match arrays of a fixed length. For example, suppose we want to write a function `isEmpty` which identifies empty arrays. We could do this by using an empty array pattern (`[]`) in the first alternative:
 
 ```haskell
-Boolean -> Array Unit
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:isEmpty}}
 ```
 
-For our purposes, the following calculations tell us everything we need to know about the `guard` function on arrays:
+Here is another function that matches arrays of length five, binding each of its five elements differently:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:takeFive}}
+```
+
+The first pattern only matches arrays with five elements, whose first and second elements are 0 and 1, respectively. In that case, the function returns the product of the third and fourth elements. In every other case, the function returns zero. For example, in PSCi:
 
 ```text
-> import Data.Array
+> :paste
+… takeFive [0, 1, a, b, _] = a * b
+… takeFive _ = 0
+… ^D
 
-> length $ guard true
-1
+> takeFive [0, 1, 2, 3, 4]
+6
 
-> length $ guard false
+> takeFive [1, 2, 3, 4, 5]
+0
+
+> takeFive []
 0
 ```
 
-If we pass an expression to `guard` that evaluates to `true`, then it returns an array with a single element. If the expression evaluates to `false`, then its result is empty.
+Array literal patterns allow us to match arrays of a fixed length. Still, PureScript does _not_ provide any means of matching arrays of an unspecified length since destructuring immutable arrays in these sorts of ways can lead to poor performance. If you need a data structure that supports this sort of matching, the recommended approach is to use `Data.List`. Other data structures exist which provide improved asymptotic performance for different operations.
 
-This means that if the guard fails, then the current branch of the array comprehension will terminate early with no results. This means that a call to `guard` is equivalent to using `filter` on the intermediate array. Depending on the application, you might prefer to use `guard` instead of a `filter`. Try the two definitions of `factors` to verify that they give the same results.
+## Record Patterns and Row Polymorphism
+
+_Record patterns_ are used to match – you guessed it – records.
+
+Record patterns look just like record literals, but instead of values on the right of the colon, we specify a binder for each field.
+
+For example, this pattern matches any record which contains fields called `first` and `last`, and binds their values to the names `x` and `y`, respectively:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:showPerson}}
+```
+
+Record patterns provide a good example of an interesting feature of the PureScript type system: _row polymorphism_. Suppose we had defined `showPerson` without a type signature above. What would its inferred type have been? Interestingly, it is not the same as the type we gave:
+
+```text
+> showPerson { first: x, last: y } = y <> ", " <> x
+
+> :type showPerson
+forall (r :: Row Type). { first :: String, last :: String | r } -> String
+```
+
+What is the type variable `r` here? Well, if we try `showPerson` in PSCi, we see something interesting:
+
+```text
+> showPerson { first: "Phil", last: "Freeman" }
+"Freeman, Phil"
+
+> showPerson { first: "Phil", last: "Freeman", location: "Los Angeles" }
+"Freeman, Phil"
+```
+
+We can append additional fields to the record, and the `showPerson` function will still work. As long as the record contains the `first` and `last` fields of type `String`, the function application is well-typed. However, it is _not_ valid to call `showPerson` with too _few_ fields:
+
+```text
+> showPerson { first: "Phil" }
+
+Type of expression lacks required label "last"
+```
+
+We can read the new type signature of `showPerson` as "takes any record with `first` and `last` fields which are `Strings` _and any other fields_, and returns a `String`". This function is polymorphic in the _row_ `r` of record fields, hence the name _row polymorphism_.  Note that this behavior is different than that of the original `showPerson`. Without the row variable `r`, `showPerson` only accepts records with _exactly_ a `first` and `last` field and no others.
+
+Note that we could have also written
+
+```haskell
+> showPerson p = p.last <> ", " <> p.first
+```
+
+And PSCi would have inferred the same type.
+
+## Record Puns
+
+Recall that the `showPerson` function matches a record inside its argument, binding the `first` and `last` fields to values named `x` and `y`. We could alternatively reuse the field names themselves and simplify this sort of pattern match as follows:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:showPersonV2}}
+```
+
+Here, we only specify the names of the fields, and we do not need to specify the names of the values we want to introduce. This is called a _record pun_.
+
+It is also possible to use record puns to _construct_ records. For example, if we have values named `first` and `last` in scope, we can construct a person record using `{ first, last }`:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:unknownPerson}}
+```
+
+This may improve the readability of code in some circumstances.
+
+## Nested Patterns
+
+Array patterns and record patterns both combine smaller patterns to build larger patterns. For the most part, the examples above have only used simple patterns inside array patterns and record patterns. Still, it is important to note that patterns can be arbitrarily _nested_, which allows functions to be defined using conditions on potentially complex data types.
+
+For example, this code combines two record patterns:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:livesInLA}}
+```
+
+## Named Patterns
+
+Patterns can be _named_ to bring additional names into scope when using nested patterns. Any pattern can be named by using the `@` symbol.
+
+For example, this function sorts two-element arrays, naming the two elements, but also naming the array itself:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:sortPair}}
+```
+
+This way, we save ourselves from allocating a new array if the pair is already sorted. Note that if the input array does not contain _exactly_ two elements, then this function returns it unchanged, even if it's unsorted.
 
 ## Exercises
 
- 1. (Easy) Write a function `isPrime`, which tests whether its integer argument is prime. _Hint_: Use the `factors` function.
- 1. (Medium) Write a function `cartesianProduct` which uses do notation to find the _cartesian product_ of two arrays, i.e., the set of all pairs of elements `a`, `b`, where `a` is an element of the first array, and `b` is an element of the second.
- 1. (Medium) Write a function `triples :: Int -> Array (Array Int)`, which takes a number \\( n \\) and returns all Pythagorean triples whose components (the \\( a \\), \\( b \\), and \\( c \\) values) are each less than or equal to \\( n \\). A _Pythagorean triple_ is an array of numbers \\( [ a, b, c ] \\) such that \\( a ^ 2 + b ^ 2 = c ^ 2 \\). _Hint_: Use the `guard` function in an array comprehension.
- 1. (Difficult) Write a function `primeFactors` which produces the [prime factorization](https://www.mathsisfun.com/prime-factorization.html) of `n`, i.e., the array of prime integers whose product is `n`. _Hint_: for an integer greater than 1, break the problem into two subproblems: finding the first factor and the remaining factors.
+1. (Easy) Write a function `sameCity` which uses record patterns to test whether two `Person` records belong to the same city.
+1. (Medium) What is the most general type of the `sameCity` function, considering row polymorphism? What about the `livesInLA` function defined above? _Note_: There is no test for this exercise.
+1. (Medium) Write a function `fromSingleton` that uses an array literal pattern to extract the sole member of a singleton array. If the array is not a singleton, your function should return a provided default value. Your function should have type `forall a. a -> Array a -> a`
 
-## Folds
+## Case Expressions
 
-Left and right folds over arrays provide another class of interesting functions that can be implemented using recursion.
+Patterns do not only appear in top-level function declarations. It is possible to use patterns to match on an intermediate value in a computation using a `case` expression. Case expressions provide a similar type of utility to anonymous functions: it is not always desirable to give a name to a function, and a `case` expression allows us to avoid naming a function just because we want to use a pattern.
 
-Start by importing the `Data.Foldable` module and inspecting the types of the `foldl` and `foldr` functions using PSCi:
-
-```text
-> import Data.Foldable
-
-> :type foldl
-forall (f :: Type -> Type) (a :: Type) (b :: Type). Foldable f => (b -> a -> b) -> b -> f a -> b
-
-> :type foldr
-forall (f :: Type -> Type) (a :: Type) (b :: Type). Foldable f => (a -> b -> b) -> b -> f a -> b
-```
-
-These types are more general than we are interested in right now. For this chapter, we can simplify and assume the following (more specific) type signatures:
-
-```text
--- foldl
-forall a b. (b -> a -> b) -> b -> Array a -> b
-
--- foldr
-forall a b. (a -> b -> b) -> b -> Array a -> b
-```
-
-In both cases, the type `a` corresponds to the type of elements of our array. The type `b` can be thought of as the type of an "accumulator", which will accumulate a result as we traverse the array.
-
-The difference between the `foldl` and `foldr` functions is the direction of the traversal. `foldl` folds the array "from the left", whereas `foldr` folds the array "from the right".
-
-Let's see these functions in action. Let's use `foldl` to sum an array of integers. The type `a` will be `Int`, and we can also choose the result type `b` to be `Int`. We need to provide three arguments: a function `Int -> Int -> Int`, which will add the next element to the accumulator, an initial value for the accumulator of type `Int`, and an array of `Int`s to add. For the first argument, we can use the addition operator, and the initial value of the accumulator will be zero:
-
-```text
-> foldl (+) 0 (1 .. 5)
-15
-```
-
-In this case, it didn't matter whether we used `foldl` or `foldr`, because the result is the same, no matter what order the additions happen in:
-
-```text
-> foldr (+) 0 (1 .. 5)
-15
-```
-
-Let's write an example where the choice of folding function matters to illustrate the difference. Instead of the addition function, let's use string concatenation to build a string:
-
-```text
-> foldl (\acc n -> acc <> show n) "" [1,2,3,4,5]
-"12345"
-
-> foldr (\n acc -> acc <> show n) "" [1,2,3,4,5]
-"54321"
-```
-
-This illustrates the difference between the two functions. The left fold expression is equivalent to the following application:
-
-```text
-((((("" <> show 1) <> show 2) <> show 3) <> show 4) <> show 5)
-```
-
-Whereas the right fold is equivalent to this:
-
-```text
-((((("" <> show 5) <> show 4) <> show 3) <> show 2) <> show 1)
-```
-
-## Tail Recursion
-
-Recursion is a powerful technique for specifying algorithms but comes with a problem: evaluating recursive functions in JavaScript can lead to stack overflow errors if our inputs are too large.
-
-It is easy to verify this problem with the following code in PSCi:
-
-```text
-> :paste
-… f n =
-…   if n == 0
-…     then 0
-…     else 1 + f (n - 1)
-… ^D
-
-> f 10
-10
-
-> f 100000
-RangeError: Maximum call stack size exceeded
-```
-
-This is a problem. If we adopt recursion as a standard technique from functional programming, we need a way to deal with possibly unbounded recursion.
-
-PureScript provides a partial solution to this problem through _tail recursion optimization_.
-
-> _Note_: more complete solutions to the problem can be implemented in libraries using so-called _trampolining_, but that is beyond the scope of this chapter. The interested reader can consult the documentation for the [`free`](https://pursuit.purescript.org/packages/purescript-free) and [`tailrec`](https://pursuit.purescript.org/packages/purescript-tailrec) packages.
-
-The key observation that enables tail recursion optimization: a recursive call in _tail position_ to a function can be replaced with a _jump_, which does not allocate a stack frame. A call is in _tail position_ when it is the last call made before a function returns. This is why we observed a stack overflow in the example – the recursive call to `f` was _not_ in tail position.
-
-In practice, the PureScript compiler does not replace the recursive call with a jump, but rather replaces the entire recursive function with a _while loop_.
-
-Here is an example of a recursive function with all recursive calls in tail position:
+Here is an example. This function computes the "longest zero suffix" of an array (the longest suffix which sums to zero):
 
 ```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:factorialTailRec}}
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:lzsImport}}
+
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:lzs}}
 ```
 
-Notice that the recursive call to `factorialTailRec` is the last thing in this function – it is in tail position.
-
-## Accumulators
-
-One common way to turn a not tail recursive function into a tail recursive is to use an _accumulator parameter_. An accumulator parameter is an additional parameter added to a function that _accumulates_ a return value, as opposed to using the return value to accumulate the result.
-
-For example, consider again the `length` function presented at the beginning of the chapter:
-
-```haskell
-length :: forall a. Array a -> Int
-length arr =
-  if null arr
-    then 0
-    else 1 + (length $ fromMaybe [] $ tail arr)
-```
-
-This implementation is not tail recursive, so the generated JavaScript will cause a stack overflow when executed on a large input array. However, we can make it tail recursive, by introducing a second function argument to accumulate the result instead:
-
-```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:lengthTailRec}}
-```
-
-In this case, we delegate to the helper function `length'`, which is tail recursive – its only recursive call is in the last case, in tail position. This means that the generated code will be a _while loop_ and not blow the stack for large inputs.
-
-To understand the implementation of `lengthTailRec`, note that the helper function `length'` essentially uses the accumulator parameter to maintain an additional piece of state – the partial result. It starts at 0 and grows by adding 1 for every element in the input array.
-
-Note also that while we might think of the accumulator as a "state", there is no direct mutation.
-
-## Prefer Folds to Explicit Recursion
-
-If we can write our recursive functions using tail recursion, we can benefit from tail recursion optimization, so it becomes tempting to try to write all of our functions in this form. However, it is often easy to forget that many functions can be written directly as a fold over an array or similar data structure. Writing algorithms directly in terms of combinators such as `map` and `fold` has the added advantage of code simplicity – these combinators are well-understood, and as such, communicate the _intent_ of the algorithm much better than explicit recursion.
-
-For example, we can reverse an array using `foldr`:
+For example:
 
 ```text
-> import Data.Foldable
+> lzs [1, 2, 3, 4]
+[]
 
-> :paste
-… reverse :: forall a. Array a -> Array a
-… reverse = foldr (\x xs -> xs <> [x]) []
-… ^D
-
-> reverse [1, 2, 3]
-[3,2,1]
+> lzs [1, -1, -2, 3]
+[-1, -2, 3]
 ```
 
-Writing `reverse` in terms of `foldl` will be left as an exercise for the reader.
+This function works by case analysis. If the array is empty, our only option is to return an empty array. If the array is non-empty, we first use a `case` expression to split it into two cases. If the sum of the array is zero, we return the whole array. If not, we recurse on the tail of the array.
+
+## Pattern Match Failures and Partial Functions
+
+If patterns in a case expression are tried in order, what happens when none of the patterns in a case alternatives match their inputs? In this case, the case expression will fail at runtime with a _pattern match failure_.
+
+We can see this behavior with a simple example:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:unsafePartialImport}}
+
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:partialFunction}}
+```
+
+This function contains only a single case, which only matches a single input, `true`. If we compile this file and test in PSCi with any other argument, we will see an error at runtime:
+
+```text
+> partialFunction false
+
+Failed pattern match
+```
+
+Functions that return a value for any combination of inputs are called _total_ functions, and functions that do not are called _partial_.
+
+It is generally considered better to define total functions where possible. If it is known that a function does not return a result for some valid set of inputs, it is usually better to return a value capable of indicating failure, such as type `Maybe a` for some `a`, using `Nothing` when it cannot return a valid result. This way, the presence or absence of a value can be indicated in a type-safe way.
+
+The PureScript compiler will generate an error if it can detect that your function is not total due to an incomplete pattern match. The `unsafePartial` function can be used to silence these errors (if you are sure your partial function is safe!) If we removed the call to the `unsafePartial` function above, then the compiler would generate the following error:
+
+```text
+A case expression could not be determined to cover all inputs.
+The following additional cases are required to cover all inputs:
+
+  false
+```
+
+This tells us that the value `false` is not matched by any pattern. In general, these warnings might include multiple unmatched cases.
+
+If we also omit the type signature above:
+
+```haskell
+partialFunction true = true
+```
+
+then PSCi infers a curious type:
+
+```text
+> :type partialFunction
+
+Partial => Boolean -> Boolean
+```
+
+We will see more types that involve the `=>` symbol later on in the book (they are related to _type classes_), but for now, it suffices to observe that PureScript keeps track of partial functions using the type system and that we must explicitly tell the type checker when they are safe.
+
+The compiler will also generate a warning in certain cases when it can detect that cases are _redundant_ (that is, a case only matches values which a prior case would have matched):
+
+```haskell
+redundantCase :: Boolean -> Boolean
+redundantCase true = true
+redundantCase false = false
+redundantCase false = false
+```
+
+In this case, the last case is correctly identified as redundant:
+
+```text
+A case expression contains unreachable cases:
+
+  false
+```
+
+> _Note_: PSCi does not show warnings, so to reproduce this example, you will need to save this function as a file and compile it using `spago build`.
+
+## Algebraic Data Types
+
+This section will introduce a feature of the PureScript type system called _Algebraic Data Types_ (or _ADTs_), which are fundamentally related to pattern matching.
+
+However, we'll first consider a motivating example, which will provide the basis of a solution to this chapter's problem of implementing a simple vector graphics library.
+
+Suppose we wanted to define a type to represent some simple shapes: lines, rectangles, circles, text, etc. In an object oriented language, we would probably define an interface or abstract class `Shape`, and one concrete subclass for each type of shape that we wanted to be able to work with.
+
+However, this approach has one major drawback: to work with `Shape`s abstractly, it is necessary to identify all of the operations one might wish to perform and to define them on the `Shape` interface. It becomes difficult to add new operations without breaking modularity.
+
+Algebraic data types provide a type-safe way to solve this problem if the set of shapes is known in advance. It is possible to define new operations on `Shape` in a modular way and still maintain type-safety.
+
+Here is how `Shape` might be represented as an algebraic data type:
+
+```haskell
+{{#include ../exercises/chapter4/src/Data/Picture.purs:Shape}}
+
+{{#include ../exercises/chapter4/src/Data/Picture.purs:Point}}
+```
+
+This declaration defines `Shape` as a sum of different constructors, and for each constructor identifies the included data. A `Shape` is either a `Circle` that contains a center `Point` and a radius (a number), or a `Rectangle`, or a `Line`, or `Text`. There are no other ways to construct a value of type `Shape`.
+
+An algebraic data type is introduced using the `data` keyword, followed by the name of the new type and any type arguments. The type's constructors (i.e., its _data constructors_) are defined after the equals symbol and separated by pipe characters (`|`). The data carried by an ADT's constructors doesn't have to be restricted to primitive types: constructors can include records, arrays, or even other ADTs.
+
+Let's see another example from PureScript's standard libraries. We saw the `Maybe` type, which is used to define optional values, earlier in the book. Here is its definition from the `maybe` package:
+
+```haskell
+data Maybe a = Nothing | Just a
+```
+
+This example demonstrates the use of a type parameter `a`. Reading the pipe character as the word "or", its definition almost reads like English: "a value of type `Maybe a` is either `Nothing`, or `Just` a value of type `a`".
+
+Note that we don't use the syntax `forall a.` anywhere in our data definition. `forall` syntax is necessary for functions but is not used when defining ADTs with `data` or type aliases with `type`.
+
+Data constructors can also be used to define recursive data structures. Here is one more example, defining a data type of singly-linked lists of elements of type `a`:
+
+```haskell
+data List a = Nil | Cons a (List a)
+```
+
+This example is taken from the `lists` package. Here, the `Nil` constructor represents an empty list, and `Cons` is used to create non-empty lists from a head element and a tail. Notice how the tail is defined using the data type `List a`, making this a recursive data type.
+
+## Using ADTs
+
+It is simple enough to use the constructors of an algebraic data type to construct a value: simply apply them like functions, providing arguments corresponding to the data included with the appropriate constructor.
+
+For example, the `Line` constructor defined above required two `Point`s, so to construct a `Shape` using the `Line` constructor, we have to provide two arguments of type `Point`:
+
+```haskell
+{{#include ../exercises/chapter4/src/Data/Picture.purs:exampleLine}}
+```
+
+So, constructing values of algebraic data types is simple, but how do we use them? This is where the important connection with pattern matching appears: the only way to consume a value of an algebraic data type is to use a pattern to match its constructor.
+
+Let's see an example. Suppose we want to convert a `Shape` into a `String`. We have to use pattern matching to discover which constructor was used to construct the `Shape`. We can do this as follows:
+
+```haskell
+{{#include ../exercises/chapter4/src/Data/Picture.purs:showShape}}
+
+{{#include ../exercises/chapter4/src/Data/Picture.purs:showPoint}}
+```
+
+Each constructor can be used as a pattern, and the arguments to the constructor can themselves be bound using patterns of their own. Consider the first case of `showShape`: if the `Shape` matches the `Circle` constructor, then we bring the arguments of `Circle` (center and radius) into scope using two variable patterns, `c` and `r`. The other cases are similar.
 
 ## Exercises
 
- 1. (Easy) Write a function `allTrue` which uses `foldl` to test whether an array of boolean values are all true.
- 2. (Medium - No Test) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns `true`. In other words, complete the sentence: "The function returns `true` when `xs` contains ..."
- 3. (Medium) Write a function `fibTailRec` which is the same as `fib` but in tail recursive form. _Hint_: Use an accumulator parameter.
- 4. (Medium) Write `reverse` in terms of `foldl`.
+1. (Easy) Write a function `circleAtOrigin` which constructs a `Circle` (of type `Shape`) centered at the origin with a radius `10.0`.
+1. (Medium) Write a function `doubleScaleAndCenter`  that scales the size of a `Shape` by a factor of `2.0` and centers it at the origin.
+1. (Medium) Write a function `shapeText` which extracts the text from a `Shape`. It should return `Maybe String`, and use the `Nothing` constructor if the input is not constructed using `Text`.
 
-## A Virtual Filesystem
+## Newtypes
 
-In this section, we'll apply what we've learned, writing functions that will work with a model of a filesystem. We will use maps, folds, and filters to work with a predefined API.
+There is a special case of algebraic data types, called _newtypes_. Newtypes are introduced using the `newtype` keyword instead of the `data` keyword.
 
-The `Data.Path` module defines an API for a virtual filesystem as follows:
+Newtypes must define _exactly one_ constructor, and that constructor must take _exactly one_ argument. That is, a newtype gives a new name to an existing type. In fact, the values of a newtype have the same runtime representation as the underlying type, so there is no runtime performance overhead. They are, however, distinct from the point of view of the type system. This gives an extra layer of type safety.
 
-- There is a type `Path` which represents a path in the filesystem.
-- There is a path `root` which represents the root directory.
-- The `ls` function enumerates the files in a directory.
-- The `filename` function returns the file name for a `Path`.
-- The `size` function returns the file size for a `Path` representing a file.
-- The `isDirectory` function tests whether a `Path` is a file or a directory.
-
-In terms of types, we have the following type definitions:
+As an example, we might want to define newtypes as type-level aliases for `Number`, to ascribe units like volts, amps, and ohms:
 
 ```haskell
-root :: Path
-
-ls :: Path -> Array Path
-
-filename :: Path -> String
-
-size :: Path -> Maybe Int
-
-isDirectory :: Path -> Boolean
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:electricalUnits}}
 ```
 
-We can try out the API in PSCi:
+Then we define functions and values using these types:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:calculateCurrent}}
+```
+
+This prevents us from making silly mistakes, such as attempting to calculate the current produced by _two_ lightbulbs _without_ a voltage source.
+
+```haskell
+current :: Amp
+current = calculateCurrent lightbulb lightbulb
+{-
+TypesDoNotUnify:
+  current = calculateCurrent lightbulb lightbulb
+                             ^^^^^^^^^
+  Could not match type
+    Ohm
+  with type
+    Volt
+-}
+```
+
+If we instead just used `Number` without `newtype`, then the compiler can't help us catch this mistake:
+
+```haskell
+-- This also compiles, but is not as type safe.
+calculateCurrent :: Number -> Number -> Number
+calculateCurrent v r = v / r
+
+battery :: Number
+battery = 1.5
+
+lightbulb :: Number
+lightbulb = 500.0
+
+current :: Number
+current = calculateCurrent lightbulb lightbulb -- uncaught mistake
+```
+
+Note that while a newtype can only have a single constructor, and the constructor must be of a single value, a newtype _can_ take any number of type variables. For example, the following newtype would be a valid definition (`err` and `a` are the type variables, and the `CouldError` constructor expects a _single_ value of type `Either err a`):
+
+```Haskell
+newtype CouldError err a = CouldError (Either err a)
+```
+
+Also, note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:
+
+```haskell
+{{#include ../exercises/chapter4/src/ChapterExamples.purs:Coulomb}}
+```
+
+In this case, `Coulomb` is the _type constructor_ (of zero arguments), and `MakeCoulomb` is the _data constructor_. These constructors live in different namespaces, even when the names are identical, such as with the `Volt` example. This is true for all ADTs. Note that although the type constructor and data constructor can have different names, in practice, it is idiomatic for them to share the same name. This is the case with `Amp` and `Volt` types above.
+
+Another application of newtypes is to attach different _behavior_ to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss _type classes_.
+
+## Exercises
+
+1. (Easy) Define `Watt` as a `newtype` of `Number`. Then define a `calculateWattage` function using this new `Watt` type and the above definitions `Amp` and `Volt`:
+
+```haskell
+calculateWattage :: Amp -> Volt -> Watt
+```
+
+A wattage in `Watt`s can be calculated as the product of a given current in `Amp`s and a given voltage in `Volt`s.
+
+## A Library for Vector Graphics
+
+Let's use the data types we have defined above to create a simple library for using vector graphics.
+
+Define a type synonym for a `Picture` – just an array of `Shape`s:
+
+```haskell
+{{#include ../exercises/chapter4/src/Data/Picture.purs:Picture}}
+```
+
+For debugging purposes, we'll want to be able to turn a `Picture` into something readable. The `showPicture` function lets us do that:
+
+```haskell
+{{#include ../exercises/chapter4/src/Data/Picture.purs:showPicture}}
+```
+
+Let's try it out. Compile your module with `spago build` and open PSCi with `spago repl`:
 
 ```text
+$ spago build
 $ spago repl
 
-> import Data.Path
+> import Data.Picture
 
-> root
-/
+> showPicture [ Line { x: 0.0, y: 0.0 } { x: 1.0, y: 1.0 } ]
 
-> isDirectory root
-true
-
-> ls root
-[/bin/,/etc/,/home/]
+["Line [start: (0.0, 0.0), end: (1.0, 1.0)]"]
 ```
 
-The `Test.Examples` module defines functions that use the `Data.Path` API. You do not need to modify the `Data.Path` module, or understand its implementation. We will work entirely in the `Test.Examples` module.
+## Computing Bounding Rectangles
 
-## Listing All Files
+The example code for this module contains a function `bounds` which computes the smallest bounding rectangle for a `Picture`.
 
-Let's write a function that performs a deep enumeration of all files inside a directory. This function will have the following type:
+The `Bounds` type defines a bounding rectangle.
 
 ```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:allFiles_signature}}
+{{#include ../exercises/chapter4/src/Data/Picture.purs:Bounds}}
 ```
 
-We can define this function by recursion. First, we can use `ls` to enumerate the immediate children of the directory. For each child, we can recursively apply `allFiles`, which will return an array of paths. `concatMap` will allow us to apply `allFiles` and flatten the results simultaneously.
-
-Finally, we use the cons operator `:` to include the current file:
+`bounds` uses the `foldl` function from `Data.Foldable` to traverse the array of `Shapes` in a `Picture`, and accumulate the smallest bounding rectangle:
 
 ```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:allFiles_implementation}}
+{{#include ../exercises/chapter4/src/Data/Picture.purs:bounds}}
 ```
 
-> _Note_: the cons operator `:` has poor performance on immutable arrays, so it is not generally recommended. Performance can be improved by using other data structures, such as linked lists and sequences.
+In the base case, we need to find the smallest bounding rectangle of an empty `Picture`, and the empty bounding rectangle defined by `emptyBounds` suffices.
 
-Let's try this function in PSCi:
-
-```text
-> import Test.Examples
-> import Data.Path
-
-> allFiles root
-
-[/,/bin/,/bin/cp,/bin/ls,/bin/mv,/etc/,/etc/hosts, ...]
-```
-
-Great! Now let's see if we can write this function using an array comprehension using do notation.
-
-Recall that a backwards arrow corresponds to choosing an element from an array. The first step is to choose an element from the immediate children of the argument. Then we call the function recursively for that file. Since we use do notation, there is an implicit call to `concatMap`, which concatenates all of the recursive results.
-
-Here is the new version:
-
-```haskell
-{{#include ../exercises/chapter4/test/Examples.purs:allFiles_2}}
-```
-
-Try out the new version in PSCi – you should get the same result. I'll let you decide which version you find clearer.
+The accumulating function `combine` is defined in a `where` block. `combine` takes a bounding rectangle computed from `foldl`'s recursive call, and the next `Shape` in the array, and uses the `union` function to compute the union of the two bounding rectangles. The `shapeBounds` function computes the bounds of a single shape using pattern matching.
 
 ## Exercises
 
- 1. (Easy) Write a function `onlyFiles` which returns all _files_ (not directories) in all subdirectories of a directory.
- 2. (Medium) Write a function `whereIs` to search for a file by name. The function should return a value of type `Maybe Path`, indicating the directory containing the file, if it exists. It should behave as follows:
-
-     ```text
-     > whereIs root "ls"
-     Just (/bin/)
-
-     > whereIs root "cat"
-     Nothing
-     ```
-
-     _Hint_: Try to write this function as an array comprehension using do notation.
- 3. (Difficult) Write a function `largestSmallest` which takes a `Path` and returns an array containing the single largest and single smallest files in the `Path`. _Note_: consider the cases where there are zero or one files in the `Path` by returning an empty or one-element array, respectively.
+1. (Medium) Extend the vector graphics library with a new operation `area` that computes the area of a `Shape`. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.
+1. (Difficult) Extend the `Shape` type with a new data constructor `Clipped`, which clips another `Picture` to a rectangle. Extend the `shapeBounds` function to compute the bounds of a clipped picture. Note that this makes `Shape` into a recursive data type. _Hint_: The compiler will walk you through extending other functions as required.
 
 ## Conclusion
 
-In this chapter, we covered the basics of recursion in PureScript to express algorithms concisely. We also introduced user-defined infix operators, standard functions on arrays such as maps, filters, and folds, and array comprehensions that combine these ideas. Finally, we showed the importance of using tail recursion to avoid stack overflow errors and how to use accumulator parameters to convert functions to tail recursive form.
+In this chapter, we covered pattern matching, a basic but powerful technique from functional programming. We saw how to use simple patterns as well as array and record patterns to match parts of deep data structures.
+
+This chapter also introduced algebraic data types, which are closely related to pattern matching. We saw how algebraic data types allow concise descriptions of data structures and provide a modular way to extend data types with new operations.
+
+Finally, we covered _row polymorphism_, a powerful type of abstraction that allows many idiomatic JavaScript functions to be given a type.
+
+In the rest of the book, we will use ADTs and pattern matching extensively, so it will pay dividends to become familiar with them now. Try creating your own algebraic data types and writing functions to consume them using pattern matching.
