@@ -1,16 +1,16 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Recursion, Maps And Folds - PureScript by Example</title>
+        <title>Pattern Matching - PureScript by Example</title>
 
 
         <!-- Custom HTML head -->
         
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
         <link rel="icon" href="favicon.svg">
         <link rel="shortcut icon" href="favicon.png">
@@ -33,7 +33,7 @@
         <!-- MathJax -->
         <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
     <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
@@ -63,29 +63,34 @@
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var html = document.querySelector('html');
+            var body = document.querySelector('body');
             var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Foreword</a></li><li class="chapter-item expanded "><a href="chapter1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter2.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="chapter3.html"><strong aria-hidden="true">3.</strong> Functions and Records</a></li><li class="chapter-item expanded "><a href="chapter4.html" class="active"><strong aria-hidden="true">4.</strong> Recursion, Maps And Folds</a></li><li class="chapter-item expanded "><a href="chapter5.html"><strong aria-hidden="true">5.</strong> Pattern Matching</a></li><li class="chapter-item expanded "><a href="chapter6.html"><strong aria-hidden="true">6.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="chapter7.html"><strong aria-hidden="true">7.</strong> Applicative Validation</a></li><li class="chapter-item expanded "><a href="chapter8.html"><strong aria-hidden="true">8.</strong> The Effect Monad</a></li><li class="chapter-item expanded "><a href="chapter9.html"><strong aria-hidden="true">9.</strong> Asynchronous Effects</a></li><li class="chapter-item expanded "><a href="chapter10.html"><strong aria-hidden="true">10.</strong> The Foreign Function Interface</a></li><li class="chapter-item expanded "><a href="chapter11.html"><strong aria-hidden="true">11.</strong> Monadic Adventures</a></li><li class="chapter-item expanded "><a href="chapter12.html"><strong aria-hidden="true">12.</strong> Canvas Graphics</a></li><li class="chapter-item expanded "><a href="chapter13.html"><strong aria-hidden="true">13.</strong> Generative Testing</a></li><li class="chapter-item expanded "><a href="chapter14.html"><strong aria-hidden="true">14.</strong> Domain-Specific Languages</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Foreword</a></li><li class="chapter-item expanded "><a href="chapter1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter2.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="chapter3.html"><strong aria-hidden="true">3.</strong> Functions and Records</a></li><li class="chapter-item expanded "><a href="chapter4.html" class="active"><strong aria-hidden="true">4.</strong> Pattern Matching</a></li><li class="chapter-item expanded "><a href="chapter5.html"><strong aria-hidden="true">5.</strong> Recursion, Maps And Folds</a></li><li class="chapter-item expanded "><a href="chapter6.html"><strong aria-hidden="true">6.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="chapter7.html"><strong aria-hidden="true">7.</strong> Applicative Validation</a></li><li class="chapter-item expanded "><a href="chapter8.html"><strong aria-hidden="true">8.</strong> The Effect Monad</a></li><li class="chapter-item expanded "><a href="chapter9.html"><strong aria-hidden="true">9.</strong> Asynchronous Effects</a></li><li class="chapter-item expanded "><a href="chapter10.html"><strong aria-hidden="true">10.</strong> The Foreign Function Interface</a></li><li class="chapter-item expanded "><a href="chapter11.html"><strong aria-hidden="true">11.</strong> Monadic Adventures</a></li><li class="chapter-item expanded "><a href="chapter12.html"><strong aria-hidden="true">12.</strong> Canvas Graphics</a></li><li class="chapter-item expanded "><a href="chapter13.html"><strong aria-hidden="true">13.</strong> Generative Testing</a></li><li class="chapter-item expanded "><a href="chapter14.html"><strong aria-hidden="true">14.</strong> Domain-Specific Languages</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -118,9 +123,9 @@
                                 <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
@@ -171,481 +176,433 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="recursion-maps-and-folds"><a class="header" href="#recursion-maps-and-folds">Recursion, Maps, And Folds</a></h1>
-<h2 id="chapter-goals"><a class="header" href="#chapter-goals">Chapter Goals</a></h2>
-<p>In this chapter, we will look at how recursive functions can be used to structure algorithms. Recursion is a basic technique used in functional programming, which we will use throughout this book.</p>
-<p>We will also cover some standard functions from PureScript's standard libraries. We will <code>map</code>, <code>fold</code>, and some useful special cases, like <code>filter</code> and <code>concatMap</code>.</p>
-<p>The motivating example for this chapter is a library of functions for working with a virtual filesystem. We will apply the techniques learned in this chapter to write functions that compute properties of the files represented by a model of a filesystem.</p>
-<h2 id="project-setup"><a class="header" href="#project-setup">Project Setup</a></h2>
-<p>The source code for this chapter is contained in <code>src/Data/Path.purs</code> and <code>test/Examples.purs</code>. The <code>Data.Path</code> module contains a model of a virtual filesystem. You do not need to modify the contents of this module. Implement your solutions to the exercises in the <code>Test.MySolutions</code> module. Enable accompanying tests in the <code>Test.Main</code> module as you complete each exercise and check your work by running <code>spago test</code>.</p>
-<p>The project has the following dependencies:</p>
-<ul>
-<li><code>maybe</code>, which defines the <code>Maybe</code> type constructor</li>
-<li><code>arrays</code>, which defines functions for working with arrays</li>
-<li><code>strings</code>, which defines functions for working with JavaScript strings</li>
-<li><code>foldable-traversable</code>, which defines functions for folding arrays and other data structures</li>
-<li><code>console</code>, which defines functions for printing to the console</li>
-</ul>
-<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
-<p>Recursion is an important technique in programming in general, but particularly common in pure functional programming, because, as we will see in this chapter, recursion helps to reduce the mutable state in our programs.</p>
-<p>Recursion is closely linked to the <em>divide and conquer</em> strategy: to solve a problem on certain inputs, we can break down the inputs into smaller parts, solve the problem on those parts, and then assemble a solution from the partial solutions.</p>
-<p>Let's see some simple examples of recursion in PureScript.</p>
-<p>Here is the usual <em>factorial function</em> example:</p>
-<pre><code class="language-haskell">factorial :: Int -&gt; Int
-factorial n =
-  if n == 0 then
-    1
-  else
-    n * factorial (n - 1)
-</code></pre>
-<p>Here, we can see how the factorial function is computed by reducing the problem to a subproblem – computing the factorial of a smaller integer. When we reach zero, the answer is immediate.</p>
-<p>Here is another common example that computes the <em>Fibonacci function</em>:</p>
-<pre><code class="language-haskell">fib :: Int -&gt; Int
-fib n =
-  if n == 0 then
-    0
-  else if n == 1 then
-    1
-  else
-    fib (n - 1) + fib (n - 2)
-</code></pre>
-<p>Again, this problem is solved by considering the solutions to subproblems. In this case, there are two subproblems, corresponding to the expressions <code>fib (n - 1)</code> and <code>fib (n - 2)</code>. When these two subproblems are solved, we assemble the result by adding the partial results.</p>
+                        <h1 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h1>
 <blockquote>
-<p>Note that, while the above examples of <code>factorial</code> and <code>fib</code> work as intended, a more idiomatic implementation would use pattern matching instead of <code>if</code>/<code>then</code>/<code>else</code>. Pattern-matching techniques are discussed in a later chapter.</p>
+<p>Temporary note: If you're working on this chapter, beware that chapters 4 and 5 were swapped in November 2023.</p>
 </blockquote>
-<h2 id="recursion-on-arrays"><a class="header" href="#recursion-on-arrays">Recursion on Arrays</a></h2>
-<p>We are not limited to defining recursive functions over the <code>Int</code> type! We will see recursive functions defined over a wide array of data types when we cover <em>pattern matching</em> later in the book, but for now, we will restrict ourselves to numbers and arrays.</p>
-<p>Just as we branch based on whether the input is non-zero, in the array case, we will branch based on whether the input is non-empty. Consider this function, which computes the length of an array using recursion:</p>
-<pre><code class="language-haskell">import Prelude
+<h2 id="chapter-goals"><a class="header" href="#chapter-goals">Chapter Goals</a></h2>
+<p>This chapter will introduce two new concepts: algebraic data types and pattern matching. We will also briefly cover an interesting feature of the PureScript type system: row polymorphism.</p>
+<p>Pattern matching is a common technique in functional programming and allows the developer to write compact functions, which express potentially complex ideas by breaking their implementation down into multiple cases.</p>
+<p>Algebraic data types are a feature of the PureScript type system, which enables a similar level of expressiveness in the language of types – they are closely related to pattern matching.</p>
+<p>The chapter's goal will be to write a library to describe and manipulate simple vector graphics using algebraic types and pattern matching.</p>
+<h2 id="project-setup"><a class="header" href="#project-setup">Project Setup</a></h2>
+<p>The source code for this chapter is defined in the file <code>src/Data/Picture.purs</code>.</p>
+<p>The <code>Data.Picture</code> module defines a data type <code>Shape</code> for simple shapes and a type <code>Picture</code> for collections of shapes, along with functions for working with those types.</p>
+<p>The module imports the <code>Data.Foldable</code> module, which provides functions for folding data structures:</p>
+<pre><code class="language-haskell">module Data.Picture where
 
-import Data.Array (null, tail)
-import Data.Maybe (fromMaybe)
-
-length :: forall a. Array a -&gt; Int
-length arr =
-  if null arr then
-    0
-  else
-    1 + (length $ fromMaybe [] $ tail arr)
+import Prelude
+import Data.Foldable (foldl)
+import Data.Number (infinity)
 </code></pre>
-<p>In this function, we use an <code>if .. then .. else</code> expression to branch based on the emptiness of the array. The <code>null</code> function returns <code>true</code> on an empty array. Empty arrays have a length of zero, and a non-empty array has a length that is one more than the length of its tail.</p>
-<p>The <code>tail</code> function returns a <code>Maybe</code> wrapping the given array without its first element. If the array is empty (i.e., it doesn't have a tail), <code>Nothing</code> is returned. The <code>fromMaybe</code> function takes a default value and a <code>Maybe</code> value. If the latter is <code>Nothing</code> it returns the default; in the other case, it returns the value wrapped by <code>Just</code>.</p>
-<p>This example is a very impractical way to find the length of an array in JavaScript, but it should provide enough help to allow you to complete the following exercises:</p>
+<p>The <code>Data.Picture</code> module also imports the <code>Number</code> module, but this time using the <code>as</code> keyword:</p>
+<pre><code class="language-haskell">import Data.Number as Number
+</code></pre>
+<p>This makes the types and functions in that module available for use, but only by using the <em>qualified name</em>, like <code>Number.max</code>. This can be useful to avoid overlapping imports or clarify which modules certain things are imported from.</p>
+<blockquote>
+<p><em>Note</em>: Using the same module name as the original module for a qualified import is unnecessary  – shorter qualified names like <code>import Data.Number as N</code> are possible and quite common.</p>
+</blockquote>
+<h2 id="simple-pattern-matching"><a class="header" href="#simple-pattern-matching">Simple Pattern Matching</a></h2>
+<p>Let's begin by looking at an example. Here is a function that computes the greatest common divisor of two integers using pattern matching:</p>
+<pre><code class="language-haskell">gcd :: Int -&gt; Int -&gt; Int
+gcd n 0 = n
+gcd 0 m = m
+gcd n m = if n &gt; m
+            then gcd (n - m) m
+            else gcd n (m - n)
+</code></pre>
+<p>This algorithm is called the Euclidean Algorithm. If you search for its definition online, you will likely find a set of mathematical equations that look like the code above. One benefit of pattern matching is that it allows you to define code by cases, writing simple, declarative code that looks like a mathematical function specification.</p>
+<p>A function written using pattern matching works by pairing sets of conditions with their results. Each line is called an <em>alternative</em> or a <em>case</em>. The expressions on the left of the equals sign are called <em>patterns</em>, and each case consists of one or more patterns separated by spaces. Cases describe which conditions the arguments must satisfy before the expression on the right of the equals sign should be evaluated and returned. Each case is tried in order, and the first case whose patterns match their inputs determines the return value.</p>
+<p>For example, the <code>gcd</code> function is evaluated using the following steps:</p>
+<ul>
+<li>The first case is tried: if the second argument is zero, the function returns <code>n</code> (the first argument).</li>
+<li>If not, the second case is tried: if the first argument is zero, the function returns <code>m</code> (the second argument).</li>
+<li>Otherwise, the function evaluates and returns the expression in the last line.</li>
+</ul>
+<p>Note that patterns can bind values to names – each line in the example binds one or both of the names <code>n</code> and <code>m</code> to the input values. As we learn about different patterns, we will see that different patterns correspond to different ways to choose names from the input arguments.</p>
+<h2 id="simple-patterns"><a class="header" href="#simple-patterns">Simple Patterns</a></h2>
+<p>The example code above demonstrates two types of patterns:</p>
+<ul>
+<li>Integer literals patterns, which match something of type <code>Int</code>, only if the value matches exactly.</li>
+<li>Variable patterns, which bind their argument to a name</li>
+</ul>
+<p>There are other types of simple patterns:</p>
+<ul>
+<li><code>Number</code>, <code>String</code>, <code>Char</code>, and <code>Boolean</code> literals</li>
+<li>Wildcard patterns, indicated with an underscore (<code>_</code>), match any argument and do not bind any names.</li>
+</ul>
+<p>Here are two more examples that demonstrate using these simple patterns:</p>
+<pre><code class="language-haskell">fromString :: String -&gt; Boolean
+fromString &quot;true&quot; = true
+fromString _      = false
+
+toString :: Boolean -&gt; String
+toString true  = &quot;true&quot;
+toString false = &quot;false&quot;
+</code></pre>
+<p>Try these functions in PSCi.</p>
+<h2 id="guards"><a class="header" href="#guards">Guards</a></h2>
+<p>In the Euclidean algorithm example, we used an <code>if .. then .. else</code> expression to switch between the two alternatives when <code>m &gt; n</code> and <code>m &lt;= n</code>. Another option, in this case, would be to use a <em>guard</em>.</p>
+<p>A guard is a boolean-valued expression that must be satisfied in addition to the constraints imposed by the patterns. Here is the Euclidean algorithm rewritten to use a guard:</p>
+<pre><code class="language-haskell">gcdV2 :: Int -&gt; Int -&gt; Int
+gcdV2 n 0 = n
+gcdV2 0 n = n
+gcdV2 n m | n &gt; m     = gcdV2 (n - m) m
+          | otherwise = gcdV2 n (m - n)
+</code></pre>
+<p>In this case, the third line uses a guard to impose the extra condition that the first argument is strictly larger than the second. The guard in the final line uses the expression <code>otherwise</code>, which might seem like a keyword but is, in fact, just a regular binding in <code>Prelude</code>:</p>
+<pre><code class="language-text">&gt; :type otherwise
+Boolean
+
+&gt; otherwise
+true
+</code></pre>
+<p>This example demonstrates that guards appear on the left of the equals symbol, separated from the list of patterns by a pipe character (<code>|</code>).</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
-<li>(Easy) Write a recursive function <code>isEven</code> that returns <code>true</code> if and only if its input is an even integer.</li>
-<li>(Medium) Write a recursive function <code>countEven</code> that counts the number of even integers in an array. <em>Hint</em>: the function <code>head</code> (also available in <code>Data.Array</code>) can be used to find the first element in a non-empty array.</li>
+<li>(Easy) Write the <code>factorial</code> function using pattern matching. <em>Hint</em>: Consider the two corner cases of zero and non-zero inputs. <em>Note</em>: This is a repeat of an example from the previous chapter, but see if you can rewrite it here on your own.</li>
+<li>(Medium) Write a function <code>binomial</code> which finds the coefficient of the \( x ^ k \)th term in the polynomial expansion of \( ( 1 + x ) ^ n \). This is the same as the number of ways to choose a subset of \( k \) elements from a set of \( n \) elements. Use the formula \( n! \: / \: k! \, (n - k)! \), where \( ! \) is the factorial function written earlier. <em>Hint</em>: Use pattern matching to handle corner cases. If it takes a long time to complete or crashes with an error about the call stack, try adding more corner cases.</li>
+<li>(Medium) Write a function <code>pascal</code> which uses <a href="https://en.wikipedia.org/wiki/Pascal%27s_rule"><em>Pascal`s Rule</em></a> for computing the same binomial coefficients as the previous exercise.</li>
 </ol>
-<h2 id="maps"><a class="header" href="#maps">Maps</a></h2>
-<p>The <code>map</code> function is an example of a recursive function on arrays. It is used to transform the elements of an array by applying a function to each element in turn. Therefore, it changes the <em>contents</em> of the array but preserves its <em>shape</em> (i.e., its length).</p>
-<p>When we cover <em>type classes</em> later in the book, we will see that the <code>map</code> function is an example of a more general pattern of shape-preserving functions which transform a class of type constructors called <em>functors</em>.</p>
-<p>Let's try out the <code>map</code> function in PSCi:</p>
-<pre><code class="language-text">$ spago repl
-
-&gt; import Prelude
-&gt; map (\n -&gt; n + 1) [1, 2, 3, 4, 5]
-[2, 3, 4, 5, 6]
+<h2 id="array-patterns"><a class="header" href="#array-patterns">Array Patterns</a></h2>
+<p><em>Array literal patterns</em> provide a way to match arrays of a fixed length. For example, suppose we want to write a function <code>isEmpty</code> which identifies empty arrays. We could do this by using an empty array pattern (<code>[]</code>) in the first alternative:</p>
+<pre><code class="language-haskell">isEmpty :: forall a. Array a -&gt; Boolean
+isEmpty [] = true
+isEmpty _ = false
 </code></pre>
-<p>Notice how <code>map</code> is used – we provide a function that should be &quot;mapped over&quot; the array in the first argument, and the array itself in its second.</p>
-<h2 id="infix-operators"><a class="header" href="#infix-operators">Infix Operators</a></h2>
-<p>The <code>map</code> function can also be written between the mapping function and the array, by wrapping the function name in backticks:</p>
-<pre><code class="language-text">&gt; (\n -&gt; n + 1) `map` [1, 2, 3, 4, 5]
-[2, 3, 4, 5, 6]
+<p>Here is another function that matches arrays of length five, binding each of its five elements differently:</p>
+<pre><code class="language-haskell">takeFive :: Array Int -&gt; Int
+takeFive [0, 1, a, b, _] = a * b
+takeFive _ = 0
 </code></pre>
-<p>This syntax is called <em>infix function application</em>, and any function can be made infix in this way. It is usually most appropriate for functions with two arguments.</p>
-<p>There is an operator which is equivalent to the <code>map</code> function when used with arrays, called <code>&lt;$&gt;</code>.</p>
-<pre><code class="language-text">&gt; (\n -&gt; n + 1) &lt;$&gt; [1, 2, 3, 4, 5]
-[2, 3, 4, 5, 6]
-</code></pre>
-<p>Let's look at the type of <code>map</code>:</p>
-<pre><code class="language-text">&gt; :type map
-forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
-</code></pre>
-<p>The type of <code>map</code> is actually more general than we need in this chapter. For our purposes, we can treat <code>map</code> as if it had the following less general type:</p>
-<pre><code class="language-text">forall (a :: Type) (b :: Type). (a -&gt; b) -&gt; Array a -&gt; Array b
-</code></pre>
-<p>This type says that we can choose any two types, <code>a</code> and <code>b</code>, with which to apply the <code>map</code> function. <code>a</code> is the type of elements in the source array, and <code>b</code> is the type of elements in the target array. In particular, there is no reason why <code>map</code> has to preserve the type of the array elements. We can use <code>map</code> or <code>&lt;$&gt;</code> to transform integers to strings, for example:</p>
-<pre><code class="language-text">&gt; show &lt;$&gt; [1, 2, 3, 4, 5]
-
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
-</code></pre>
-<p>Even though the infix operator <code>&lt;$&gt;</code> looks like special syntax, it is in fact just an alias for a regular PureScript function. The function is simply <em>applied</em> using infix syntax. In fact, the function can be used like a regular function by enclosing its name in parentheses. This means that we can use the parenthesized name <code>(&lt;$&gt;)</code> in place of <code>map</code> on arrays:</p>
-<pre><code class="language-text">&gt; (&lt;$&gt;) show [1, 2, 3, 4, 5]
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
-</code></pre>
-<p>Infix function names are defined as <em>aliases</em> for existing function names. For example, the <code>Data.Array</code> module defines an infix operator <code>(..)</code> as a synonym for the <code>range</code> function, as follows:</p>
-<pre><code class="language-haskell">infix 8 range as ..
-</code></pre>
-<p>We can use this operator as follows:</p>
-<pre><code class="language-text">&gt; import Data.Array
-
-&gt; 1 .. 5
-[1, 2, 3, 4, 5]
-
-&gt; show &lt;$&gt; (1 .. 5)
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
-</code></pre>
-<p><em>Note</em>: Infix operators can be a great tool for defining domain-specific languages with a natural syntax. However, used excessively, they can render code unreadable to beginners, so it is wise to exercise caution when defining any new operators.</p>
-<p>In the example above, we parenthesized the expression <code>1 .. 5</code>, but this was actually not necessary, because the <code>Data.Array</code> module assigns a higher precedence level to the <code>..</code> operator than that assigned to the <code>&lt;$&gt;</code> operator. In the example above, the precedence of the <code>..</code> operator was defined as <code>8</code>, the number after the <code>infix</code> keyword. This is higher than the precedence level of <code>&lt;$&gt;</code>, meaning that we do not need to add parentheses:</p>
-<pre><code class="language-text">&gt; show &lt;$&gt; 1 .. 5
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
-</code></pre>
-<p>If we wanted to assign an <em>associativity</em> (left or right) to an infix operator, we could do so with the <code>infixl</code> and <code>infixr</code> keywords instead.  Using <code>infix</code> assigns no associativity, meaning that you must parenthesize any expression using the same operator multiple times or using multiple operators of the same precedence.</p>
-<h2 id="filtering-arrays"><a class="header" href="#filtering-arrays">Filtering Arrays</a></h2>
-<p>The <code>Data.Array</code> module provides another function <code>filter</code>, which is commonly used together with <code>map</code>. It provides the ability to create a new array from an existing array, keeping only those elements which match a predicate function.</p>
-<p>For example, suppose we wanted to compute an array of all numbers between 1 and 10 which were even. We could do so as follows:</p>
-<pre><code class="language-text">&gt; import Data.Array
-
-&gt; filter (\n -&gt; n `mod` 2 == 0) (1 .. 10)
-[2,4,6,8,10]
-</code></pre>
-<h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
-<ol>
-<li>(Easy) Write a function <code>squared</code> which calculates the squares of an array of numbers. <em>Hint</em>: Use the <code>map</code> or <code>&lt;$&gt;</code> function.</li>
-<li>(Easy) Write a function <code>keepNonNegative</code> which removes the negative numbers from an array of numbers. <em>Hint</em>: Use the <code>filter</code> function.</li>
-<li>(Medium)
-<ul>
-<li>Define an infix synonym <code>&lt;$?&gt;</code> for <code>filter</code>. <em>Note</em>: Infix synonyms may not be defined in the REPL, but you can define it in a file.</li>
-<li>Write a <code>keepNonNegativeRewrite</code> function, which is the same as <code>keepNonNegative</code>, but replaces <code>filter</code> with your new infix operator <code>&lt;$?&gt;</code>.</li>
-<li>Experiment with the precedence level and associativity of your operator in PSCi. <em>Note</em>: There are no unit tests for this step.</li>
-</ul>
-</li>
-</ol>
-<h2 id="flattening-arrays"><a class="header" href="#flattening-arrays">Flattening Arrays</a></h2>
-<p>Another standard function on arrays is the <code>concat</code> function, defined in <code>Data.Array</code>. <code>concat</code> flattens an array of arrays into a single array:</p>
-<pre><code class="language-text">&gt; import Data.Array
-
-&gt; :type concat
-forall (a :: Type). Array (Array a) -&gt; Array a
-
-&gt; concat [[1, 2, 3], [4, 5], [6]]
-[1, 2, 3, 4, 5, 6]
-</code></pre>
-<p>There is a related function called <code>concatMap</code> which is a combination of the <code>concat</code> and <code>map</code> functions. Where <code>map</code> takes a function from values to values (possibly of a different type), <code>concatMap</code> takes a function from values to arrays of values.</p>
-<p>Let's see it in action:</p>
-<pre><code class="language-text">&gt; import Data.Array
-
-&gt; :type concatMap
-forall (a :: Type) (b :: Type). (a -&gt; Array b) -&gt; Array a -&gt; Array b
-
-&gt; concatMap (\n -&gt; [n, n * n]) (1 .. 5)
-[1,1,2,4,3,9,4,16,5,25]
-</code></pre>
-<p>Here, we call <code>concatMap</code> with the function <code>\n -&gt; [n, n * n]</code> which sends an integer to the array of two elements consisting of that integer and its square. The result is an array of ten integers: the integers from 1 to 5 along with their squares.</p>
-<p>Note how <code>concatMap</code> concatenates its results. It calls the provided function once for each element of the original array, generating an array for each. Finally, it collapses all of those arrays into a single array, which is its result.</p>
-<p><code>map</code>, <code>filter</code> and <code>concatMap</code> form the basis for a whole range of functions over arrays called &quot;array comprehensions&quot;.</p>
-<h2 id="array-comprehensions"><a class="header" href="#array-comprehensions">Array Comprehensions</a></h2>
-<p>Suppose we wanted to find the factors of a number <code>n</code>. One simple way to do this would be by brute force: we could generate all pairs of numbers between 1 and <code>n</code>, and try multiplying them together. If the product was <code>n</code>, we would have found a pair of factors of <code>n</code>.</p>
-<p>We can perform this computation using array comprehension. We will do so in steps, using PSCi as our interactive development environment.</p>
-<p>The first step is to generate an array of pairs of numbers below <code>n</code>, which we can do using <code>concatMap</code>.</p>
-<p>Let's start by mapping each number to the array <code>1 .. n</code>:</p>
-<pre><code class="language-text">&gt; pairs n = concatMap (\i -&gt; 1 .. n) (1 .. n)
-</code></pre>
-<p>We can test our function</p>
-<pre><code class="language-text">&gt; pairs 3
-[1,2,3,1,2,3,1,2,3]
-</code></pre>
-<p>This is not quite what we want. Instead of just returning the second element of each pair, we need to map a function over the inner copy of <code>1 .. n</code> which will allow us to keep the entire pair:</p>
+<p>The first pattern only matches arrays with five elements, whose first and second elements are 0 and 1, respectively. In that case, the function returns the product of the third and fourth elements. In every other case, the function returns zero. For example, in PSCi:</p>
 <pre><code class="language-text">&gt; :paste
-… pairs' n =
-…   concatMap (\i -&gt;
-…     map (\j -&gt; [i, j]) (1 .. n)
-…   ) (1 .. n)
+… takeFive [0, 1, a, b, _] = a * b
+… takeFive _ = 0
 … ^D
 
-&gt; pairs' 3
-[[1,1],[1,2],[1,3],[2,1],[2,2],[2,3],[3,1],[3,2],[3,3]]
-</code></pre>
-<p>This is looking better. However, we are generating too many pairs: we keep both [1, 2] and [2, 1] for example. We can exclude the second case by making sure that <code>j</code> only ranges from <code>i</code> to <code>n</code>:</p>
-<pre><code class="language-text">&gt; :paste
-… pairs'' n =
-…   concatMap (\i -&gt;
-…     map (\j -&gt; [i, j]) (i .. n)
-…   ) (1 .. n)
-… ^D
-&gt; pairs'' 3
-[[1,1],[1,2],[1,3],[2,2],[2,3],[3,3]]
-</code></pre>
-<p>Great! Now that we have all of the pairs of potential factors, we can use <code>filter</code> to choose the pairs which multiply to give <code>n</code>:</p>
-<pre><code class="language-text">&gt; import Data.Foldable
+&gt; takeFive [0, 1, 2, 3, 4]
+6
 
-&gt; factors n = filter (\pair -&gt; product pair == n) (pairs'' n)
+&gt; takeFive [1, 2, 3, 4, 5]
+0
 
-&gt; factors 10
-[[1,10],[2,5]]
-</code></pre>
-<p>This code uses the <code>product</code> function from the <code>Data.Foldable</code> module in the <code>foldable-traversable</code> library.</p>
-<p>Excellent! We've managed to find the correct set of factor pairs without duplicates.</p>
-<h2 id="do-notation"><a class="header" href="#do-notation">Do Notation</a></h2>
-<p>However, we can improve the readability of our code considerably. <code>map</code> and <code>concatMap</code> are so fundamental, that they (or rather, their generalizations <code>map</code> and <code>bind</code>) form the basis of a special syntax called <em>do notation</em>.</p>
-<blockquote>
-<p><em>Note</em>: Just like <code>map</code> and <code>concatMap</code> allowed us to write <em>array comprehensions</em>, the more general operators <code>map</code> and <code>bind</code> allow us to write so-called <em>monad comprehensions</em>. We'll see plenty more examples of <em>monads</em> later in the book, but in this chapter, we will only consider arrays.</p>
-</blockquote>
-<p>We can rewrite our <code>factors</code> function using do notation as follows:</p>
-<pre><code class="language-haskell">factors :: Int -&gt; Array (Array Int)
-factors n = filter (\xs -&gt; product xs == n) do
-  i &lt;- 1 .. n
-  j &lt;- i .. n
-  pure [ i, j ]
-</code></pre>
-<p>The keyword <code>do</code> introduces a block of code that uses do notation. The block consists of expressions of a few types:</p>
-<ul>
-<li>Expressions that bind elements of an array to a name. These are indicated with the backwards-facing arrow <code>&lt;-</code>, with a name on the left, and an expression on the right whose type is an array.</li>
-<li>Expressions that do not bind elements of the array to names. The <code>do</code> <em>result</em> is an example of this kind of expression and is illustrated in the last line, <code>pure [i, j]</code>.</li>
-<li>Expressions that give names to expressions, using the <code>let</code> keyword.</li>
-</ul>
-<p>This new notation hopefully makes the structure of the algorithm clearer. If you mentally replace the arrow <code>&lt;-</code> with the word &quot;choose&quot;, you might read it as follows: &quot;choose an element <code>i</code> between 1 and n, then choose an element <code>j</code> between <code>i</code> and <code>n</code>, and return <code>[i, j]</code>&quot;.</p>
-<p>In the last line, we use the <code>pure</code> function. This function can be evaluated in PSCi, but we have to provide a type:</p>
-<pre><code class="language-text">&gt; pure [1, 2] :: Array (Array Int)
-[[1, 2]]
-</code></pre>
-<p>In the case of arrays, <code>pure</code> simply constructs a singleton array. We can modify our <code>factors</code> function to use this form, instead of using <code>pure</code>:</p>
-<pre><code class="language-haskell">factorsV2 :: Int -&gt; Array (Array Int)
-factorsV2 n = filter (\xs -&gt; product xs == n) do
-  i &lt;- 1 .. n
-  j &lt;- i .. n
-  [ [ i, j ] ]
-</code></pre>
-<p>and the result would be the same.</p>
-<h2 id="guards"><a class="header" href="#guards">Guards</a></h2>
-<p>One further change we can make to the <code>factors</code> function is to move the filter inside the array comprehension. This is possible using the <code>guard</code> function from the <code>Control.Alternative</code> module (from the <code>control</code> package):</p>
-<pre><code class="language-haskell">import Control.Alternative (guard)
-
-factorsV3 :: Int -&gt; Array (Array Int)
-factorsV3 n = do
-  i &lt;- 1 .. n
-  j &lt;- i .. n
-  guard $ i * j == n
-  pure [ i, j ]
-</code></pre>
-<p>Just like <code>pure</code>, we can apply the <code>guard</code> function in PSCi to understand how it works. The type of the <code>guard</code> function is more general than we need here:</p>
-<pre><code class="language-text">&gt; import Control.Alternative
-
-&gt; :type guard
-forall (m :: Type -&gt; Type). Alternative m =&gt; Boolean -&gt; m Unit
-</code></pre>
-<p>In our case, we can assume that PSCi reported the following type:</p>
-<pre><code class="language-haskell">Boolean -&gt; Array Unit
-</code></pre>
-<p>For our purposes, the following calculations tell us everything we need to know about the <code>guard</code> function on arrays:</p>
-<pre><code class="language-text">&gt; import Data.Array
-
-&gt; length $ guard true
-1
-
-&gt; length $ guard false
+&gt; takeFive []
 0
 </code></pre>
-<p>If we pass an expression to <code>guard</code> that evaluates to <code>true</code>, then it returns an array with a single element. If the expression evaluates to <code>false</code>, then its result is empty.</p>
-<p>This means that if the guard fails, then the current branch of the array comprehension will terminate early with no results. This means that a call to <code>guard</code> is equivalent to using <code>filter</code> on the intermediate array. Depending on the application, you might prefer to use <code>guard</code> instead of a <code>filter</code>. Try the two definitions of <code>factors</code> to verify that they give the same results.</p>
+<p>Array literal patterns allow us to match arrays of a fixed length. Still, PureScript does <em>not</em> provide any means of matching arrays of an unspecified length since destructuring immutable arrays in these sorts of ways can lead to poor performance. If you need a data structure that supports this sort of matching, the recommended approach is to use <code>Data.List</code>. Other data structures exist which provide improved asymptotic performance for different operations.</p>
+<h2 id="record-patterns-and-row-polymorphism"><a class="header" href="#record-patterns-and-row-polymorphism">Record Patterns and Row Polymorphism</a></h2>
+<p><em>Record patterns</em> are used to match – you guessed it – records.</p>
+<p>Record patterns look just like record literals, but instead of values on the right of the colon, we specify a binder for each field.</p>
+<p>For example, this pattern matches any record which contains fields called <code>first</code> and <code>last</code>, and binds their values to the names <code>x</code> and <code>y</code>, respectively:</p>
+<pre><code class="language-haskell">showPerson :: { first :: String, last :: String } -&gt; String
+showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
+</code></pre>
+<p>Record patterns provide a good example of an interesting feature of the PureScript type system: <em>row polymorphism</em>. Suppose we had defined <code>showPerson</code> without a type signature above. What would its inferred type have been? Interestingly, it is not the same as the type we gave:</p>
+<pre><code class="language-text">&gt; showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
+
+&gt; :type showPerson
+forall (r :: Row Type). { first :: String, last :: String | r } -&gt; String
+</code></pre>
+<p>What is the type variable <code>r</code> here? Well, if we try <code>showPerson</code> in PSCi, we see something interesting:</p>
+<pre><code class="language-text">&gt; showPerson { first: &quot;Phil&quot;, last: &quot;Freeman&quot; }
+&quot;Freeman, Phil&quot;
+
+&gt; showPerson { first: &quot;Phil&quot;, last: &quot;Freeman&quot;, location: &quot;Los Angeles&quot; }
+&quot;Freeman, Phil&quot;
+</code></pre>
+<p>We can append additional fields to the record, and the <code>showPerson</code> function will still work. As long as the record contains the <code>first</code> and <code>last</code> fields of type <code>String</code>, the function application is well-typed. However, it is <em>not</em> valid to call <code>showPerson</code> with too <em>few</em> fields:</p>
+<pre><code class="language-text">&gt; showPerson { first: &quot;Phil&quot; }
+
+Type of expression lacks required label &quot;last&quot;
+</code></pre>
+<p>We can read the new type signature of <code>showPerson</code> as &quot;takes any record with <code>first</code> and <code>last</code> fields which are <code>Strings</code> <em>and any other fields</em>, and returns a <code>String</code>&quot;. This function is polymorphic in the <em>row</em> <code>r</code> of record fields, hence the name <em>row polymorphism</em>.  Note that this behavior is different than that of the original <code>showPerson</code>. Without the row variable <code>r</code>, <code>showPerson</code> only accepts records with <em>exactly</em> a <code>first</code> and <code>last</code> field and no others.</p>
+<p>Note that we could have also written</p>
+<pre><code class="language-haskell">&gt; showPerson p = p.last &lt;&gt; &quot;, &quot; &lt;&gt; p.first
+</code></pre>
+<p>And PSCi would have inferred the same type.</p>
+<h2 id="record-puns"><a class="header" href="#record-puns">Record Puns</a></h2>
+<p>Recall that the <code>showPerson</code> function matches a record inside its argument, binding the <code>first</code> and <code>last</code> fields to values named <code>x</code> and <code>y</code>. We could alternatively reuse the field names themselves and simplify this sort of pattern match as follows:</p>
+<pre><code class="language-haskell">showPersonV2 :: { first :: String, last :: String } -&gt; String
+showPersonV2 { first, last } = last &lt;&gt; &quot;, &quot; &lt;&gt; first
+</code></pre>
+<p>Here, we only specify the names of the fields, and we do not need to specify the names of the values we want to introduce. This is called a <em>record pun</em>.</p>
+<p>It is also possible to use record puns to <em>construct</em> records. For example, if we have values named <code>first</code> and <code>last</code> in scope, we can construct a person record using <code>{ first, last }</code>:</p>
+<pre><code class="language-haskell">unknownPerson :: { first :: String, last :: String }
+unknownPerson = { first, last }
+  where
+    first = &quot;Jane&quot;
+    last  = &quot;Doe&quot;
+</code></pre>
+<p>This may improve the readability of code in some circumstances.</p>
+<h2 id="nested-patterns"><a class="header" href="#nested-patterns">Nested Patterns</a></h2>
+<p>Array patterns and record patterns both combine smaller patterns to build larger patterns. For the most part, the examples above have only used simple patterns inside array patterns and record patterns. Still, it is important to note that patterns can be arbitrarily <em>nested</em>, which allows functions to be defined using conditions on potentially complex data types.</p>
+<p>For example, this code combines two record patterns:</p>
+<pre><code class="language-haskell">type Address = { street :: String, city :: String }
+
+type Person = { name :: String, address :: Address }
+
+livesInLA :: Person -&gt; Boolean
+livesInLA { address: { city: &quot;Los Angeles&quot; } } = true
+livesInLA _ = false
+</code></pre>
+<h2 id="named-patterns"><a class="header" href="#named-patterns">Named Patterns</a></h2>
+<p>Patterns can be <em>named</em> to bring additional names into scope when using nested patterns. Any pattern can be named by using the <code>@</code> symbol.</p>
+<p>For example, this function sorts two-element arrays, naming the two elements, but also naming the array itself:</p>
+<pre><code class="language-haskell">sortPair :: Array Int -&gt; Array Int
+sortPair arr@[x, y]
+  | x &lt;= y = arr
+  | otherwise = [y, x]
+sortPair arr = arr
+</code></pre>
+<p>This way, we save ourselves from allocating a new array if the pair is already sorted. Note that if the input array does not contain <em>exactly</em> two elements, then this function returns it unchanged, even if it's unsorted.</p>
+<h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
+<ol>
+<li>(Easy) Write a function <code>sameCity</code> which uses record patterns to test whether two <code>Person</code> records belong to the same city.</li>
+<li>(Medium) What is the most general type of the <code>sameCity</code> function, considering row polymorphism? What about the <code>livesInLA</code> function defined above? <em>Note</em>: There is no test for this exercise.</li>
+<li>(Medium) Write a function <code>fromSingleton</code> that uses an array literal pattern to extract the sole member of a singleton array. If the array is not a singleton, your function should return a provided default value. Your function should have type <code>forall a. a -&gt; Array a -&gt; a</code></li>
+</ol>
+<h2 id="case-expressions"><a class="header" href="#case-expressions">Case Expressions</a></h2>
+<p>Patterns do not only appear in top-level function declarations. It is possible to use patterns to match on an intermediate value in a computation using a <code>case</code> expression. Case expressions provide a similar type of utility to anonymous functions: it is not always desirable to give a name to a function, and a <code>case</code> expression allows us to avoid naming a function just because we want to use a pattern.</p>
+<p>Here is an example. This function computes the &quot;longest zero suffix&quot; of an array (the longest suffix which sums to zero):</p>
+<pre><code class="language-haskell">import Data.Array (tail)
+import Data.Foldable (sum)
+import Data.Maybe (fromMaybe)
+
+lzs :: Array Int -&gt; Array Int
+lzs [] = []
+lzs xs = case sum xs of
+           0 -&gt; xs
+           _ -&gt; lzs (fromMaybe [] $ tail xs)
+</code></pre>
+<p>For example:</p>
+<pre><code class="language-text">&gt; lzs [1, 2, 3, 4]
+[]
+
+&gt; lzs [1, -1, -2, 3]
+[-1, -2, 3]
+</code></pre>
+<p>This function works by case analysis. If the array is empty, our only option is to return an empty array. If the array is non-empty, we first use a <code>case</code> expression to split it into two cases. If the sum of the array is zero, we return the whole array. If not, we recurse on the tail of the array.</p>
+<h2 id="pattern-match-failures-and-partial-functions"><a class="header" href="#pattern-match-failures-and-partial-functions">Pattern Match Failures and Partial Functions</a></h2>
+<p>If patterns in a case expression are tried in order, what happens when none of the patterns in a case alternatives match their inputs? In this case, the case expression will fail at runtime with a <em>pattern match failure</em>.</p>
+<p>We can see this behavior with a simple example:</p>
+<pre><code class="language-haskell">import Partial.Unsafe (unsafePartial)
+
+partialFunction :: Boolean -&gt; Boolean
+partialFunction = unsafePartial \true -&gt; true
+</code></pre>
+<p>This function contains only a single case, which only matches a single input, <code>true</code>. If we compile this file and test in PSCi with any other argument, we will see an error at runtime:</p>
+<pre><code class="language-text">&gt; partialFunction false
+
+Failed pattern match
+</code></pre>
+<p>Functions that return a value for any combination of inputs are called <em>total</em> functions, and functions that do not are called <em>partial</em>.</p>
+<p>It is generally considered better to define total functions where possible. If it is known that a function does not return a result for some valid set of inputs, it is usually better to return a value capable of indicating failure, such as type <code>Maybe a</code> for some <code>a</code>, using <code>Nothing</code> when it cannot return a valid result. This way, the presence or absence of a value can be indicated in a type-safe way.</p>
+<p>The PureScript compiler will generate an error if it can detect that your function is not total due to an incomplete pattern match. The <code>unsafePartial</code> function can be used to silence these errors (if you are sure your partial function is safe!) If we removed the call to the <code>unsafePartial</code> function above, then the compiler would generate the following error:</p>
+<pre><code class="language-text">A case expression could not be determined to cover all inputs.
+The following additional cases are required to cover all inputs:
+
+  false
+</code></pre>
+<p>This tells us that the value <code>false</code> is not matched by any pattern. In general, these warnings might include multiple unmatched cases.</p>
+<p>If we also omit the type signature above:</p>
+<pre><code class="language-haskell">partialFunction true = true
+</code></pre>
+<p>then PSCi infers a curious type:</p>
+<pre><code class="language-text">&gt; :type partialFunction
+
+Partial =&gt; Boolean -&gt; Boolean
+</code></pre>
+<p>We will see more types that involve the <code>=&gt;</code> symbol later on in the book (they are related to <em>type classes</em>), but for now, it suffices to observe that PureScript keeps track of partial functions using the type system and that we must explicitly tell the type checker when they are safe.</p>
+<p>The compiler will also generate a warning in certain cases when it can detect that cases are <em>redundant</em> (that is, a case only matches values which a prior case would have matched):</p>
+<pre><code class="language-haskell">redundantCase :: Boolean -&gt; Boolean
+redundantCase true = true
+redundantCase false = false
+redundantCase false = false
+</code></pre>
+<p>In this case, the last case is correctly identified as redundant:</p>
+<pre><code class="language-text">A case expression contains unreachable cases:
+
+  false
+</code></pre>
+<blockquote>
+<p><em>Note</em>: PSCi does not show warnings, so to reproduce this example, you will need to save this function as a file and compile it using <code>spago build</code>.</p>
+</blockquote>
+<h2 id="algebraic-data-types"><a class="header" href="#algebraic-data-types">Algebraic Data Types</a></h2>
+<p>This section will introduce a feature of the PureScript type system called <em>Algebraic Data Types</em> (or <em>ADTs</em>), which are fundamentally related to pattern matching.</p>
+<p>However, we'll first consider a motivating example, which will provide the basis of a solution to this chapter's problem of implementing a simple vector graphics library.</p>
+<p>Suppose we wanted to define a type to represent some simple shapes: lines, rectangles, circles, text, etc. In an object oriented language, we would probably define an interface or abstract class <code>Shape</code>, and one concrete subclass for each type of shape that we wanted to be able to work with.</p>
+<p>However, this approach has one major drawback: to work with <code>Shape</code>s abstractly, it is necessary to identify all of the operations one might wish to perform and to define them on the <code>Shape</code> interface. It becomes difficult to add new operations without breaking modularity.</p>
+<p>Algebraic data types provide a type-safe way to solve this problem if the set of shapes is known in advance. It is possible to define new operations on <code>Shape</code> in a modular way and still maintain type-safety.</p>
+<p>Here is how <code>Shape</code> might be represented as an algebraic data type:</p>
+<pre><code class="language-haskell">data Shape
+  = Circle Point Number
+  | Rectangle Point Number Number
+  | Line Point Point
+  | Text Point String
+
+type Point =
+  { x :: Number
+  , y :: Number
+  }
+</code></pre>
+<p>This declaration defines <code>Shape</code> as a sum of different constructors, and for each constructor identifies the included data. A <code>Shape</code> is either a <code>Circle</code> that contains a center <code>Point</code> and a radius (a number), or a <code>Rectangle</code>, or a <code>Line</code>, or <code>Text</code>. There are no other ways to construct a value of type <code>Shape</code>.</p>
+<p>An algebraic data type is introduced using the <code>data</code> keyword, followed by the name of the new type and any type arguments. The type's constructors (i.e., its <em>data constructors</em>) are defined after the equals symbol and separated by pipe characters (<code>|</code>). The data carried by an ADT's constructors doesn't have to be restricted to primitive types: constructors can include records, arrays, or even other ADTs.</p>
+<p>Let's see another example from PureScript's standard libraries. We saw the <code>Maybe</code> type, which is used to define optional values, earlier in the book. Here is its definition from the <code>maybe</code> package:</p>
+<pre><code class="language-haskell">data Maybe a = Nothing | Just a
+</code></pre>
+<p>This example demonstrates the use of a type parameter <code>a</code>. Reading the pipe character as the word &quot;or&quot;, its definition almost reads like English: &quot;a value of type <code>Maybe a</code> is either <code>Nothing</code>, or <code>Just</code> a value of type <code>a</code>&quot;.</p>
+<p>Note that we don't use the syntax <code>forall a.</code> anywhere in our data definition. <code>forall</code> syntax is necessary for functions but is not used when defining ADTs with <code>data</code> or type aliases with <code>type</code>.</p>
+<p>Data constructors can also be used to define recursive data structures. Here is one more example, defining a data type of singly-linked lists of elements of type <code>a</code>:</p>
+<pre><code class="language-haskell">data List a = Nil | Cons a (List a)
+</code></pre>
+<p>This example is taken from the <code>lists</code> package. Here, the <code>Nil</code> constructor represents an empty list, and <code>Cons</code> is used to create non-empty lists from a head element and a tail. Notice how the tail is defined using the data type <code>List a</code>, making this a recursive data type.</p>
+<h2 id="using-adts"><a class="header" href="#using-adts">Using ADTs</a></h2>
+<p>It is simple enough to use the constructors of an algebraic data type to construct a value: simply apply them like functions, providing arguments corresponding to the data included with the appropriate constructor.</p>
+<p>For example, the <code>Line</code> constructor defined above required two <code>Point</code>s, so to construct a <code>Shape</code> using the <code>Line</code> constructor, we have to provide two arguments of type <code>Point</code>:</p>
+<pre><code class="language-haskell">exampleLine :: Shape
+exampleLine = Line p1 p2
+  where
+    p1 :: Point
+    p1 = { x: 0.0, y: 0.0 }
+
+    p2 :: Point
+    p2 = { x: 100.0, y: 50.0 }
+</code></pre>
+<p>So, constructing values of algebraic data types is simple, but how do we use them? This is where the important connection with pattern matching appears: the only way to consume a value of an algebraic data type is to use a pattern to match its constructor.</p>
+<p>Let's see an example. Suppose we want to convert a <code>Shape</code> into a <code>String</code>. We have to use pattern matching to discover which constructor was used to construct the <code>Shape</code>. We can do this as follows:</p>
+<pre><code class="language-haskell">showShape :: Shape -&gt; String
+showShape (Circle c r) =
+  &quot;Circle [center: &quot; &lt;&gt; showPoint c &lt;&gt; &quot;, radius: &quot; &lt;&gt; show r &lt;&gt; &quot;]&quot;
+showShape (Rectangle c w h) =
+  &quot;Rectangle [center: &quot; &lt;&gt; showPoint c &lt;&gt; &quot;, width: &quot; &lt;&gt; show w &lt;&gt; &quot;, height: &quot; &lt;&gt; show h &lt;&gt; &quot;]&quot;
+showShape (Line start end) =
+  &quot;Line [start: &quot; &lt;&gt; showPoint start &lt;&gt; &quot;, end: &quot; &lt;&gt; showPoint end &lt;&gt; &quot;]&quot;
+showShape (Text loc text) =
+  &quot;Text [location: &quot; &lt;&gt; showPoint loc &lt;&gt; &quot;, text: &quot; &lt;&gt; show text &lt;&gt; &quot;]&quot;
+
+showPoint :: Point -&gt; String
+showPoint { x, y } =
+  &quot;(&quot; &lt;&gt; show x &lt;&gt; &quot;, &quot; &lt;&gt; show y &lt;&gt; &quot;)&quot;
+</code></pre>
+<p>Each constructor can be used as a pattern, and the arguments to the constructor can themselves be bound using patterns of their own. Consider the first case of <code>showShape</code>: if the <code>Shape</code> matches the <code>Circle</code> constructor, then we bring the arguments of <code>Circle</code> (center and radius) into scope using two variable patterns, <code>c</code> and <code>r</code>. The other cases are similar.</p>
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
 <ol>
-<li>(Easy) Write a function <code>isPrime</code>, which tests whether its integer argument is prime. <em>Hint</em>: Use the <code>factors</code> function.</li>
-<li>(Medium) Write a function <code>cartesianProduct</code> which uses do notation to find the <em>cartesian product</em> of two arrays, i.e., the set of all pairs of elements <code>a</code>, <code>b</code>, where <code>a</code> is an element of the first array, and <code>b</code> is an element of the second.</li>
-<li>(Medium) Write a function <code>triples :: Int -&gt; Array (Array Int)</code>, which takes a number \( n \) and returns all Pythagorean triples whose components (the \( a \), \( b \), and \( c \) values) are each less than or equal to \( n \). A <em>Pythagorean triple</em> is an array of numbers \( [ a, b, c ] \) such that \( a ^ 2 + b ^ 2 = c ^ 2 \). <em>Hint</em>: Use the <code>guard</code> function in an array comprehension.</li>
-<li>(Difficult) Write a function <code>primeFactors</code> which produces the <a href="https://www.mathsisfun.com/prime-factorization.html">prime factorization</a> of <code>n</code>, i.e., the array of prime integers whose product is <code>n</code>. <em>Hint</em>: for an integer greater than 1, break the problem into two subproblems: finding the first factor and the remaining factors.</li>
+<li>(Easy) Write a function <code>circleAtOrigin</code> which constructs a <code>Circle</code> (of type <code>Shape</code>) centered at the origin with a radius <code>10.0</code>.</li>
+<li>(Medium) Write a function <code>doubleScaleAndCenter</code>  that scales the size of a <code>Shape</code> by a factor of <code>2.0</code> and centers it at the origin.</li>
+<li>(Medium) Write a function <code>shapeText</code> which extracts the text from a <code>Shape</code>. It should return <code>Maybe String</code>, and use the <code>Nothing</code> constructor if the input is not constructed using <code>Text</code>.</li>
 </ol>
-<h2 id="folds"><a class="header" href="#folds">Folds</a></h2>
-<p>Left and right folds over arrays provide another class of interesting functions that can be implemented using recursion.</p>
-<p>Start by importing the <code>Data.Foldable</code> module and inspecting the types of the <code>foldl</code> and <code>foldr</code> functions using PSCi:</p>
-<pre><code class="language-text">&gt; import Data.Foldable
+<h2 id="newtypes"><a class="header" href="#newtypes">Newtypes</a></h2>
+<p>There is a special case of algebraic data types, called <em>newtypes</em>. Newtypes are introduced using the <code>newtype</code> keyword instead of the <code>data</code> keyword.</p>
+<p>Newtypes must define <em>exactly one</em> constructor, and that constructor must take <em>exactly one</em> argument. That is, a newtype gives a new name to an existing type. In fact, the values of a newtype have the same runtime representation as the underlying type, so there is no runtime performance overhead. They are, however, distinct from the point of view of the type system. This gives an extra layer of type safety.</p>
+<p>As an example, we might want to define newtypes as type-level aliases for <code>Number</code>, to ascribe units like volts, amps, and ohms:</p>
+<pre><code class="language-haskell">newtype Volt = Volt Number
+newtype Ohm = Ohm Number
+newtype Amp = Amp Number
+</code></pre>
+<p>Then we define functions and values using these types:</p>
+<pre><code class="language-haskell">calculateCurrent :: Volt -&gt; Ohm -&gt; Amp
+calculateCurrent (Volt v) (Ohm r) = Amp (v / r)
 
-&gt; :type foldl
-forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Foldable f =&gt; (b -&gt; a -&gt; b) -&gt; b -&gt; f a -&gt; b
+battery :: Volt
+battery = Volt 1.5
 
-&gt; :type foldr
-forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Foldable f =&gt; (a -&gt; b -&gt; b) -&gt; b -&gt; f a -&gt; b
-</code></pre>
-<p>These types are more general than we are interested in right now. For this chapter, we can simplify and assume the following (more specific) type signatures:</p>
-<pre><code class="language-text">-- foldl
-forall a b. (b -&gt; a -&gt; b) -&gt; b -&gt; Array a -&gt; b
+lightbulb :: Ohm
+lightbulb = Ohm 500.0
 
--- foldr
-forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Array a -&gt; b
+current :: Amp
+current = calculateCurrent battery lightbulb
 </code></pre>
-<p>In both cases, the type <code>a</code> corresponds to the type of elements of our array. The type <code>b</code> can be thought of as the type of an &quot;accumulator&quot;, which will accumulate a result as we traverse the array.</p>
-<p>The difference between the <code>foldl</code> and <code>foldr</code> functions is the direction of the traversal. <code>foldl</code> folds the array &quot;from the left&quot;, whereas <code>foldr</code> folds the array &quot;from the right&quot;.</p>
-<p>Let's see these functions in action. Let's use <code>foldl</code> to sum an array of integers. The type <code>a</code> will be <code>Int</code>, and we can also choose the result type <code>b</code> to be <code>Int</code>. We need to provide three arguments: a function <code>Int -&gt; Int -&gt; Int</code>, which will add the next element to the accumulator, an initial value for the accumulator of type <code>Int</code>, and an array of <code>Int</code>s to add. For the first argument, we can use the addition operator, and the initial value of the accumulator will be zero:</p>
-<pre><code class="language-text">&gt; foldl (+) 0 (1 .. 5)
-15
+<p>This prevents us from making silly mistakes, such as attempting to calculate the current produced by <em>two</em> lightbulbs <em>without</em> a voltage source.</p>
+<pre><code class="language-haskell">current :: Amp
+current = calculateCurrent lightbulb lightbulb
+{-
+TypesDoNotUnify:
+  current = calculateCurrent lightbulb lightbulb
+                             ^^^^^^^^^
+  Could not match type
+    Ohm
+  with type
+    Volt
+-}
 </code></pre>
-<p>In this case, it didn't matter whether we used <code>foldl</code> or <code>foldr</code>, because the result is the same, no matter what order the additions happen in:</p>
-<pre><code class="language-text">&gt; foldr (+) 0 (1 .. 5)
-15
-</code></pre>
-<p>Let's write an example where the choice of folding function matters to illustrate the difference. Instead of the addition function, let's use string concatenation to build a string:</p>
-<pre><code class="language-text">&gt; foldl (\acc n -&gt; acc &lt;&gt; show n) &quot;&quot; [1,2,3,4,5]
-&quot;12345&quot;
+<p>If we instead just used <code>Number</code> without <code>newtype</code>, then the compiler can't help us catch this mistake:</p>
+<pre><code class="language-haskell">-- This also compiles, but is not as type safe.
+calculateCurrent :: Number -&gt; Number -&gt; Number
+calculateCurrent v r = v / r
 
-&gt; foldr (\n acc -&gt; acc &lt;&gt; show n) &quot;&quot; [1,2,3,4,5]
-&quot;54321&quot;
-</code></pre>
-<p>This illustrates the difference between the two functions. The left fold expression is equivalent to the following application:</p>
-<pre><code class="language-text">(((((&quot;&quot; &lt;&gt; show 1) &lt;&gt; show 2) &lt;&gt; show 3) &lt;&gt; show 4) &lt;&gt; show 5)
-</code></pre>
-<p>Whereas the right fold is equivalent to this:</p>
-<pre><code class="language-text">(((((&quot;&quot; &lt;&gt; show 5) &lt;&gt; show 4) &lt;&gt; show 3) &lt;&gt; show 2) &lt;&gt; show 1)
-</code></pre>
-<h2 id="tail-recursion"><a class="header" href="#tail-recursion">Tail Recursion</a></h2>
-<p>Recursion is a powerful technique for specifying algorithms but comes with a problem: evaluating recursive functions in JavaScript can lead to stack overflow errors if our inputs are too large.</p>
-<p>It is easy to verify this problem with the following code in PSCi:</p>
-<pre><code class="language-text">&gt; :paste
-… f n =
-…   if n == 0
-…     then 0
-…     else 1 + f (n - 1)
-… ^D
+battery :: Number
+battery = 1.5
 
-&gt; f 10
-10
+lightbulb :: Number
+lightbulb = 500.0
 
-&gt; f 100000
-RangeError: Maximum call stack size exceeded
+current :: Number
+current = calculateCurrent lightbulb lightbulb -- uncaught mistake
 </code></pre>
-<p>This is a problem. If we adopt recursion as a standard technique from functional programming, we need a way to deal with possibly unbounded recursion.</p>
-<p>PureScript provides a partial solution to this problem through <em>tail recursion optimization</em>.</p>
-<blockquote>
-<p><em>Note</em>: more complete solutions to the problem can be implemented in libraries using so-called <em>trampolining</em>, but that is beyond the scope of this chapter. The interested reader can consult the documentation for the <a href="https://pursuit.purescript.org/packages/purescript-free"><code>free</code></a> and <a href="https://pursuit.purescript.org/packages/purescript-tailrec"><code>tailrec</code></a> packages.</p>
-</blockquote>
-<p>The key observation that enables tail recursion optimization: a recursive call in <em>tail position</em> to a function can be replaced with a <em>jump</em>, which does not allocate a stack frame. A call is in <em>tail position</em> when it is the last call made before a function returns. This is why we observed a stack overflow in the example – the recursive call to <code>f</code> was <em>not</em> in tail position.</p>
-<p>In practice, the PureScript compiler does not replace the recursive call with a jump, but rather replaces the entire recursive function with a <em>while loop</em>.</p>
-<p>Here is an example of a recursive function with all recursive calls in tail position:</p>
-<pre><code class="language-haskell">factorialTailRec :: Int -&gt; Int -&gt; Int
-factorialTailRec n acc =
-  if n == 0
-    then acc
-    else factorialTailRec (n - 1) (acc * n)
+<p>Note that while a newtype can only have a single constructor, and the constructor must be of a single value, a newtype <em>can</em> take any number of type variables. For example, the following newtype would be a valid definition (<code>err</code> and <code>a</code> are the type variables, and the <code>CouldError</code> constructor expects a <em>single</em> value of type <code>Either err a</code>):</p>
+<pre><code class="language-Haskell">newtype CouldError err a = CouldError (Either err a)
 </code></pre>
-<p>Notice that the recursive call to <code>factorialTailRec</code> is the last thing in this function – it is in tail position.</p>
-<h2 id="accumulators"><a class="header" href="#accumulators">Accumulators</a></h2>
-<p>One common way to turn a not tail recursive function into a tail recursive is to use an <em>accumulator parameter</em>. An accumulator parameter is an additional parameter added to a function that <em>accumulates</em> a return value, as opposed to using the return value to accumulate the result.</p>
-<p>For example, consider again the <code>length</code> function presented at the beginning of the chapter:</p>
-<pre><code class="language-haskell">length :: forall a. Array a -&gt; Int
-length arr =
-  if null arr
-    then 0
-    else 1 + (length $ fromMaybe [] $ tail arr)
+<p>Also, note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:</p>
+<pre><code class="language-haskell">newtype Coulomb = MakeCoulomb Number
 </code></pre>
-<p>This implementation is not tail recursive, so the generated JavaScript will cause a stack overflow when executed on a large input array. However, we can make it tail recursive, by introducing a second function argument to accumulate the result instead:</p>
-<pre><code class="language-haskell">lengthTailRec :: forall a. Array a -&gt; Int
-lengthTailRec arr = length' arr 0
-  where
-  length' :: Array a -&gt; Int -&gt; Int
-  length' arr' acc =
-    if null arr'
-      then acc
-      else length' (fromMaybe [] $ tail arr') (acc + 1)
-</code></pre>
-<p>In this case, we delegate to the helper function <code>length'</code>, which is tail recursive – its only recursive call is in the last case, in tail position. This means that the generated code will be a <em>while loop</em> and not blow the stack for large inputs.</p>
-<p>To understand the implementation of <code>lengthTailRec</code>, note that the helper function <code>length'</code> essentially uses the accumulator parameter to maintain an additional piece of state – the partial result. It starts at 0 and grows by adding 1 for every element in the input array.</p>
-<p>Note also that while we might think of the accumulator as a &quot;state&quot;, there is no direct mutation.</p>
-<h2 id="prefer-folds-to-explicit-recursion"><a class="header" href="#prefer-folds-to-explicit-recursion">Prefer Folds to Explicit Recursion</a></h2>
-<p>If we can write our recursive functions using tail recursion, we can benefit from tail recursion optimization, so it becomes tempting to try to write all of our functions in this form. However, it is often easy to forget that many functions can be written directly as a fold over an array or similar data structure. Writing algorithms directly in terms of combinators such as <code>map</code> and <code>fold</code> has the added advantage of code simplicity – these combinators are well-understood, and as such, communicate the <em>intent</em> of the algorithm much better than explicit recursion.</p>
-<p>For example, we can reverse an array using <code>foldr</code>:</p>
-<pre><code class="language-text">&gt; import Data.Foldable
-
-&gt; :paste
-… reverse :: forall a. Array a -&gt; Array a
-… reverse = foldr (\x xs -&gt; xs &lt;&gt; [x]) []
-… ^D
-
-&gt; reverse [1, 2, 3]
-[3,2,1]
-</code></pre>
-<p>Writing <code>reverse</code> in terms of <code>foldl</code> will be left as an exercise for the reader.</p>
+<p>In this case, <code>Coulomb</code> is the <em>type constructor</em> (of zero arguments), and <code>MakeCoulomb</code> is the <em>data constructor</em>. These constructors live in different namespaces, even when the names are identical, such as with the <code>Volt</code> example. This is true for all ADTs. Note that although the type constructor and data constructor can have different names, in practice, it is idiomatic for them to share the same name. This is the case with <code>Amp</code> and <code>Volt</code> types above.</p>
+<p>Another application of newtypes is to attach different <em>behavior</em> to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss <em>type classes</em>.</p>
 <h2 id="exercises-3"><a class="header" href="#exercises-3">Exercises</a></h2>
 <ol>
-<li>(Easy) Write a function <code>allTrue</code> which uses <code>foldl</code> to test whether an array of boolean values are all true.</li>
-<li>(Medium - No Test) Characterize those arrays <code>xs</code> for which the function <code>foldl (==) false xs</code> returns <code>true</code>. In other words, complete the sentence: &quot;The function returns <code>true</code> when <code>xs</code> contains ...&quot;</li>
-<li>(Medium) Write a function <code>fibTailRec</code> which is the same as <code>fib</code> but in tail recursive form. <em>Hint</em>: Use an accumulator parameter.</li>
-<li>(Medium) Write <code>reverse</code> in terms of <code>foldl</code>.</li>
+<li>(Easy) Define <code>Watt</code> as a <code>newtype</code> of <code>Number</code>. Then define a <code>calculateWattage</code> function using this new <code>Watt</code> type and the above definitions <code>Amp</code> and <code>Volt</code>:</li>
 </ol>
-<h2 id="a-virtual-filesystem"><a class="header" href="#a-virtual-filesystem">A Virtual Filesystem</a></h2>
-<p>In this section, we'll apply what we've learned, writing functions that will work with a model of a filesystem. We will use maps, folds, and filters to work with a predefined API.</p>
-<p>The <code>Data.Path</code> module defines an API for a virtual filesystem as follows:</p>
-<ul>
-<li>There is a type <code>Path</code> which represents a path in the filesystem.</li>
-<li>There is a path <code>root</code> which represents the root directory.</li>
-<li>The <code>ls</code> function enumerates the files in a directory.</li>
-<li>The <code>filename</code> function returns the file name for a <code>Path</code>.</li>
-<li>The <code>size</code> function returns the file size for a <code>Path</code> representing a file.</li>
-<li>The <code>isDirectory</code> function tests whether a <code>Path</code> is a file or a directory.</li>
-</ul>
-<p>In terms of types, we have the following type definitions:</p>
-<pre><code class="language-haskell">root :: Path
-
-ls :: Path -&gt; Array Path
-
-filename :: Path -&gt; String
-
-size :: Path -&gt; Maybe Int
-
-isDirectory :: Path -&gt; Boolean
+<pre><code class="language-haskell">calculateWattage :: Amp -&gt; Volt -&gt; Watt
 </code></pre>
-<p>We can try out the API in PSCi:</p>
-<pre><code class="language-text">$ spago repl
-
-&gt; import Data.Path
-
-&gt; root
-/
-
-&gt; isDirectory root
-true
-
-&gt; ls root
-[/bin/,/etc/,/home/]
+<p>A wattage in <code>Watt</code>s can be calculated as the product of a given current in <code>Amp</code>s and a given voltage in <code>Volt</code>s.</p>
+<h2 id="a-library-for-vector-graphics"><a class="header" href="#a-library-for-vector-graphics">A Library for Vector Graphics</a></h2>
+<p>Let's use the data types we have defined above to create a simple library for using vector graphics.</p>
+<p>Define a type synonym for a <code>Picture</code> – just an array of <code>Shape</code>s:</p>
+<pre><code class="language-haskell">type Picture = Array Shape
 </code></pre>
-<p>The <code>Test.Examples</code> module defines functions that use the <code>Data.Path</code> API. You do not need to modify the <code>Data.Path</code> module, or understand its implementation. We will work entirely in the <code>Test.Examples</code> module.</p>
-<h2 id="listing-all-files"><a class="header" href="#listing-all-files">Listing All Files</a></h2>
-<p>Let's write a function that performs a deep enumeration of all files inside a directory. This function will have the following type:</p>
-<pre><code class="language-haskell">allFiles :: Path -&gt; Array Path
+<p>For debugging purposes, we'll want to be able to turn a <code>Picture</code> into something readable. The <code>showPicture</code> function lets us do that:</p>
+<pre><code class="language-haskell">showPicture :: Picture -&gt; Array String
+showPicture = map showShape
 </code></pre>
-<p>We can define this function by recursion. First, we can use <code>ls</code> to enumerate the immediate children of the directory. For each child, we can recursively apply <code>allFiles</code>, which will return an array of paths. <code>concatMap</code> will allow us to apply <code>allFiles</code> and flatten the results simultaneously.</p>
-<p>Finally, we use the cons operator <code>:</code> to include the current file:</p>
-<pre><code class="language-haskell">allFiles file = file : concatMap allFiles (ls file)
-</code></pre>
-<blockquote>
-<p><em>Note</em>: the cons operator <code>:</code> has poor performance on immutable arrays, so it is not generally recommended. Performance can be improved by using other data structures, such as linked lists and sequences.</p>
-</blockquote>
-<p>Let's try this function in PSCi:</p>
-<pre><code class="language-text">&gt; import Test.Examples
-&gt; import Data.Path
+<p>Let's try it out. Compile your module with <code>spago build</code> and open PSCi with <code>spago repl</code>:</p>
+<pre><code class="language-text">$ spago build
+$ spago repl
 
-&gt; allFiles root
+&gt; import Data.Picture
 
-[/,/bin/,/bin/cp,/bin/ls,/bin/mv,/etc/,/etc/hosts, ...]
+&gt; showPicture [ Line { x: 0.0, y: 0.0 } { x: 1.0, y: 1.0 } ]
+
+[&quot;Line [start: (0.0, 0.0), end: (1.0, 1.0)]&quot;]
 </code></pre>
-<p>Great! Now let's see if we can write this function using an array comprehension using do notation.</p>
-<p>Recall that a backwards arrow corresponds to choosing an element from an array. The first step is to choose an element from the immediate children of the argument. Then we call the function recursively for that file. Since we use do notation, there is an implicit call to <code>concatMap</code>, which concatenates all of the recursive results.</p>
-<p>Here is the new version:</p>
-<pre><code class="language-haskell">allFiles' :: Path -&gt; Array Path
-allFiles' file = file : do
-  child &lt;- ls file
-  allFiles' child
+<h2 id="computing-bounding-rectangles"><a class="header" href="#computing-bounding-rectangles">Computing Bounding Rectangles</a></h2>
+<p>The example code for this module contains a function <code>bounds</code> which computes the smallest bounding rectangle for a <code>Picture</code>.</p>
+<p>The <code>Bounds</code> type defines a bounding rectangle.</p>
+<pre><code class="language-haskell">type Bounds =
+  { top    :: Number
+  , left   :: Number
+  , bottom :: Number
+  , right  :: Number
+  }
 </code></pre>
-<p>Try out the new version in PSCi – you should get the same result. I'll let you decide which version you find clearer.</p>
+<p><code>bounds</code> uses the <code>foldl</code> function from <code>Data.Foldable</code> to traverse the array of <code>Shapes</code> in a <code>Picture</code>, and accumulate the smallest bounding rectangle:</p>
+<pre><code class="language-haskell">bounds :: Picture -&gt; Bounds
+bounds = foldl combine emptyBounds
+  where
+  combine :: Bounds -&gt; Shape -&gt; Bounds
+  combine b shape = union (shapeBounds shape) b
+</code></pre>
+<p>In the base case, we need to find the smallest bounding rectangle of an empty <code>Picture</code>, and the empty bounding rectangle defined by <code>emptyBounds</code> suffices.</p>
+<p>The accumulating function <code>combine</code> is defined in a <code>where</code> block. <code>combine</code> takes a bounding rectangle computed from <code>foldl</code>'s recursive call, and the next <code>Shape</code> in the array, and uses the <code>union</code> function to compute the union of the two bounding rectangles. The <code>shapeBounds</code> function computes the bounds of a single shape using pattern matching.</p>
 <h2 id="exercises-4"><a class="header" href="#exercises-4">Exercises</a></h2>
 <ol>
-<li>
-<p>(Easy) Write a function <code>onlyFiles</code> which returns all <em>files</em> (not directories) in all subdirectories of a directory.</p>
-</li>
-<li>
-<p>(Medium) Write a function <code>whereIs</code> to search for a file by name. The function should return a value of type <code>Maybe Path</code>, indicating the directory containing the file, if it exists. It should behave as follows:</p>
-<pre><code class="language-text">&gt; whereIs root &quot;ls&quot;
-Just (/bin/)
-
-&gt; whereIs root &quot;cat&quot;
-Nothing
-</code></pre>
-<p><em>Hint</em>: Try to write this function as an array comprehension using do notation.</p>
-</li>
-<li>
-<p>(Difficult) Write a function <code>largestSmallest</code> which takes a <code>Path</code> and returns an array containing the single largest and single smallest files in the <code>Path</code>. <em>Note</em>: consider the cases where there are zero or one files in the <code>Path</code> by returning an empty or one-element array, respectively.</p>
-</li>
+<li>(Medium) Extend the vector graphics library with a new operation <code>area</code> that computes the area of a <code>Shape</code>. For the purpose of this exercise, the area of a line or a piece of text is assumed to be zero.</li>
+<li>(Difficult) Extend the <code>Shape</code> type with a new data constructor <code>Clipped</code>, which clips another <code>Picture</code> to a rectangle. Extend the <code>shapeBounds</code> function to compute the bounds of a clipped picture. Note that this makes <code>Shape</code> into a recursive data type. <em>Hint</em>: The compiler will walk you through extending other functions as required.</li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
-<p>In this chapter, we covered the basics of recursion in PureScript to express algorithms concisely. We also introduced user-defined infix operators, standard functions on arrays such as maps, filters, and folds, and array comprehensions that combine these ideas. Finally, we showed the importance of using tail recursion to avoid stack overflow errors and how to use accumulator parameters to convert functions to tail recursive form.</p>
+<p>In this chapter, we covered pattern matching, a basic but powerful technique from functional programming. We saw how to use simple patterns as well as array and record patterns to match parts of deep data structures.</p>
+<p>This chapter also introduced algebraic data types, which are closely related to pattern matching. We saw how algebraic data types allow concise descriptions of data structures and provide a modular way to extend data types with new operations.</p>
+<p>Finally, we covered <em>row polymorphism</em>, a powerful type of abstraction that allows many idiomatic JavaScript functions to be given a type.</p>
+<p>In the rest of the book, we will use ADTs and pattern matching extensively, so it will pay dividends to become familiar with them now. Try creating your own algebraic data types and writing functions to consume them using pattern matching.</p>
 
                     </main>
 
@@ -655,7 +612,7 @@ Nothing
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="chapter5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="chapter5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -669,7 +626,7 @@ Nothing
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="chapter5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="chapter5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
