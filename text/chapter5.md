@@ -340,6 +340,14 @@ Just like `pure`, we can apply the `guard` function in PSCi to understand how it
 forall (m :: Type -> Type). Alternative m => Boolean -> m Unit
 ```
 
+> The `Unit` type represents values with no computational content — the absence of a concrete meaningful value.
+>
+> We often use `Unit` "wrapped" in a type constructor as the return type of a computation where we only care about the _effects_ of the computation (or a "shape" of the result) and not some concrete value.
+>
+> For example, the `main` function has the type `Effect Unit`. Main is an entry point to the project — we don't call it directly.
+>
+> We'll explain what `m` in the type signature means in Chapter 6.
+
 In our case, we can assume that PSCi reported the following type:
 
 ```haskell
