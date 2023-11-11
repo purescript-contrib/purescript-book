@@ -206,7 +206,7 @@
 <p>The exercises are licensed under the MIT license.</p>
 <h2 id="release"><a class="header" href="#release">Release</a></h2>
 <p>PureScript v0.15.12</p>
-<p>Published on 2023-10-30</p>
+<p>Published on 2023-11-11</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <h2 id="functional-javascript"><a class="header" href="#functional-javascript">Functional JavaScript</a></h2>
 <p>Functional programming techniques have been making appearances in JavaScript for some time now:</p>
@@ -1609,6 +1609,12 @@ factorsV3 n = do
 &gt; :type guard
 forall (m :: Type -&gt; Type). Alternative m =&gt; Boolean -&gt; m Unit
 </code></pre>
+<blockquote>
+<p>The <code>Unit</code> type represents values with no computational content — the absence of a concrete meaningful value.</p>
+<p>We often use <code>Unit</code> &quot;wrapped&quot; in a type constructor as the return type of a computation where we only care about the <em>effects</em> of the computation (or a &quot;shape&quot; of the result) and not some concrete value.</p>
+<p>For example, the <code>main</code> function has the type <code>Effect Unit</code>. Main is an entry point to the project — we don't call it directly.</p>
+<p>We'll explain what <code>m</code> in the type signature means in Chapter 6.</p>
+</blockquote>
 <p>In our case, we can assume that PSCi reported the following type:</p>
 <pre><code class="language-haskell">Boolean -&gt; Array Unit
 </code></pre>
