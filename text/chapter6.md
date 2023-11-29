@@ -49,15 +49,45 @@ instance Show Boolean where
 
 This code declares a type class instance; we say that the `Boolean` type _belongs to the `Show` type class_.
 
-> Optionally, we can give names to type class instances to aid the readability of the generated JavaScript. For example:
+> If you're wondering, the generated JS code looks like this:
 >
->  ```haskell
->  instance showBoolean :: Show Boolean where
->    show true = "true"
->    show false = "false"
->  ```
+> ```javascript
+> var showBoolean = {
+>     show: function (v) {
+>         if (v) {
+>             return "true";
+>         };
+>        if (!v) {
+>             return "false";
+>         };
+>         throw new Error("Failed pattern match at ...");
+>     }
+> };
+> ```
+>
+> If you're unhappy with the generated name, you can give names to type class instances. For example:
+>
+> ```haskell
+> instance myShowBoolean :: Show Boolean where
+>   show true = "true"
+>   show false = "false"
+> ```
+>
+> ```javascript
+> var myShowBoolean = {
+>     show: function (v) {
+>         if (v) {
+>             return "true";
+>         };
+>        if (!v) {
+>             return "false";
+>         };
+>         throw new Error("Failed pattern match at ...");
+>     }
+> };
+> ```
 
-We can try out the `Show` type class in PSCi, by showing a few values with different types:
+We can try out the `Show` type class in PSCi by showing a few values with different types:
 
 ```text
 > import Prelude
