@@ -92,7 +92,9 @@
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Foreword</a></li><li class="chapter-item expanded "><a href="chapter1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter2.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="chapter3.html"><strong aria-hidden="true">3.</strong> Functions and Records</a></li><li class="chapter-item expanded "><a href="chapter4.html"><strong aria-hidden="true">4.</strong> Pattern Matching</a></li><li class="chapter-item expanded "><a href="chapter5.html"><strong aria-hidden="true">5.</strong> Recursion, Maps And Folds</a></li><li class="chapter-item expanded "><a href="chapter6.html" class="active"><strong aria-hidden="true">6.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="chapter7.html"><strong aria-hidden="true">7.</strong> Applicative Validation</a></li><li class="chapter-item expanded "><a href="chapter8.html"><strong aria-hidden="true">8.</strong> The Effect Monad</a></li><li class="chapter-item expanded "><a href="chapter9.html"><strong aria-hidden="true">9.</strong> Asynchronous Effects</a></li><li class="chapter-item expanded "><a href="chapter10.html"><strong aria-hidden="true">10.</strong> The Foreign Function Interface</a></li><li class="chapter-item expanded "><a href="chapter11.html"><strong aria-hidden="true">11.</strong> Monadic Adventures</a></li><li class="chapter-item expanded "><a href="chapter12.html"><strong aria-hidden="true">12.</strong> Canvas Graphics</a></li><li class="chapter-item expanded "><a href="chapter13.html"><strong aria-hidden="true">13.</strong> Generative Testing</a></li><li class="chapter-item expanded "><a href="chapter14.html"><strong aria-hidden="true">14.</strong> Domain-Specific Languages</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
 
         <!-- Track and set sidebar scroll position -->
@@ -206,8 +208,40 @@
   show true = &quot;true&quot;
   show false = &quot;false&quot;
 </code></pre>
-<p>This code declares a type class instance called <code>showBoolean</code> – in PureScript, type class instances can be named to aid the readability of the generated JavaScript. We say that the <code>Boolean</code> type <em>belongs to the <code>Show</code> type class</em>.</p>
-<p>We can try out the <code>Show</code> type class in PSCi, by showing a few values with different types:</p>
+<p>This code declares a type class instance; we say that the <code>Boolean</code> type <em>belongs to the <code>Show</code> type class</em>.</p>
+<blockquote>
+<p>If you're wondering, the generated JS code looks like this:</p>
+<pre><code class="language-javascript">var showBoolean = {
+    show: function (v) {
+        if (v) {
+            return &quot;true&quot;;
+        };
+       if (!v) {
+            return &quot;false&quot;;
+        };
+        throw new Error(&quot;Failed pattern match at ...&quot;);
+    }
+};
+</code></pre>
+<p>If you're unhappy with the generated name, you can give names to type class instances. For example:</p>
+<pre><code class="language-haskell">instance myShowBoolean :: Show Boolean where
+  show true = &quot;true&quot;
+  show false = &quot;false&quot;
+</code></pre>
+<pre><code class="language-javascript">var myShowBoolean = {
+    show: function (v) {
+        if (v) {
+            return &quot;true&quot;;
+        };
+       if (!v) {
+            return &quot;false&quot;;
+        };
+        throw new Error(&quot;Failed pattern match at ...&quot;);
+    }
+};
+</code></pre>
+</blockquote>
+<p>We can try out the <code>Show</code> type class in PSCi by showing a few values with different types:</p>
 <pre><code class="language-text">&gt; import Prelude
 
 &gt; show true
