@@ -9,31 +9,21 @@ import Data.Path (Path, ls)
 
 -- ANCHOR: factorial
 factorial :: Int -> Int
-factorial n =
-  if n == 0 then
-    1
-  else
-    n * factorial (n - 1)
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
 -- ANCHOR_END: factorial
 
 -- ANCHOR: fib
 fib :: Int -> Int
-fib n =
-  if n == 0 then
-    0
-  else if n == 1 then
-    1
-  else
-    fib (n - 1) + fib (n - 2)
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n - 1) + fib (n - 2)
 -- ANCHOR_END: fib
 
 -- ANCHOR: length
 length :: forall a. Array a -> Int
-length arr =
-  if null arr then
-    0
-  else
-    1 + (length $ fromMaybe [] $ tail arr)
+length [] = 0
+length arr = 1 + (length $ fromMaybe [] $ tail arr)
 -- ANCHOR_END: length
 
 -- ANCHOR: factors
@@ -63,10 +53,8 @@ factorsV3 n = do
 
 -- ANCHOR: factorialTailRec
 factorialTailRec :: Int -> Int -> Int
-factorialTailRec n acc =
-  if n == 0
-    then acc
-    else factorialTailRec (n - 1) (acc * n)
+factorialTailRec 0 acc = acc
+factorialTailRec n acc = factorialTailRec (n - 1) (acc * n)
 -- ANCHOR_END: factorialTailRec
 
 -- ANCHOR: lengthTailRec
@@ -74,10 +62,8 @@ lengthTailRec :: forall a. Array a -> Int
 lengthTailRec arr = length' arr 0
   where
   length' :: Array a -> Int -> Int
-  length' arr' acc =
-    if null arr'
-      then acc
-      else length' (fromMaybe [] $ tail arr') (acc + 1)
+  length' [] acc = acc
+  length' arr' acc = length' (fromMaybe [] $ tail arr') (acc + 1)
 -- ANCHOR_END: lengthTailRec
 
 -- ANCHOR: allFiles_signature
