@@ -202,27 +202,17 @@
 <p>Let's see some simple examples of recursion in PureScript.</p>
 <p>Here is the usual <em>factorial function</em> example:</p>
 <pre><code class="language-haskell">factorial :: Int -&gt; Int
-factorial n =
-  if n == 0 then
-    1
-  else
-    n * factorial (n - 1)
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
 </code></pre>
 <p>Here, we can see how the factorial function is computed by reducing the problem to a subproblem – computing the factorial of a smaller integer. When we reach zero, the answer is immediate.</p>
 <p>Here is another common example that computes the <em>Fibonacci function</em>:</p>
 <pre><code class="language-haskell">fib :: Int -&gt; Int
-fib n =
-  if n == 0 then
-    0
-  else if n == 1 then
-    1
-  else
-    fib (n - 1) + fib (n - 2)
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n - 1) + fib (n - 2)
 </code></pre>
 <p>Again, this problem is solved by considering the solutions to subproblems. In this case, there are two subproblems, corresponding to the expressions <code>fib (n - 1)</code> and <code>fib (n - 2)</code>. When these two subproblems are solved, we assemble the result by adding the partial results.</p>
-<blockquote>
-<p>Note that, while the above examples of <code>factorial</code> and <code>fib</code> work as intended, a more idiomatic implementation would use pattern matching instead of <code>if</code>/<code>then</code>/<code>else</code>. Pattern-matching techniques are discussed in a later chapter.</p>
-</blockquote>
 <h2 id="recursion-on-arrays"><a class="header" href="#recursion-on-arrays">Recursion on Arrays</a></h2>
 <p>We are not limited to defining recursive functions over the <code>Int</code> type! We will see recursive functions defined over a wide array of data types when we cover <em>pattern matching</em> later in the book, but for now, we will restrict ourselves to numbers and arrays.</p>
 <p>Just as we branch based on whether the input is non-zero, in the array case, we will branch based on whether the input is non-empty. Consider this function, which computes the length of an array using recursion:</p>
@@ -232,13 +222,10 @@ import Data.Array (null, tail)
 import Data.Maybe (fromMaybe)
 
 length :: forall a. Array a -&gt; Int
-length arr =
-  if null arr then
-    0
-  else
-    1 + (length $ fromMaybe [] $ tail arr)
+length [] = 0
+length arr = 1 + (length $ fromMaybe [] $ tail arr)
 </code></pre>
-<p>In this function, we use an <code>if .. then .. else</code> expression to branch based on the emptiness of the array. The <code>null</code> function returns <code>true</code> on an empty array. Empty arrays have a length of zero, and a non-empty array has a length that is one more than the length of its tail.</p>
+<p>In this function, we branch based on the emptiness of the array. The <code>null</code> function returns <code>true</code> on an empty array. Empty arrays have a length of zero, and a non-empty array has a length that is one more than the length of its tail.</p>
 <p>The <code>tail</code> function returns a <code>Maybe</code> wrapping the given array without its first element. If the array is empty (i.e., it doesn't have a tail), <code>Nothing</code> is returned. The <code>fromMaybe</code> function takes a default value and a <code>Maybe</code> value. If the latter is <code>Nothing</code> it returns the default; in the other case, it returns the value wrapped by <code>Just</code>.</p>
 <p>This example is a very impractical way to find the length of an array in JavaScript, but it should provide enough help to allow you to complete the following exercises:</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
@@ -527,30 +514,24 @@ RangeError: Maximum call stack size exceeded
 <p>In practice, the PureScript compiler does not replace the recursive call with a jump, but rather replaces the entire recursive function with a <em>while loop</em>.</p>
 <p>Here is an example of a recursive function with all recursive calls in tail position:</p>
 <pre><code class="language-haskell">factorialTailRec :: Int -&gt; Int -&gt; Int
-factorialTailRec n acc =
-  if n == 0
-    then acc
-    else factorialTailRec (n - 1) (acc * n)
+factorialTailRec 0 acc = acc
+factorialTailRec n acc = factorialTailRec (n - 1) (acc * n)
 </code></pre>
 <p>Notice that the recursive call to <code>factorialTailRec</code> is the last thing in this function – it is in tail position.</p>
 <h2 id="accumulators"><a class="header" href="#accumulators">Accumulators</a></h2>
 <p>One common way to turn a not tail recursive function into a tail recursive is to use an <em>accumulator parameter</em>. An accumulator parameter is an additional parameter added to a function that <em>accumulates</em> a return value, as opposed to using the return value to accumulate the result.</p>
 <p>For example, consider again the <code>length</code> function presented at the beginning of the chapter:</p>
 <pre><code class="language-haskell">length :: forall a. Array a -&gt; Int
-length arr =
-  if null arr
-    then 0
-    else 1 + (length $ fromMaybe [] $ tail arr)
+length [] = 0
+length arr = 1 + (length $ fromMaybe [] $ tail arr)
 </code></pre>
 <p>This implementation is not tail recursive, so the generated JavaScript will cause a stack overflow when executed on a large input array. However, we can make it tail recursive, by introducing a second function argument to accumulate the result instead:</p>
 <pre><code class="language-haskell">lengthTailRec :: forall a. Array a -&gt; Int
 lengthTailRec arr = length' arr 0
   where
   length' :: Array a -&gt; Int -&gt; Int
-  length' arr' acc =
-    if null arr'
-      then acc
-      else length' (fromMaybe [] $ tail arr') (acc + 1)
+  length' [] acc = acc
+  length' arr' acc = length' (fromMaybe [] $ tail arr') (acc + 1)
 </code></pre>
 <p>In this case, we delegate to the helper function <code>length'</code>, which is tail recursive – its only recursive call is in the last case, in tail position. This means that the generated code will be a <em>while loop</em> and not blow the stack for large inputs.</p>
 <p>To understand the implementation of <code>lengthTailRec</code>, note that the helper function <code>length'</code> essentially uses the accumulator parameter to maintain an additional piece of state – the partial result. It starts at 0 and grows by adding 1 for every element in the input array.</p>
