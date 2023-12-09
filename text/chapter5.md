@@ -61,7 +61,7 @@ import Data.Maybe (fromMaybe)
 {{#include ../exercises/chapter5/test/Examples.purs:length}}
 ```
 
-In this function, we use an `if .. then .. else` expression to branch based on the emptiness of the array. The `null` function returns `true` on an empty array. Empty arrays have a length of zero, and a non-empty array has a length that is one more than the length of its tail.
+In this function, we branch based on the emptiness of the array. The `null` function returns `true` on an empty array. Empty arrays have a length of zero, and a non-empty array has a length that is one more than the length of its tail.
 
 The `tail` function returns a `Maybe` wrapping the given array without its first element. If the array is empty (i.e., it doesn't have a tail), `Nothing` is returned. The `fromMaybe` function takes a default value and a `Maybe` value. If the latter is `Nothing` it returns the default; in the other case, it returns the value wrapped by `Just`.
 
@@ -487,11 +487,7 @@ One common way to turn a not tail recursive function into a tail recursive is to
 For example, consider again the `length` function presented at the beginning of the chapter:
 
 ```haskell
-length :: forall a. Array a -> Int
-length arr =
-  if null arr
-    then 0
-    else 1 + (length $ fromMaybe [] $ tail arr)
+{{#include ../exercises/chapter5/test/Examples.purs:length}}
 ```
 
 This implementation is not tail recursive, so the generated JavaScript will cause a stack overflow when executed on a large input array. However, we can make it tail recursive, by introducing a second function argument to accumulate the result instead:
