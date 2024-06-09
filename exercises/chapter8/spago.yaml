@@ -27,4 +27,4 @@ package:
 workspace:
   extraPackages: {}
   packageSet:
-    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.2-20220615/packages.json
+    registry: 10.0.0
