@@ -1,0 +1,34 @@
+package:
+  dependencies:
+    - aff
+    - aff-promise
+    - argonaut
+    - argonaut-generic
+    - arrays
+    - bifunctors
+    - console
+    - control
+    - effect
+    - either
+    - exceptions
+    - foldable-traversable
+    - free
+    - functions
+    - maybe
+    - ordered-collections
+    - pairs
+    - prelude
+    - react-basic
+    - react-basic-dom
+    - react-basic-hooks
+    - strings
+    - test-unit
+    - tuples
+    - validation
+    - web-dom
+    - web-html
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.2-20220615/packages.json

@@ -1,0 +1,4073 @@
+workspace:
+  packages:
+    my-project:
+      path: ./
+      dependencies:
+        - arrays
+        - console
+        - effect
+        - foldable-traversable
+        - integers
+        - maybe
+        - numbers
+        - partial
+        - prelude
+        - test-unit
+      test_dependencies: []
+      build_plan:
+        - aff
+        - arrays
+        - avar
+        - bifunctors
+        - catenable-lists
+        - console
+        - const
+        - contravariant
+        - control
+        - datetime
+        - distributive
+        - effect
+        - either
+        - enums
+        - exceptions
+        - exists
+        - foldable-traversable
+        - free
+        - functions
+        - functors
+        - gen
+        - identity
+        - integers
+        - invariant
+        - js-timers
+        - lazy
+        - lcg
+        - lists
+        - maybe
+        - newtype
+        - nonempty
+        - numbers
+        - ordered-collections
+        - orders
+        - parallel
+        - partial
+        - prelude
+        - profunctor
+        - quickcheck
+        - random
+        - record
+        - refs
+        - safe-coerce
+        - st
+        - strings
+        - tailrec
+        - test-unit
+        - transformers
+        - tuples
+        - type-equality
+        - unfoldable
+        - unsafe-coerce
+  package_set:
+    address:
+      url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.2-20220615/packages.json
+    compiler: ">=0.15.0 <0.16.0"
+    content:
+      ace:
+        repo: https://github.com/purescript-contrib/purescript-ace.git
+        version: v9.0.0
+        dependencies:
+          - arrays
+          - effect
+          - foreign
+          - nullable
+          - prelude
+          - web-html
+          - web-uievents
+      aff:
+        repo: https://github.com/purescript-contrib/purescript-aff.git
+        version: v7.0.0
+        dependencies:
+          - datetime
+          - effect
+          - exceptions
+          - functions
+          - parallel
+          - transformers
+          - unsafe-coerce
+      aff-bus:
+        repo: https://github.com/purescript-contrib/purescript-aff-bus.git
+        version: v6.0.0
+        dependencies:
+          - aff
+          - avar
+          - console
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - lists
+          - prelude
+          - refs
+          - tailrec
+          - transformers
+          - tuples
+      aff-coroutines:
+        repo: https://github.com/purescript-contrib/purescript-aff-coroutines.git
+        version: v9.0.0
+        dependencies:
+          - aff
+          - avar
+          - coroutines
+          - effect
+      aff-promise:
+        repo: https://github.com/nwolverson/purescript-aff-promise.git
+        version: v4.0.0
+        dependencies:
+          - aff
+          - foreign
+      aff-retry:
+        repo: https://github.com/Unisay/purescript-aff-retry.git
+        version: v2.0.0
+        dependencies:
+          - aff
+          - arrays
+          - datetime
+          - effect
+          - either
+          - exceptions
+          - integers
+          - maybe
+          - newtype
+          - numbers
+          - prelude
+          - random
+          - transformers
+      affjax:
+        repo: https://github.com/purescript-contrib/purescript-affjax.git
+        version: v13.0.0
+        dependencies:
+          - aff
+          - argonaut-core
+          - arraybuffer-types
+          - foreign
+          - form-urlencoded
+          - http-methods
+          - integers
+          - media-types
+          - nullable
+          - refs
+          - unsafe-coerce
+          - web-xhr
+      affjax-node:
+        repo: https://github.com/purescript-contrib/purescript-affjax-node.git
+        version: v1.0.0
+        dependencies:
+          - aff
+          - affjax
+          - either
+          - maybe
+          - prelude
+      affjax-web:
+        repo: https://github.com/purescript-contrib/purescript-affjax-web.git
+        version: v1.0.0
+        dependencies:
+          - aff
+          - affjax
+          - either
+          - maybe
+          - prelude
+      ansi:
+        repo: https://github.com/hdgarrood/purescript-ansi.git
+        version: v7.0.0
+        dependencies:
+          - foldable-traversable
+          - lists
+          - strings
+      argonaut:
+        repo: https://github.com/purescript-contrib/purescript-argonaut.git
+        version: v9.0.0
+        dependencies:
+          - argonaut-codecs
+          - argonaut-core
+          - argonaut-traversals
+      argonaut-codecs:
+        repo: https://github.com/purescript-contrib/purescript-argonaut-codecs.git
+        version: v9.0.0
+        dependencies:
+          - argonaut-core
+          - arrays
+          - effect
+          - foreign-object
+          - identity
+          - integers
+          - maybe
+          - nonempty
+          - ordered-collections
+          - prelude
+          - record
+      argonaut-core:
+        repo: https://github.com/purescript-contrib/purescript-argonaut-core.git
+        version: v7.0.0
+        dependencies:
+          - arrays
+          - control
+          - either
+          - foreign-object
+          - functions
+          - gen
+          - maybe
+          - nonempty
+          - prelude
+          - strings
+          - tailrec
+      argonaut-generic:
+        repo: https://github.com/purescript-contrib/purescript-argonaut-generic.git
+        version: v8.0.0
+        dependencies:
+          - argonaut-codecs
+          - argonaut-core
+          - prelude
+          - record
+      argonaut-traversals:
+        repo: https://github.com/purescript-contrib/purescript-argonaut-traversals.git
+        version: v10.0.0
+        dependencies:
+          - argonaut-codecs
+          - argonaut-core
+          - profunctor-lenses
+      argparse-basic:
+        repo: https://github.com/natefaubion/purescript-argparse-basic.git
+        version: v2.0.0
+        dependencies:
+          - arrays
+          - bifunctors
+          - control
+          - either
+          - foldable-traversable
+          - integers
+          - lists
+          - maybe
+          - newtype
+          - numbers
+          - prelude
+          - record
+          - strings
+          - tuples
+          - unfoldable
+      arraybuffer:
+        repo: https://github.com/purescript-contrib/purescript-arraybuffer.git
+        version: v13.0.0
+        dependencies:
+          - arraybuffer-types
+          - arrays
+          - effect
+          - float32
+          - functions
+          - gen
+          - maybe
+          - nullable
+          - prelude
+          - tailrec
+          - uint
+          - unfoldable
+      arraybuffer-builder:
+        repo: https://github.com/jamesdbrock/purescript-arraybuffer-builder.git
+        version: v3.0.1
+        dependencies:
+          - arraybuffer
+          - arraybuffer-types
+          - effect
+          - float32
+          - identity
+          - lists
+          - maybe
+          - newtype
+          - prelude
+          - tailrec
+          - transformers
+          - uint
+      arraybuffer-types:
+        repo: https://github.com/purescript-contrib/purescript-arraybuffer-types.git
+        version: v3.0.2
+        dependencies: []
+      arrays:
+        repo: https://github.com/purescript/purescript-arrays.git
+        version: v7.0.0
+        dependencies:
+          - bifunctors
+          - control
+          - foldable-traversable
+          - maybe
+          - nonempty
+          - partial
+          - prelude
+          - st
+          - tailrec
+          - tuples
+          - unfoldable
+          - unsafe-coerce
+      arrays-zipper:
+        repo: https://github.com/JordanMartinez/purescript-arrays-zipper.git
+        version: v2.0.1
+        dependencies:
+          - arrays
+          - control
+          - quickcheck
+      ask:
+        repo: https://github.com/Mateiadrielrafael/purescript-ask.git
+        version: v1.0.0
+        dependencies:
+          - unsafe-coerce
+      assert:
+        repo: https://github.com/purescript/purescript-assert.git
+        version: v6.0.0
+        dependencies:
+          - console
+          - effect
+          - prelude
+      avar:
+        repo: https://github.com/purescript-contrib/purescript-avar.git
+        version: v5.0.0
+        dependencies:
+          - aff
+          - effect
+          - either
+          - exceptions
+          - functions
+          - maybe
+      b64:
+        repo: https://github.com/menelaos/purescript-b64.git
+        version: v0.0.8
+        dependencies:
+          - arraybuffer-types
+          - either
+          - encoding
+          - enums
+          - exceptions
+          - functions
+          - partial
+          - prelude
+          - strings
+      barlow-lens:
+        repo: https://github.com/sigma-andex/purescript-barlow-lens.git
+        version: v0.9.0
+        dependencies:
+          - either
+          - foldable-traversable
+          - lists
+          - maybe
+          - newtype
+          - prelude
+          - profunctor
+          - profunctor-lenses
+          - tuples
+          - typelevel-prelude
+      bifunctors:
+        repo: https://github.com/purescript/purescript-bifunctors.git
+        version: v6.0.0
+        dependencies:
+          - const
+          - either
+          - newtype
+          - prelude
+          - tuples
+      bigints:
+        repo: https://github.com/sharkdp/purescript-bigints.git
+        version: v7.0.1
+        dependencies:
+          - integers
+          - maybe
+          - strings
+      bower-json:
+        repo: https://github.com/klntsky/purescript-bower-json.git
+        version: v3.0.0
+        dependencies:
+          - argonaut-codecs
+          - arrays
+          - either
+          - foldable-traversable
+          - foreign-object
+          - maybe
+          - newtype
+          - prelude
+          - tuples
+      call-by-name:
+        repo: https://github.com/natefaubion/purescript-call-by-name.git
+        version: v4.0.1
+        dependencies:
+          - control
+          - either
+          - lazy
+          - maybe
+          - unsafe-coerce
+      canvas:
+        repo: https://github.com/purescript-web/purescript-canvas.git
+        version: v6.0.0
+        dependencies:
+          - arraybuffer-types
+          - effect
+          - exceptions
+          - functions
+          - maybe
+      canvas-action:
+        repo: https://github.com/artemisSystem/purescript-canvas-action.git
+        version: v9.0.0
+        dependencies:
+          - aff
+          - arrays
+          - canvas
+          - colors
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - maybe
+          - numbers
+          - polymorphic-vectors
+          - prelude
+          - refs
+          - run
+          - transformers
+          - tuples
+          - type-equality
+          - typelevel-prelude
+          - unsafe-coerce
+          - web-dom
+          - web-events
+          - web-html
+      cartesian:
+        repo: https://github.com/Ebmtranceboy/purescript-cartesian.git
+        version: v1.0.6
+        dependencies:
+          - console
+          - effect
+          - integers
+          - psci-support
+      catenable-lists:
+        repo: https://github.com/purescript/purescript-catenable-lists.git
+        version: v7.0.0
+        dependencies:
+          - control
+          - foldable-traversable
+          - lists
+          - maybe
+          - prelude
+          - tuples
+          - unfoldable
+      channel:
+        repo: https://github.com/ConnorDillon/purescript-channel.git
+        version: v1.0.0
+        dependencies:
+          - aff
+          - assert
+          - avar
+          - console
+          - contravariant
+          - control
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - lazy
+          - maybe
+          - newtype
+          - prelude
+          - tailrec
+          - transformers
+          - tuples
+      checked-exceptions:
+        repo: https://github.com/natefaubion/purescript-checked-exceptions.git
+        version: v3.1.1
+        dependencies:
+          - prelude
+          - transformers
+          - variant
+      codec:
+        repo: https://github.com/garyb/purescript-codec.git
+        version: v5.0.0
+        dependencies:
+          - profunctor
+          - transformers
+      codec-argonaut:
+        repo: https://github.com/garyb/purescript-codec-argonaut.git
+        version: v9.0.0
+        dependencies:
+          - argonaut-core
+          - codec
+          - ordered-collections
+          - type-equality
+          - variant
+      colors:
+        repo: https://github.com/purescript-contrib/purescript-colors.git
+        version: v7.0.1
+        dependencies:
+          - arrays
+          - integers
+          - lists
+          - numbers
+          - partial
+          - strings
+      concurrent-queues:
+        repo: https://github.com/purescript-contrib/purescript-concurrent-queues.git
+        version: v3.0.0
+        dependencies:
+          - aff
+          - avar
+          - effect
+      console:
+        repo: https://github.com/purescript/purescript-console.git
+        version: v6.0.0
+        dependencies:
+          - effect
+          - prelude
+      const:
+        repo: https://github.com/purescript/purescript-const.git
+        version: v6.0.0
+        dependencies:
+          - invariant
+          - newtype
+          - prelude
+      contravariant:
+        repo: https://github.com/purescript/purescript-contravariant.git
+        version: v6.0.0
+        dependencies:
+          - const
+          - either
+          - newtype
+          - prelude
+          - tuples
+      control:
+        repo: https://github.com/purescript/purescript-control.git
+        version: v6.0.0
+        dependencies:
+          - newtype
+          - prelude
+      convertable-options:
+        repo: https://github.com/natefaubion/purescript-convertable-options.git
+        version: v1.0.0
+        dependencies:
+          - console
+          - effect
+          - maybe
+          - record
+      coroutines:
+        repo: https://github.com/purescript-contrib/purescript-coroutines.git
+        version: v7.0.0
+        dependencies:
+          - freet
+          - parallel
+          - profunctor
+      css:
+        repo: https://github.com/purescript-contrib/purescript-css.git
+        version: v6.0.0
+        dependencies:
+          - colors
+          - console
+          - effect
+          - nonempty
+          - profunctor
+          - strings
+          - these
+          - transformers
+      datetime:
+        repo: https://github.com/purescript/purescript-datetime.git
+        version: v6.0.0
+        dependencies:
+          - bifunctors
+          - control
+          - either
+          - enums
+          - foldable-traversable
+          - functions
+          - gen
+          - integers
+          - lists
+          - maybe
+          - newtype
+          - numbers
+          - ordered-collections
+          - partial
+          - prelude
+          - tuples
+      datetime-parsing:
+        repo: https://github.com/flounders/purescript-datetime-parsing.git
+        version: v0.2.0
+        dependencies:
+          - arrays
+          - datetime
+          - either
+          - enums
+          - foldable-traversable
+          - integers
+          - lists
+          - maybe
+          - numbers
+          - parsing
+          - prelude
+          - strings
+          - unicode
+      debug:
+        repo: https://github.com/garyb/purescript-debug.git
+        version: v6.0.0
+        dependencies:
+          - functions
+          - prelude
+      decimals:
+        repo: https://github.com/sharkdp/purescript-decimals.git
+        version: v7.0.0
+        dependencies:
+          - maybe
+      dissect:
+        repo: https://github.com/PureFunctor/purescript-dissect.git
+        version: v1.0.0
+        dependencies:
+          - arrays
+          - bifunctors
+          - foreign-object
+          - functors
+          - newtype
+          - partial
+          - prelude
+          - tailrec
+          - type-equality
+          - typelevel-prelude
+          - unsafe-coerce
+          - variant
+      distributive:
+        repo: https://github.com/purescript/purescript-distributive.git
+        version: v6.0.0
+        dependencies:
+          - identity
+          - newtype
+          - prelude
+          - tuples
+          - type-equality
+      dodo-printer:
+        repo: https://github.com/natefaubion/purescript-dodo-printer.git
+        version: v2.2.0
+        dependencies:
+          - aff
+          - ansi
+          - avar
+          - console
+          - effect
+          - foldable-traversable
+          - lists
+          - maybe
+          - minibench
+          - node-child-process
+          - node-fs-aff
+          - node-process
+          - psci-support
+          - strings
+      dom-indexed:
+        repo: https://github.com/purescript-halogen/purescript-dom-indexed.git
+        version: v11.0.0
+        dependencies:
+          - media-types
+          - prelude
+          - web-clipboard
+          - web-pointerevents
+          - web-touchevents
+      droplet:
+        repo: https://github.com/easafe/purescript-droplet.git
+        version: v0.4.0
+        dependencies:
+          - aff
+          - arrays
+          - bifunctors
+          - bigints
+          - datetime
+          - debug
+          - effect
+          - either
+          - enums
+          - exceptions
+          - foldable-traversable
+          - foreign
+          - foreign-object
+          - integers
+          - maybe
+          - newtype
+          - nullable
+          - ordered-collections
+          - partial
+          - prelude
+          - profunctor
+          - record
+          - spec
+          - strings
+          - transformers
+          - tuples
+          - type-equality
+          - typelevel-prelude
+          - unsafe-coerce
+      dynamic-buffer:
+        repo: https://github.com/kritzcreek/purescript-dynamic-buffer.git
+        version: v3.0.1
+        dependencies:
+          - arraybuffer-types
+          - effect
+          - refs
+      effect:
+        repo: https://github.com/purescript/purescript-effect.git
+        version: v4.0.0
+        dependencies:
+          - prelude
+      either:
+        repo: https://github.com/purescript/purescript-either.git
+        version: v6.1.0
+        dependencies:
+          - control
+          - invariant
+          - maybe
+          - prelude
+      elmish:
+        repo: https://github.com/collegevine/purescript-elmish.git
+        version: v0.8.1
+        dependencies:
+          - aff
+          - argonaut-core
+          - arrays
+          - bifunctors
+          - console
+          - debug
+          - effect
+          - either
+          - foldable-traversable
+          - foreign
+          - foreign-object
+          - functions
+          - integers
+          - js-date
+          - maybe
+          - nullable
+          - partial
+          - prelude
+          - refs
+          - typelevel-prelude
+          - undefined-is-not-a-problem
+          - unsafe-coerce
+          - web-dom
+          - web-html
+      elmish-enzyme:
+        repo: https://github.com/collegevine/purescript-elmish-enzyme.git
+        version: v0.1.1
+        dependencies:
+          - aff
+          - aff-promise
+          - arrays
+          - console
+          - debug
+          - effect
+          - elmish
+          - foldable-traversable
+          - foreign
+          - functions
+          - prelude
+          - transformers
+          - unsafe-coerce
+      elmish-hooks:
+        repo: https://github.com/collegevine/purescript-elmish-hooks.git
+        version: v0.8.2
+        dependencies:
+          - aff
+          - debug
+          - elmish
+          - maybe
+          - prelude
+          - tuples
+          - undefined-is-not-a-problem
+      elmish-html:
+        repo: https://github.com/collegevine/purescript-elmish-html.git
+        version: v0.7.1
+        dependencies:
+          - effect
+          - elmish
+          - foreign
+          - foreign-object
+          - prelude
+          - record
+          - typelevel-prelude
+          - unsafe-coerce
+          - web-html
+      email-validate:
+        repo: https://github.com/cdepillabout/purescript-email-validate.git
+        version: v7.0.0
+        dependencies:
+          - aff
+          - string-parsers
+          - transformers
+      encoding:
+        repo: https://github.com/menelaos/purescript-encoding.git
+        version: v0.0.8
+        dependencies:
+          - arraybuffer-types
+          - either
+          - exceptions
+          - functions
+          - prelude
+      enums:
+        repo: https://github.com/purescript/purescript-enums.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - either
+          - gen
+          - maybe
+          - newtype
+          - nonempty
+          - partial
+          - prelude
+          - tuples
+          - unfoldable
+      exceptions:
+        repo: https://github.com/purescript/purescript-exceptions.git
+        version: v6.0.0
+        dependencies:
+          - effect
+          - either
+          - maybe
+          - prelude
+      exists:
+        repo: https://github.com/purescript/purescript-exists.git
+        version: v6.0.0
+        dependencies:
+          - unsafe-coerce
+      exitcodes:
+        repo: https://github.com/Risto-Stevcev/purescript-exitcodes.git
+        version: v4.0.0
+        dependencies:
+          - enums
+      expect-inferred:
+        repo: https://github.com/justinwoo/purescript-expect-inferred.git
+        version: v3.0.0
+        dependencies:
+          - prelude
+          - typelevel-prelude
+      fast-vect:
+        repo: https://github.com/sigma-andex/purescript-fast-vect.git
+        version: v0.7.0
+        dependencies:
+          - arrays
+          - filterable
+          - foldable-traversable
+          - lists
+          - maybe
+          - ordered-collections
+          - prelude
+          - profunctor
+          - tuples
+          - unfoldable
+      filterable:
+        repo: https://github.com/purescript/purescript-filterable.git
+        version: v5.0.0
+        dependencies:
+          - arrays
+          - either
+          - foldable-traversable
+          - identity
+          - lists
+          - ordered-collections
+      fixed-points:
+        repo: https://github.com/purescript-contrib/purescript-fixed-points.git
+        version: v7.0.0
+        dependencies:
+          - exists
+          - newtype
+          - prelude
+          - transformers
+      fixed-precision:
+        repo: https://github.com/lumihq/purescript-fixed-precision.git
+        version: v5.0.0
+        dependencies:
+          - arrays
+          - bigints
+          - control
+          - integers
+          - maybe
+          - numbers
+          - partial
+          - prelude
+          - strings
+      flame:
+        repo: https://github.com/easafe/purescript-flame.git
+        version: v1.2.0
+        dependencies:
+          - aff
+          - argonaut-codecs
+          - argonaut-core
+          - argonaut-generic
+          - arrays
+          - bifunctors
+          - console
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - foreign
+          - foreign-object
+          - maybe
+          - newtype
+          - nullable
+          - partial
+          - prelude
+          - random
+          - refs
+          - spec
+          - strings
+          - tuples
+          - typelevel-prelude
+          - unsafe-coerce
+          - web-dom
+          - web-events
+          - web-html
+          - web-uievents
+      float32:
+        repo: https://github.com/purescript-contrib/purescript-float32.git
+        version: v2.0.0
+        dependencies:
+          - gen
+          - maybe
+          - prelude
+      foldable-traversable:
+        repo: https://github.com/purescript/purescript-foldable-traversable.git
+        version: v6.0.0
+        dependencies:
+          - bifunctors
+          - const
+          - control
+          - either
+          - functors
+          - identity
+          - maybe
+          - newtype
+          - orders
+          - prelude
+          - tuples
+      foreign:
+        repo: https://github.com/purescript/purescript-foreign.git
+        version: v7.0.0
+        dependencies:
+          - either
+          - functions
+          - identity
+          - integers
+          - lists
+          - maybe
+          - prelude
+          - strings
+          - transformers
+      foreign-object:
+        repo: https://github.com/purescript/purescript-foreign-object.git
+        version: v4.0.0
+        dependencies:
+          - arrays
+          - foldable-traversable
+          - functions
+          - gen
+          - lists
+          - maybe
+          - prelude
+          - st
+          - tailrec
+          - tuples
+          - typelevel-prelude
+          - unfoldable
+      foreign-readwrite:
+        repo: https://github.com/artemisSystem/purescript-foreign-readwrite.git
+        version: v3.0.0
+        dependencies:
+          - foldable-traversable
+          - foreign
+          - foreign-object
+          - identity
+          - lists
+          - maybe
+          - newtype
+          - prelude
+          - record
+          - safe-coerce
+          - transformers
+          - unsafe-coerce
+      fork:
+        repo: https://github.com/purescript-contrib/purescript-fork.git
+        version: v6.0.0
+        dependencies:
+          - aff
+      form-urlencoded:
+        repo: https://github.com/purescript-contrib/purescript-form-urlencoded.git
+        version: v7.0.0
+        dependencies:
+          - foldable-traversable
+          - js-uri
+          - maybe
+          - newtype
+          - prelude
+          - strings
+          - tuples
+      formatters:
+        repo: https://github.com/purescript-contrib/purescript-formatters.git
+        version: v7.0.0
+        dependencies:
+          - datetime
+          - fixed-points
+          - lists
+          - numbers
+          - parsing
+          - prelude
+          - transformers
+      free:
+        repo: https://github.com/purescript/purescript-free.git
+        version: v7.0.0
+        dependencies:
+          - catenable-lists
+          - control
+          - distributive
+          - either
+          - exists
+          - foldable-traversable
+          - invariant
+          - lazy
+          - maybe
+          - prelude
+          - tailrec
+          - transformers
+          - tuples
+          - unsafe-coerce
+      freeap:
+        repo: https://github.com/ethul/purescript-freeap.git
+        version: v7.0.0
+        dependencies:
+          - const
+          - exists
+          - gen
+          - lists
+      freet:
+        repo: https://github.com/purescript-contrib/purescript-freet.git
+        version: v7.0.0
+        dependencies:
+          - aff
+          - bifunctors
+          - effect
+          - either
+          - exists
+          - free
+          - prelude
+          - tailrec
+          - transformers
+          - tuples
+      functions:
+        repo: https://github.com/purescript/purescript-functions.git
+        version: v6.0.0
+        dependencies:
+          - prelude
+      functors:
+        repo: https://github.com/purescript/purescript-functors.git
+        version: v5.0.0
+        dependencies:
+          - bifunctors
+          - const
+          - contravariant
+          - control
+          - distributive
+          - either
+          - invariant
+          - maybe
+          - newtype
+          - prelude
+          - profunctor
+          - tuples
+          - unsafe-coerce
+      fuzzy:
+        repo: https://github.com/citizennet/purescript-fuzzy.git
+        version: v0.4.0
+        dependencies:
+          - foldable-traversable
+          - foreign-object
+          - newtype
+          - ordered-collections
+          - prelude
+          - rationals
+          - strings
+          - tuples
+      gen:
+        repo: https://github.com/purescript/purescript-gen.git
+        version: v4.0.0
+        dependencies:
+          - either
+          - foldable-traversable
+          - identity
+          - maybe
+          - newtype
+          - nonempty
+          - prelude
+          - tailrec
+          - tuples
+          - unfoldable
+      generate-values:
+        repo: https://github.com/jordanmartinez/purescript-generate-values.git
+        version: v1.0.1
+        dependencies:
+          - arrays
+          - control
+          - effect
+          - enums
+          - foldable-traversable
+          - gen
+          - identity
+          - integers
+          - lcg
+          - lists
+          - maybe
+          - newtype
+          - numbers
+          - partial
+          - prelude
+          - tailrec
+          - transformers
+          - tuples
+      geometry-plane:
+        repo: https://github.com/Ebmtranceboy/purescript-geometry-plane.git
+        version: v1.0.3
+        dependencies:
+          - console
+          - effect
+          - psci-support
+          - sparse-polynomials
+      github-actions-toolkit:
+        repo: https://github.com/purescript-contrib/purescript-github-actions-toolkit.git
+        version: v0.5.0
+        dependencies:
+          - aff
+          - aff-promise
+          - effect
+          - foreign-object
+          - node-buffer
+          - node-path
+          - node-streams
+          - nullable
+          - transformers
+      graphs:
+        repo: https://github.com/purescript/purescript-graphs.git
+        version: v8.0.0
+        dependencies:
+          - catenable-lists
+          - ordered-collections
+      group:
+        repo: https://github.com/morganthomas/purescript-group.git
+        version: v4.1.1
+        dependencies:
+          - lists
+      halogen:
+        repo: https://github.com/purescript-halogen/purescript-halogen.git
+        version: v7.0.0
+        dependencies:
+          - aff
+          - avar
+          - console
+          - const
+          - dom-indexed
+          - effect
+          - foreign
+          - fork
+          - free
+          - freeap
+          - halogen-subscriptions
+          - halogen-vdom
+          - media-types
+          - nullable
+          - ordered-collections
+          - parallel
+          - profunctor
+          - transformers
+          - unsafe-coerce
+          - unsafe-reference
+          - web-file
+          - web-uievents
+      halogen-css:
+        repo: https://github.com/purescript-halogen/purescript-halogen-css.git
+        version: v10.0.0
+        dependencies:
+          - css
+          - halogen
+      halogen-formless:
+        repo: https://github.com/thomashoneyman/purescript-halogen-formless.git
+        version: v4.0.0
+        dependencies:
+          - convertable-options
+          - effect
+          - either
+          - foldable-traversable
+          - foreign-object
+          - halogen
+          - heterogeneous
+          - maybe
+          - prelude
+          - record
+          - safe-coerce
+          - type-equality
+          - unsafe-coerce
+          - unsafe-reference
+          - variant
+          - web-events
+          - web-uievents
+      halogen-hooks:
+        repo: https://github.com/thomashoneyman/purescript-halogen-hooks.git
+        version: v0.6.0
+        dependencies:
+          - aff
+          - arrays
+          - bifunctors
+          - effect
+          - exceptions
+          - foldable-traversable
+          - foreign-object
+          - free
+          - freeap
+          - halogen
+          - halogen-subscriptions
+          - maybe
+          - newtype
+          - ordered-collections
+          - parallel
+          - partial
+          - prelude
+          - refs
+          - tailrec
+          - transformers
+          - tuples
+          - unsafe-coerce
+          - unsafe-reference
+          - web-dom
+          - web-html
+      halogen-hooks-extra:
+        repo: https://github.com/jordanmartinez/purescript-halogen-hooks-extra.git
+        version: v0.9.0
+        dependencies:
+          - halogen-hooks
+      halogen-store:
+        repo: https://github.com/thomashoneyman/purescript-halogen-store.git
+        version: v0.5.0
+        dependencies:
+          - aff
+          - distributive
+          - effect
+          - fork
+          - halogen
+          - halogen-hooks
+          - halogen-subscriptions
+          - maybe
+          - prelude
+          - refs
+          - tailrec
+          - transformers
+          - tuples
+          - unsafe-reference
+      halogen-storybook:
+        repo: https://github.com/rnons/purescript-halogen-storybook.git
+        version: v2.0.0
+        dependencies:
+          - foreign-object
+          - halogen
+          - prelude
+          - routing
+      halogen-subscriptions:
+        repo: https://github.com/purescript-halogen/purescript-halogen-subscriptions.git
+        version: v2.0.0
+        dependencies:
+          - arrays
+          - effect
+          - foldable-traversable
+          - functors
+          - refs
+          - safe-coerce
+          - unsafe-reference
+      halogen-svg-elems:
+        repo: https://github.com/JordanMartinez/purescript-halogen-svg-elems.git
+        version: v6.0.0
+        dependencies:
+          - halogen
+      halogen-vdom:
+        repo: https://github.com/purescript-halogen/purescript-halogen-vdom.git
+        version: v8.0.0
+        dependencies:
+          - bifunctors
+          - effect
+          - foreign
+          - foreign-object
+          - maybe
+          - prelude
+          - refs
+          - tuples
+          - unsafe-coerce
+          - web-html
+      halogen-vdom-string-renderer:
+        repo: https://github.com/purescript-halogen/purescript-halogen-vdom-string-renderer.git
+        version: v0.5.0
+        dependencies:
+          - foreign
+          - halogen-vdom
+          - ordered-collections
+          - prelude
+      heckin:
+        repo: https://github.com/maxdeviant/purescript-heckin.git
+        version: v2.0.1
+        dependencies:
+          - arrays
+          - foldable-traversable
+          - maybe
+          - prelude
+          - strings
+          - transformers
+          - tuples
+          - unicode
+      heterogeneous:
+        repo: https://github.com/natefaubion/purescript-heterogeneous.git
+        version: v0.6.0
+        dependencies:
+          - either
+          - functors
+          - prelude
+          - record
+          - tuples
+          - variant
+      heterogeneous-extrablatt:
+        repo: https://github.com/sigma-andex/purescript-heterogeneous-extrablatt.git
+        version: v0.2.1
+        dependencies:
+          - heterogeneous
+          - prelude
+          - record
+      http-methods:
+        repo: https://github.com/purescript-contrib/purescript-http-methods.git
+        version: v6.0.0
+        dependencies:
+          - either
+          - prelude
+          - strings
+      httpure:
+        repo: https://github.com/citizennet/purescript-httpure.git
+        version: v0.15.0
+        dependencies:
+          - aff
+          - arrays
+          - bifunctors
+          - console
+          - effect
+          - either
+          - foldable-traversable
+          - foreign-object
+          - js-uri
+          - maybe
+          - newtype
+          - node-buffer
+          - node-fs
+          - node-http
+          - node-streams
+          - options
+          - ordered-collections
+          - prelude
+          - refs
+          - strings
+          - tuples
+          - type-equality
+      httpurple:
+        repo: https://github.com/sigma-andex/purescript-httpurple.git
+        version: v1.3.0
+        dependencies:
+          - aff
+          - arrays
+          - bifunctors
+          - console
+          - control
+          - effect
+          - either
+          - foldable-traversable
+          - foreign-object
+          - js-uri
+          - justifill
+          - maybe
+          - newtype
+          - node-buffer
+          - node-fs
+          - node-http
+          - node-net
+          - node-process
+          - node-streams
+          - options
+          - ordered-collections
+          - posix-types
+          - prelude
+          - profunctor
+          - record
+          - refs
+          - routing-duplex
+          - strings
+          - transformers
+          - tuples
+          - type-equality
+          - typelevel-prelude
+      httpurple-argonaut:
+        repo: https://github.com/sigma-andex/purescript-httpurple-argonaut.git
+        version: v1.0.1
+        dependencies:
+          - argonaut
+          - console
+          - effect
+          - either
+          - httpurple
+          - prelude
+      httpurple-yoga-json:
+        repo: https://github.com/sigma-andex/purescript-httpurple-yoga-json.git
+        version: v1.0.0
+        dependencies:
+          - console
+          - effect
+          - either
+          - foreign
+          - httpurple
+          - lists
+          - prelude
+          - yoga-json
+      identity:
+        repo: https://github.com/purescript/purescript-identity.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - invariant
+          - newtype
+          - prelude
+      indexed-monad:
+        repo: https://github.com/garyb/purescript-indexed-monad.git
+        version: v2.1.0
+        dependencies:
+          - control
+          - newtype
+      int64:
+        repo: https://github.com/purescript-contrib/purescript-int64.git
+        version: v2.0.0
+        dependencies:
+          - effect
+          - foreign
+          - functions
+          - integers
+          - maybe
+          - nullable
+          - prelude
+          - quickcheck
+      integers:
+        repo: https://github.com/purescript/purescript-integers.git
+        version: v6.0.0
+        dependencies:
+          - maybe
+          - numbers
+          - prelude
+      interpolate:
+        repo: https://github.com/jordanmartinez/purescript-interpolate.git
+        version: v5.0.0
+        dependencies:
+          - prelude
+      invariant:
+        repo: https://github.com/purescript/purescript-invariant.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - prelude
+      js-date:
+        repo: https://github.com/purescript-contrib/purescript-js-date.git
+        version: v8.0.0
+        dependencies:
+          - datetime
+          - effect
+          - exceptions
+          - foreign
+          - integers
+          - now
+      js-fileio:
+        repo: https://github.com/newlandsvalley/purescript-js-fileio.git
+        version: v3.0.0
+        dependencies:
+          - aff
+          - effect
+          - prelude
+      js-timers:
+        repo: https://github.com/purescript-contrib/purescript-js-timers.git
+        version: v6.1.0
+        dependencies:
+          - effect
+      js-uri:
+        repo: https://github.com/purescript-contrib/purescript-js-uri.git
+        version: v3.0.0
+        dependencies:
+          - functions
+          - maybe
+      justifill:
+        repo: https://github.com/i-am-the-slime/purescript-justifill.git
+        version: v0.5.0
+        dependencies:
+          - maybe
+          - prelude
+          - record
+          - typelevel-prelude
+      jwt:
+        repo: https://github.com/menelaos/purescript-jwt.git
+        version: v0.0.9
+        dependencies:
+          - argonaut-core
+          - arrays
+          - b64
+          - either
+          - exceptions
+          - prelude
+          - profunctor-lenses
+          - strings
+      language-cst-parser:
+        repo: https://github.com/natefaubion/purescript-language-cst-parser.git
+        version: v0.12.0
+        dependencies:
+          - arrays
+          - const
+          - control
+          - either
+          - foldable-traversable
+          - free
+          - functions
+          - functors
+          - identity
+          - integers
+          - lazy
+          - lists
+          - maybe
+          - newtype
+          - numbers
+          - ordered-collections
+          - partial
+          - prelude
+          - st
+          - strings
+          - transformers
+          - tuples
+          - typelevel-prelude
+          - unfoldable
+          - unsafe-coerce
+      lazy:
+        repo: https://github.com/purescript/purescript-lazy.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - foldable-traversable
+          - invariant
+          - prelude
+      lcg:
+        repo: https://github.com/purescript/purescript-lcg.git
+        version: v4.0.0
+        dependencies:
+          - effect
+          - integers
+          - maybe
+          - partial
+          - prelude
+          - random
+      leibniz:
+        repo: https://github.com/paf31/purescript-leibniz.git
+        version: v5.0.0
+        dependencies:
+          - prelude
+          - unsafe-coerce
+      linalg:
+        repo: https://github.com/gbagan/purescript-linalg.git
+        version: v5.1.0
+        dependencies:
+          - arrays
+          - foldable-traversable
+          - functions
+          - maybe
+          - prelude
+          - tuples
+      lists:
+        repo: https://github.com/purescript/purescript-lists.git
+        version: v7.0.0
+        dependencies:
+          - bifunctors
+          - control
+          - foldable-traversable
+          - lazy
+          - maybe
+          - newtype
+          - nonempty
+          - partial
+          - prelude
+          - tailrec
+          - tuples
+          - unfoldable
+      logging:
+        repo: https://github.com/rightfold/purescript-logging.git
+        version: v3.0.0
+        dependencies:
+          - console
+          - contravariant
+          - effect
+          - either
+          - prelude
+          - transformers
+          - tuples
+      machines:
+        repo: https://github.com/purescript-contrib/purescript-machines.git
+        version: v7.0.0
+        dependencies:
+          - arrays
+          - control
+          - effect
+          - lists
+          - maybe
+          - prelude
+          - profunctor
+          - tuples
+          - unfoldable
+      matrices:
+        repo: https://github.com/kRITZCREEK/purescript-matrices.git
+        version: v5.0.1
+        dependencies:
+          - arrays
+          - strings
+      matryoshka:
+        repo: https://github.com/purescript-contrib/purescript-matryoshka.git
+        version: v1.0.0
+        dependencies:
+          - fixed-points
+          - free
+          - prelude
+          - profunctor
+          - transformers
+      maybe:
+        repo: https://github.com/purescript/purescript-maybe.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - invariant
+          - newtype
+          - prelude
+      media-types:
+        repo: https://github.com/purescript-contrib/purescript-media-types.git
+        version: v6.0.0
+        dependencies:
+          - newtype
+          - prelude
+      metadata:
+        repo: https://github.com/purescript/purescript-metadata.git
+        version: v0.15.0
+        dependencies: []
+      midi:
+        repo: https://github.com/newlandsvalley/purescript-midi.git
+        version: v4.0.0
+        dependencies:
+          - arrays
+          - control
+          - effect
+          - either
+          - foldable-traversable
+          - integers
+          - lists
+          - maybe
+          - ordered-collections
+          - prelude
+          - signal
+          - string-parsers
+          - strings
+          - tuples
+          - unfoldable
+      minibench:
+        repo: https://github.com/purescript/purescript-minibench.git
+        version: v4.0.0
+        dependencies:
+          - console
+          - effect
+          - integers
+          - numbers
+          - partial
+          - prelude
+          - refs
+      mmorph:
+        repo: https://github.com/Thimoteus/purescript-mmorph.git
+        version: v7.0.0
+        dependencies:
+          - free
+          - functors
+          - transformers
+      monad-control:
+        repo: https://github.com/athanclark/purescript-monad-control.git
+        version: v5.0.0
+        dependencies:
+          - aff
+          - freet
+          - identity
+          - lists
+      monad-logger:
+        repo: https://github.com/cprussin/purescript-monad-logger.git
+        version: v1.3.1
+        dependencies:
+          - aff
+          - ansi
+          - argonaut
+          - arrays
+          - console
+          - control
+          - effect
+          - foldable-traversable
+          - foreign-object
+          - integers
+          - js-date
+          - maybe
+          - newtype
+          - ordered-collections
+          - prelude
+          - strings
+          - transformers
+          - tuples
+      monad-loops:
+        repo: https://github.com/mlang/purescript-monad-loops.git
+        version: v0.5.0
+        dependencies:
+          - lists
+          - maybe
+          - prelude
+          - tailrec
+          - tuples
+      monad-unlift:
+        repo: https://github.com/athanclark/purescript-monad-unlift.git
+        version: v1.0.1
+        dependencies:
+          - monad-control
+      monoidal:
+        repo: https://github.com/mcneissue/purescript-monoidal.git
+        version: v0.16.0
+        dependencies:
+          - either
+          - profunctor
+          - these
+          - tuples
+      morello:
+        repo: https://github.com/sigma-andex/purescript-morello.git
+        version: v0.3.2
+        dependencies:
+          - arrays
+          - barlow-lens
+          - foldable-traversable
+          - heterogeneous
+          - heterogeneous-extrablatt
+          - newtype
+          - prelude
+          - profunctor
+          - profunctor-lenses
+          - record
+          - tuples
+          - typelevel-prelude
+          - validation
+      motsunabe:
+        repo: https://github.com/justinwoo/purescript-motsunabe.git
+        version: v2.0.0
+        dependencies:
+          - lists
+          - strings
+      nano-id:
+        repo: https://github.com/eikooc/nano-id.git
+        version: v1.1.0
+        dependencies:
+          - aff
+          - effect
+          - lists
+          - maybe
+          - prelude
+          - random
+          - spec
+          - strings
+          - stringutils
+      naturals:
+        repo: https://github.com/LiamGoodacre/purescript-naturals.git
+        version: v3.0.0
+        dependencies:
+          - enums
+          - maybe
+          - prelude
+      nested-functor:
+        repo: https://github.com/acple/purescript-nested-functor.git
+        version: v0.2.1
+        dependencies:
+          - prelude
+          - type-equality
+      newtype:
+        repo: https://github.com/purescript/purescript-newtype.git
+        version: v5.0.0
+        dependencies:
+          - prelude
+          - safe-coerce
+      node-buffer:
+        repo: https://github.com/purescript-node/purescript-node-buffer.git
+        version: v8.0.0
+        dependencies:
+          - arraybuffer-types
+          - effect
+          - maybe
+          - st
+          - unsafe-coerce
+      node-buffer-blob:
+        repo: https://github.com/purescript-node/purescript-node-buffer-blob.git
+        version: v1.0.0
+        dependencies:
+          - aff-promise
+          - arraybuffer-types
+          - arrays
+          - console
+          - effect
+          - maybe
+          - media-types
+          - newtype
+          - node-buffer
+          - nullable
+          - prelude
+          - web-streams
+      node-child-process:
+        repo: https://github.com/purescript-node/purescript-node-child-process.git
+        version: v9.0.0
+        dependencies:
+          - exceptions
+          - foreign
+          - foreign-object
+          - functions
+          - node-fs
+          - node-streams
+          - nullable
+          - posix-types
+          - unsafe-coerce
+      node-fs:
+        repo: https://github.com/purescript-node/purescript-node-fs.git
+        version: v8.0.0
+        dependencies:
+          - datetime
+          - effect
+          - either
+          - enums
+          - exceptions
+          - functions
+          - integers
+          - js-date
+          - maybe
+          - node-buffer
+          - node-path
+          - node-streams
+          - nullable
+          - partial
+          - prelude
+          - strings
+          - unsafe-coerce
+      node-fs-aff:
+        repo: https://github.com/purescript-node/purescript-node-fs-aff.git
+        version: v9.0.0
+        dependencies:
+          - aff
+          - either
+          - node-fs
+          - node-path
+      node-http:
+        repo: https://github.com/purescript-node/purescript-node-http.git
+        version: v8.0.0
+        dependencies:
+          - arraybuffer-types
+          - contravariant
+          - effect
+          - foreign
+          - foreign-object
+          - maybe
+          - node-buffer
+          - node-net
+          - node-streams
+          - node-url
+          - nullable
+          - options
+          - prelude
+          - unsafe-coerce
+      node-net:
+        repo: https://github.com/purescript-node/purescript-node-net.git
+        version: v4.0.0
+        dependencies:
+          - effect
+          - either
+          - exceptions
+          - foreign
+          - maybe
+          - node-buffer
+          - node-fs
+          - nullable
+          - options
+          - prelude
+          - transformers
+      node-path:
+        repo: https://github.com/purescript-node/purescript-node-path.git
+        version: v5.0.0
+        dependencies:
+          - effect
+      node-process:
+        repo: https://github.com/purescript-node/purescript-node-process.git
+        version: v10.0.0
+        dependencies:
+          - effect
+          - foreign-object
+          - maybe
+          - node-streams
+          - posix-types
+          - prelude
+          - unsafe-coerce
+      node-readline:
+        repo: https://github.com/purescript-node/purescript-node-readline.git
+        version: v7.0.0
+        dependencies:
+          - effect
+          - foreign
+          - node-process
+          - node-streams
+          - options
+          - prelude
+      node-streams:
+        repo: https://github.com/purescript-node/purescript-node-streams.git
+        version: v7.0.0
+        dependencies:
+          - effect
+          - either
+          - exceptions
+          - node-buffer
+          - nullable
+          - prelude
+      node-streams-aff:
+        repo: https://github.com/jamesdbrock/purescript-node-streams-aff.git
+        version: v2.0.0
+        dependencies:
+          - aff
+          - arrays
+          - effect
+          - either
+          - exceptions
+          - maybe
+          - node-buffer
+          - node-streams
+          - prelude
+          - st
+          - tuples
+      node-url:
+        repo: https://github.com/purescript-node/purescript-node-url.git
+        version: v6.0.0
+        dependencies:
+          - nullable
+      nonempty:
+        repo: https://github.com/purescript/purescript-nonempty.git
+        version: v7.0.0
+        dependencies:
+          - control
+          - foldable-traversable
+          - maybe
+          - prelude
+          - tuples
+          - unfoldable
+      now:
+        repo: https://github.com/purescript-contrib/purescript-now.git
+        version: v6.0.0
+        dependencies:
+          - datetime
+          - effect
+      npm-package-json:
+        repo: https://github.com/maxdeviant/purescript-npm-package-json.git
+        version: v2.0.0
+        dependencies:
+          - argonaut
+          - control
+          - either
+          - foreign-object
+          - maybe
+          - ordered-collections
+          - prelude
+      nullable:
+        repo: https://github.com/purescript-contrib/purescript-nullable.git
+        version: v6.0.0
+        dependencies:
+          - effect
+          - functions
+          - maybe
+      numbers:
+        repo: https://github.com/purescript/purescript-numbers.git
+        version: v9.0.0
+        dependencies:
+          - functions
+          - maybe
+      open-folds:
+        repo: https://github.com/purescript-open-community/purescript-open-folds.git
+        version: v6.3.0
+        dependencies:
+          - bifunctors
+          - console
+          - control
+          - distributive
+          - effect
+          - either
+          - foldable-traversable
+          - identity
+          - invariant
+          - maybe
+          - newtype
+          - ordered-collections
+          - prelude
+          - profunctor
+          - psci-support
+          - tuples
+      open-memoize:
+        repo: https://github.com/purescript-open-community/purescript-open-memoize.git
+        version: v6.1.0
+        dependencies:
+          - console
+          - effect
+          - either
+          - integers
+          - lazy
+          - lists
+          - maybe
+          - partial
+          - prelude
+          - psci-support
+          - strings
+          - tuples
+      open-pairing:
+        repo: https://github.com/purescript-open-community/purescript-open-pairing.git
+        version: v6.1.0
+        dependencies:
+          - console
+          - control
+          - effect
+          - either
+          - free
+          - functors
+          - identity
+          - newtype
+          - prelude
+          - psci-support
+          - transformers
+          - tuples
+      options:
+        repo: https://github.com/purescript-contrib/purescript-options.git
+        version: v7.0.0
+        dependencies:
+          - contravariant
+          - foreign
+          - foreign-object
+          - maybe
+          - tuples
+      optparse:
+        repo: https://github.com/f-o-a-m/purescript-optparse.git
+        version: v5.0.0
+        dependencies:
+          - aff
+          - arrays
+          - bifunctors
+          - console
+          - control
+          - effect
+          - either
+          - enums
+          - exists
+          - exitcodes
+          - foldable-traversable
+          - free
+          - gen
+          - integers
+          - lazy
+          - lists
+          - maybe
+          - newtype
+          - node-buffer
+          - node-process
+          - node-streams
+          - nonempty
+          - numbers
+          - open-memoize
+          - partial
+          - prelude
+          - quickcheck
+          - strings
+          - tailrec
+          - transformers
+          - tuples
+      ordered-collections:
+        repo: https://github.com/purescript/purescript-ordered-collections.git
+        version: v3.0.0
+        dependencies:
+          - arrays
+          - foldable-traversable
+          - gen
+          - lists
+          - maybe
+          - partial
+          - prelude
+          - st
+          - tailrec
+          - tuples
+          - unfoldable
+      ordered-set:
+        repo: https://github.com/flip111/purescript-ordered-set.git
+        version: v0.4.0
+        dependencies:
+          - argonaut-codecs
+          - arrays
+          - partial
+          - prelude
+          - unfoldable
+      orders:
+        repo: https://github.com/purescript/purescript-orders.git
+        version: v6.0.0
+        dependencies:
+          - newtype
+          - prelude
+      pairs:
+        repo: https://github.com/sharkdp/purescript-pairs.git
+        version: v9.0.0
+        dependencies:
+          - console
+          - distributive
+          - foldable-traversable
+          - quickcheck
+      parallel:
+        repo: https://github.com/purescript/purescript-parallel.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - effect
+          - either
+          - foldable-traversable
+          - functors
+          - maybe
+          - newtype
+          - prelude
+          - profunctor
+          - refs
+          - transformers
+      parsing:
+        repo: https://github.com/purescript-contrib/purescript-parsing.git
+        version: v9.1.0
+        dependencies:
+          - arrays
+          - either
+          - foldable-traversable
+          - identity
+          - integers
+          - lists
+          - maybe
+          - nullable
+          - prelude
+          - strings
+          - transformers
+          - unicode
+      parsing-dataview:
+        repo: https://github.com/jamesdbrock/purescript-parsing-dataview.git
+        version: v3.1.0
+        dependencies:
+          - arraybuffer
+          - arraybuffer-types
+          - effect
+          - float32
+          - maybe
+          - parsing
+          - prelude
+          - transformers
+          - tuples
+          - uint
+      partial:
+        repo: https://github.com/purescript/purescript-partial.git
+        version: v4.0.0
+        dependencies: []
+      pathy:
+        repo: https://github.com/purescript-contrib/purescript-pathy.git
+        version: v9.0.0
+        dependencies:
+          - console
+          - exceptions
+          - lists
+          - partial
+          - profunctor
+          - strings
+          - transformers
+          - typelevel-prelude
+          - unsafe-coerce
+      pha:
+        repo: https://github.com/gbagan/purescript-pha.git
+        version: v0.9.0
+        dependencies:
+          - aff
+          - arrays
+          - bifunctors
+          - datetime
+          - effect
+          - foldable-traversable
+          - free
+          - integers
+          - maybe
+          - prelude
+          - profunctor-lenses
+          - refs
+          - tailrec
+          - transformers
+          - tuples
+          - unsafe-coerce
+          - unsafe-reference
+          - web-dom
+          - web-events
+          - web-html
+          - web-pointerevents
+          - web-uievents
+      phaser:
+        repo: https://github.com/lfarroco/purescript-phaser.git
+        version: v0.6.0
+        dependencies:
+          - canvas
+          - console
+          - effect
+          - maybe
+          - nullable
+          - options
+          - prelude
+          - web-html
+      pipes:
+        repo: https://github.com/felixschl/purescript-pipes.git
+        version: v8.0.0
+        dependencies:
+          - aff
+          - lists
+          - mmorph
+          - prelude
+          - tailrec
+          - transformers
+          - tuples
+      point-free:
+        repo: https://github.com/ursi/purescript-point-free.git
+        version: v1.0.0
+        dependencies:
+          - prelude
+      polymorphic-vectors:
+        repo: https://github.com/artemisSystem/purescript-polymorphic-vectors.git
+        version: v4.0.0
+        dependencies:
+          - distributive
+          - foldable-traversable
+          - numbers
+          - prelude
+          - record
+          - safe-coerce
+          - type-equality
+          - typelevel-prelude
+      posix-types:
+        repo: https://github.com/purescript-node/purescript-posix-types.git
+        version: v6.0.0
+        dependencies:
+          - maybe
+          - prelude
+      precise:
+        repo: https://github.com/purescript-contrib/purescript-precise.git
+        version: v6.0.0
+        dependencies:
+          - arrays
+          - console
+          - effect
+          - exceptions
+          - gen
+          - integers
+          - lists
+          - numbers
+          - prelude
+          - strings
+      precise-datetime:
+        repo: https://github.com/awakesecurity/purescript-precise-datetime.git
+        version: v7.0.0
+        dependencies:
+          - arrays
+          - datetime
+          - decimals
+          - either
+          - enums
+          - foldable-traversable
+          - formatters
+          - integers
+          - js-date
+          - lists
+          - maybe
+          - newtype
+          - numbers
+          - prelude
+          - strings
+          - tuples
+          - unicode
+      prelude:
+        repo: https://github.com/purescript/purescript-prelude.git
+        version: v6.0.0
+        dependencies: []
+      prettier-printer:
+        repo: https://github.com/paulyoung/purescript-prettier-printer.git
+        version: v3.0.0
+        dependencies:
+          - console
+          - lists
+          - prelude
+          - strings
+          - tuples
+      profunctor:
+        repo: https://github.com/purescript/purescript-profunctor.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - distributive
+          - either
+          - exists
+          - invariant
+          - newtype
+          - prelude
+          - tuples
+      profunctor-lenses:
+        repo: https://github.com/purescript-contrib/purescript-profunctor-lenses.git
+        version: v8.0.0
+        dependencies:
+          - arrays
+          - bifunctors
+          - const
+          - control
+          - distributive
+          - either
+          - foldable-traversable
+          - foreign-object
+          - functors
+          - identity
+          - lists
+          - maybe
+          - newtype
+          - ordered-collections
+          - partial
+          - prelude
+          - profunctor
+          - record
+          - transformers
+          - tuples
+      protobuf:
+        repo: https://github.com/xc-jp/purescript-protobuf.git
+        version: v4.0.0
+        dependencies:
+          - arraybuffer
+          - arraybuffer-builder
+          - arraybuffer-types
+          - arrays
+          - control
+          - effect
+          - either
+          - enums
+          - exceptions
+          - float32
+          - foldable-traversable
+          - functions
+          - int64
+          - maybe
+          - newtype
+          - parsing
+          - parsing-dataview
+          - prelude
+          - record
+          - strings
+          - tailrec
+          - transformers
+          - tuples
+          - uint
+          - web-encoding
+      ps-cst:
+        repo: https://github.com/purescript-codegen/purescript-ps-cst.git
+        version: v1.2.0
+        dependencies:
+          - ansi
+          - console
+          - dodo-printer
+          - effect
+          - node-fs-aff
+          - node-path
+          - psci-support
+          - record
+          - strings
+      psa-utils:
+        repo: https://github.com/natefaubion/purescript-psa-utils.git
+        version: v8.0.0
+        dependencies:
+          - ansi
+          - argonaut-codecs
+          - argonaut-core
+          - arrays
+          - console
+          - control
+          - effect
+          - either
+          - foldable-traversable
+          - maybe
+          - node-path
+          - ordered-collections
+          - prelude
+          - strings
+          - tuples
+          - unsafe-coerce
+      psc-ide:
+        repo: https://github.com/kRITZCREEK/purescript-psc-ide.git
+        version: v19.0.0
+        dependencies:
+          - aff
+          - argonaut
+          - arrays
+          - console
+          - maybe
+          - node-child-process
+          - node-fs
+          - parallel
+          - random
+      psci-support:
+        repo: https://github.com/purescript/purescript-psci-support.git
+        version: v6.0.0
+        dependencies:
+          - console
+          - effect
+          - prelude
+      qualified-do:
+        repo: https://github.com/artemisSystem/purescript-qualified-do.git
+        version: v2.2.0
+        dependencies:
+          - arrays
+          - control
+          - foldable-traversable
+          - parallel
+          - prelude
+          - unfoldable
+      quantities:
+        repo: https://github.com/sharkdp/purescript-quantities.git
+        version: v12.0.1
+        dependencies:
+          - decimals
+          - either
+          - foldable-traversable
+          - lists
+          - maybe
+          - newtype
+          - nonempty
+          - numbers
+          - pairs
+          - prelude
+          - tuples
+      quickcheck:
+        repo: https://github.com/purescript/purescript-quickcheck.git
+        version: v8.0.1
+        dependencies:
+          - arrays
+          - console
+          - control
+          - effect
+          - either
+          - enums
+          - exceptions
+          - foldable-traversable
+          - gen
+          - identity
+          - integers
+          - lazy
+          - lcg
+          - lists
+          - maybe
+          - newtype
+          - nonempty
+          - numbers
+          - partial
+          - prelude
+          - record
+          - st
+          - strings
+          - tailrec
+          - transformers
+          - tuples
+          - unfoldable
+      quickcheck-combinators:
+        repo: https://github.com/athanclark/purescript-quickcheck-combinators.git
+        version: v0.1.3
+        dependencies:
+          - quickcheck
+          - typelevel
+      quickcheck-laws:
+        repo: https://github.com/purescript-contrib/purescript-quickcheck-laws.git
+        version: v7.0.0
+        dependencies:
+          - enums
+          - quickcheck
+      quickcheck-utf8:
+        repo: https://github.com/openchronology/purescript-quickcheck-utf8.git
+        version: v0.0.0
+        dependencies:
+          - quickcheck
+      quotient:
+        repo: https://github.com/rightfold/purescript-quotient.git
+        version: v3.0.0
+        dependencies:
+          - prelude
+          - quickcheck
+      random:
+        repo: https://github.com/purescript/purescript-random.git
+        version: v6.0.0
+        dependencies:
+          - effect
+          - integers
+      rationals:
+        repo: https://github.com/anttih/purescript-rationals.git
+        version: v5.0.0
+        dependencies:
+          - integers
+          - prelude
+      react:
+        repo: https://github.com/purescript-contrib/purescript-react.git
+        version: v10.0.1
+        dependencies:
+          - effect
+          - exceptions
+          - maybe
+          - nullable
+          - prelude
+          - typelevel-prelude
+          - unsafe-coerce
+      react-basic:
+        repo: https://github.com/lumihq/purescript-react-basic.git
+        version: v17.0.0
+        dependencies:
+          - effect
+          - prelude
+          - record
+      react-basic-dom:
+        repo: https://github.com/lumihq/purescript-react-basic-dom.git
+        version: v5.0.0
+        dependencies:
+          - effect
+          - foldable-traversable
+          - foreign-object
+          - maybe
+          - nullable
+          - prelude
+          - react-basic
+          - unsafe-coerce
+          - web-dom
+          - web-events
+          - web-file
+          - web-html
+      react-basic-hooks:
+        repo: https://github.com/megamaddu/purescript-react-basic-hooks.git
+        version: v8.0.0
+        dependencies:
+          - aff
+          - aff-promise
+          - bifunctors
+          - console
+          - control
+          - datetime
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - functions
+          - indexed-monad
+          - integers
+          - maybe
+          - newtype
+          - now
+          - nullable
+          - ordered-collections
+          - prelude
+          - react-basic
+          - refs
+          - tuples
+          - type-equality
+          - unsafe-coerce
+          - unsafe-reference
+          - web-html
+      react-dom:
+        repo: https://github.com/purescript-contrib/purescript-react-dom.git
+        version: v8.0.0
+        dependencies:
+          - effect
+          - react
+          - web-dom
+      read:
+        repo: https://github.com/truqu/purescript-read.git
+        version: v1.0.1
+        dependencies:
+          - maybe
+          - prelude
+          - strings
+      record:
+        repo: https://github.com/purescript/purescript-record.git
+        version: v4.0.0
+        dependencies:
+          - functions
+          - prelude
+          - unsafe-coerce
+      refined:
+        repo: https://github.com/danieljharvey/purescript-refined.git
+        version: v1.0.0
+        dependencies:
+          - argonaut
+          - effect
+          - prelude
+          - quickcheck
+          - typelevel
+      refs:
+        repo: https://github.com/purescript/purescript-refs.git
+        version: v6.0.0
+        dependencies:
+          - effect
+          - prelude
+      remotedata:
+        repo: https://github.com/krisajenkins/purescript-remotedata.git
+        version: v5.0.0
+        dependencies:
+          - bifunctors
+          - either
+          - profunctor-lenses
+      resource:
+        repo: https://github.com/joneshf/purescript-resource.git
+        version: v2.0.1
+        dependencies:
+          - aff
+          - console
+          - control
+          - effect
+          - newtype
+          - prelude
+          - psci-support
+          - refs
+      resourcet:
+        repo: https://github.com/robertdp/purescript-resourcet.git
+        version: v1.0.0
+        dependencies:
+          - aff
+          - effect
+          - foldable-traversable
+          - maybe
+          - ordered-collections
+          - parallel
+          - refs
+          - tailrec
+          - transformers
+          - tuples
+      result:
+        repo: https://github.com/ad-si/purescript-result.git
+        version: v1.0.3
+        dependencies:
+          - either
+          - foldable-traversable
+          - prelude
+      return:
+        repo: https://github.com/ursi/purescript-return.git
+        version: v0.2.0
+        dependencies:
+          - foldable-traversable
+          - point-free
+          - prelude
+      ring-modules:
+        repo: https://github.com/f-o-a-m/purescript-ring-modules.git
+        version: v5.0.1
+        dependencies:
+          - prelude
+      routing:
+        repo: https://github.com/purescript-contrib/purescript-routing.git
+        version: v11.0.0
+        dependencies:
+          - aff
+          - console
+          - control
+          - effect
+          - either
+          - foldable-traversable
+          - integers
+          - js-uri
+          - lists
+          - maybe
+          - numbers
+          - partial
+          - prelude
+          - semirings
+          - tuples
+          - validation
+          - web-html
+      routing-duplex:
+        repo: https://github.com/natefaubion/purescript-routing-duplex.git
+        version: v0.6.0
+        dependencies:
+          - arrays
+          - control
+          - either
+          - js-uri
+          - lazy
+          - numbers
+          - prelude
+          - profunctor
+          - record
+          - strings
+          - typelevel-prelude
+      run:
+        repo: https://github.com/natefaubion/purescript-run.git
+        version: v5.0.0
+        dependencies:
+          - aff
+          - effect
+          - either
+          - free
+          - maybe
+          - newtype
+          - prelude
+          - profunctor
+          - tailrec
+          - tuples
+          - type-equality
+          - typelevel-prelude
+          - unsafe-coerce
+          - variant
+      safe-coerce:
+        repo: https://github.com/purescript/purescript-safe-coerce.git
+        version: v2.0.0
+        dependencies:
+          - unsafe-coerce
+      safely:
+        repo: https://github.com/paf31/purescript-safely.git
+        version: v4.0.1
+        dependencies:
+          - freet
+          - lists
+      selection-foldable:
+        repo: https://github.com/jamieyung/purescript-selection-foldable.git
+        version: v0.2.0
+        dependencies:
+          - filterable
+          - foldable-traversable
+          - maybe
+          - prelude
+      semirings:
+        repo: https://github.com/purescript/purescript-semirings.git
+        version: v7.0.0
+        dependencies:
+          - foldable-traversable
+          - lists
+          - newtype
+          - prelude
+      signal:
+        repo: https://github.com/bodil/purescript-signal.git
+        version: v13.0.0
+        dependencies:
+          - aff
+          - effect
+          - either
+          - foldable-traversable
+          - maybe
+          - prelude
+      simple-emitter:
+        repo: https://github.com/oreshinya/purescript-simple-emitter.git
+        version: v2.0.0
+        dependencies:
+          - ordered-collections
+          - refs
+      sized-matrices:
+        repo: https://github.com/csicar/purescript-sized-matrices.git
+        version: v1.0.0
+        dependencies:
+          - arrays
+          - distributive
+          - foldable-traversable
+          - maybe
+          - prelude
+          - sized-vectors
+          - strings
+          - typelevel
+          - unfoldable
+          - vectorfield
+      sized-vectors:
+        repo: https://github.com/bodil/purescript-sized-vectors.git
+        version: v5.0.2
+        dependencies:
+          - argonaut
+          - arrays
+          - distributive
+          - foldable-traversable
+          - maybe
+          - prelude
+          - quickcheck
+          - typelevel
+          - unfoldable
+      slug:
+        repo: https://github.com/thomashoneyman/purescript-slug.git
+        version: v3.0.1
+        dependencies:
+          - argonaut-codecs
+          - maybe
+          - prelude
+          - strings
+          - unicode
+      soundfonts:
+        repo: https://github.com/newlandsvalley/purescript-soundfonts.git
+        version: v4.1.0
+        dependencies:
+          - aff
+          - affjax
+          - affjax-web
+          - argonaut-core
+          - arraybuffer-types
+          - arrays
+          - b64
+          - bifunctors
+          - console
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - foreign-object
+          - http-methods
+          - integers
+          - lists
+          - maybe
+          - midi
+          - ordered-collections
+          - parallel
+          - partial
+          - prelude
+          - strings
+          - transformers
+          - tuples
+      sparse-matrices:
+        repo: https://github.com/Ebmtranceboy/purescript-sparse-matrices.git
+        version: v1.2.1
+        dependencies:
+          - console
+          - effect
+          - prelude
+          - sparse-polynomials
+      sparse-polynomials:
+        repo: https://github.com/Ebmtranceboy/purescript-sparse-polynomials.git
+        version: v1.0.5
+        dependencies:
+          - cartesian
+          - console
+          - effect
+          - ordered-collections
+          - prelude
+          - rationals
+          - tuples
+      spec:
+        repo: https://github.com/purescript-spec/purescript-spec.git
+        version: v7.0.0
+        dependencies:
+          - aff
+          - ansi
+          - avar
+          - console
+          - exceptions
+          - foldable-traversable
+          - fork
+          - now
+          - pipes
+          - prelude
+          - strings
+          - transformers
+      spec-discovery:
+        repo: https://github.com/purescript-spec/purescript-spec-discovery.git
+        version: v8.0.0
+        dependencies:
+          - aff
+          - aff-promise
+          - arrays
+          - console
+          - effect
+          - foldable-traversable
+          - node-fs
+          - prelude
+          - spec
+      spec-quickcheck:
+        repo: https://github.com/purescript-spec/purescript-spec-quickcheck.git
+        version: v5.0.0
+        dependencies:
+          - aff
+          - prelude
+          - quickcheck
+          - random
+          - spec
+      ssrs:
+        repo: https://github.com/PureFunctor/purescript-ssrs.git
+        version: v1.0.0
+        dependencies:
+          - dissect
+          - either
+          - fixed-points
+          - free
+          - lists
+          - prelude
+          - safe-coerce
+          - tailrec
+          - tuples
+          - variant
+      st:
+        repo: https://github.com/purescript/purescript-st.git
+        version: v6.0.0
+        dependencies:
+          - partial
+          - prelude
+          - tailrec
+          - unsafe-coerce
+      strictlypositiveint:
+        repo: https://github.com/jamieyung/purescript-strictlypositiveint.git
+        version: v1.0.1
+        dependencies:
+          - prelude
+      string-parsers:
+        repo: https://github.com/purescript-contrib/purescript-string-parsers.git
+        version: v8.0.0
+        dependencies:
+          - arrays
+          - bifunctors
+          - control
+          - either
+          - foldable-traversable
+          - lists
+          - maybe
+          - prelude
+          - strings
+          - tailrec
+      strings:
+        repo: https://github.com/purescript/purescript-strings.git
+        version: v6.0.0
+        dependencies:
+          - arrays
+          - control
+          - either
+          - enums
+          - foldable-traversable
+          - gen
+          - integers
+          - maybe
+          - newtype
+          - nonempty
+          - partial
+          - prelude
+          - tailrec
+          - tuples
+          - unfoldable
+          - unsafe-coerce
+      strings-extra:
+        repo: https://github.com/purescript-contrib/purescript-strings-extra.git
+        version: v4.0.0
+        dependencies:
+          - arrays
+          - foldable-traversable
+          - maybe
+          - prelude
+          - strings
+          - unicode
+      stringutils:
+        repo: https://github.com/menelaos/purescript-stringutils.git
+        version: v0.0.12
+        dependencies:
+          - arrays
+          - integers
+          - maybe
+          - partial
+          - prelude
+          - strings
+      substitute:
+        repo: https://github.com/ursi/purescript-substitute.git
+        version: v0.2.3
+        dependencies:
+          - foldable-traversable
+          - foreign-object
+          - maybe
+          - prelude
+          - return
+          - strings
+      supply:
+        repo: https://github.com/ajnsit/purescript-supply.git
+        version: v0.2.0
+        dependencies:
+          - console
+          - control
+          - effect
+          - lazy
+          - prelude
+          - refs
+          - tuples
+      tailrec:
+        repo: https://github.com/purescript/purescript-tailrec.git
+        version: v6.0.0
+        dependencies:
+          - bifunctors
+          - effect
+          - either
+          - identity
+          - maybe
+          - partial
+          - prelude
+          - refs
+      test-unit:
+        repo: https://github.com/bodil/purescript-test-unit.git
+        version: v17.0.0
+        dependencies:
+          - aff
+          - avar
+          - effect
+          - either
+          - free
+          - js-timers
+          - lists
+          - prelude
+          - quickcheck
+          - strings
+      thermite:
+        repo: https://github.com/paf31/purescript-thermite.git
+        version: v6.3.1
+        dependencies:
+          - aff
+          - coroutines
+          - freet
+          - profunctor-lenses
+          - react
+      thermite-dom:
+        repo: https://github.com/athanclark/purescript-thermite-dom.git
+        version: v0.3.1
+        dependencies:
+          - react
+          - react-dom
+          - thermite
+          - web-html
+      these:
+        repo: https://github.com/purescript-contrib/purescript-these.git
+        version: v6.0.0
+        dependencies:
+          - arrays
+          - gen
+          - lists
+          - quickcheck
+          - quickcheck-laws
+          - tuples
+      transformers:
+        repo: https://github.com/purescript/purescript-transformers.git
+        version: v6.0.0
+        dependencies:
+          - control
+          - distributive
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - identity
+          - lazy
+          - maybe
+          - newtype
+          - prelude
+          - tailrec
+          - tuples
+          - unfoldable
+      tree-rose:
+        repo: https://github.com/jordanmartinez/purescript-tree-rose.git
+        version: v4.0.2
+        dependencies:
+          - control
+          - foldable-traversable
+          - free
+          - lists
+          - maybe
+          - prelude
+          - tailrec
+      tuples:
+        repo: https://github.com/purescript/purescript-tuples.git
+        version: v7.0.0
+        dependencies:
+          - control
+          - invariant
+          - prelude
+      two-or-more:
+        repo: https://github.com/i-am-the-slime/purescript-two-or-more.git
+        version: v1.0.0
+        dependencies:
+          - arrays
+          - console
+          - effect
+          - foldable-traversable
+          - maybe
+          - partial
+          - prelude
+          - psci-support
+          - tuples
+      type-equality:
+        repo: https://github.com/purescript/purescript-type-equality.git
+        version: v4.0.1
+        dependencies: []
+      typelevel:
+        repo: https://github.com/bodil/purescript-typelevel.git
+        version: v6.0.0
+        dependencies:
+          - partial
+          - prelude
+          - tuples
+          - typelevel-prelude
+          - unsafe-coerce
+      typelevel-lists:
+        repo: https://github.com/PureFunctor/purescript-typelevel-lists.git
+        version: v2.1.0
+        dependencies:
+          - prelude
+          - tuples
+          - typelevel-peano
+          - typelevel-prelude
+          - unsafe-coerce
+      typelevel-peano:
+        repo: https://github.com/csicar/purescript-typelevel-peano.git
+        version: v1.0.1
+        dependencies:
+          - arrays
+          - console
+          - effect
+          - prelude
+          - psci-support
+          - typelevel-prelude
+          - unsafe-coerce
+      typelevel-prelude:
+        repo: https://github.com/purescript/purescript-typelevel-prelude.git
+        version: v7.0.0
+        dependencies:
+          - prelude
+          - type-equality
+      typelevel-rows:
+        repo: https://github.com/jordanmartinez/purescript-typelevel-rows.git
+        version: v0.1.0
+        dependencies:
+          - prelude
+      uint:
+        repo: https://github.com/purescript-contrib/purescript-uint.git
+        version: v7.0.0
+        dependencies:
+          - effect
+          - enums
+          - gen
+          - maybe
+          - numbers
+          - prelude
+      uncurried-transformers:
+        repo: https://github.com/PureFunctor/purescript-uncurried-transformers.git
+        version: v1.1.0
+        dependencies:
+          - control
+          - effect
+          - either
+          - functions
+          - identity
+          - prelude
+          - safe-coerce
+          - tailrec
+          - transformers
+          - tuples
+      undefined-is-not-a-problem:
+        repo: https://github.com/paluh/purescript-undefined-is-not-a-problem.git
+        version: v1.0.0
+        dependencies:
+          - arrays
+          - assert
+          - effect
+          - either
+          - foreign
+          - maybe
+          - newtype
+          - prelude
+          - random
+          - tuples
+          - type-equality
+          - unsafe-coerce
+      unfoldable:
+        repo: https://github.com/purescript/purescript-unfoldable.git
+        version: v6.0.0
+        dependencies:
+          - foldable-traversable
+          - maybe
+          - partial
+          - prelude
+          - tuples
+      unicode:
+        repo: https://github.com/purescript-contrib/purescript-unicode.git
+        version: v6.0.0
+        dependencies:
+          - foldable-traversable
+          - maybe
+          - strings
+      unlift:
+        repo: https://github.com/tweag/purescript-unlift.git
+        version: v1.0.1
+        dependencies:
+          - aff
+          - effect
+          - either
+          - freet
+          - identity
+          - lists
+          - maybe
+          - monad-control
+          - prelude
+          - st
+          - transformers
+          - tuples
+      unsafe-coerce:
+        repo: https://github.com/purescript/purescript-unsafe-coerce.git
+        version: v6.0.0
+        dependencies: []
+      unsafe-reference:
+        repo: https://github.com/purescript-contrib/purescript-unsafe-reference.git
+        version: v5.0.0
+        dependencies:
+          - prelude
+      uri:
+        repo: https://github.com/purescript-contrib/purescript-uri.git
+        version: v9.0.0
+        dependencies:
+          - arrays
+          - integers
+          - js-uri
+          - numbers
+          - parsing
+          - prelude
+          - profunctor-lenses
+          - these
+          - transformers
+          - unfoldable
+      validation:
+        repo: https://github.com/purescript/purescript-validation.git
+        version: v6.0.0
+        dependencies:
+          - bifunctors
+          - control
+          - either
+          - foldable-traversable
+          - newtype
+          - prelude
+      variant:
+        repo: https://github.com/natefaubion/purescript-variant.git
+        version: v8.0.0
+        dependencies:
+          - enums
+          - lists
+          - maybe
+          - partial
+          - prelude
+          - record
+          - tuples
+          - unsafe-coerce
+      vectorfield:
+        repo: https://github.com/csicar/purescript-vectorfield.git
+        version: v1.0.1
+        dependencies:
+          - console
+          - effect
+          - group
+          - prelude
+          - psci-support
+      versions:
+        repo: https://github.com/hdgarrood/purescript-versions.git
+        version: v7.0.0
+        dependencies:
+          - control
+          - either
+          - foldable-traversable
+          - functions
+          - integers
+          - lists
+          - maybe
+          - orders
+          - parsing
+          - partial
+          - strings
+      web-clipboard:
+        repo: https://github.com/purescript-web/purescript-web-clipboard.git
+        version: v4.0.0
+        dependencies:
+          - web-html
+      web-cssom:
+        repo: https://github.com/purescript-web/purescript-web-cssom.git
+        version: v2.0.0
+        dependencies:
+          - web-dom
+          - web-html
+          - web-uievents
+      web-dom:
+        repo: https://github.com/purescript-web/purescript-web-dom.git
+        version: v6.0.0
+        dependencies:
+          - web-events
+      web-dom-parser:
+        repo: https://github.com/purescript-web/purescript-web-dom-parser.git
+        version: v8.0.0
+        dependencies:
+          - effect
+          - partial
+          - prelude
+          - web-dom
+      web-dom-xpath:
+        repo: https://github.com/purescript-web/purescript-web-dom-xpath.git
+        version: v3.0.0
+        dependencies:
+          - web-dom
+      web-encoding:
+        repo: https://github.com/purescript-web/purescript-web-encoding.git
+        version: v3.0.0
+        dependencies:
+          - arraybuffer-types
+          - effect
+          - newtype
+          - prelude
+      web-events:
+        repo: https://github.com/purescript-web/purescript-web-events.git
+        version: v4.0.0
+        dependencies:
+          - datetime
+          - enums
+          - foreign
+          - nullable
+      web-fetch:
+        repo: https://github.com/purescript-web/purescript-web-fetch.git
+        version: v3.0.0
+        dependencies:
+          - effect
+          - foreign-object
+          - http-methods
+          - prelude
+          - record
+          - typelevel-prelude
+          - web-file
+          - web-promise
+          - web-streams
+      web-file:
+        repo: https://github.com/purescript-web/purescript-web-file.git
+        version: v4.0.0
+        dependencies:
+          - foreign
+          - media-types
+          - web-dom
+      web-html:
+        repo: https://github.com/purescript-web/purescript-web-html.git
+        version: v4.0.0
+        dependencies:
+          - js-date
+          - web-dom
+          - web-file
+          - web-storage
+      web-page-visibility:
+        repo: https://git.sr.ht/~toastal/purescript-web-page-visibility
+        version: v2.0.0
+        dependencies:
+          - effect
+          - enums
+          - exceptions
+          - maybe
+          - prelude
+          - strings
+          - web-events
+          - web-html
+      web-pointerevents:
+        repo: https://github.com/purescript-web/purescript-web-pointerevents.git
+        version: v1.0.0
+        dependencies:
+          - effect
+          - maybe
+          - prelude
+          - web-dom
+          - web-uievents
+      web-promise:
+        repo: https://github.com/purescript-web/purescript-web-promise.git
+        version: v3.0.0
+        dependencies:
+          - effect
+          - exceptions
+          - foldable-traversable
+          - functions
+          - maybe
+          - prelude
+      web-socket:
+        repo: https://github.com/purescript-web/purescript-web-socket.git
+        version: v4.0.0
+        dependencies:
+          - arraybuffer-types
+          - web-file
+      web-storage:
+        repo: https://github.com/purescript-web/purescript-web-storage.git
+        version: v5.0.0
+        dependencies:
+          - nullable
+          - web-events
+      web-streams:
+        repo: https://github.com/purescript-web/purescript-web-streams.git
+        version: v3.0.0
+        dependencies:
+          - arraybuffer-types
+          - effect
+          - exceptions
+          - nullable
+          - prelude
+          - tuples
+          - web-promise
+      web-touchevents:
+        repo: https://github.com/purescript-web/purescript-web-touchevents.git
+        version: v4.0.0
+        dependencies:
+          - web-uievents
+      web-uievents:
+        repo: https://github.com/purescript-web/purescript-web-uievents.git
+        version: v4.0.0
+        dependencies:
+          - web-html
+      web-workers:
+        repo: https://github.com/gbagan/purescript-web-workers.git
+        version: v1.1.0
+        dependencies:
+          - effect
+          - foreign
+          - maybe
+          - prelude
+          - unsafe-coerce
+          - web-events
+      web-xhr:
+        repo: https://github.com/purescript-web/purescript-web-xhr.git
+        version: v5.0.0
+        dependencies:
+          - arraybuffer-types
+          - datetime
+          - http-methods
+          - web-dom
+          - web-file
+          - web-html
+      yoga-fetch:
+        repo: https://github.com/rowtype-yoga/purescript-yoga-fetch.git
+        version: v1.0.1
+        dependencies:
+          - aff
+          - aff-promise
+          - arraybuffer-types
+          - effect
+          - foreign
+          - foreign-object
+          - newtype
+          - prelude
+          - typelevel-prelude
+          - unsafe-coerce
+      yoga-json:
+        repo: https://github.com/rowtype-yoga/purescript-yoga-json.git
+        version: v2.0.0
+        dependencies:
+          - arrays
+          - bifunctors
+          - control
+          - effect
+          - either
+          - exceptions
+          - foldable-traversable
+          - foreign
+          - foreign-object
+          - identity
+          - lists
+          - maybe
+          - nullable
+          - partial
+          - prelude
+          - record
+          - transformers
+          - typelevel-prelude
+          - variant
+      yoga-postgres:
+        repo: https://github.com/rowtype-yoga/purescript-yoga-postgres.git
+        version: v6.0.0
+        dependencies:
+          - aff
+          - arrays
+          - datetime
+          - effect
+          - either
+          - enums
+          - foldable-traversable
+          - foreign
+          - integers
+          - maybe
+          - nullable
+          - prelude
+          - transformers
+          - unsafe-coerce
+  extra_packages: {}
+packages:
+  aff:
+    type: git
+    url: https://github.com/purescript-contrib/purescript-aff.git
+    rev: 2d44d9f9d0d6a416a4103fba2fb39e5160f80e36
+    dependencies:
+      - datetime
+      - effect
+      - exceptions
+      - functions
+      - parallel
+      - transformers
+      - unsafe-coerce
+  arrays:
+    type: git
+    url: https://github.com/purescript/purescript-arrays.git
+    rev: d20bae2f76db6cf29b7b75e26e82b8a54c32295e
+    dependencies:
+      - bifunctors
+      - control
+      - foldable-traversable
+      - maybe
+      - nonempty
+      - partial
+      - prelude
+      - st
+      - tailrec
+      - tuples
+      - unfoldable
+      - unsafe-coerce
+  avar:
+    type: git
+    url: https://github.com/purescript-contrib/purescript-avar.git
+    rev: d00f5784d9cc8f079babd62740f5c52b87e5caa5
+    dependencies:
+      - aff
+      - effect
+      - either
+      - exceptions
+      - functions
+      - maybe
+  bifunctors:
+    type: git
+    url: https://github.com/purescript/purescript-bifunctors.git
+    rev: 16ba2fb6dd7f05528ebd9e2f9ca3a068b325e5b3
+    dependencies:
+      - const
+      - either
+      - newtype
+      - prelude
+      - tuples
+  catenable-lists:
+    type: git
+    url: https://github.com/purescript/purescript-catenable-lists.git
+    rev: 09abe1f4888bc00841ad2b59e56a9e7ce7ebd4ab
+    dependencies:
+      - control
+      - foldable-traversable
+      - lists
+      - maybe
+      - prelude
+      - tuples
+      - unfoldable
+  console:
+    type: git
+    url: https://github.com/purescript/purescript-console.git
+    rev: 3b83d7b792d03872afeea5e62b4f686ab0f09842
+    dependencies:
+      - effect
+      - prelude
+  const:
+    type: git
+    url: https://github.com/purescript/purescript-const.git
+    rev: ab9570cf2b6e67f7e441178211db1231cfd75c37
+    dependencies:
+      - invariant
+      - newtype
+      - prelude
+  contravariant:
+    type: git
+    url: https://github.com/purescript/purescript-contravariant.git
+    rev: 9ad3e105b8855bcc25f4e0893c784789d05a58de
+    dependencies:
+      - const
+      - either
+      - newtype
+      - prelude
+      - tuples
+  control:
+    type: git
+    url: https://github.com/purescript/purescript-control.git
+    rev: a6033808790879a17b2729e73747a9ed3fb2264e
+    dependencies:
+      - newtype
+      - prelude
+  datetime:
+    type: git
+    url: https://github.com/purescript/purescript-datetime.git
+    rev: a6a0cf1b0324964ad1854bc3377ed8766ba90e6f
+    dependencies:
+      - bifunctors
+      - control
+      - either
+      - enums
+      - foldable-traversable
+      - functions
+      - gen
+      - integers
+      - lists
+      - maybe
+      - newtype
+      - numbers
+      - ordered-collections
+      - partial
+      - prelude
+      - tuples
+  distributive:
+    type: git
+    url: https://github.com/purescript/purescript-distributive.git
+    rev: 6005e513642e855ebf6f884d24a35c2803ca252a
+    dependencies:
+      - identity
+      - newtype
+      - prelude
+      - tuples
+      - type-equality
+  effect:
+    type: git
+    url: https://github.com/purescript/purescript-effect.git
+    rev: a192ddb923027d426d6ea3d8deb030c9aa7c7dda
+    dependencies:
+      - prelude
+  either:
+    type: git
+    url: https://github.com/purescript/purescript-either.git
+    rev: af655a04ed2fd694b6688af39ee20d7907ad0763
+    dependencies:
+      - control
+      - invariant
+      - maybe
+      - prelude
+  enums:
+    type: git
+    url: https://github.com/purescript/purescript-enums.git
+    rev: bae47961d401f9acf88da38f32e87403e5f0cf2f
+    dependencies:
+      - control
+      - either
+      - gen
+      - maybe
+      - newtype
+      - nonempty
+      - partial
+      - prelude
+      - tuples
+      - unfoldable
+  exceptions:
+    type: git
+    url: https://github.com/purescript/purescript-exceptions.git
+    rev: afab3c07c820bb49b6c5be50049db46a964a6161
+    dependencies:
+      - effect
+      - either
+      - maybe
+      - prelude
+  exists:
+    type: git
+    url: https://github.com/purescript/purescript-exists.git
+    rev: f765b4ace7869c27b9c05949e18c843881f9173b
+    dependencies:
+      - unsafe-coerce
+  foldable-traversable:
+    type: git
+    url: https://github.com/purescript/purescript-foldable-traversable.git
+    rev: b3926f870532d287ea59e2d5cd3873b81ef2a93a
+    dependencies:
+      - bifunctors
+      - const
+      - control
+      - either
+      - functors
+      - identity
+      - maybe
+      - newtype
+      - orders
+      - prelude
+      - tuples
+  free:
+    type: git
+    url: https://github.com/purescript/purescript-free.git
+    rev: e2d8fa8023a864363857834e11393483bced5e38
+    dependencies:
+      - catenable-lists
+      - control
+      - distributive
+      - either
+      - exists
+      - foldable-traversable
+      - invariant
+      - lazy
+      - maybe
+      - prelude
+      - tailrec
+      - transformers
+      - tuples
+      - unsafe-coerce
+  functions:
+    type: git
+    url: https://github.com/purescript/purescript-functions.git
+    rev: f626f20580483977c5b27a01aac6471e28aff367
+    dependencies:
+      - prelude
+  functors:
+    type: git
+    url: https://github.com/purescript/purescript-functors.git
+    rev: 022ffd7a2a7ec12080314f3d217b400674a247b4
+    dependencies:
+      - bifunctors
+      - const
+      - contravariant
+      - control
+      - distributive
+      - either
+      - invariant
+      - maybe
+      - newtype
+      - prelude
+      - profunctor
+      - tuples
+      - unsafe-coerce
+  gen:
+    type: git
+    url: https://github.com/purescript/purescript-gen.git
+    rev: 9fbcc2a1261c32e30d79c5418edef4d96fe76931
+    dependencies:
+      - either
+      - foldable-traversable
+      - identity
+      - maybe
+      - newtype
+      - nonempty
+      - prelude
+      - tailrec
+      - tuples
+      - unfoldable
+  identity:
+    type: git
+    url: https://github.com/purescript/purescript-identity.git
+    rev: ef6768f8a52ab0bc943a85f5761ba07c257f639f
+    dependencies:
+      - control
+      - invariant
+      - newtype
+      - prelude
+  integers:
+    type: git
+    url: https://github.com/purescript/purescript-integers.git
+    rev: 54d712b25c594833083d15dc9ff2418eb9c52822
+    dependencies:
+      - maybe
+      - numbers
+      - prelude
+  invariant:
+    type: git
+    url: https://github.com/purescript/purescript-invariant.git
+    rev: 1d2a196d51e90623adb88496c2cfd759c6736894
+    dependencies:
+      - control
+      - prelude
+  js-timers:
+    type: git
+    url: https://github.com/purescript-contrib/purescript-js-timers.git
+    rev: 7cb728b3e6dc29f355143617e6e9ac770ecd9273
+    dependencies:
+      - effect
+  lazy:
+    type: git
+    url: https://github.com/purescript/purescript-lazy.git
+    rev: 48347841226b27af5205a1a8ec71e27a93ce86fd
+    dependencies:
+      - control
+      - foldable-traversable
+      - invariant
+      - prelude
+  lcg:
+    type: git
+    url: https://github.com/purescript/purescript-lcg.git
+    rev: 67c6c6483a563a59ae036d9dca0f1be2835326a5
+    dependencies:
+      - effect
+      - integers
+      - maybe
+      - partial
+      - prelude
+      - random
+  lists:
+    type: git
+    url: https://github.com/purescript/purescript-lists.git
+    rev: b113451e5b41cad87d669a3165f955c71cd863e2
+    dependencies:
+      - bifunctors
+      - control
+      - foldable-traversable
+      - lazy
+      - maybe
+      - newtype
+      - nonempty
+      - partial
+      - prelude
+      - tailrec
+      - tuples
+      - unfoldable
+  maybe:
+    type: git
+    url: https://github.com/purescript/purescript-maybe.git
+    rev: c6f98ac1088766287106c5d9c8e30e7648d36786
+    dependencies:
+      - control
+      - invariant
+      - newtype
+      - prelude
+  newtype:
+    type: git
+    url: https://github.com/purescript/purescript-newtype.git
+    rev: 29d8e6dd77aec2c975c948364ec3faf26e14ee7b
+    dependencies:
+      - prelude
+      - safe-coerce
+  nonempty:
+    type: git
+    url: https://github.com/purescript/purescript-nonempty.git
+    rev: 28150ecc7419238b187abd609a92a645273348bb
+    dependencies:
+      - control
+      - foldable-traversable
+      - maybe
+      - prelude
+      - tuples
+      - unfoldable
+  numbers:
+    type: git
+    url: https://github.com/purescript/purescript-numbers.git
+    rev: 2a53528f18f9415334bae28e7bb3cf3be86342c2
+    dependencies:
+      - functions
+      - maybe
+  ordered-collections:
+    type: git
+    url: https://github.com/purescript/purescript-ordered-collections.git
+    rev: 9826b7632d0d0a691173bde308a634195f42a419
+    dependencies:
+      - arrays
+      - foldable-traversable
+      - gen
+      - lists
+      - maybe
+      - partial
+      - prelude
+      - st
+      - tailrec
+      - tuples
+      - unfoldable
+  orders:
+    type: git
+    url: https://github.com/purescript/purescript-orders.git
+    rev: f86db621ec5eef1274145f8b1fd8ebbfe0ed4a2c
+    dependencies:
+      - newtype
+      - prelude
+  parallel:
+    type: git
+    url: https://github.com/purescript/purescript-parallel.git
+    rev: 85290dca837771ac4870071008c933d315ef678f
+    dependencies:
+      - control
+      - effect
+      - either
+      - foldable-traversable
+      - functors
+      - maybe
+      - newtype
+      - prelude
+      - profunctor
+      - refs
+      - transformers
+  partial:
+    type: git
+    url: https://github.com/purescript/purescript-partial.git
+    rev: 0fa0646f5ea1ec5f0c46dcbd770c705a6c9ad3ec
+    dependencies: []
+  prelude:
+    type: git
+    url: https://github.com/purescript/purescript-prelude.git
+    rev: 32787f4399c92459c41602131a5858559eb868c5
+    dependencies: []
+  profunctor:
+    type: git
+    url: https://github.com/purescript/purescript-profunctor.git
+    rev: 0a966a14e7b0c827d44657dc1710cdc712d2e034
+    dependencies:
+      - control
+      - distributive
+      - either
+      - exists
+      - invariant
+      - newtype
+      - prelude
+      - tuples
+  quickcheck:
+    type: git
+    url: https://github.com/purescript/purescript-quickcheck.git
+    rev: bf5029f97e6c0d7552d3a08d2ab793a19e2c5e3d
+    dependencies:
+      - arrays
+      - console
+      - control
+      - effect
+      - either
+      - enums
+      - exceptions
+      - foldable-traversable
+      - gen
+      - identity
+      - integers
+      - lazy
+      - lcg
+      - lists
+      - maybe
+      - newtype
+      - nonempty
+      - numbers
+      - partial
+      - prelude
+      - record
+      - st
+      - strings
+      - tailrec
+      - transformers
+      - tuples
+      - unfoldable
+  random:
+    type: git
+    url: https://github.com/purescript/purescript-random.git
+    rev: 9540bc965a9596da02fefd9949418bb19c92533a
+    dependencies:
+      - effect
+      - integers
+  record:
+    type: git
+    url: https://github.com/purescript/purescript-record.git
+    rev: c89cd1ada6b636692571fc374196b1c39c4c9f70
+    dependencies:
+      - functions
+      - prelude
+      - unsafe-coerce
+  refs:
+    type: git
+    url: https://github.com/purescript/purescript-refs.git
+    rev: f8e6216da4cb9309fde1f20cd6f69ac3a3b7f9e8
+    dependencies:
+      - effect
+      - prelude
+  safe-coerce:
+    type: git
+    url: https://github.com/purescript/purescript-safe-coerce.git
+    rev: 7fa799ae80a38b8d948efcb52608e58e198b3da7
+    dependencies:
+      - unsafe-coerce
+  st:
+    type: git
+    url: https://github.com/purescript/purescript-st.git
+    rev: 2cc7ae1c3318a303378c4a9f3fa0f10ee7cc3589
+    dependencies:
+      - partial
+      - prelude
+      - tailrec
+      - unsafe-coerce
+  strings:
+    type: git
+    url: https://github.com/purescript/purescript-strings.git
+    rev: 4bc6954448d056f8aa7a659695a6ad60ad4fdf19
+    dependencies:
+      - arrays
+      - control
+      - either
+      - enums
+      - foldable-traversable
+      - gen
+      - integers
+      - maybe
+      - newtype
+      - nonempty
+      - partial
+      - prelude
+      - tailrec
+      - tuples
+      - unfoldable
+      - unsafe-coerce
+  tailrec:
+    type: git
+    url: https://github.com/purescript/purescript-tailrec.git
+    rev: 5e2104aa734b31a17074cc805bf087d72b65afd1
+    dependencies:
+      - bifunctors
+      - effect
+      - either
+      - identity
+      - maybe
+      - partial
+      - prelude
+      - refs
+  test-unit:
+    type: git
+    url: https://github.com/bodil/purescript-test-unit.git
+    rev: 3112d7ebe06d467238058a6384dc75ffd960d335
+    dependencies:
+      - aff
+      - avar
+      - effect
+      - either
+      - free
+      - js-timers
+      - lists
+      - prelude
+      - quickcheck
+      - strings
+  transformers:
+    type: git
+    url: https://github.com/purescript/purescript-transformers.git
+    rev: be72ab52357d9a665cbf93d73ba1c07c4b0957ee
+    dependencies:
+      - control
+      - distributive
+      - effect
+      - either
+      - exceptions
+      - foldable-traversable
+      - identity
+      - lazy
+      - maybe
+      - newtype
+      - prelude
+      - tailrec
+      - tuples
+      - unfoldable
+  tuples:
+    type: git
+    url: https://github.com/purescript/purescript-tuples.git
+    rev: 4f52da2729b448c8564369378f1232d8d2dc1d8b
+    dependencies:
+      - control
+      - invariant
+      - prelude
+  type-equality:
+    type: git
+    url: https://github.com/purescript/purescript-type-equality.git
+    rev: 0525b7d39e0fbd81b4209518139fb8ab02695774
+    dependencies: []
+  unfoldable:
+    type: git
+    url: https://github.com/purescript/purescript-unfoldable.git
+    rev: 493dfe04ed590e20d8f69079df2f58486882748d
+    dependencies:
+      - foldable-traversable
+      - maybe
+      - partial
+      - prelude
+      - tuples
+  unsafe-coerce:
+    type: git
+    url: https://github.com/purescript/purescript-unsafe-coerce.git
+    rev: ab956f82e66e633f647fb3098e8ddd3ec58d689f
+    dependencies: []

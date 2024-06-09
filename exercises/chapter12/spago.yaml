@@ -1,0 +1,22 @@
+package:
+  dependencies:
+    - arrays
+    - canvas
+    - console
+    - effect
+    - foldable-traversable
+    - integers
+    - maybe
+    - numbers
+    - partial
+    - prelude
+    - random
+    - refs
+    - web-dom
+    - web-events
+    - web-html
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.2-20220615/packages.json

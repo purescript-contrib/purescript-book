@@ -1,0 +1,25 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - control
+    - effect
+    - either
+    - foldable-traversable
+    - identity
+    - lists
+    - maybe
+    - newtype
+    - node-readline
+    - optparse
+    - ordered-collections
+    - prelude
+    - strings
+    - test-unit
+    - transformers
+    - tuples
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.2-20220615/packages.json

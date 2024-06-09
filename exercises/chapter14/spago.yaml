@@ -1,0 +1,19 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - effect
+    - foldable-traversable
+    - free
+    - maybe
+    - prelude
+    - strings
+    - transformers
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.2-20220615/packages.json
+
+
+cd chapter3 && spago test --migrate && cd .. && cd chapter2 && spago test --migrate && cd ..

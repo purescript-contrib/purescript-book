@@ -1,0 +1,15 @@
+package:
+  dependencies:
+    - console
+    - effect
+    - foldable-traversable
+    - integers
+    - lists
+    - numbers
+    - prelude
+    - test-unit
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.2-20220615/packages.json
