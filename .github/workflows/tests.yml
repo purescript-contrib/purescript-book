@@ -41,7 +41,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install NPM dependencies
-        run: npm install purescript spago markdownlint-cli
+        run: npm install purescript spago markdownlint-cli@0.37.0
 
       - name: Run Build
         run: ./scripts/buildAll.sh
