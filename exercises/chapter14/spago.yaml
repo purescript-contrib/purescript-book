@@ -1,0 +1,16 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - effect
+    - foldable-traversable
+    - free
+    - maybe
+    - prelude
+    - strings
+    - transformers
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0

@@ -1,0 +1,17 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - effect
+    - foldable-traversable
+    - integers
+    - maybe
+    - numbers
+    - partial
+    - prelude
+    - test-unit
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0

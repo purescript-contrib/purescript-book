@@ -1,0 +1,15 @@
+package:
+  dependencies:
+    - console
+    - effect
+    - foldable-traversable
+    - integers
+    - lists
+    - numbers
+    - prelude
+    - test-unit
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0

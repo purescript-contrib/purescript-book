@@ -1,0 +1,30 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - control
+    - effect
+    - either
+    - exceptions
+    - foldable-traversable
+    - integers
+    - lists
+    - maybe
+    - numbers
+    - prelude
+    - random
+    - react-basic
+    - react-basic-dom
+    - react-basic-hooks
+    - st
+    - strings
+    - test-unit
+    - tuples
+    - validation
+    - web-dom
+    - web-html
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0

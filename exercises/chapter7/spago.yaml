@@ -1,0 +1,21 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - effect
+    - either
+    - foldable-traversable
+    - integers
+    - lists
+    - maybe
+    - prelude
+    - strings
+    - test-unit
+    - transformers
+    - tuples
+    - validation
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0
