@@ -630,7 +630,7 @@ Try out the new version in PSCi – you should get the same result. I'll let you
      ```
 
      _Hint_: Try to write this function as an array comprehension using do notation.
- 3. (Difficult) Write a function `largestSmallest` which takes a `Path` and returns an array containing the single largest and single smallest files in the `Path`. _Note_: consider the cases where there are zero or one files in the `Path` by returning an empty or one-element array, respectively.
+ 3. (Difficult) Write a function `largestSmallest` which takes a `Path` and returns an array containing the single largest and single smallest files in the `Path`, including (recursively) any subdirectories. _Note_: consider the cases where there are zero or one files in the `Path` by returning an empty or one-element array, respectively.
 
 ## Conclusion
 
