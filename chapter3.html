@@ -212,7 +212,7 @@ $ spago build
 &gt; :type 1.0
 Number
 
-&gt; :type &quot;test&quot;
+&gt; :type "test"
 String
 
 &gt; :type true
@@ -239,7 +239,7 @@ Could not match type Int with type Boolean.
 </code></pre>
 <p>The last example shows an error from the type checker, which failed to <em>unify</em> (i.e., make equal) the types of the two elements.</p>
 <p>Records correspond to JavaScript's objects, and record literals have the same syntax as JavaScript's object literals:</p>
-<pre><code class="language-text">&gt; author = { name: &quot;Phil&quot;, interests: [&quot;Functional Programming&quot;, &quot;JavaScript&quot;] }
+<pre><code class="language-text">&gt; author = { name: "Phil", interests: ["Functional Programming", "JavaScript"] }
 
 &gt; :type author
 { name :: String
@@ -249,10 +249,10 @@ Could not match type Int with type Boolean.
 <p>This type indicates that the specified object has two <em>fields</em>: a <code>name</code> field with the type <code>String</code> and an <code>interests</code> field with the type <code>Array String</code>, i.e., an array of <code>String</code>s.</p>
 <p>Fields of records can be accessed using a dot, followed by the label of the field to access:</p>
 <pre><code class="language-text">&gt; author.name
-&quot;Phil&quot;
+"Phil"
 
 &gt; author.interests
-[&quot;Functional Programming&quot;,&quot;JavaScript&quot;]
+["Functional Programming","JavaScript"]
 </code></pre>
 <p>PureScript's functions correspond to JavaScript's functions. Functions can be defined at the top-level of a file by specifying arguments before the equals sign:</p>
 <pre><code class="language-haskell">import Prelude -- bring the (+) operator into scope
@@ -260,7 +260,7 @@ Could not match type Int with type Boolean.
 add :: Int -&gt; Int -&gt; Int
 add x y = x + y
 </code></pre>
-<p>Alternatively, functions can be defined inline using a backslash character followed by a space-delimited list of argument names. To enter a multi-line declaration in PSCi, we can enter &quot;paste mode&quot; using the <code>:paste</code> command. In this mode, declarations are terminated using the <em>Control-D</em> key sequence:</p>
+<p>Alternatively, functions can be defined inline using a backslash character followed by a space-delimited list of argument names. To enter a multi-line declaration in PSCi, we can enter "paste mode" using the <code>:paste</code> command. In this mode, declarations are terminated using the <em>Control-D</em> key sequence:</p>
 <pre><code class="language-text">&gt; import Prelude
 &gt; :paste
 … add :: Int -&gt; Int -&gt; Int
@@ -374,15 +374,15 @@ forall (a :: Type) (b :: Type). a -&gt; b -&gt; a
 <pre><code class="language-text">Int -&gt; String -&gt; Int
 </code></pre>
 <p>We don't have to indicate in code that we want to specialize a quantified type – it happens automatically. For example, we can use <code>constantlyFirst</code> as if it had this type already:</p>
-<pre><code class="language-text">&gt; constantlyFirst 3 &quot;ignored&quot;
+<pre><code class="language-text">&gt; constantlyFirst 3 "ignored"
 
 3
 </code></pre>
-<p>While we can choose any types for <code>a</code> and <code>b</code>, the return type of <code>constantlyFirst</code> has to be the same as the type of the first argument (because both of them are &quot;tied&quot; to the same <code>a</code>):</p>
-<pre><code class="language-text">:type constantlyFirst true &quot;ignored&quot;
+<p>While we can choose any types for <code>a</code> and <code>b</code>, the return type of <code>constantlyFirst</code> has to be the same as the type of the first argument (because both of them are "tied" to the same <code>a</code>):</p>
+<pre><code class="language-text">:type constantlyFirst true "ignored"
 Boolean
 
-:type constantlyFirst &quot;keep&quot; 3
+:type constantlyFirst "keep" 3
 String
 </code></pre>
 <h2 id="displaying-address-book-entries"><a class="header" href="#displaying-address-book-entries">Displaying Address Book Entries</a></h2>
@@ -390,14 +390,14 @@ String
 <pre><code class="language-haskell">showEntry :: Entry -&gt; String
 </code></pre>
 <p>This type signature says that <code>showEntry</code> is a function that takes an <code>Entry</code> as an argument and returns a <code>String</code>. Here is the code for <code>showEntry</code>:</p>
-<pre><code class="language-haskell">showEntry entry = entry.lastName &lt;&gt; &quot;, &quot; &lt;&gt;
-                  entry.firstName &lt;&gt; &quot;: &quot; &lt;&gt;
+<pre><code class="language-haskell">showEntry entry = entry.lastName &lt;&gt; ", " &lt;&gt;
+                  entry.firstName &lt;&gt; ": " &lt;&gt;
                   showAddress entry.address
 </code></pre>
 <p>This function concatenates the three fields of the <code>Entry</code> record into a single string, using the <code>showAddress</code> function to turn the record inside the <code>address</code> field into a <code>String</code>. <code>showAddress</code> is defined similarly:</p>
 <pre><code class="language-haskell">showAddress :: Address -&gt; String
-showAddress addr = addr.street &lt;&gt; &quot;, &quot; &lt;&gt;
-                   addr.city &lt;&gt; &quot;, &quot; &lt;&gt;
+showAddress addr = addr.street &lt;&gt; ", " &lt;&gt;
+                   addr.city &lt;&gt; ", " &lt;&gt;
                    addr.state
 </code></pre>
 <p>A function definition begins with the name of the function, followed by a list of argument names. The result of the function is specified after the equals sign. Fields are accessed with a dot, followed by the field name. In PureScript, string concatenation uses the diamond operator (<code>&lt;&gt;</code>), instead of the plus operator like in JavaScript.</p>
@@ -412,18 +412,18 @@ showAddress addr = addr.street &lt;&gt; &quot;, &quot; &lt;&gt;
 &gt; import Data.AddressBook
 </code></pre>
 <p>We can create an entry by using a record literal, which looks just like an anonymous object in JavaScript.</p>
-<pre><code class="language-text">&gt; address = { street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &quot;CA&quot; }
+<pre><code class="language-text">&gt; address = { street: "123 Fake St.", city: "Faketown", state: "CA" }
 </code></pre>
 <p>Now, try applying our function to the example:</p>
 <pre><code class="language-text">&gt; showAddress address
 
-&quot;123 Fake St., Faketown, CA&quot;
+"123 Fake St., Faketown, CA"
 </code></pre>
 <p>Let's also test <code>showEntry</code> by creating an address book entry record containing our example address:</p>
-<pre><code class="language-text">&gt; entry = { firstName: &quot;John&quot;, lastName: &quot;Smith&quot;, address: address }
+<pre><code class="language-text">&gt; entry = { firstName: "John", lastName: "Smith", address: address }
 &gt; showEntry entry
 
-&quot;Smith, John: 123 Fake St., Faketown, CA&quot;
+"Smith, John: 123 Fake St., Faketown, CA"
 </code></pre>
 <h2 id="creating-address-books"><a class="header" href="#creating-address-books">Creating Address Books</a></h2>
 <p>Now let's write some utility functions for working with address books. We will need a value representing an empty address book: an empty list.</p>
@@ -507,7 +507,7 @@ AddressBook
 </code></pre>
 <p>This is because function application associates to the left, which explains why we can specify function arguments one after the other, separated by whitespace.</p>
 <p>The <code>-&gt;</code> operator in function types is a <em>type constructor</em> for functions. It takes two type arguments: the function's argument type and the return type – the left and right operands, respectively.</p>
-<p>Note that in the rest of the book, I will talk about things like &quot;functions of two arguments&quot;. However, it is to be understood that this means a curried function, taking a first argument and returning a function that takes the second.</p>
+<p>Note that in the rest of the book, I will talk about things like "functions of two arguments". However, it is to be understood that this means a curried function, taking a first argument and returning a function that takes the second.</p>
 <p>Now consider the definition of <code>insertEntry</code>:</p>
 <pre><code class="language-haskell">insertEntry :: Entry -&gt; AddressBook -&gt; AddressBook
 insertEntry entry book = Cons entry book
@@ -521,9 +521,9 @@ insertEntry entry = Cons entry
 insertEntry = Cons
 </code></pre>
 <p>This process, called <em>eta conversion</em>, can be used (along with other techniques) to rewrite functions in <em>point-free form</em>, which means functions defined without reference to their arguments.</p>
-<p>In the case of <code>insertEntry</code>, <em>eta conversion</em> has resulted in a very clear definition of our function – &quot;<code>insertEntry</code> is just cons on lists&quot;. However, it is arguable whether the point-free form is better in general.</p>
+<p>In the case of <code>insertEntry</code>, <em>eta conversion</em> has resulted in a very clear definition of our function – "<code>insertEntry</code> is just cons on lists". However, it is arguable whether the point-free form is better in general.</p>
 <h2 id="property-accessors"><a class="header" href="#property-accessors">Property Accessors</a></h2>
-<p>One common pattern is to use a function to access individual fields (or &quot;properties&quot;) of a record. An inline function to extract an <code>Address</code> from an <code>Entry</code> could be written as:</p>
+<p>One common pattern is to use a function to access individual fields (or "properties") of a record. An inline function to extract an <code>Address</code> from an <code>Entry</code> could be written as:</p>
 <pre><code class="language-haskell">\entry -&gt; entry.address
 </code></pre>
 <p>PureScript also allows <a href="https://github.com/purescript/documentation/blob/master/language/Syntax.md#property-accessors"><em>property accessor</em></a> shorthand, where an underscore acts as the anonymous function argument, so the inline function above is equivalent to:</p>
@@ -533,13 +533,13 @@ insertEntry = Cons
 <pre><code class="language-haskell">_.address.city
 </code></pre>
 <p>For example:</p>
-<pre><code class="language-text">&gt; address = { street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &quot;CA&quot; }
-&gt; entry = { firstName: &quot;John&quot;, lastName: &quot;Smith&quot;, address: address }
+<pre><code class="language-text">&gt; address = { street: "123 Fake St.", city: "Faketown", state: "CA" }
+&gt; entry = { firstName: "John", lastName: "Smith", address: address }
 &gt; _.lastName entry
-&quot;Smith&quot;
+"Smith"
 
 &gt; _.address.city entry
-&quot;Faketown&quot;
+"Faketown"
 </code></pre>
 <h2 id="querying-the-address-book"><a class="header" href="#querying-the-address-book">Querying the Address Book</a></h2>
 <p>The last function we need to implement for our minimal address book application will look up a person by name and return the correct <code>Entry</code>. This will be a nice application of building programs by composing small functions – a key idea from functional programming.</p>
@@ -593,7 +593,7 @@ head :: AddressBook -&gt; Maybe Entry
 <pre><code class="language-text">&gt; mod 8 3
 2
 </code></pre>
-<p>The above usage works fine but is awkward to read. A more familiar phrasing is &quot;eight mod three&quot;, which you can achieve by wrapping a prefix function in backticks (`):</p>
+<p>The above usage works fine but is awkward to read. A more familiar phrasing is "eight mod three", which you can achieve by wrapping a prefix function in backticks (`):</p>
 <pre><code class="language-text">&gt; 8 `mod` 3
 2
 </code></pre>
@@ -629,7 +629,7 @@ infixr 0 apply as $
 <p>Another parens-busting opportunity for the <code>$</code> operator is in our earlier <code>findEntry</code> function:</p>
 <pre><code class="language-haskell">findEntry firstName lastName book = head $ filter filterEntry book
 </code></pre>
-<p>We'll see an even more elegant way to rewrite this line with &quot;function composition&quot; in the next section.</p>
+<p>We'll see an even more elegant way to rewrite this line with "function composition" in the next section.</p>
 <p>If you'd like to use a concise infix operator alias as a prefix function, you can surround it in parentheses:</p>
 <pre><code class="language-text">&gt; 8 + 3
 11
@@ -655,7 +655,7 @@ add5 x = 5 `(+)` x  -- Yo Dawg, I herd you like infix, so we put infix in your i
 <h2 id="function-composition"><a class="header" href="#function-composition">Function Composition</a></h2>
 <p>Just like we were able to simplify the <code>insertEntry</code> function by using eta conversion, we can simplify the definition of <code>findEntry</code> by reasoning about its arguments.</p>
 <p>Note that the <code>book</code> argument is passed to the <code>filter filterEntry</code> function, and the result of this application is passed to <code>head</code>. In other words, <code>book</code> is passed to the <em>composition</em> of the functions <code>filter filterEntry</code> and <code>head</code>.</p>
-<p>In PureScript, the function composition operators are <code>&lt;&lt;&lt;</code> and <code>&gt;&gt;&gt;</code>. The first is &quot;backwards composition&quot;, and the second is &quot;forwards composition&quot;.</p>
+<p>In PureScript, the function composition operators are <code>&lt;&lt;&lt;</code> and <code>&gt;&gt;&gt;</code>. The first is "backwards composition", and the second is "forwards composition".</p>
 <p>We can rewrite the right-hand side of <code>findEntry</code> using either operator. Using backwards-composition, the right-hand side would be</p>
 <pre><code class="language-haskell">(head &lt;&lt;&lt; filter filterEntry) book
 </code></pre>
@@ -667,7 +667,7 @@ add5 x = 5 `(+)` x  -- Yo Dawg, I herd you like infix, so we put infix in your i
 <p>An equally valid right-hand side would be:</p>
 <pre><code class="language-haskell">filter filterEntry &gt;&gt;&gt; head
 </code></pre>
-<p>Either way, this gives a clear definition of the <code>findEntry</code> function: &quot;<code>findEntry</code> is the composition of a filtering function and the <code>head</code> function&quot;.</p>
+<p>Either way, this gives a clear definition of the <code>findEntry</code> function: "<code>findEntry</code> is the composition of a filtering function and the <code>head</code> function".</p>
 <p>I will let you decide which definition is easier to understand, but it is often useful to think of functions as building blocks in this way: each function executes a single task, and solutions are assembled using function composition.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
@@ -675,7 +675,7 @@ add5 x = 5 `(+)` x  -- Yo Dawg, I herd you like infix, so we put infix in your i
 <li>(Medium) Write a function <code>findEntryByStreet :: String -&gt; AddressBook -&gt; Maybe Entry</code> which looks up an <code>Entry</code> given a street address. <em>Hint</em> reusing the existing code in <code>findEntry</code>. Test your function in PSCi and by running <code>spago test</code>.</li>
 <li>(Medium) Rewrite <code>findEntryByStreet</code> to replace <code>filterEntry</code> with the composition (using <code>&lt;&lt;&lt;</code> or <code>&gt;&gt;&gt;</code>) of: a property accessor (using the <code>_.</code> notation); and a function that tests whether its given string argument is equal to the given street address.</li>
 <li>(Medium) Write a function <code>isInBook</code> that tests whether a name appears in a <code>AddressBook</code>, returning a Boolean value. <em>Hint</em>: Use PSCi to find the type of the <code>Data.List.null</code> function, which tests whether a list is empty or not.</li>
-<li>(Difficult) Write a function <code>removeDuplicates</code> which removes &quot;duplicate&quot; address book entries. We'll consider entries duplicated if they share the same first and last names, while ignoring <code>address</code> fields. <em>Hint</em>: Use PSCi to find the type of the <code>Data.List.nubByEq</code> function, which removes duplicate elements from a list based on an equality predicate. Note that the first element in each set of duplicates (closest to the list head) is the one that is kept.</li>
+<li>(Difficult) Write a function <code>removeDuplicates</code> which removes "duplicate" address book entries. We'll consider entries duplicated if they share the same first and last names, while ignoring <code>address</code> fields. <em>Hint</em>: Use PSCi to find the type of the <code>Data.List.nubByEq</code> function, which removes duplicate elements from a list based on an equality predicate. Note that the first element in each set of duplicates (closest to the list head) is the one that is kept.</li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
 <p>In this chapter, we covered several new functional programming concepts and learned how to:</p>

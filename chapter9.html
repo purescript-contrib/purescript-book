@@ -209,7 +209,7 @@ copyFile('file1.txt', 'file2.txt')
 </code></pre>
 <p>It is also possible to use callbacks or synchronous functions, but those are less desirable because:</p>
 <ul>
-<li>Callbacks lead to excessive nesting, known as &quot;Callback Hell&quot; or the &quot;Pyramid of Doom&quot;.</li>
+<li>Callbacks lead to excessive nesting, known as "Callback Hell" or the "Pyramid of Doom".</li>
 <li>Synchronous functions block execution of the other code in your app.</li>
 </ul>
 <h2 id="asynchronous-purescript"><a class="header" href="#asynchronous-purescript">Asynchronous PureScript</a></h2>
@@ -228,9 +228,9 @@ main = launchAff_ program
 
 program :: Aff Unit
 program = do
-  result &lt;- attempt $ copyFile &quot;file1.txt&quot; &quot;file2.txt&quot;
+  result &lt;- attempt $ copyFile "file1.txt" "file2.txt"
   case result of
-    Left e -&gt; log $ &quot;There was a problem with copyFile: &quot; &lt;&gt; message e
+    Left e -&gt; log $ "There was a problem with copyFile: " &lt;&gt; message e
     _ -&gt; pure unit
 
 copyFile :: FilePath -&gt; FilePath -&gt; Aff Unit
@@ -244,7 +244,7 @@ copyFile file1 file2 = do
 <p>For example, if we look at the signature of <code>readTextFile</code>, we see that it returns the file contents as a <code>String</code> wrapped in <code>Aff</code>:</p>
 <pre><code class="language-hs">readTextFile :: Encoding -&gt; FilePath -&gt; Aff String
 </code></pre>
-<p>We can &quot;unwrap&quot; the returned string with a bind arrow (<code>&lt;-</code>) in do notation:</p>
+<p>We can "unwrap" the returned string with a bind arrow (<code>&lt;-</code>) in do notation:</p>
 <pre><code class="language-hs">my_data &lt;- readTextFile UTF8 file1
 </code></pre>
 <p>Then pass it as the string argument to <code>writeTextFile</code>:</p>
@@ -287,7 +287,7 @@ getUrl :: String -&gt; Aff String
 getUrl url = do
   result &lt;- AN.get ResponseFormat.string url
   pure case result of
-    Left err -&gt; &quot;GET /api response failed to decode: &quot; &lt;&gt; AN.printError err
+    Left err -&gt; "GET /api response failed to decode: " &lt;&gt; AN.printError err
     Right response -&gt; response.body
 </code></pre>
 <p>When calling this in the repl, <code>launchAff_</code> is required to convert the <code>Aff</code> to a repl-compatible <code>Effect</code>:</p>
@@ -300,11 +300,11 @@ getUrl url = do
 … import Test.HTTP (getUrl)
 …
 … launchAff_ do
-…   str &lt;- getUrl &quot;https://reqres.in/api/users/1&quot;
+…   str &lt;- getUrl "https://reqres.in/api/users/1"
 …   log str
 …
 unit
-{&quot;data&quot;:{&quot;id&quot;:1,&quot;email&quot;:&quot;george.bluth@reqres.in&quot;,&quot;first_name&quot;:&quot;George&quot;,&quot;last_name&quot;:&quot;Bluth&quot;, ...}}
+{"data":{"id":1,"email":"george.bluth@reqres.in","first_name":"George","last_name":"Bluth", ...}}
 </code></pre>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
 <ol>
@@ -368,7 +368,7 @@ fetchPar :: Effect Unit
 fetchPar =
   launchAff_ do
     let
-      urls = map (\n -&gt; &quot;https://reqres.in/api/users/&quot; &lt;&gt; show n) [ 1, 2 ]
+      urls = map (\n -&gt; "https://reqres.in/api/users/" &lt;&gt; show n) [ 1, 2 ]
     res &lt;- parTraverse getUrl urls
     logShow res
 </code></pre>
@@ -378,8 +378,8 @@ fetchPar =
 
 &gt; fetchPar
 unit
-[&quot;{\&quot;data\&quot;:{\&quot;id\&quot;:1,\&quot;email\&quot;:\&quot;george.bluth@reqres.in\&quot;, ... }&quot;
-,&quot;{\&quot;data\&quot;:{\&quot;id\&quot;:2,\&quot;email\&quot;:\&quot;janet.weaver@reqres.in\&quot;, ... }&quot;
+["{\"data\":{\"id\":1,\"email\":\"george.bluth@reqres.in\", ... }"
+,"{\"data\":{\"id\":2,\"email\":\"janet.weaver@reqres.in\", ... }"
 ]
 </code></pre>
 <p>A full listing of available parallel functions can be found in the <a href="https://pursuit.purescript.org/packages/purescript-parallel/docs/Control.Parallel"><code>parallel</code> docs on Pursuit</a>. The <a href="https://github.com/purescript-contrib/purescript-aff#parallel-execution">aff docs section on parallel</a> also contains more examples.</p>
@@ -396,7 +396,7 @@ unit
 </ul>
 </li>
 <li>
-<p>(Difficult) Write a <code>recurseFiles</code> function that takes a &quot;root&quot; file and returns an array of all paths listed in that file (and listed in the listed files too). Read listed files in parallel. Paths are relative to the directory of the file they appear in. <em>Hint:</em> The <code>node-path</code> module has some helpful functions for negotiating directories.</p>
+<p>(Difficult) Write a <code>recurseFiles</code> function that takes a "root" file and returns an array of all paths listed in that file (and listed in the listed files too). Read listed files in parallel. Paths are relative to the directory of the file they appear in. <em>Hint:</em> The <code>node-path</code> module has some helpful functions for negotiating directories.</p>
 </li>
 </ol>
 <p>For example, if starting from the following <code>root.txt</code> file:</p>
@@ -418,7 +418,7 @@ $ cat b/a.txt
 $ cat c/a/a.txt
 </code></pre>
 <p>The expected output is:</p>
-<pre><code class="language-hs">[&quot;root.txt&quot;,&quot;a.txt&quot;,&quot;b/a.txt&quot;,&quot;b/b.txt&quot;,&quot;b/c/a.txt&quot;,&quot;c/a/a.txt&quot;]
+<pre><code class="language-hs">["root.txt","a.txt","b/a.txt","b/b.txt","b/c/a.txt","c/a/a.txt"]
 </code></pre>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
 <p>In this chapter, we covered asynchronous effects and learned how to:</p>

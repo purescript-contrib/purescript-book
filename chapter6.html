@@ -183,7 +183,7 @@
 <p>This chapter will introduce a powerful form of abstraction enabled by PureScript's type system – type classes.</p>
 <p>This motivating example for this chapter will be a library for hashing data structures. We will see how the machinery of type classes allows us to hash complex data structures without having to think directly about the structure of the data itself.</p>
 <p>We will also see a collection of standard type classes from PureScript's Prelude and standard libraries. PureScript code leans heavily on the power of type classes to express ideas concisely, so it will be beneficial to familiarize yourself with these classes.</p>
-<p>If you come from an Object Oriented background, please note that the word &quot;class&quot; means something <em>very</em> different in this context than what you're used to. A type class serves a purpose more similar to an OO interface.</p>
+<p>If you come from an Object Oriented background, please note that the word "class" means something <em>very</em> different in this context than what you're used to. A type class serves a purpose more similar to an OO interface.</p>
 <h2 id="project-setup"><a class="header" href="#project-setup">Project Setup</a></h2>
 <p>The source code for this chapter is defined in the file <code>src/Data/Hashable.purs</code>.</p>
 <p>The project has the following dependencies:</p>
@@ -205,8 +205,8 @@
 <p>A type class <em>instance</em> contains implementations of the functions defined in a type class, specialized to a particular type.</p>
 <p>For example, here is the definition of the <code>Show</code> type class instance for <code>Boolean</code> values, taken from the Prelude:</p>
 <pre><code class="language-haskell">instance Show Boolean where
-  show true = &quot;true&quot;
-  show false = &quot;false&quot;
+  show true = "true"
+  show false = "false"
 </code></pre>
 <p>This code declares a type class instance; we say that the <code>Boolean</code> type <em>belongs to the <code>Show</code> type class</em>.</p>
 <blockquote>
@@ -214,29 +214,29 @@
 <pre><code class="language-javascript">var showBoolean = {
     show: function (v) {
         if (v) {
-            return &quot;true&quot;;
+            return "true";
         };
        if (!v) {
-            return &quot;false&quot;;
+            return "false";
         };
-        throw new Error(&quot;Failed pattern match at ...&quot;);
+        throw new Error("Failed pattern match at ...");
     }
 };
 </code></pre>
 <p>If you're unhappy with the generated name, you can give names to type class instances. For example:</p>
 <pre><code class="language-haskell">instance myShowBoolean :: Show Boolean where
-  show true = &quot;true&quot;
-  show false = &quot;false&quot;
+  show true = "true"
+  show false = "false"
 </code></pre>
 <pre><code class="language-javascript">var myShowBoolean = {
     show: function (v) {
         if (v) {
-            return &quot;true&quot;;
+            return "true";
         };
        if (!v) {
-            return &quot;false&quot;;
+            return "false";
         };
-        throw new Error(&quot;Failed pattern match at ...&quot;);
+        throw new Error("Failed pattern match at ...");
     }
 };
 </code></pre>
@@ -245,24 +245,24 @@
 <pre><code class="language-text">&gt; import Prelude
 
 &gt; show true
-&quot;true&quot;
+"true"
 
 &gt; show 1.0
-&quot;1.0&quot;
+"1.0"
 
-&gt; show &quot;Hello World&quot;
-&quot;\&quot;Hello World\&quot;&quot;
+&gt; show "Hello World"
+"\"Hello World\""
 </code></pre>
 <p>These examples demonstrate how to <code>show</code> values of various primitive types, but we can also <code>show</code> values with more complicated types:</p>
 <pre><code class="language-text">&gt; import Data.Tuple
 
 &gt; show (Tuple 1 true)
-&quot;(Tuple 1 true)&quot;
+"(Tuple 1 true)"
 
 &gt; import Data.Maybe
 
-&gt; show (Just &quot;testing&quot;)
-&quot;(Just \&quot;testing\&quot;)&quot;
+&gt; show (Just "testing")
+"(Just \"testing\")"
 </code></pre>
 <p>The output of <code>show</code> should be a string that you can paste back into the repl (or <code>.purs</code> file) to recreate the item being shown. Here we'll use <code>logShow</code>, which just calls <code>show</code> and then <code>log</code>, to render the string without quotes. Ignore the <code>unit</code> print – that will be covered in Chapter 8 when we examine <code>Effect</code>s, like <code>log</code>.</p>
 <pre><code class="language-text">&gt; import Effect.Console
@@ -271,8 +271,8 @@
 (Tuple 1 true)
 unit
 
-&gt; logShow (Just &quot;testing&quot;)
-(Just &quot;testing&quot;)
+&gt; logShow (Just "testing")
+(Just "testing")
 unit
 </code></pre>
 <p>If we try to show a value of type <code>Data.Either</code>, we get an interesting error message:</p>
@@ -288,7 +288,7 @@ has type variables which are not mentioned in the body of the type. Consider add
 <p>The problem here is not that there is no <code>Show</code> instance for the type we intended to <code>show</code>, but rather that PSCi could not infer the type. This is indicated by the <em>unknown type</em> <code>a</code> in the inferred type.</p>
 <p>We can annotate the expression with a type using the <code>::</code> operator, so that PSCi can choose the correct type class instance:</p>
 <pre><code class="language-text">&gt; show (Left 10 :: Either Int String)
-&quot;(Left 10)&quot;
+"(Left 10)"
 </code></pre>
 <p>Some types do not have a <code>Show</code> instance defined at all. One example of this is the function type <code>-&gt;</code>. If we try to <code>show</code> a function from <code>Int</code> to <code>Int</code>, we get an appropriate error message from the type checker:</p>
 <pre><code class="language-text">&gt; import Prelude
@@ -298,7 +298,7 @@ No type class instance was found for
 
   Data.Show.Show (Int -&gt; Int)
 </code></pre>
-<p>Type class instances can be defined in one of two places: in the same module that the type class is defined, or in the same module that the type &quot;belonging to&quot; the type class is defined. An instance defined in any other spot is called an <a href="https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#orphan-instances">&quot;orphan instance&quot;</a> and is not allowed by the PureScript compiler. Some of the exercises in this chapter will require you to copy the definition of a type into your MySolutions module so that you can define type class instances for that type.</p>
+<p>Type class instances can be defined in one of two places: in the same module that the type class is defined, or in the same module that the type "belonging to" the type class is defined. An instance defined in any other spot is called an <a href="https://github.com/purescript/documentation/blob/master/language/Type-Classes.md#orphan-instances">"orphan instance"</a> and is not allowed by the PureScript compiler. Some of the exercises in this chapter will require you to copy the definition of a type into your MySolutions module so that you can define type class instances for that type.</p>
 <h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
 <ol>
 <li>
@@ -323,7 +323,7 @@ No type class instance was found for
 <pre><code class="language-text">&gt; 1 == 2
 false
 
-&gt; &quot;Test&quot; == &quot;Test&quot;
+&gt; "Test" == "Test"
 true
 </code></pre>
 <h3 id="ord"><a class="header" href="#ord">Ord</a></h3>
@@ -344,7 +344,7 @@ class Eq a &lt;= Ord a where
 <pre><code class="language-text">&gt; compare 1 2
 LT
 
-&gt; compare &quot;A&quot; &quot;Z&quot;
+&gt; compare "A" "Z"
 LT
 </code></pre>
 <h3 id="field"><a class="header" href="#field">Field</a></h3>
@@ -368,13 +368,13 @@ LT
   mempty :: m
 </code></pre>
 <p>Again, strings and arrays are simple examples of monoids.</p>
-<p>A <code>Monoid</code> type class instance for a type describes how to <em>accumulate</em> a result with that type by starting with an &quot;empty&quot; value and combining new results. For example, we can write a function that concatenates an array of values in some monoid using a fold. In PSCi:</p>
+<p>A <code>Monoid</code> type class instance for a type describes how to <em>accumulate</em> a result with that type by starting with an "empty" value and combining new results. For example, we can write a function that concatenates an array of values in some monoid using a fold. In PSCi:</p>
 <pre><code class="language-haskell">&gt; import Prelude
 &gt; import Data.Monoid
 &gt; import Data.Foldable
 
-&gt; foldl append mempty [&quot;Hello&quot;, &quot; &quot;, &quot;World&quot;]
-&quot;Hello World&quot;
+&gt; foldl append mempty ["Hello", " ", "World"]
+"Hello World"
 
 &gt; foldl append mempty [[1, 2, 3], [4, 5], [6]]
 [1,2,3,4,5,6]
@@ -395,7 +395,7 @@ LT
 <pre><code class="language-text">&gt; import Data.Foldable
 
 &gt; foldMap show [1, 2, 3, 4, 5]
-&quot;12345&quot;
+"12345"
 </code></pre>
 <p>Here, we choose the monoid for strings, which concatenates strings together, and the <code>show</code> function, which renders an <code>Int</code> as a <code>String</code>. Then, passing in an array of integers, we see that the results of <code>show</code>ing each integer have been concatenated into a single <code>String</code>.</p>
 <p>But arrays are not the only types that are foldable. <code>foldable-traversable</code> also defines <code>Foldable</code> instances for types like <code>Maybe</code> and <code>Tuple</code>, and other libraries like <code>lists</code> define <code>Foldable</code> instances for their own data types. <code>Foldable</code> captures the notion of an <em>ordered container</em>.</p>
@@ -404,7 +404,7 @@ LT
 <pre><code class="language-haskell">class Functor f where
   map :: forall a b. (a -&gt; b) -&gt; f a -&gt; f b
 </code></pre>
-<p>The <code>map</code> function (and its alias <code>&lt;$&gt;</code>) allows a function to be &quot;lifted&quot; over a data structure. The precise definition of the word &quot;lifted&quot; here depends on the data structure in question, but we have already seen its behavior for some simple types:</p>
+<p>The <code>map</code> function (and its alias <code>&lt;$&gt;</code>) allows a function to be "lifted" over a data structure. The precise definition of the word "lifted" here depends on the data structure in question, but we have already seen its behavior for some simple types:</p>
 <pre><code class="language-text">&gt; import Prelude
 
 &gt; map (\n -&gt; n &lt; 3) [1, 2, 3, 4, 5]
@@ -413,7 +413,7 @@ LT
 &gt; import Data.Maybe
 &gt; import Data.String (length)
 
-&gt; map length (Just &quot;testing&quot;)
+&gt; map length (Just "testing")
 (Just 7)
 </code></pre>
 <p>How can we understand the meaning of the <code>map</code> function, when it acts on many different structures, each in a different way?</p>
@@ -425,7 +425,7 @@ LT
 </ul>
 <p>The first law is the <em>identity law</em>. It states that lifting the identity function (the function which returns its argument unchanged) over a structure just returns the original structure. This makes sense since the identity function does not modify its input.</p>
 <p>The second law is the <em>composition law</em>. It states that mapping one function over a structure and then mapping a second is the same as mapping the composition of the two functions over the structure.</p>
-<p>Whatever &quot;lifting&quot; means in the general sense, it should be true that any reasonable definition of lifting a function over a data structure should obey these rules.</p>
+<p>Whatever "lifting" means in the general sense, it should be true that any reasonable definition of lifting a function over a data structure should obey these rules.</p>
 <p>Many standard type classes come with their own set of similar laws. The laws given to a type class give structure to the functions of that type class and allow us to study its instances in generality. The interested reader can research the laws ascribed to the standard type classes that we have seen already.</p>
 <h3 id="deriving-instances"><a class="header" href="#deriving-instances">Deriving Instances</a></h3>
 <p>Rather than writing instances manually, you can let the compiler do most of the work for you. Take a look at this <a href="https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md">Type Class Deriving guide</a>. That information will help you solve the following exercises.</p>
@@ -471,11 +471,11 @@ threeAreEqual a1 a2 a3 = a1 == a2 &amp;&amp; a2 == a3
 <p>Constrained types can contain several type class instances, and the types of the instances are not restricted to simple type variables. Here is another example which uses <code>Ord</code> and <code>Show</code> instances to compare two values:</p>
 <pre><code class="language-haskell">showCompare :: forall a. Ord a =&gt; Show a =&gt; a -&gt; a -&gt; String
 showCompare a1 a2 | a1 &lt; a2 =
-  show a1 &lt;&gt; &quot; is less than &quot; &lt;&gt; show a2
+  show a1 &lt;&gt; " is less than " &lt;&gt; show a2
 showCompare a1 a2 | a1 &gt; a2 =
-  show a1 &lt;&gt; &quot; is greater than &quot; &lt;&gt; show a2
+  show a1 &lt;&gt; " is greater than " &lt;&gt; show a2
 showCompare a1 a2 =
-  show a1 &lt;&gt; &quot; is equal to &quot; &lt;&gt; show a2
+  show a1 &lt;&gt; " is equal to " &lt;&gt; show a2
 </code></pre>
 <p>Note that multiple constraints can be specified by using the <code>=&gt;</code> symbol multiple times, just like we specify curried functions
 of multiple arguments. But remember not to confuse the two symbols:</p>
@@ -518,7 +518,7 @@ forall (a :: Type). Semiring a =&gt; a -&gt; a
 <p>(Medium) Write a <code>Functor</code> instance for <code>NonEmpty</code>.</p>
 </li>
 <li>
-<p>(Medium) Given any type <code>a</code> with an instance of <code>Ord</code>, we can add a new &quot;infinite&quot; value that is greater than any other value:</p>
+<p>(Medium) Given any type <code>a</code> with an instance of <code>Ord</code>, we can add a new "infinite" value that is greater than any other value:</p>
 <pre><code class="language-haskell">data Extended a = Infinite | Finite a 
 </code></pre>
 <p>Write an <code>Ord</code> instance for <code>Extended a</code> that reuses the <code>Ord</code> instance for <code>a</code>.</p>
@@ -587,7 +587,7 @@ has type variables which are not mentioned in the body of the type. Consider add
 </code></pre>
 <p>The problem is that the <code>genericTail</code> function does not use the <code>element</code> type mentioned in the definition of the <code>Stream</code> type class, so that type is left unsolved.</p>
 <p>Worse still, we cannot even use <code>genericTail</code> by applying it to a specific type of stream:</p>
-<pre><code class="language-text">&gt; map _.tail (uncons &quot;testing&quot;)
+<pre><code class="language-text">&gt; map _.tail (uncons "testing")
 
 The inferred type
 
@@ -605,8 +605,8 @@ has type variables which are not mentioned in the body of the type. Consider add
 <pre><code class="language-text">&gt; :type genericTail
 forall (stream :: Type) (element :: Type). Stream stream element =&gt; stream -&gt; Maybe stream
 
-&gt; genericTail &quot;testing&quot;
-(Just &quot;esting&quot;)
+&gt; genericTail "testing"
+(Just "esting")
 </code></pre>
 <p>Functional dependencies can be useful when designing certain APIs using multi-parameter type classes.</p>
 <h2 id="nullary-type-classes"><a class="header" href="#nullary-type-classes">Nullary Type Classes</a></h2>
@@ -642,7 +642,7 @@ secondElement xs = head (tail xs)
 <p>We say that one type class is a superclass of another if every instance of the second class is required to be an instance of the first, and we indicate a superclass relationship in the class definition by using a backwards facing double arrow ( <code>&lt;=</code> ).</p>
 <p>We've <a href="#ord">already seen an example of superclass relationships</a>: the <code>Eq</code> class is a superclass of <code>Ord</code>, and the <code>Semigroup</code> class is a superclass of <code>Monoid</code>. For every type class instance of the <code>Ord</code> class, there must be a corresponding <code>Eq</code> instance for the same type. This makes sense since, in many cases, when the <code>compare</code> function reports that two values are incomparable, we often want to use the <code>Eq</code> class to determine if they are equal.</p>
 <p>In general, it makes sense to define a superclass relationship when the laws for the subclass mention the superclass members. For example, for any pair of <code>Ord</code> and <code>Eq</code> instances, it is reasonable to assume that if two values are equal under the <code>Eq</code> instance, then the <code>compare</code> function should return <code>EQ</code>. In other words, <code>a == b</code> should be true exactly when <code>compare a b</code> evaluates to <code>EQ</code>. This relationship on the level of laws justifies the superclass relationship between <code>Eq</code> and <code>Ord</code>.</p>
-<p>Another reason to define a superclass relationship is when there is a clear &quot;is-a&quot; relationship between the two classes. That is, every member of the subclass <em>is a</em> member of the superclass as well.</p>
+<p>Another reason to define a superclass relationship is when there is a clear "is-a" relationship between the two classes. That is, every member of the subclass <em>is a</em> member of the superclass as well.</p>
 <h2 id="exercises-3"><a class="header" href="#exercises-3">Exercises</a></h2>
 <ol>
 <li>
@@ -731,7 +731,7 @@ combineHashes (HashCode h1) (HashCode h2) = hashCode (73 * h1 + 51 * h2)
 <pre><code class="language-haskell">hashEqual :: forall a. Hashable a =&gt; a -&gt; a -&gt; Boolean
 hashEqual = eq `on` hash
 </code></pre>
-<p>This function uses the <code>on</code> function from <code>Data.Function</code> to define hash-equality in terms of equality of hash codes, and should read like a declarative definition of hash-equality: two values are &quot;hash-equal&quot; if they are equal after each value passed through the <code>hash</code> function.</p>
+<p>This function uses the <code>on</code> function from <code>Data.Function</code> to define hash-equality in terms of equality of hash codes, and should read like a declarative definition of hash-equality: two values are "hash-equal" if they are equal after each value passed through the <code>hash</code> function.</p>
 <p>Let's write some <code>Hashable</code> instances for some primitive types. Let's start with an instance for integers. Since a <code>HashCode</code> is really just a wrapped integer, this is simple – we can use the <code>hashCode</code> helper function:</p>
 <pre><code class="language-haskell">instance Hashable Int where
   hash = hashCode

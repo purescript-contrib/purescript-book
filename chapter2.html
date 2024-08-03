@@ -197,7 +197,7 @@
 <pre><code class="language-sh">cd purescript-book
 ./scripts/prepareExercises.sh
 git add .
-git commit --all --message &quot;Exercises ready to be solved&quot;
+git commit --all --message "Exercises ready to be solved"
 </code></pre>
 <p>Now run the tests for this chapter:</p>
 <pre><code class="language-sh">cd exercises/chapter2
@@ -219,10 +219,10 @@ All 2 tests passed! 🎉
 </ol>
 <h2 id="solution"><a class="header" href="#solution">Solution</a></h2>
 <p>We'll start by enabling the tests for this exercise. Move the start of the block-comment down a few lines, as shown below. Block comments start with <code>{-</code> and end with <code>-}</code>:</p>
-<pre><code class="language-hs">    suite &quot;diagonal&quot; do
-      test &quot;3 4 5&quot; do
+<pre><code class="language-hs">    suite "diagonal" do
+      test "3 4 5" do
         Assert.equal 5.0 (diagonal 3.0 4.0)
-      test &quot;5 12 13&quot; do
+      test "5 12 13" do
         Assert.equal 13.0 (diagonal 5.0 12.0)
     {-  Move this block comment starting point to enable more tests
 </code></pre>

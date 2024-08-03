@@ -243,7 +243,7 @@ length arr = 1 + (length $ fromMaybe [] $ tail arr)
 &gt; map (\n -&gt; n + 1) [1, 2, 3, 4, 5]
 [2, 3, 4, 5, 6]
 </code></pre>
-<p>Notice how <code>map</code> is used – we provide a function that should be &quot;mapped over&quot; the array in the first argument, and the array itself in its second.</p>
+<p>Notice how <code>map</code> is used – we provide a function that should be "mapped over" the array in the first argument, and the array itself in its second.</p>
 <h2 id="infix-operators"><a class="header" href="#infix-operators">Infix Operators</a></h2>
 <p>The <code>map</code> function can also be written between the mapping function and the array, by wrapping the function name in backticks:</p>
 <pre><code class="language-text">&gt; (\n -&gt; n + 1) `map` [1, 2, 3, 4, 5]
@@ -264,11 +264,11 @@ forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Functor f =&gt; (a -&gt; 
 <p>This type says that we can choose any two types, <code>a</code> and <code>b</code>, with which to apply the <code>map</code> function. <code>a</code> is the type of elements in the source array, and <code>b</code> is the type of elements in the target array. In particular, there is no reason why <code>map</code> has to preserve the type of the array elements. We can use <code>map</code> or <code>&lt;$&gt;</code> to transform integers to strings, for example:</p>
 <pre><code class="language-text">&gt; show &lt;$&gt; [1, 2, 3, 4, 5]
 
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
+["1","2","3","4","5"]
 </code></pre>
 <p>Even though the infix operator <code>&lt;$&gt;</code> looks like special syntax, it is in fact just an alias for a regular PureScript function. The function is simply <em>applied</em> using infix syntax. In fact, the function can be used like a regular function by enclosing its name in parentheses. This means that we can use the parenthesized name <code>(&lt;$&gt;)</code> in place of <code>map</code> on arrays:</p>
 <pre><code class="language-text">&gt; (&lt;$&gt;) show [1, 2, 3, 4, 5]
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
+["1","2","3","4","5"]
 </code></pre>
 <p>Infix function names are defined as <em>aliases</em> for existing function names. For example, the <code>Data.Array</code> module defines an infix operator <code>(..)</code> as a synonym for the <code>range</code> function, as follows:</p>
 <pre><code class="language-haskell">infix 8 range as ..
@@ -280,12 +280,12 @@ forall (f :: Type -&gt; Type) (a :: Type) (b :: Type). Functor f =&gt; (a -&gt; 
 [1, 2, 3, 4, 5]
 
 &gt; show &lt;$&gt; (1 .. 5)
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
+["1","2","3","4","5"]
 </code></pre>
 <p><em>Note</em>: Infix operators can be a great tool for defining domain-specific languages with a natural syntax. However, used excessively, they can render code unreadable to beginners, so it is wise to exercise caution when defining any new operators.</p>
 <p>In the example above, we parenthesized the expression <code>1 .. 5</code>, but this was actually not necessary, because the <code>Data.Array</code> module assigns a higher precedence level to the <code>..</code> operator than that assigned to the <code>&lt;$&gt;</code> operator. In the example above, the precedence of the <code>..</code> operator was defined as <code>8</code>, the number after the <code>infix</code> keyword. This is higher than the precedence level of <code>&lt;$&gt;</code>, meaning that we do not need to add parentheses:</p>
 <pre><code class="language-text">&gt; show &lt;$&gt; 1 .. 5
-[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]
+["1","2","3","4","5"]
 </code></pre>
 <p>If we wanted to assign an <em>associativity</em> (left or right) to an infix operator, we could do so with the <code>infixl</code> and <code>infixr</code> keywords instead.  Using <code>infix</code> assigns no associativity, meaning that you must parenthesize any expression using the same operator multiple times or using multiple operators of the same precedence.</p>
 <h2 id="filtering-arrays"><a class="header" href="#filtering-arrays">Filtering Arrays</a></h2>
@@ -330,7 +330,7 @@ forall (a :: Type) (b :: Type). (a -&gt; Array b) -&gt; Array a -&gt; Array b
 </code></pre>
 <p>Here, we call <code>concatMap</code> with the function <code>\n -&gt; [n, n * n]</code> which sends an integer to the array of two elements consisting of that integer and its square. The result is an array of ten integers: the integers from 1 to 5 along with their squares.</p>
 <p>Note how <code>concatMap</code> concatenates its results. It calls the provided function once for each element of the original array, generating an array for each. Finally, it collapses all of those arrays into a single array, which is its result.</p>
-<p><code>map</code>, <code>filter</code> and <code>concatMap</code> form the basis for a whole range of functions over arrays called &quot;array comprehensions&quot;.</p>
+<p><code>map</code>, <code>filter</code> and <code>concatMap</code> form the basis for a whole range of functions over arrays called "array comprehensions".</p>
 <h2 id="array-comprehensions"><a class="header" href="#array-comprehensions">Array Comprehensions</a></h2>
 <p>Suppose we wanted to find the factors of a number <code>n</code>. One simple way to do this would be by brute force: we could generate all pairs of numbers between 1 and <code>n</code>, and try multiplying them together. If the product was <code>n</code>, we would have found a pair of factors of <code>n</code>.</p>
 <p>We can perform this computation using array comprehension. We will do so in steps, using PSCi as our interactive development environment.</p>
@@ -391,7 +391,7 @@ factors n = filter (\xs -&gt; product xs == n) do
 <li>Expressions that do not bind elements of the array to names. The <code>do</code> <em>result</em> is an example of this kind of expression and is illustrated in the last line, <code>pure [i, j]</code>.</li>
 <li>Expressions that give names to expressions, using the <code>let</code> keyword.</li>
 </ul>
-<p>This new notation hopefully makes the structure of the algorithm clearer. If you mentally replace the arrow <code>&lt;-</code> with the word &quot;choose&quot;, you might read it as follows: &quot;choose an element <code>i</code> between 1 and n, then choose an element <code>j</code> between <code>i</code> and <code>n</code>, and return <code>[i, j]</code>&quot;.</p>
+<p>This new notation hopefully makes the structure of the algorithm clearer. If you mentally replace the arrow <code>&lt;-</code> with the word "choose", you might read it as follows: "choose an element <code>i</code> between 1 and n, then choose an element <code>j</code> between <code>i</code> and <code>n</code>, and return <code>[i, j]</code>".</p>
 <p>In the last line, we use the <code>pure</code> function. This function can be evaluated in PSCi, but we have to provide a type:</p>
 <pre><code class="language-text">&gt; pure [1, 2] :: Array (Array Int)
 [[1, 2]]
@@ -423,7 +423,7 @@ forall (m :: Type -&gt; Type). Alternative m =&gt; Boolean -&gt; m Unit
 </code></pre>
 <blockquote>
 <p>The <code>Unit</code> type represents values with no computational content — the absence of a concrete meaningful value.</p>
-<p>We often use <code>Unit</code> &quot;wrapped&quot; in a type constructor as the return type of a computation where we only care about the <em>effects</em> of the computation (or a &quot;shape&quot; of the result) and not some concrete value.</p>
+<p>We often use <code>Unit</code> "wrapped" in a type constructor as the return type of a computation where we only care about the <em>effects</em> of the computation (or a "shape" of the result) and not some concrete value.</p>
 <p>For example, the <code>main</code> function has the type <code>Effect Unit</code>. Main is an entry point to the project — we don't call it directly.</p>
 <p>We'll explain what <code>m</code> in the type signature means in Chapter 6.</p>
 </blockquote>
@@ -466,8 +466,8 @@ forall a b. (b -&gt; a -&gt; b) -&gt; b -&gt; Array a -&gt; b
 -- foldr
 forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Array a -&gt; b
 </code></pre>
-<p>In both cases, the type <code>a</code> corresponds to the type of elements of our array. The type <code>b</code> can be thought of as the type of an &quot;accumulator&quot;, which will accumulate a result as we traverse the array.</p>
-<p>The difference between the <code>foldl</code> and <code>foldr</code> functions is the direction of the traversal. <code>foldl</code> folds the array &quot;from the left&quot;, whereas <code>foldr</code> folds the array &quot;from the right&quot;.</p>
+<p>In both cases, the type <code>a</code> corresponds to the type of elements of our array. The type <code>b</code> can be thought of as the type of an "accumulator", which will accumulate a result as we traverse the array.</p>
+<p>The difference between the <code>foldl</code> and <code>foldr</code> functions is the direction of the traversal. <code>foldl</code> folds the array "from the left", whereas <code>foldr</code> folds the array "from the right".</p>
 <p>Let's see these functions in action. Let's use <code>foldl</code> to sum an array of integers. The type <code>a</code> will be <code>Int</code>, and we can also choose the result type <code>b</code> to be <code>Int</code>. We need to provide three arguments: a function <code>Int -&gt; Int -&gt; Int</code>, which will add the next element to the accumulator, an initial value for the accumulator of type <code>Int</code>, and an array of <code>Int</code>s to add. For the first argument, we can use the addition operator, and the initial value of the accumulator will be zero:</p>
 <pre><code class="language-text">&gt; foldl (+) 0 (1 .. 5)
 15
@@ -477,17 +477,17 @@ forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Array a -&gt; b
 15
 </code></pre>
 <p>Let's write an example where the choice of folding function matters to illustrate the difference. Instead of the addition function, let's use string concatenation to build a string:</p>
-<pre><code class="language-text">&gt; foldl (\acc n -&gt; acc &lt;&gt; show n) &quot;&quot; [1,2,3,4,5]
-&quot;12345&quot;
+<pre><code class="language-text">&gt; foldl (\acc n -&gt; acc &lt;&gt; show n) "" [1,2,3,4,5]
+"12345"
 
-&gt; foldr (\n acc -&gt; acc &lt;&gt; show n) &quot;&quot; [1,2,3,4,5]
-&quot;54321&quot;
+&gt; foldr (\n acc -&gt; acc &lt;&gt; show n) "" [1,2,3,4,5]
+"54321"
 </code></pre>
 <p>This illustrates the difference between the two functions. The left fold expression is equivalent to the following application:</p>
-<pre><code class="language-text">(((((&quot;&quot; &lt;&gt; show 1) &lt;&gt; show 2) &lt;&gt; show 3) &lt;&gt; show 4) &lt;&gt; show 5)
+<pre><code class="language-text">((((("" &lt;&gt; show 1) &lt;&gt; show 2) &lt;&gt; show 3) &lt;&gt; show 4) &lt;&gt; show 5)
 </code></pre>
 <p>Whereas the right fold is equivalent to this:</p>
-<pre><code class="language-text">(((((&quot;&quot; &lt;&gt; show 5) &lt;&gt; show 4) &lt;&gt; show 3) &lt;&gt; show 2) &lt;&gt; show 1)
+<pre><code class="language-text">((((("" &lt;&gt; show 5) &lt;&gt; show 4) &lt;&gt; show 3) &lt;&gt; show 2) &lt;&gt; show 1)
 </code></pre>
 <h2 id="tail-recursion"><a class="header" href="#tail-recursion">Tail Recursion</a></h2>
 <p>Recursion is a powerful technique for specifying algorithms but comes with a problem: evaluating recursive functions in JavaScript can lead to stack overflow errors if our inputs are too large.</p>
@@ -535,7 +535,7 @@ lengthTailRec arr = length' arr 0
 </code></pre>
 <p>In this case, we delegate to the helper function <code>length'</code>, which is tail recursive – its only recursive call is in the last case, in tail position. This means that the generated code will be a <em>while loop</em> and not blow the stack for large inputs.</p>
 <p>To understand the implementation of <code>lengthTailRec</code>, note that the helper function <code>length'</code> essentially uses the accumulator parameter to maintain an additional piece of state – the partial result. It starts at 0 and grows by adding 1 for every element in the input array.</p>
-<p>Note also that while we might think of the accumulator as a &quot;state&quot;, there is no direct mutation.</p>
+<p>Note also that while we might think of the accumulator as a "state", there is no direct mutation.</p>
 <h2 id="prefer-folds-to-explicit-recursion"><a class="header" href="#prefer-folds-to-explicit-recursion">Prefer Folds to Explicit Recursion</a></h2>
 <p>If we can write our recursive functions using tail recursion, we can benefit from tail recursion optimization, so it becomes tempting to try to write all of our functions in this form. However, it is often easy to forget that many functions can be written directly as a fold over an array or similar data structure. Writing algorithms directly in terms of combinators such as <code>map</code> and <code>fold</code> has the added advantage of code simplicity – these combinators are well-understood, and as such, communicate the <em>intent</em> of the algorithm much better than explicit recursion.</p>
 <p>For example, we can reverse an array using <code>foldr</code>:</p>
@@ -553,7 +553,7 @@ lengthTailRec arr = length' arr 0
 <h2 id="exercises-3"><a class="header" href="#exercises-3">Exercises</a></h2>
 <ol>
 <li>(Easy) Write a function <code>allTrue</code> which uses <code>foldl</code> to test whether an array of boolean values are all true.</li>
-<li>(Medium - No Test) Characterize those arrays <code>xs</code> for which the function <code>foldl (==) false xs</code> returns <code>true</code>. In other words, complete the sentence: &quot;The function returns <code>true</code> when <code>xs</code> contains ...&quot;</li>
+<li>(Medium - No Test) Characterize those arrays <code>xs</code> for which the function <code>foldl (==) false xs</code> returns <code>true</code>. In other words, complete the sentence: "The function returns <code>true</code> when <code>xs</code> contains ..."</li>
 <li>(Medium) Write a function <code>fibTailRec</code> which is the same as <code>fib</code> but in tail recursive form. <em>Hint</em>: Use an accumulator parameter.</li>
 <li>(Medium) Write <code>reverse</code> in terms of <code>foldl</code>.</li>
 </ol>
@@ -629,16 +629,16 @@ allFiles' file = file : do
 </li>
 <li>
 <p>(Medium) Write a function <code>whereIs</code> to search for a file by name. The function should return a value of type <code>Maybe Path</code>, indicating the directory containing the file, if it exists. It should behave as follows:</p>
-<pre><code class="language-text">&gt; whereIs root &quot;ls&quot;
+<pre><code class="language-text">&gt; whereIs root "ls"
 Just (/bin/)
 
-&gt; whereIs root &quot;cat&quot;
+&gt; whereIs root "cat"
 Nothing
 </code></pre>
 <p><em>Hint</em>: Try to write this function as an array comprehension using do notation.</p>
 </li>
 <li>
-<p>(Difficult) Write a function <code>largestSmallest</code> which takes a <code>Path</code> and returns an array containing the single largest and single smallest files in the <code>Path</code>. <em>Note</em>: consider the cases where there are zero or one files in the <code>Path</code> by returning an empty or one-element array, respectively.</p>
+<p>(Difficult) Write a function <code>largestSmallest</code> which takes a <code>Path</code> and returns an array containing the single largest and single smallest files in the <code>Path</code>, including (recursively) any subdirectories. <em>Note</em>: consider the cases where there are zero or one files in the <code>Path</code> by returning an empty or one-element array, respectively.</p>
 </li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>

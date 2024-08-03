@@ -200,13 +200,13 @@
 <p>We can apply this function easily and see the result in PSCi:</p>
 <pre><code class="language-text">&gt; import Data.AddressBook
 
-&gt; address &quot;123 Fake St.&quot; &quot;Faketown&quot; &quot;CA&quot;
-{ street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &quot;CA&quot; }
+&gt; address "123 Fake St." "Faketown" "CA"
+{ street: "123 Fake St.", city: "Faketown", state: "CA" }
 </code></pre>
 <p>However, suppose we did not necessarily have a street, city, or state, and wanted to use the <code>Maybe</code> type to indicate a missing value in each of the three cases.</p>
 <p>In one case, we might have a missing city. If we try to apply our function directly, we will receive an error from the type checker:</p>
 <pre><code class="language-text">&gt; import Data.Maybe
-&gt; address (Just &quot;123 Fake St.&quot;) Nothing (Just &quot;CA&quot;)
+&gt; address (Just "123 Fake St.") Nothing (Just "CA")
 
 Could not match type
 
@@ -217,16 +217,16 @@ with type
   String
 </code></pre>
 <p>Of course, this is an expected type error – <code>address</code> takes strings as arguments, not values of type <code>Maybe String</code>.</p>
-<p>However, it is reasonable to expect that we should be able to &quot;lift&quot; the <code>address</code> function to work with optional values described by the <code>Maybe</code> type. In fact, we can, and the <code>Control.Apply</code> provides the function <code>lift3</code> function which does exactly what we need:</p>
+<p>However, it is reasonable to expect that we should be able to "lift" the <code>address</code> function to work with optional values described by the <code>Maybe</code> type. In fact, we can, and the <code>Control.Apply</code> provides the function <code>lift3</code> function which does exactly what we need:</p>
 <pre><code class="language-text">&gt; import Control.Apply
-&gt; lift3 address (Just &quot;123 Fake St.&quot;) Nothing (Just &quot;CA&quot;)
+&gt; lift3 address (Just "123 Fake St.") Nothing (Just "CA")
 
 Nothing
 </code></pre>
 <p>In this case, the result is <code>Nothing</code>, because one of the arguments (the city) was missing. If we provide all three arguments using the <code>Just</code> constructor, then the result will contain a value as well:</p>
-<pre><code class="language-text">&gt; lift3 address (Just &quot;123 Fake St.&quot;) (Just &quot;Faketown&quot;) (Just &quot;CA&quot;)
+<pre><code class="language-text">&gt; lift3 address (Just "123 Fake St.") (Just "Faketown") (Just "CA")
 
-Just ({ street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &quot;CA&quot; })
+Just ({ street: "123 Fake St.", city: "Faketown", state: "CA" })
 </code></pre>
 <p>The name of the function <code>lift3</code> indicates that it can be used to lift functions of 3 arguments. There are similar functions defined in <code>Control.Apply</code> for functions of other numbers of arguments.</p>
 <h2 id="lifting-arbitrary-functions"><a class="header" href="#lifting-arbitrary-functions">Lifting Arbitrary Functions</a></h2>
@@ -276,10 +276,10 @@ lift3 f x y z = f &lt;$&gt; x &lt;*&gt; y &lt;*&gt; z
 <p>It is left as an exercise for the reader to verify the types involved in this expression.</p>
 </blockquote>
 <p>As an example, we can try lifting the address function over <code>Maybe</code>, directly using the <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> functions:</p>
-<pre><code class="language-text">&gt; address &lt;$&gt; Just &quot;123 Fake St.&quot; &lt;*&gt; Just &quot;Faketown&quot; &lt;*&gt; Just &quot;CA&quot;
-Just ({ street: &quot;123 Fake St.&quot;, city: &quot;Faketown&quot;, state: &quot;CA&quot; })
+<pre><code class="language-text">&gt; address &lt;$&gt; Just "123 Fake St." &lt;*&gt; Just "Faketown" &lt;*&gt; Just "CA"
+Just ({ street: "123 Fake St.", city: "Faketown", state: "CA" })
 
-&gt; address &lt;$&gt; Just &quot;123 Fake St.&quot; &lt;*&gt; Nothing &lt;*&gt; Just &quot;CA&quot;
+&gt; address &lt;$&gt; Just "123 Fake St." &lt;*&gt; Nothing &lt;*&gt; Just "CA"
 Nothing
 </code></pre>
 <p>Try lifting some other functions of various numbers of arguments over <code>Maybe</code> in this way.</p>
@@ -309,7 +309,7 @@ lift3 f x y z = ado
 </code></pre>
 <p>If we think of applicative functors as functors that allow lifting of functions, then <code>pure</code> can be thought of as lifting functions of zero arguments.</p>
 <h2 id="intuition-for-applicative"><a class="header" href="#intuition-for-applicative">Intuition for Applicative</a></h2>
-<p>Functions in PureScript are pure and do not support side-effects. Applicative functors allow us to work in larger &quot;programming languages&quot; which support some sort of side-effect encoded by the functor <code>f</code>.</p>
+<p>Functions in PureScript are pure and do not support side-effects. Applicative functors allow us to work in larger "programming languages" which support some sort of side-effect encoded by the functor <code>f</code>.</p>
 <p>As an example, the functor <code>Maybe</code> represents the side effect of possibly-missing values. Some other examples include <code>Either err</code>, which represents the side effect of possible errors of type <code>err</code>, and the arrow functor <code>r -&gt;</code>, which represents the side-effect of reading from a global configuration. For now, we'll only consider the <code>Maybe</code> functor.</p>
 <p>If the functor <code>f</code> represents this larger programming language with effects, then the <code>Apply</code> and <code>Applicative</code> instances allow us to lift values and function applications from our smaller programming language (PureScript) into the new language.</p>
 <p><code>pure</code> lifts pure (side-effect free) values into the larger language; for functions, we can use <code>map</code> and <code>apply</code> as described above.</p>
@@ -320,18 +320,18 @@ lift3 f x y z = ado
 <p>Here is a simple example function defined in PSCi, which joins three names to form a full name:</p>
 <pre><code class="language-text">&gt; import Prelude
 
-&gt; fullName first middle last = last &lt;&gt; &quot;, &quot; &lt;&gt; first &lt;&gt; &quot; &quot; &lt;&gt; middle
+&gt; fullName first middle last = last &lt;&gt; ", " &lt;&gt; first &lt;&gt; " " &lt;&gt; middle
 
-&gt; fullName &quot;Phillip&quot; &quot;A&quot; &quot;Freeman&quot;
+&gt; fullName "Phillip" "A" "Freeman"
 Freeman, Phillip A
 </code></pre>
 <p>Suppose that this function forms the implementation of a (very simple!) web service with the three arguments provided as query parameters. We want to ensure that the user provided each of the three parameters, so we might use the Maybe type to indicate the presence or absence of a parameter. We can lift <code>fullName</code> over <code>Maybe</code> to create an implementation of the web service which checks for missing parameters:</p>
 <pre><code class="language-text">&gt; import Data.Maybe
 
-&gt; fullName &lt;$&gt; Just &quot;Phillip&quot; &lt;*&gt; Just &quot;A&quot; &lt;*&gt; Just &quot;Freeman&quot;
-Just (&quot;Freeman, Phillip A&quot;)
+&gt; fullName &lt;$&gt; Just "Phillip" &lt;*&gt; Just "A" &lt;*&gt; Just "Freeman"
+Just ("Freeman, Phillip A")
 
-&gt; fullName &lt;$&gt; Just &quot;Phillip&quot; &lt;*&gt; Nothing &lt;*&gt; Just &quot;Freeman&quot;
+&gt; fullName &lt;$&gt; Just "Phillip" &lt;*&gt; Nothing &lt;*&gt; Just "Freeman"
 Nothing
 </code></pre>
 <p>Or with <em>applicative do</em>:</p>
@@ -339,17 +339,17 @@ Nothing
 
 &gt; :paste…
 … ado
-…   f &lt;- Just &quot;Phillip&quot;
-…   m &lt;- Just &quot;A&quot;
-…   l &lt;- Just &quot;Freeman&quot;
+…   f &lt;- Just "Phillip"
+…   m &lt;- Just "A"
+…   l &lt;- Just "Freeman"
 …   in fullName f m l
 … ^D
-(Just &quot;Freeman, Phillip A&quot;)
+(Just "Freeman, Phillip A")
 
 … ado
-…   f &lt;- Just &quot;Phillip&quot;
+…   f &lt;- Just "Phillip"
 …   m &lt;- Nothing
-…   l &lt;- Just &quot;Freeman&quot;
+…   l &lt;- Just "Freeman"
 …   in fullName f m l
 … ^D
 Nothing
@@ -367,17 +367,17 @@ Nothing
 <p>Now we can lift over <code>Either String</code>, providing an appropriate error message for each parameter:</p>
 <pre><code class="language-text">&gt; :paste
 … fullNameEither first middle last =
-…   fullName &lt;$&gt; (first  `withError` &quot;First name was missing&quot;)
-…            &lt;*&gt; (middle `withError` &quot;Middle name was missing&quot;)
-…            &lt;*&gt; (last   `withError` &quot;Last name was missing&quot;)
+…   fullName &lt;$&gt; (first  `withError` "First name was missing")
+…            &lt;*&gt; (middle `withError` "Middle name was missing")
+…            &lt;*&gt; (last   `withError` "Last name was missing")
 … ^D
 </code></pre>
 <p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-text">&gt; :paste
 … fullNameEither first middle last = ado
-…  f &lt;- first  `withError` &quot;First name was missing&quot;
-…  m &lt;- middle `withError` &quot;Middle name was missing&quot;
-…  l &lt;- last   `withError` &quot;Last name was missing&quot;
+…  f &lt;- first  `withError` "First name was missing"
+…  m &lt;- middle `withError` "Middle name was missing"
+…  l &lt;- last   `withError` "Last name was missing"
 …  in fullName f m l
 … ^D
 
@@ -386,23 +386,23 @@ Maybe String -&gt; Maybe String -&gt; Maybe String -&gt; Either String String
 </code></pre>
 <p>Now our function takes three optional arguments using <code>Maybe</code>, and returns either a <code>String</code> error message or a <code>String</code> result.</p>
 <p>We can try out the function with different inputs:</p>
-<pre><code class="language-text">&gt; fullNameEither (Just &quot;Phillip&quot;) (Just &quot;A&quot;) (Just &quot;Freeman&quot;)
-(Right &quot;Freeman, Phillip A&quot;)
+<pre><code class="language-text">&gt; fullNameEither (Just "Phillip") (Just "A") (Just "Freeman")
+(Right "Freeman, Phillip A")
 
-&gt; fullNameEither (Just &quot;Phillip&quot;) Nothing (Just &quot;Freeman&quot;)
-(Left &quot;Middle name was missing&quot;)
+&gt; fullNameEither (Just "Phillip") Nothing (Just "Freeman")
+(Left "Middle name was missing")
 
-&gt; fullNameEither (Just &quot;Phillip&quot;) (Just &quot;A&quot;) Nothing
-(Left &quot;Last name was missing&quot;)
+&gt; fullNameEither (Just "Phillip") (Just "A") Nothing
+(Left "Last name was missing")
 </code></pre>
 <p>In this case, we see the error message corresponding to the first missing field or a successful result if every field was provided. However, if we are missing multiple inputs, we still only see the first error:</p>
 <pre><code class="language-text">&gt; fullNameEither Nothing Nothing Nothing
-(Left &quot;First name was missing&quot;)
+(Left "First name was missing")
 </code></pre>
 <p>This might be good enough, but if we want to see a list of <em>all</em> missing fields in the error, then we need something more powerful than <code>Either String</code>. We will see a solution later in this chapter.</p>
 <h2 id="combining-effects"><a class="header" href="#combining-effects">Combining Effects</a></h2>
 <p>As an example of working with applicative functors abstractly, this section will show how to write a function that generically combines side-effects encoded by an applicative functor <code>f</code>.</p>
-<p>What does this mean? Well, suppose we have a list of wrapped arguments of type <code>f a</code> for some <code>a</code>. That is, suppose we have a list of type <code>List (f a)</code>. Intuitively, this represents a list of computations with side-effects tracked by <code>f</code>, each with return type <code>a</code>. If we could run all of these computations in order, we would obtain a list of results of type <code>List a</code>. However, we would still have side-effects tracked by <code>f</code>. That is, we expect to be able to turn something of type <code>List (f a)</code> into something of type <code>f (List a)</code> by &quot;combining&quot; the effects inside the original list.</p>
+<p>What does this mean? Well, suppose we have a list of wrapped arguments of type <code>f a</code> for some <code>a</code>. That is, suppose we have a list of type <code>List (f a)</code>. Intuitively, this represents a list of computations with side-effects tracked by <code>f</code>, each with return type <code>a</code>. If we could run all of these computations in order, we would obtain a list of results of type <code>List a</code>. However, we would still have side-effects tracked by <code>f</code>. That is, we expect to be able to turn something of type <code>List (f a)</code> into something of type <code>f (List a)</code> by "combining" the effects inside the original list.</p>
 <p>For any fixed list size <code>n</code>, there is a function of <code>n</code> arguments that builds a list of size <code>n</code> out of those arguments. For example, if <code>n</code> is <code>3</code>, the function is <code>\x y z -&gt; x : y : z : Nil</code>. This function has type <code>a -&gt; a -&gt; a -&gt; List a</code>. We can use the <code>Applicative</code> instance for <code>List</code> to lift this function over <code>f</code>, to get a function of type <code>f a -&gt; f a -&gt; f a -&gt; f (List a)</code>. But, since we can do this for any <code>n</code>, it makes sense that we should be able to perform the same lifting for any <em>list</em> of arguments.</p>
 <p>That means that we should be able to write a function</p>
 <pre><code class="language-haskell">combineList :: forall f a. Applicative f =&gt; List (f a) -&gt; f (List a)
@@ -453,36 +453,36 @@ person :: String -&gt; String -&gt; Address -&gt; Array PhoneNumber -&gt; Person
 <p>These functions can construct a <code>Person</code> representing an address book entry. For example, the following value is defined in <code>Data.AddressBook</code>:</p>
 <pre><code class="language-haskell">examplePerson :: Person
 examplePerson =
-  person &quot;John&quot; &quot;Smith&quot;
-    (address &quot;123 Fake St.&quot; &quot;FakeTown&quot; &quot;CA&quot;)
-    [ phoneNumber HomePhone &quot;555-555-5555&quot;
-    , phoneNumber CellPhone &quot;555-555-0000&quot;
+  person "John" "Smith"
+    (address "123 Fake St." "FakeTown" "CA")
+    [ phoneNumber HomePhone "555-555-5555"
+    , phoneNumber CellPhone "555-555-0000"
     ]
 </code></pre>
 <p>Test this value in PSCi (this result has been formatted):</p>
 <pre><code class="language-text">&gt; import Data.AddressBook
 
 &gt; examplePerson
-{ firstName: &quot;John&quot;
-, lastName: &quot;Smith&quot;
+{ firstName: "John"
+, lastName: "Smith"
 , homeAddress:
-    { street: &quot;123 Fake St.&quot;
-    , city: &quot;FakeTown&quot;
-    , state: &quot;CA&quot;
+    { street: "123 Fake St."
+    , city: "FakeTown"
+    , state: "CA"
     }
 , phones:
     [ { type: HomePhone
-      , number: &quot;555-555-5555&quot;
+      , number: "555-555-5555"
       }
     , { type: CellPhone
-      , number: &quot;555-555-0000&quot;
+      , number: "555-555-0000"
       }
     ]
 }
 </code></pre>
 <p>We saw in a previous section how we could use the <code>Either String</code> functor to validate a data structure of type <code>Person</code>. For example, provided functions to validate the two names in the structure, we might validate the entire data structure as follows:</p>
 <pre><code class="language-haskell">nonEmpty1 :: String -&gt; Either String String
-nonEmpty1 &quot;&quot;     = Left &quot;Field cannot be empty&quot;
+nonEmpty1 ""     = Left "Field cannot be empty"
 nonEmpty1 value  = Right value
 
 validatePerson1 :: Person -&gt; Either String Person
@@ -502,8 +502,8 @@ validatePerson1Ado p = ado
 <p>In the first two lines, we use the <code>nonEmpty1</code> function to validate a non-empty string. <code>nonEmpty1</code> returns an error indicated with the <code>Left</code> constructor if its input is empty. Otherwise, it returns the value wrapped with the <code>Right</code> constructor.</p>
 <p>The final lines do not perform any validation but simply provide the <code>address</code> and <code>phones</code> fields to the <code>person</code> function as the remaining arguments.</p>
 <p>This function can be seen to work in PSCi, but it has a limitation that we have seen before:</p>
-<pre><code class="language-text">&gt; validatePerson $ person &quot;&quot; &quot;&quot; (address &quot;&quot; &quot;&quot; &quot;&quot;) []
-(Left &quot;Field cannot be empty&quot;)
+<pre><code class="language-text">&gt; validatePerson $ person "" "" (address "" "" "") []
+(Left "Field cannot be empty")
 </code></pre>
 <p>The <code>Either String</code> applicative functor only provides the first error encountered. Given the input here, we would prefer to see two errors – one for the missing first name and a second for the missing last name.</p>
 <p>There is another applicative functor that the <code>validation</code> library provides. This functor is called <code>V</code>, and it can return errors in any <em>semigroup</em>. For example, we can use <code>V (Array String)</code> to return an array of <code>String</code>s as errors, concatenating new errors onto the end of the array.</p>
@@ -513,26 +513,26 @@ validatePerson1Ado p = ado
   = Array String
 
 nonEmpty :: String -&gt; String -&gt; V Errors String
-nonEmpty field &quot;&quot;     = invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' cannot be empty&quot; ]
+nonEmpty field ""     = invalid [ "Field '" &lt;&gt; field &lt;&gt; "' cannot be empty" ]
 nonEmpty _     value  = pure value
 
 lengthIs :: String -&gt; Int -&gt; String -&gt; V Errors String
 lengthIs field len value | length value /= len =
-  invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' must have length &quot; &lt;&gt; show len ]
+  invalid [ "Field '" &lt;&gt; field &lt;&gt; "' must have length " &lt;&gt; show len ]
 lengthIs _     _   value = pure value
 
 validateAddress :: Address -&gt; V Errors Address
 validateAddress a =
-  address &lt;$&gt; nonEmpty &quot;Street&quot;  a.street
-          &lt;*&gt; nonEmpty &quot;City&quot;    a.city
-          &lt;*&gt; lengthIs &quot;State&quot; 2 a.state
+  address &lt;$&gt; nonEmpty "Street"  a.street
+          &lt;*&gt; nonEmpty "City"    a.city
+          &lt;*&gt; lengthIs "State" 2 a.state
 </code></pre>
 <p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-haskell">validateAddressAdo :: Address -&gt; V Errors Address
 validateAddressAdo a = ado
-  street &lt;- nonEmpty &quot;Street&quot;  a.street
-  city   &lt;- nonEmpty &quot;City&quot;    a.city
-  state  &lt;- lengthIs &quot;State&quot; 2 a.state
+  street &lt;- nonEmpty "Street"  a.street
+  city   &lt;- nonEmpty "City"    a.city
+  state  &lt;- lengthIs "State" 2 a.state
   in address street city state
 </code></pre>
 <p><code>validateAddress</code> validates an <code>Address</code> structure. It checks that the <code>street</code> and <code>city</code> fields are non-empty and that the string in the <code>state</code> field has length 2.</p>
@@ -541,15 +541,15 @@ validateAddressAdo a = ado
 <pre><code class="language-text">&gt; import Data.AddressBook
 &gt; import Data.AddressBook.Validation
 
-&gt; validateAddress $ address &quot;&quot; &quot;&quot; &quot;&quot;
-(invalid [ &quot;Field 'Street' cannot be empty&quot;
-         , &quot;Field 'City' cannot be empty&quot;
-         , &quot;Field 'State' must have length 2&quot;
+&gt; validateAddress $ address "" "" ""
+(invalid [ "Field 'Street' cannot be empty"
+         , "Field 'City' cannot be empty"
+         , "Field 'State' must have length 2"
          ])
 
-&gt; validateAddress $ address &quot;&quot; &quot;&quot; &quot;CA&quot;
-(invalid [ &quot;Field 'Street' cannot be empty&quot;
-         , &quot;Field 'City' cannot be empty&quot;
+&gt; validateAddress $ address "" "" "CA"
+(invalid [ "Field 'Street' cannot be empty"
+         , "Field 'City' cannot be empty"
          ])
 </code></pre>
 <p>This time, we receive an array of all validation errors.</p>
@@ -558,28 +558,28 @@ validateAddressAdo a = ado
 <pre><code class="language-haskell">matches :: String -&gt; Regex -&gt; String -&gt; V Errors String
 matches _     regex value | test regex value
                           = pure value
-matches field _     _     = invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' did not match the required format&quot; ]
+matches field _     _     = invalid [ "Field '" &lt;&gt; field &lt;&gt; "' did not match the required format" ]
 </code></pre>
 <p>Again, notice how <code>pure</code> is used to indicate successful validation, and <code>invalid</code> is used to signal an array of errors.</p>
 <p><code>validatePhoneNumber</code> is built from the <code>matches</code> function in the same way as before:</p>
 <pre><code class="language-haskell">validatePhoneNumber :: PhoneNumber -&gt; V Errors PhoneNumber
 validatePhoneNumber pn =
-  phoneNumber &lt;$&gt; pure pn.&quot;type&quot;
-              &lt;*&gt; matches &quot;Number&quot; phoneNumberRegex pn.number
+  phoneNumber &lt;$&gt; pure pn."type"
+              &lt;*&gt; matches "Number" phoneNumberRegex pn.number
 </code></pre>
 <p>Or with <em>applicative do</em>:</p>
 <pre><code class="language-haskell">validatePhoneNumberAdo :: PhoneNumber -&gt; V Errors PhoneNumber
 validatePhoneNumberAdo pn = ado
-  tpe    &lt;- pure pn.&quot;type&quot;
-  number &lt;- matches &quot;Number&quot; phoneNumberRegex pn.number
+  tpe    &lt;- pure pn."type"
+  number &lt;- matches "Number" phoneNumberRegex pn.number
   in phoneNumber tpe number
 </code></pre>
 <p>Again, try running this validator against some valid and invalid inputs in PSCi:</p>
-<pre><code class="language-text">&gt; validatePhoneNumber $ phoneNumber HomePhone &quot;555-555-5555&quot;
-pure ({ type: HomePhone, number: &quot;555-555-5555&quot; })
+<pre><code class="language-text">&gt; validatePhoneNumber $ phoneNumber HomePhone "555-555-5555"
+pure ({ type: HomePhone, number: "555-555-5555" })
 
-&gt; validatePhoneNumber $ phoneNumber HomePhone &quot;555.555.5555&quot;
-invalid ([&quot;Field 'Number' did not match the required format&quot;])
+&gt; validatePhoneNumber $ phoneNumber HomePhone "555.555.5555"
+invalid (["Field 'Number' did not match the required format"])
 </code></pre>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
 <ol>
@@ -591,24 +591,24 @@ invalid ([&quot;Field 'Number' did not match the required format&quot;])
 <p>The remaining validator is <code>validatePerson</code>, which combines the validators we have seen so far to validate an entire <code>Person</code> structure, including the following new <code>validatePhoneNumbers</code> function:</p>
 <pre><code class="language-haskell">validatePhoneNumbers :: String -&gt; Array PhoneNumber -&gt; V Errors (Array PhoneNumber)
 validatePhoneNumbers field []      =
-  invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' must contain at least one value&quot; ]
+  invalid [ "Field '" &lt;&gt; field &lt;&gt; "' must contain at least one value" ]
 validatePhoneNumbers _     phones  =
   traverse validatePhoneNumber phones
 
 validatePerson :: Person -&gt; V Errors Person
 validatePerson p =
-  person &lt;$&gt; nonEmpty &quot;First Name&quot; p.firstName
-         &lt;*&gt; nonEmpty &quot;Last Name&quot; p.lastName
+  person &lt;$&gt; nonEmpty "First Name" p.firstName
+         &lt;*&gt; nonEmpty "Last Name" p.lastName
          &lt;*&gt; validateAddress p.homeAddress
-         &lt;*&gt; validatePhoneNumbers &quot;Phone Numbers&quot; p.phones
+         &lt;*&gt; validatePhoneNumbers "Phone Numbers" p.phones
 </code></pre>
 <p>or with <em>applicative do</em></p>
 <pre><code class="language-haskell">validatePersonAdo :: Person -&gt; V Errors Person
 validatePersonAdo p = ado
-  firstName &lt;- nonEmpty &quot;First Name&quot; p.firstName
-  lastName  &lt;- nonEmpty &quot;Last Name&quot; p.lastName
+  firstName &lt;- nonEmpty "First Name" p.firstName
+  lastName  &lt;- nonEmpty "Last Name" p.lastName
   address   &lt;- validateAddress p.homeAddress
-  numbers   &lt;- validatePhoneNumbers &quot;Phone Numbers&quot; p.phones
+  numbers   &lt;- validatePhoneNumbers "Phone Numbers" p.phones
   in person firstName lastName address numbers
 </code></pre>
 <p><code>validatePhoneNumbers</code> uses a new function we haven't seen before – <code>traverse</code>.</p>
@@ -648,17 +648,17 @@ traverse f (Cons x xs) = Cons &lt;$&gt; f x &lt;*&gt; traverse f xs
 &gt; import Data.Traversable
 &gt; import Data.AddressBook.Validation
 
-&gt; traverse (nonEmpty &quot;Example&quot;) Nothing
+&gt; traverse (nonEmpty "Example") Nothing
 pure (Nothing)
 
-&gt; traverse (nonEmpty &quot;Example&quot;) (Just &quot;&quot;)
-invalid ([&quot;Field 'Example' cannot be empty&quot;])
+&gt; traverse (nonEmpty "Example") (Just "")
+invalid (["Field 'Example' cannot be empty"])
 
-&gt; traverse (nonEmpty &quot;Example&quot;) (Just &quot;Testing&quot;)
-pure ((Just &quot;Testing&quot;))
+&gt; traverse (nonEmpty "Example") (Just "Testing")
+pure ((Just "Testing"))
 </code></pre>
 <p>These examples show that traversing the <code>Nothing</code> value returns <code>Nothing</code> with no validation, and traversing <code>Just x</code> uses the validation function to validate <code>x</code>. That is, <code>traverse</code> takes a validation function for type <code>a</code> and returns a validation function for <code>Maybe a</code>, i.e., a validation function for optional values of type <code>a</code>.</p>
-<p>Other traversable functors include <code>Array</code>, <code>Tuple a</code>, and <code>Either a</code> for any type <code>a</code>. Generally, most &quot;container&quot; data type constructors have <code>Traversable</code> instances. As an example, the exercises will include writing a <code>Traversable</code> instance for a type of binary trees.</p>
+<p>Other traversable functors include <code>Array</code>, <code>Tuple a</code>, and <code>Either a</code> for any type <code>a</code>. Generally, most "container" data type constructors have <code>Traversable</code> instances. As an example, the exercises will include writing a <code>Traversable</code> instance for a type of binary trees.</p>
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
 <ol>
 <li>
@@ -666,7 +666,7 @@ pure ((Just &quot;Testing&quot;))
 <pre><code class="language-haskell">data Tree a = Leaf | Branch (Tree a) a (Tree a)
 </code></pre>
 <p>Recall from the previous chapter that you may either write these instances manually or let the compiler derive them.</p>
-<p>There are many &quot;correct&quot; formatting options for <code>Show</code> output. The test for this exercise expects the following whitespace style. This matches the default formatting of the generic show, so you only need to note this if you're planning on writing this instance manually.</p>
+<p>There are many "correct" formatting options for <code>Show</code> output. The test for this exercise expects the following whitespace style. This matches the default formatting of the generic show, so you only need to note this if you're planning on writing this instance manually.</p>
 <pre><code class="language-haskell">(Branch (Branch Leaf 8 Leaf) 42 Leaf)
 </code></pre>
 </li>
@@ -690,7 +690,7 @@ pure ((Just &quot;Testing&quot;))
 </li>
 </ol>
 <h2 id="applicative-functors-for-parallelism"><a class="header" href="#applicative-functors-for-parallelism">Applicative Functors for Parallelism</a></h2>
-<p>In the discussion above, I chose the word &quot;combine&quot; to describe how applicative functors &quot;combine side-effects&quot;. However, in all the examples given, it would be equally valid to say that applicative functors allow us to &quot;sequence&quot; effects. This would be consistent with the intuition that traversable functors provide a <code>sequence</code> function to combine effects in sequence based on a data structure.</p>
+<p>In the discussion above, I chose the word "combine" to describe how applicative functors "combine side-effects". However, in all the examples given, it would be equally valid to say that applicative functors allow us to "sequence" effects. This would be consistent with the intuition that traversable functors provide a <code>sequence</code> function to combine effects in sequence based on a data structure.</p>
 <p>However, in general, applicative functors are more general than this. The applicative functor laws do not impose any ordering on the side-effects that their computations perform. It would be valid for an applicative functor to perform its side-effects in parallel.</p>
 <p>For example, the <code>V</code> validation functor returned an <em>array</em> of errors, but it would work just as well if we picked the <code>Set</code> semigroup, in which case it would not matter what order we ran the various validators. We could even run them in parallel over the data structure!</p>
 <p>As a second example, the <code>parallel</code> package provides a type class <code>Parallel</code> which supports <em>parallel computations</em>. <code>Parallel</code> provides a function <code>parallel</code> that uses some <code>Applicative</code> functor to compute the result of its input computation <em>in parallel</em>:</p>

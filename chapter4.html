@@ -235,12 +235,12 @@ gcd n m = if n &gt; m
 </ul>
 <p>Here are two more examples that demonstrate using these simple patterns:</p>
 <pre><code class="language-haskell">fromString :: String -&gt; Boolean
-fromString &quot;true&quot; = true
+fromString "true" = true
 fromString _      = false
 
 toString :: Boolean -&gt; String
-toString true  = &quot;true&quot;
-toString false = &quot;false&quot;
+toString true  = "true"
+toString false = "false"
 </code></pre>
 <p>Try these functions in PSCi.</p>
 <h2 id="guards"><a class="header" href="#guards">Guards</a></h2>
@@ -298,43 +298,43 @@ takeFive _ = 0
 <p>Record patterns look just like record literals, but instead of values on the right of the colon, we specify a binder for each field.</p>
 <p>For example, this pattern matches any record which contains fields called <code>first</code> and <code>last</code>, and binds their values to the names <code>x</code> and <code>y</code>, respectively:</p>
 <pre><code class="language-haskell">showPerson :: { first :: String, last :: String } -&gt; String
-showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
+showPerson { first: x, last: y } = y &lt;&gt; ", " &lt;&gt; x
 </code></pre>
 <p>Record patterns provide a good example of an interesting feature of the PureScript type system: <em>row polymorphism</em>. Suppose we had defined <code>showPerson</code> without a type signature above. What would its inferred type have been? Interestingly, it is not the same as the type we gave:</p>
-<pre><code class="language-text">&gt; showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
+<pre><code class="language-text">&gt; showPerson { first: x, last: y } = y &lt;&gt; ", " &lt;&gt; x
 
 &gt; :type showPerson
 forall (r :: Row Type). { first :: String, last :: String | r } -&gt; String
 </code></pre>
 <p>What is the type variable <code>r</code> here? Well, if we try <code>showPerson</code> in PSCi, we see something interesting:</p>
-<pre><code class="language-text">&gt; showPerson { first: &quot;Phil&quot;, last: &quot;Freeman&quot; }
-&quot;Freeman, Phil&quot;
+<pre><code class="language-text">&gt; showPerson { first: "Phil", last: "Freeman" }
+"Freeman, Phil"
 
-&gt; showPerson { first: &quot;Phil&quot;, last: &quot;Freeman&quot;, location: &quot;Los Angeles&quot; }
-&quot;Freeman, Phil&quot;
+&gt; showPerson { first: "Phil", last: "Freeman", location: "Los Angeles" }
+"Freeman, Phil"
 </code></pre>
 <p>We can append additional fields to the record, and the <code>showPerson</code> function will still work. As long as the record contains the <code>first</code> and <code>last</code> fields of type <code>String</code>, the function application is well-typed. However, it is <em>not</em> valid to call <code>showPerson</code> with too <em>few</em> fields:</p>
-<pre><code class="language-text">&gt; showPerson { first: &quot;Phil&quot; }
+<pre><code class="language-text">&gt; showPerson { first: "Phil" }
 
-Type of expression lacks required label &quot;last&quot;
+Type of expression lacks required label "last"
 </code></pre>
-<p>We can read the new type signature of <code>showPerson</code> as &quot;takes any record with <code>first</code> and <code>last</code> fields which are <code>Strings</code> <em>and any other fields</em>, and returns a <code>String</code>&quot;. This function is polymorphic in the <em>row</em> <code>r</code> of record fields, hence the name <em>row polymorphism</em>.  Note that this behavior is different than that of the original <code>showPerson</code>. Without the row variable <code>r</code>, <code>showPerson</code> only accepts records with <em>exactly</em> a <code>first</code> and <code>last</code> field and no others.</p>
+<p>We can read the new type signature of <code>showPerson</code> as "takes any record with <code>first</code> and <code>last</code> fields which are <code>Strings</code> <em>and any other fields</em>, and returns a <code>String</code>". This function is polymorphic in the <em>row</em> <code>r</code> of record fields, hence the name <em>row polymorphism</em>.  Note that this behavior is different than that of the original <code>showPerson</code>. Without the row variable <code>r</code>, <code>showPerson</code> only accepts records with <em>exactly</em> a <code>first</code> and <code>last</code> field and no others.</p>
 <p>Note that we could have also written</p>
-<pre><code class="language-haskell">&gt; showPerson p = p.last &lt;&gt; &quot;, &quot; &lt;&gt; p.first
+<pre><code class="language-haskell">&gt; showPerson p = p.last &lt;&gt; ", " &lt;&gt; p.first
 </code></pre>
 <p>And PSCi would have inferred the same type.</p>
 <h2 id="record-puns"><a class="header" href="#record-puns">Record Puns</a></h2>
 <p>Recall that the <code>showPerson</code> function matches a record inside its argument, binding the <code>first</code> and <code>last</code> fields to values named <code>x</code> and <code>y</code>. We could alternatively reuse the field names themselves and simplify this sort of pattern match as follows:</p>
 <pre><code class="language-haskell">showPersonV2 :: { first :: String, last :: String } -&gt; String
-showPersonV2 { first, last } = last &lt;&gt; &quot;, &quot; &lt;&gt; first
+showPersonV2 { first, last } = last &lt;&gt; ", " &lt;&gt; first
 </code></pre>
 <p>Here, we only specify the names of the fields, and we do not need to specify the names of the values we want to introduce. This is called a <em>record pun</em>.</p>
 <p>It is also possible to use record puns to <em>construct</em> records. For example, if we have values named <code>first</code> and <code>last</code> in scope, we can construct a person record using <code>{ first, last }</code>:</p>
 <pre><code class="language-haskell">unknownPerson :: { first :: String, last :: String }
 unknownPerson = { first, last }
   where
-    first = &quot;Jane&quot;
-    last  = &quot;Doe&quot;
+    first = "Jane"
+    last  = "Doe"
 </code></pre>
 <p>This may improve the readability of code in some circumstances.</p>
 <h2 id="nested-patterns"><a class="header" href="#nested-patterns">Nested Patterns</a></h2>
@@ -345,7 +345,7 @@ unknownPerson = { first, last }
 type Person = { name :: String, address :: Address }
 
 livesInLA :: Person -&gt; Boolean
-livesInLA { address: { city: &quot;Los Angeles&quot; } } = true
+livesInLA { address: { city: "Los Angeles" } } = true
 livesInLA _ = false
 </code></pre>
 <h2 id="named-patterns"><a class="header" href="#named-patterns">Named Patterns</a></h2>
@@ -366,7 +366,7 @@ sortPair arr = arr
 </ol>
 <h2 id="case-expressions"><a class="header" href="#case-expressions">Case Expressions</a></h2>
 <p>Patterns do not only appear in top-level function declarations. It is possible to use patterns to match on an intermediate value in a computation using a <code>case</code> expression. Case expressions provide a similar type of utility to anonymous functions: it is not always desirable to give a name to a function, and a <code>case</code> expression allows us to avoid naming a function just because we want to use a pattern.</p>
-<p>Here is an example. This function computes the &quot;longest zero suffix&quot; of an array (the longest suffix which sums to zero):</p>
+<p>Here is an example. This function computes the "longest zero suffix" of an array (the longest suffix which sums to zero):</p>
 <pre><code class="language-haskell">import Data.Array (tail)
 import Data.Foldable (sum)
 import Data.Maybe (fromMaybe)
@@ -453,7 +453,7 @@ type Point =
 <p>Let's see another example from PureScript's standard libraries. We saw the <code>Maybe</code> type, which is used to define optional values, earlier in the book. Here is its definition from the <code>maybe</code> package:</p>
 <pre><code class="language-haskell">data Maybe a = Nothing | Just a
 </code></pre>
-<p>This example demonstrates the use of a type parameter <code>a</code>. Reading the pipe character as the word &quot;or&quot;, its definition almost reads like English: &quot;a value of type <code>Maybe a</code> is either <code>Nothing</code>, or <code>Just</code> a value of type <code>a</code>&quot;.</p>
+<p>This example demonstrates the use of a type parameter <code>a</code>. Reading the pipe character as the word "or", its definition almost reads like English: "a value of type <code>Maybe a</code> is either <code>Nothing</code>, or <code>Just</code> a value of type <code>a</code>".</p>
 <p>Note that we don't use the syntax <code>forall a.</code> anywhere in our data definition. <code>forall</code> syntax is necessary for functions but is not used when defining ADTs with <code>data</code> or type aliases with <code>type</code>.</p>
 <p>Data constructors can also be used to define recursive data structures. Here is one more example, defining a data type of singly-linked lists of elements of type <code>a</code>:</p>
 <pre><code class="language-haskell">data List a = Nil | Cons a (List a)
@@ -475,17 +475,17 @@ exampleLine = Line p1 p2
 <p>Let's see an example. Suppose we want to convert a <code>Shape</code> into a <code>String</code>. We have to use pattern matching to discover which constructor was used to construct the <code>Shape</code>. We can do this as follows:</p>
 <pre><code class="language-haskell">showShape :: Shape -&gt; String
 showShape (Circle c r) =
-  &quot;Circle [center: &quot; &lt;&gt; showPoint c &lt;&gt; &quot;, radius: &quot; &lt;&gt; show r &lt;&gt; &quot;]&quot;
+  "Circle [center: " &lt;&gt; showPoint c &lt;&gt; ", radius: " &lt;&gt; show r &lt;&gt; "]"
 showShape (Rectangle c w h) =
-  &quot;Rectangle [center: &quot; &lt;&gt; showPoint c &lt;&gt; &quot;, width: &quot; &lt;&gt; show w &lt;&gt; &quot;, height: &quot; &lt;&gt; show h &lt;&gt; &quot;]&quot;
+  "Rectangle [center: " &lt;&gt; showPoint c &lt;&gt; ", width: " &lt;&gt; show w &lt;&gt; ", height: " &lt;&gt; show h &lt;&gt; "]"
 showShape (Line start end) =
-  &quot;Line [start: &quot; &lt;&gt; showPoint start &lt;&gt; &quot;, end: &quot; &lt;&gt; showPoint end &lt;&gt; &quot;]&quot;
+  "Line [start: " &lt;&gt; showPoint start &lt;&gt; ", end: " &lt;&gt; showPoint end &lt;&gt; "]"
 showShape (Text loc text) =
-  &quot;Text [location: &quot; &lt;&gt; showPoint loc &lt;&gt; &quot;, text: &quot; &lt;&gt; show text &lt;&gt; &quot;]&quot;
+  "Text [location: " &lt;&gt; showPoint loc &lt;&gt; ", text: " &lt;&gt; show text &lt;&gt; "]"
 
 showPoint :: Point -&gt; String
 showPoint { x, y } =
-  &quot;(&quot; &lt;&gt; show x &lt;&gt; &quot;, &quot; &lt;&gt; show y &lt;&gt; &quot;)&quot;
+  "(" &lt;&gt; show x &lt;&gt; ", " &lt;&gt; show y &lt;&gt; ")"
 </code></pre>
 <p>Each constructor can be used as a pattern, and the arguments to the constructor can themselves be bound using patterns of their own. Consider the first case of <code>showShape</code>: if the <code>Shape</code> matches the <code>Circle</code> constructor, then we bring the arguments of <code>Circle</code> (center and radius) into scope using two variable patterns, <code>c</code> and <code>r</code>. The other cases are similar.</p>
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
@@ -574,7 +574,7 @@ $ spago repl
 
 &gt; showPicture [ Line { x: 0.0, y: 0.0 } { x: 1.0, y: 1.0 } ]
 
-[&quot;Line [start: (0.0, 0.0), end: (1.0, 1.0)]&quot;]
+["Line [start: (0.0, 0.0), end: (1.0, 1.0)]"]
 </code></pre>
 <h2 id="computing-bounding-rectangles"><a class="header" href="#computing-bounding-rectangles">Computing Bounding Rectangles</a></h2>
 <p>The example code for this module contains a function <code>bounds</code> which computes the smallest bounding rectangle for a <code>Picture</code>.</p>

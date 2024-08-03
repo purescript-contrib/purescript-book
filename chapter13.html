@@ -225,7 +225,7 @@ Test returned false
     result = merge (sort xs) (sort ys)
     expected = sort $ xs &lt;&gt; ys
   in
-    eq result expected &lt;?&gt; &quot;Result:\n&quot; &lt;&gt; show result &lt;&gt; &quot;\nnot equal to expected:\n&quot; &lt;&gt; show expected
+    eq result expected &lt;?&gt; "Result:\n" &lt;&gt; show result &lt;&gt; "\nnot equal to expected:\n" &lt;&gt; show expected
 </code></pre>
 <p>This time, if we modify the code to introduce a bug, we see our improved error message after the first failed test case:</p>
 <pre><code class="language-text">Error: Test 1 (seed 534161891) failed:
@@ -346,10 +346,10 @@ false
 <pre><code class="language-haskell">&gt; import Data.String
 
 &gt; mergeWith length
-    [&quot;&quot;, &quot;ab&quot;, &quot;abcd&quot;]
-    [&quot;x&quot;, &quot;xyz&quot;]
+    ["", "ab", "abcd"]
+    ["x", "xyz"]
 
-[&quot;&quot;,&quot;x&quot;,&quot;ab&quot;,&quot;xyz&quot;,&quot;abcd&quot;]
+["","x","ab","xyz","abcd"]
 </code></pre>
 <p>How might we test such a function? Ideally, we would like to generate values for all three arguments, including the first argument, which is a function.</p>
 <p>There is a second type class that allows us to create randomly-generated functions. It is called <code>Coarbitrary</code>, and it is defined as follows:</p>

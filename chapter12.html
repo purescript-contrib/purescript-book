@@ -195,7 +195,7 @@
 <p>The <code>void</code> function takes a functor and replaces its value with <code>Unit</code>. In the example, it is used to make <code>main</code> conform with its signature.</p>
 <pre><code class="language-haskell">main :: Effect Unit
 main = void $ unsafePartial do
-  Just canvas &lt;- getCanvasElementById &quot;canvas&quot;
+  Just canvas &lt;- getCanvasElementById "canvas"
   ctx &lt;- getContext2D canvas
 </code></pre>
 <p><em>Note</em>: the call to <code>unsafePartial</code> here is necessary since the pattern match on the result of <code>getCanvasElementById</code> is partial, matching only the <code>Just</code> constructor. For our purposes, this is fine, but in production code, we would probably want to match the <code>Nothing</code> constructor and provide an appropriate error message.</p>
@@ -207,7 +207,7 @@ getContext2D :: CanvasElement -&gt; Effect Context2D
 <p><code>CanvasElement</code> and <code>Context2D</code> are types defined in the <code>Graphics.Canvas</code> module. The same module also defines the <code>Canvas</code> effect, which is used by all of the actions in the module.</p>
 <p>The graphics context <code>ctx</code> manages the state of the canvas and provides methods to render primitive shapes, set styles and colors, and apply transformations.</p>
 <p>We continue by setting the fill style to solid blue using the <code>setFillStyle</code> action. The longer hex notation of <code>#0000FF</code> may also be used for blue, but shorthand notation is easier for simple colors:</p>
-<pre><code class="language-haskell">  setFillStyle ctx &quot;#00F&quot;
+<pre><code class="language-haskell">  setFillStyle ctx "#00F"
 </code></pre>
 <p>Note that the <code>setFillStyle</code> action takes the graphics context as an argument. This is a common pattern in the <code>Graphics.Canvas</code> module.</p>
 <p>Finally, we use the <code>fillPath</code> action to fill the rectangle. <code>fillPath</code> has the following type:</p>
@@ -273,7 +273,7 @@ translate dx dy shape = shape
 <p>This is an example of <em>record update syntax</em>. The expression <code>shape { ... }</code> creates a new record based on the <code>shape</code> record, with the fields inside the braces updated to the specified values. Note that the expressions inside the braces are separated from their labels by equals symbols, not colons like in record literals.</p>
 <p>The <code>translate</code> function can be used with both the <code>Rectangle</code> and <code>Arc</code> records, as seen in the <code>Shapes</code> example.</p>
 <p>The third type of path rendered in the <code>Shapes</code> example is a piecewise-linear path. Here is the corresponding code:</p>
-<pre><code class="language-haskell">  setFillStyle ctx &quot;#F00&quot;
+<pre><code class="language-haskell">  setFillStyle ctx "#F00"
 
   fillPath ctx $ do
     moveTo ctx 300.0 260.0
@@ -320,8 +320,8 @@ translate dx dy shape = shape
 <h2 id="drawing-random-circles"><a class="header" href="#drawing-random-circles">Drawing Random Circles</a></h2>
 <p>The <code>Example/Random.purs</code> file contains an example that uses the <code>Effect</code> monad to interleave two types of side-effect: random number generation and canvas manipulation. The example renders one hundred randomly generated circles onto the canvas.</p>
 <p>The <code>main</code> action obtains a reference to the graphics context as before and then sets the stroke and fill styles:</p>
-<pre><code class="language-haskell">  setFillStyle ctx &quot;#F00&quot;
-  setStrokeStyle ctx &quot;#000&quot;
+<pre><code class="language-haskell">  setFillStyle ctx "#F00"
+  setStrokeStyle ctx "#000"
 </code></pre>
 <p>Next, the code uses the <code>for_</code> function to loop over the integers between <code>0</code> and <code>100</code>:</p>
 <pre><code class="language-haskell">  for_ (1 .. 100) \_ -&gt; do
@@ -471,7 +471,7 @@ Type -&gt; Type
 R -&gt; R
 F -&gt; FLFRRFLF
 </code></pre>
-<p>If we start with the initial sequence &quot;FRRFRRFRR&quot; and iterate, we obtain the following sequence:</p>
+<p>If we start with the initial sequence "FRRFRRFRR" and iterate, we obtain the following sequence:</p>
 <pre><code class="language-text">FRRFRRFRR
 FLFRRFLFRRFLFRRFLFRRFLFRRFLFRR
 FLFRRFLFLFLFRRFLFRRFLFRRFLFLFLFRRFLFRRFLFRRFLF...
@@ -513,7 +513,7 @@ productions F = [F, L, F, R, R, F, L, F]
           -&gt; Int
           -&gt; Effect Unit
 </code></pre>
-<p>The second observation is that, to implement instructions like &quot;turn left&quot; and &quot;turn right&quot;, we will need to maintain some state, namely the direction in which the path is moving at any time. We need to modify our function to pass the state through the computation. Again, the <code>lsystem</code> function should work for any type of state, so we will represent it using the type variable <code>s</code>.</p>
+<p>The second observation is that, to implement instructions like "turn left" and "turn right", we will need to maintain some state, namely the direction in which the path is moving at any time. We need to modify our function to pass the state through the computation. Again, the <code>lsystem</code> function should work for any type of state, so we will represent it using the type variable <code>s</code>.</p>
 <p>We need to add the type <code>s</code> in three places:</p>
 <pre><code class="language-haskell">forall a s. Array a
             -&gt; (a -&gt; Array a)
@@ -624,13 +624,13 @@ F -&gt; FLMLFRMRFRMRFLMLF
 M -&gt; MRFRMLFLMLFLMRFRM
 </code></pre>
 <p>Render this L-system. <em>Note</em>: you will need to decrease the number of iterations of the production rules since the size of the final sentence grows exponentially with the number of iterations.</p>
-<p>Now, notice the symmetry between <code>L</code> and <code>M</code> in the production rules. The two &quot;move forward&quot; instructions can be differentiated using a <code>Boolean</code> value using the following alphabet type:</p>
+<p>Now, notice the symmetry between <code>L</code> and <code>M</code> in the production rules. The two "move forward" instructions can be differentiated using a <code>Boolean</code> value using the following alphabet type:</p>
 <pre><code class="language-haskell">data Letter = L | R | F Boolean
 </code></pre>
 <p>Implement this L-system again using this representation of the alphabet.</p>
 </li>
 <li>
-<p>(Difficult) Use a different monad <code>m</code> in the interpretation function. You might try using <code>Effect.Console</code> to write the L-system onto the console, or using <code>Effect.Random</code> to apply random &quot;mutations&quot; to the state type.</p>
+<p>(Difficult) Use a different monad <code>m</code> in the interpretation function. You might try using <code>Effect.Console</code> to write the L-system onto the console, or using <code>Effect.Random</code> to apply random "mutations" to the state type.</p>
 </li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
@@ -645,7 +645,7 @@ M -&gt; MRFRMLFLMLFLMRFRM
   | ...
 </code></pre>
 <p>This approach is taken in the <code>drawing</code> package, and it brings the flexibility of manipulating the scene as data in various ways before rendering.</p>
-<p>For examples of games rendered to the canvas, see the &quot;Behavior&quot; and &quot;Signal&quot; recipes in the <a href="https://github.com/JordanMartinez/purescript-cookbook/blob/master/README.md#recipes">cookbook</a>.</p>
+<p>For examples of games rendered to the canvas, see the "Behavior" and "Signal" recipes in the <a href="https://github.com/JordanMartinez/purescript-cookbook/blob/master/README.md#recipes">cookbook</a>.</p>
 
                     </main>
 

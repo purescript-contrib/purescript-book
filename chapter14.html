@@ -222,20 +222,20 @@ newtype Attribute = Attribute
 
 &gt; :paste
 … log $ render $ Element
-…   { name: &quot;p&quot;
+…   { name: "p"
 …   , attribs: [
 …       Attribute
-…         { key: &quot;class&quot;
-…         , value: &quot;main&quot;
+…         { key: "class"
+…         , value: "main"
 …         }
 …     ]
 …   , content: Just [
-…       TextContent &quot;Hello World!&quot;
+…       TextContent "Hello World!"
 …     ]
 …   }
 … ^D
 
-&lt;p class=&quot;main&quot;&gt;Hello World!&lt;/p&gt;
+&lt;p class="main"&gt;Hello World!&lt;/p&gt;
 unit
 </code></pre>
 <p>As it stands, there are several problems with this library:</p>
@@ -262,13 +262,13 @@ element name attribs content = Element
 </code></pre>
 <p>Next, we create smart constructors for those HTML elements we want our users to be able to create by applying the <code>element</code> function:</p>
 <pre><code class="language-haskell">a :: Array Attribute -&gt; Array Content -&gt; Element
-a attribs content = element &quot;a&quot; attribs (Just content)
+a attribs content = element "a" attribs (Just content)
 
 p :: Array Attribute -&gt; Array Content -&gt; Element
-p attribs content = element &quot;p&quot; attribs (Just content)
+p attribs content = element "p" attribs (Just content)
 
 img :: Array Attribute -&gt; Element
-img attribs = element &quot;img&quot; attribs Nothing
+img attribs = element "img" attribs Nothing
 </code></pre>
 <p>Finally, we update the module exports list to only export those functions which are known to construct correct data structures:</p>
 <pre><code class="language-haskell">module Data.DOM.Smart
@@ -324,19 +324,19 @@ attribute (AttributeKey key) value = Attribute
 </code></pre>
 <p>If we do not export the <code>AttributeKey</code> data constructor, then the user has no way to construct values of type <code>AttributeKey</code> other than by using functions we explicitly export. Here are some examples:</p>
 <pre><code class="language-haskell">href :: AttributeKey
-href = AttributeKey &quot;href&quot;
+href = AttributeKey "href"
 
 _class :: AttributeKey
-_class = AttributeKey &quot;class&quot;
+_class = AttributeKey "class"
 
 src :: AttributeKey
-src = AttributeKey &quot;src&quot;
+src = AttributeKey "src"
 
 width :: AttributeKey
-width = AttributeKey &quot;width&quot;
+width = AttributeKey "width"
 
 height :: AttributeKey
-height = AttributeKey &quot;height&quot;
+height = AttributeKey "height"
 </code></pre>
 <p>Here is the final exports list for our new module. Note that we no longer export any data constructors directly:</p>
 <pre><code class="language-haskell">module Data.DOM.Smart
@@ -368,9 +368,9 @@ height = AttributeKey &quot;height&quot;
 &gt; import Prelude
 &gt; import Data.DOM.Smart
 &gt; import Effect.Console
-&gt; log $ render $ p [ _class := &quot;main&quot; ] [ text &quot;Hello World!&quot; ]
+&gt; log $ render $ p [ _class := "main" ] [ text "Hello World!" ]
 
-&lt;p class=&quot;main&quot;&gt;Hello World!&lt;/p&gt;
+&lt;p class="main"&gt;Hello World!&lt;/p&gt;
 unit
 </code></pre>
 <p>Note, however, that no changes had to be made to the <code>render</code> function, because the underlying data representation never changed. This is one of the benefits of the smart constructors approach – it allows us to separate the internal data representation for a module from the representation perceived by users of its external API.</p>
@@ -389,12 +389,12 @@ unit
 <h2 id="phantom-types"><a class="header" href="#phantom-types">Phantom Types</a></h2>
 <p>To motivate the next technique, consider the following code:</p>
 <pre><code class="language-text">&gt; log $ render $ img
-    [ src    := &quot;cat.jpg&quot;
-    , width  := &quot;foo&quot;
-    , height := &quot;bar&quot;
+    [ src    := "cat.jpg"
+    , width  := "foo"
+    , height := "bar"
     ]
 
-&lt;img src=&quot;cat.jpg&quot; width=&quot;foo&quot; height=&quot;bar&quot; /&gt;
+&lt;img src="cat.jpg" width="foo" height="bar" /&gt;
 unit
 </code></pre>
 <p>The problem here is that we have provided string values for the <code>width</code> and <code>height</code> attributes, where we should only be allowed to provide numeric values in units of pixels or percentage points.</p>
@@ -423,19 +423,19 @@ instance IsValue Int where
 </code></pre>
 <p>We also have to update our <code>AttributeKey</code> constants so that their types reflect the new type parameter:</p>
 <pre><code class="language-haskell">href :: AttributeKey String
-href = AttributeKey &quot;href&quot;
+href = AttributeKey "href"
 
 _class :: AttributeKey String
-_class = AttributeKey &quot;class&quot;
+_class = AttributeKey "class"
 
 src :: AttributeKey String
-src = AttributeKey &quot;src&quot;
+src = AttributeKey "src"
 
 width :: AttributeKey Int
-width = AttributeKey &quot;width&quot;
+width = AttributeKey "width"
 
 height :: AttributeKey Int
-height = AttributeKey &quot;height&quot;
+height = AttributeKey "height"
 </code></pre>
 <p>Now we find it is impossible to represent these invalid HTML documents, and we are forced to use numbers to represent the <code>width</code> and <code>height</code> attributes instead:</p>
 <pre><code class="language-text">&gt; import Prelude
@@ -444,13 +444,13 @@ height = AttributeKey &quot;height&quot;
 
 &gt; :paste
 … log $ render $ img
-…   [ src    := &quot;cat.jpg&quot;
+…   [ src    := "cat.jpg"
 …   , width  := 100
 …   , height := 200
 …   ]
 … ^D
 
-&lt;img src=&quot;cat.jpg&quot; width=&quot;100&quot; height=&quot;200&quot; /&gt;
+&lt;img src="cat.jpg" width="100" height="200" /&gt;
 unit
 </code></pre>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
@@ -468,23 +468,23 @@ data False
 </ol>
 <h2 id="the-free-monad"><a class="header" href="#the-free-monad">The Free Monad</a></h2>
 <p>In our final set of modifications to our API, we will use a construction called the <em>free monad</em> to turn our <code>Content</code> type into a monad, enabling do notation. This will allow us to structure our HTML documents in a form in which the nesting of elements becomes clearer – instead of this:</p>
-<pre><code class="language-haskell">p [ _class := &quot;main&quot; ]
+<pre><code class="language-haskell">p [ _class := "main" ]
   [ elem $ img
-      [ src    := &quot;cat.jpg&quot;
+      [ src    := "cat.jpg"
       , width  := 100
       , height := 200
       ]
-  , text &quot;A cat&quot;
+  , text "A cat"
   ]
 </code></pre>
 <p>we will be able to write this:</p>
-<pre><code class="language-haskell">p [ _class := &quot;main&quot; ] $ do
+<pre><code class="language-haskell">p [ _class := "main" ] $ do
   elem $ img
-    [ src    := &quot;cat.jpg&quot;
+    [ src    := "cat.jpg"
     , width  := 100
     , height := 200
     ]
-  text &quot;A cat&quot;
+  text "A cat"
 </code></pre>
 <p>However, do notation is not the only benefit of a free monad. The free monad allows us to separate the <em>representation</em> of our monadic actions from their <em>interpretation</em> and even support <em>multiple interpretations</em> of the same actions.</p>
 <p>The <code>Free</code> monad is defined in the <code>free</code> library in the <code>Control.Monad.Free</code> module. We can find out some basic information about it using PSCi, as follows:</p>
@@ -556,10 +556,10 @@ render = execWriter &lt;&lt;&lt; renderElement
     renderElement (Element e) = do
 </code></pre>
 <p>The definition of <code>renderElement</code> is straightforward, using the <code>tell</code> action from the <code>Writer</code> monad to accumulate several small strings:</p>
-<pre><code class="language-haskell">      tell &quot;&lt;&quot;
+<pre><code class="language-haskell">      tell "&lt;"
       tell e.name
       for_ e.attribs $ \x -&gt; do
-        tell &quot; &quot;
+        tell " "
         renderAttribute x
       renderContent e.content
 </code></pre>
@@ -568,19 +568,19 @@ render = execWriter &lt;&lt;&lt; renderElement
       renderAttribute :: Attribute -&gt; Writer String Unit
       renderAttribute (Attribute x) = do
         tell x.key
-        tell &quot;=\&quot;&quot;
+        tell "=\""
         tell x.value
-        tell &quot;\&quot;&quot;
+        tell "\""
 </code></pre>
 <p>The <code>renderContent</code> function is more interesting. Here, we use the <code>runFreeM</code> function to interpret the computation inside the free monad, delegating to a helper function, <code>renderContentItem</code>:</p>
 <pre><code class="language-haskell">      renderContent :: Maybe (Content Unit) -&gt; Writer String Unit
-      renderContent Nothing = tell &quot; /&gt;&quot;
+      renderContent Nothing = tell " /&gt;"
       renderContent (Just content) = do
-        tell &quot;&gt;&quot;
+        tell "&gt;"
         runFreeM renderContentItem content
-        tell &quot;&lt;/&quot;
+        tell "&lt;/"
         tell e.name
-        tell &quot;&gt;&quot;
+        tell "&gt;"
 </code></pre>
 <p>The type of <code>renderContentItem</code> can be deduced from the type signature of <code>runFreeM</code>. The functor <code>f</code> is our type constructor <code>ContentF</code>, and the monad <code>m</code> is the monad in which we are interpreting the computation, namely <code>Writer String</code>. This gives the following type signature for <code>renderContentItem</code>:</p>
 <pre><code class="language-haskell">      renderContentItem :: ContentF (Content Unit) -&gt; Writer String (Content Unit)
@@ -601,11 +601,11 @@ render = execWriter &lt;&lt;&lt; renderElement
 
 &gt; :paste
 … log $ render $ p [] $ do
-…   elem $ img [ src := &quot;cat.jpg&quot; ]
-…   text &quot;A cat&quot;
+…   elem $ img [ src := "cat.jpg" ]
+…   text "A cat"
 … ^D
 
-&lt;p&gt;&lt;img src=&quot;cat.jpg&quot; /&gt;A cat&lt;/p&gt;
+&lt;p&gt;&lt;img src="cat.jpg" /&gt;A cat&lt;/p&gt;
 unit
 </code></pre>
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
@@ -639,14 +639,14 @@ runName (Name n) = n
 
 instance IsValue Href where
   toValue (URLHref url) = url
-  toValue (AnchorHref (Name nm)) = &quot;#&quot; &lt;&gt; nm
+  toValue (AnchorHref (Name nm)) = "#" &lt;&gt; nm
 </code></pre>
 <p>With this new type, we can modify the value type of the <code>href</code> attribute, forcing our users to use our new <code>Href</code> type. We can also create a new <code>name</code> attribute, which can be used to turn an element into an anchor:</p>
 <pre><code class="language-haskell">href :: AttributeKey Href
-href = AttributeKey &quot;href&quot;
+href = AttributeKey "href"
 
 name :: AttributeKey Name
-name = AttributeKey &quot;name&quot;
+name = AttributeKey "name"
 </code></pre>
 <p>The remaining problem is that our users currently have no way to generate new names. We can provide this functionality in our <code>Content</code> monad. First, we need to add a new data constructor to our <code>ContentF</code> type constructor:</p>
 <pre><code class="language-haskell">data ContentF a
@@ -677,7 +677,7 @@ render e = evalState (execWriterT (renderElement e)) 0
 <p>We also need to add a new case to <code>renderContentItem</code>, to interpret the new <code>NewName</code> data constructor:</p>
 <pre><code class="language-haskell">renderContentItem (NewName k) = do
   n &lt;- get
-  let fresh = Name $ &quot;name&quot; &lt;&gt; show n
+  let fresh = Name $ "name" &lt;&gt; show n
   put $ n + 1
   pure (k fresh)
 </code></pre>
@@ -691,12 +691,12 @@ render e = evalState (execWriterT (renderElement e)) 0
 … render $ p [ ] $ do
 …   top &lt;- newName
 …   elem $ a [ name := top ] $
-…     text &quot;Top&quot;
+…     text "Top"
 …   elem $ a [ href := AnchorHref top ] $
-…     text &quot;Back to top&quot;
+…     text "Back to top"
 … ^D
 
-&lt;p&gt;&lt;a name=&quot;name0&quot;&gt;Top&lt;/a&gt;&lt;a href=&quot;#name0&quot;&gt;Back to top&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name="name0"&gt;Top&lt;/a&gt;&lt;a href="#name0"&gt;Back to top&lt;/a&gt;&lt;/p&gt;
 unit
 </code></pre>
 <p>You can verify that multiple calls to <code>newName</code> do, in fact, result in unique names.</p>

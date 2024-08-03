@@ -205,7 +205,7 @@ Available options:
 </code></pre>
 <p>To provide command line arguments, you can either call <code>spago run</code> with the <code>-a</code> option to pass additional arguments directly to your application or call <code>spago bundle-app</code>, which will create an index.js file that can be run directly with <code>node</code>.</p>
 <p>For example, to provide the player name using the <code>-p</code> option:</p>
-<pre><code class="language-text">$ spago run -a &quot;-p Phil&quot;
+<pre><code class="language-text">$ spago run -a "-p Phil"
 &gt;
 </code></pre>
 <pre><code class="language-text">$ spago bundle-app 
@@ -215,7 +215,7 @@ $ node index.js -p Phil
 <p>From the prompt, you can enter commands like <code>look</code>, <code>inventory</code>, <code>take</code>, <code>use</code>, <code>north</code>, <code>south</code>, <code>east</code>, and <code>west</code>. There is also a <code>debug</code> command, which can print the game state when the <code>--debug</code> command line option is provided.</p>
 <p>The game is played on a two-dimensional grid, and the player moves by issuing commands <code>north</code>, <code>south</code>, <code>east</code>, and <code>west</code>. The game contains a collection of items that can either be in the player's possession (in the user's <em>inventory</em>) or on the game grid at some location. Items can be picked up by the player using the <code>take</code> command.</p>
 <p>For reference, here is a complete walkthrough of the game:</p>
-<pre><code class="language-text">$ spago run -a &quot;-p Phil&quot;
+<pre><code class="language-text">$ spago run -a "-p Phil"
 
 &gt; look
 You are at (0, 0)
@@ -247,7 +247,7 @@ You win!
 <h2 id="the-state-monad"><a class="header" href="#the-state-monad">The State Monad</a></h2>
 <p>We will start by looking at some of the monads provided by the <code>transformers</code> package.</p>
 <p>The first example is the <code>State</code> monad, which provides a way to model <em>mutable state</em> in pure code. We have already seen an approach to a mutable state provided by the <code>Effect</code> monad. <code>State</code> provides an alternative.</p>
-<p>The <code>State</code> type constructor takes two type parameters: the type <code>s</code> of the state and the return type <code>a</code>. Even though we speak of the &quot;<code>State</code> monad&quot;, the instance of the <code>Monad</code> type class is actually provided for the <code>State s</code> type constructor for any type <code>s</code>.</p>
+<p>The <code>State</code> type constructor takes two type parameters: the type <code>s</code> of the state and the return type <code>a</code>. Even though we speak of the "<code>State</code> monad", the instance of the <code>Monad</code> type class is actually provided for the <code>State s</code> type constructor for any type <code>s</code>.</p>
 <p>The <code>Control.Monad.State</code> module provides the following API:</p>
 <pre><code class="language-haskell">get     :: forall s.             State s s
 gets    :: forall s. (s -&gt; a) -&gt; State s a
@@ -255,7 +255,7 @@ put     :: forall s. s        -&gt; State s Unit
 modify  :: forall s. (s -&gt; s) -&gt; State s s
 modify_ :: forall s. (s -&gt; s) -&gt; State s Unit
 </code></pre>
-<p>Note that these API signatures are presented in a simplified form using the <code>State</code> type constructor for now. The actual API involves <code>MonadState</code>, which we'll cover in the later &quot;Type Classes&quot; section of this chapter, so don't worry if you see different signatures in your IDE tooltips or on Pursuit.</p>
+<p>Note that these API signatures are presented in a simplified form using the <code>State</code> type constructor for now. The actual API involves <code>MonadState</code>, which we'll cover in the later "Type Classes" section of this chapter, so don't worry if you see different signatures in your IDE tooltips or on Pursuit.</p>
 <p>Let's see an example. One use of the <code>State</code> monad might be to add the values in an array of integers to the current state. We could do that by choosing <code>Int</code> as the state type <code>s</code> and using <code>traverse_</code> to traverse the array, with a call to <code>modify</code> for each array element:</p>
 <pre><code class="language-haskell">import Data.Foldable (traverse_)
 import Control.Monad.State
@@ -290,16 +290,16 @@ runState  :: forall s a. State s a -&gt; s -&gt; Tuple a s
 <pre><code class="language-haskell">testParens :: String -&gt; Boolean
 </code></pre>
 <p>which tests whether or not a <code>String</code> of parentheses is balanced by keeping track of the number of opening parentheses that have not been closed. Your function should work as follows:</p>
-<pre><code class="language-text">&gt; testParens &quot;&quot;
+<pre><code class="language-text">&gt; testParens ""
 true
 
-&gt; testParens &quot;(()(())())&quot;
+&gt; testParens "(()(())())"
 true
 
-&gt; testParens &quot;)&quot;
+&gt; testParens ")"
 false
 
-&gt; testParens &quot;(()()&quot;
+&gt; testParens "(()()"
 false
 </code></pre>
 <p><em>Hint</em>: you may like to use the <code>toCharArray</code> function from the <code>Data.String.CodeUnits</code> module to turn the input string into an array of characters.</p>
@@ -321,13 +321,13 @@ addPermission :: String -&gt; Permissions -&gt; Permissions
 <pre><code class="language-haskell">createUser :: Reader Permissions (Maybe User)
 createUser = do
   permissions &lt;- ask
-  if hasPermission &quot;admin&quot; permissions
+  if hasPermission "admin" permissions
     then map Just newUser
     else pure Nothing
 </code></pre>
 <p>To elevate the user's permissions, we might use the <code>local</code> action to modify the <code>Permissions</code> object during the execution of some computation:</p>
 <pre><code class="language-haskell">runAsAdmin :: forall a. Reader Permissions a -&gt; Reader Permissions a
-runAsAdmin = local (addPermission &quot;admin&quot;)
+runAsAdmin = local (addPermission "admin")
 </code></pre>
 <p>Then we could write a function to create a new user, even if the user did not have the <code>admin</code> permission:</p>
 <pre><code class="language-haskell">createUserAsAdmin :: Reader Permissions (Maybe User)
@@ -337,7 +337,7 @@ createUserAsAdmin = runAsAdmin createUser
 <pre><code class="language-haskell">runReader :: forall r a. Reader r a -&gt; r -&gt; a
 </code></pre>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
-<p>In these exercises, we will use the <code>Reader</code> monad to build a small library for rendering documents with indentation. The &quot;global configuration&quot; will be a number indicating the current indentation level:</p>
+<p>In these exercises, we will use the <code>Reader</code> monad to build a small library for rendering documents with indentation. The "global configuration" will be a number indicating the current indentation level:</p>
 <pre><code class="language-haskell">type Level = Int
 
 type Doc = Reader Level String
@@ -370,11 +370,11 @@ type Doc = Reader Level String
 </ol>
 <p>You should now be able to use your library to write simple documents as follows:</p>
 <pre><code class="language-haskell">render $ cat
-  [ line &quot;Here is some indented text:&quot;
+  [ line "Here is some indented text:"
   , indent $ cat
-      [ line &quot;I am indented&quot;
-      , line &quot;So am I&quot;
-      , indent $ line &quot;I am even more indented&quot;
+      [ line "I am indented"
+      , line "So am I"
+      , indent $ line "I am even more indented"
       ]
   ]
 </code></pre>
@@ -404,7 +404,7 @@ gcdLog :: Int -&gt; Int -&gt; Writer (Array String) Int
 <pre><code class="language-haskell">    gcdLog n 0 = pure n
     gcdLog 0 m = pure m
     gcdLog n m = do
-      tell [&quot;gcdLog &quot; &lt;&gt; show n &lt;&gt; &quot; &quot; &lt;&gt; show m]
+      tell ["gcdLog " &lt;&gt; show n &lt;&gt; " " &lt;&gt; show m]
       if n &gt; m
         then gcdLog (n - m) m
         else gcdLog n (m - n)
@@ -419,7 +419,7 @@ runWriter  :: forall w a. Writer w a -&gt; Tuple a w
 &gt; import Control.Monad.Writer.Class
 
 &gt; runWriter (gcdLog 21 15)
-Tuple 3 [&quot;gcdLog 21 15&quot;,&quot;gcdLog 6 15&quot;,&quot;gcdLog 6 9&quot;,&quot;gcdLog 6 3&quot;,&quot;gcdLog 3 3&quot;]
+Tuple 3 ["gcdLog 21 15","gcdLog 6 15","gcdLog 6 9","gcdLog 6 3","gcdLog 3 3"]
 </code></pre>
 <h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
 <ol>
@@ -460,7 +460,7 @@ Type
 </code></pre>
 <p>Finally, we are left with something of kind <code>Type</code>, which means we can try to find values of this type.</p>
 <p>The monad we have constructed – <code>StateT String (Either String)</code> – represents computations that can fail with an error and use mutable state.</p>
-<p>We can use the actions of the outer <code>StateT String</code> monad (<code>get</code>, <code>put</code>, and <code>modify</code>) directly, but to use the effects of the wrapped monad (<code>Either String</code>), we need to &quot;lift&quot; them over the monad transformer. The <code>Control.Monad.Trans</code> module defines the <code>MonadTrans</code> type class, which captures those type constructors which are monad transformers, as follows:</p>
+<p>We can use the actions of the outer <code>StateT String</code> monad (<code>get</code>, <code>put</code>, and <code>modify</code>) directly, but to use the effects of the wrapped monad (<code>Either String</code>), we need to "lift" them over the monad transformer. The <code>Control.Monad.Trans</code> module defines the <code>MonadTrans</code> type class, which captures those type constructors which are monad transformers, as follows:</p>
 <pre><code class="language-haskell">class MonadTrans t where
   lift :: forall m a. Monad m =&gt; m a -&gt; t m a
 </code></pre>
@@ -472,22 +472,22 @@ split :: StateT String (Either String) String
 split = do
   s &lt;- get
   case s of
-    &quot;&quot; -&gt; lift $ Left &quot;Empty string&quot;
+    "" -&gt; lift $ Left "Empty string"
     _ -&gt; do
       put (drop 1 s)
       pure (take 1 s)
 </code></pre>
 <p>If the state is not empty, the computation uses <code>put</code> to update the state to <code>drop 1 s</code> (that is, <code>s</code> with the first character removed) and returns <code>take 1 s</code> (that is, the first character of <code>s</code>).</p>
 <p>Let's try this in PSCi:</p>
-<pre><code class="language-text">&gt; runStateT split &quot;test&quot;
-Right (Tuple &quot;t&quot; &quot;est&quot;)
+<pre><code class="language-text">&gt; runStateT split "test"
+Right (Tuple "t" "est")
 
-&gt; runStateT split &quot;&quot;
-Left &quot;Empty string&quot;
+&gt; runStateT split ""
+Left "Empty string"
 </code></pre>
 <p>This is not very remarkable since we could have implemented this without <code>StateT</code>. However, since we are working in a monad, we can use do notation or applicative combinators to build larger computations from smaller ones. For example, we can apply <code>split</code> twice to read the first two characters from a string:</p>
-<pre><code class="language-text">&gt; runStateT ((&lt;&gt;) &lt;$&gt; split &lt;*&gt; split) &quot;test&quot;
-(Right (Tuple &quot;te&quot; &quot;st&quot;))
+<pre><code class="language-text">&gt; runStateT ((&lt;&gt;) &lt;$&gt; split &lt;*&gt; split) "test"
+(Right (Tuple "te" "st"))
 </code></pre>
 <p>We can use the <code>split</code> function with a handful of other actions to build a basic parsing library. In fact, this is the approach taken by the <code>parsing</code> library. This is the power of monad transformers – we can create custom-built monads for various problems, choose the side-effects we need, and keep the expressiveness of do notation and applicative combinators.</p>
 <h2 id="the-exceptt-monad-transformer"><a class="header" href="#the-exceptt-monad-transformer">The ExceptT Monad Transformer</a></h2>
@@ -513,14 +513,14 @@ import Control.Monad.Writer
 
 writerAndExceptT :: ExceptT String (Writer (Array String)) String
 writerAndExceptT = do
-  lift $ tell [&quot;Before the error&quot;]
-  _ &lt;- throwError &quot;Error!&quot;
-  lift $ tell [&quot;After the error&quot;]
-  pure &quot;Return value&quot;
+  lift $ tell ["Before the error"]
+  _ &lt;- throwError "Error!"
+  lift $ tell ["After the error"]
+  pure "Return value"
 </code></pre>
 <p>If we test this function in PSCi, we can see how the two effects of accumulating a log and throwing an error interact. First, we can run the outer <code>ExceptT</code> computation of type by using <code>runExceptT</code>, leaving a result of type <code>Writer (Array String) (Either String String)</code>. We can then use <code>runWriter</code> to run the inner <code>Writer</code> computation:</p>
 <pre><code class="language-text">&gt; runWriter $ runExceptT writerAndExceptT
-Tuple (Left &quot;Error!&quot;) [&quot;Before the error&quot;]
+Tuple (Left "Error!") ["Before the error"]
 </code></pre>
 <p>Note that only those log messages that were written before the error was thrown get appended to the log.</p>
 <h2 id="monad-transformer-stacks"><a class="header" href="#monad-transformer-stacks">Monad Transformer Stacks</a></h2>
@@ -537,9 +537,9 @@ type Parser = StateT String (WriterT Log (ExceptT Errors Identity))
 split :: Parser String
 split = do
   s &lt;- get
-  lift $ tell [&quot;The state is &quot; &lt;&gt; s]
+  lift $ tell ["The state is " &lt;&gt; s]
   case s of
-    &quot;&quot; -&gt; lift $ lift $ throwError [&quot;Empty string&quot;]
+    "" -&gt; lift $ lift $ throwError ["Empty string"]
     _ -&gt; do
       put (drop 1 s)
       pure (take 1 s)
@@ -548,23 +548,23 @@ split = do
 <p>Note that we have to remove the side-effects in the order in which they appear in the monad transformer stack: first, we use <code>runStateT</code> to remove the <code>StateT</code> type constructor, then <code>runWriterT</code>, then <code>runExceptT</code>. Finally, we run the computation in the <code>Identity</code> monad by using <code>unwrap</code>.</p>
 <pre><code class="language-text">&gt; runParser p s = unwrap $ runExceptT $ runWriterT $ runStateT p s
 
-&gt; runParser split &quot;test&quot;
-(Right (Tuple (Tuple &quot;t&quot; &quot;est&quot;) [&quot;The state is test&quot;]))
+&gt; runParser split "test"
+(Right (Tuple (Tuple "t" "est") ["The state is test"]))
 
-&gt; runParser ((&lt;&gt;) &lt;$&gt; split &lt;*&gt; split) &quot;test&quot;
-(Right (Tuple (Tuple &quot;te&quot; &quot;st&quot;) [&quot;The state is test&quot;, &quot;The state is est&quot;]))
+&gt; runParser ((&lt;&gt;) &lt;$&gt; split &lt;*&gt; split) "test"
+(Right (Tuple (Tuple "te" "st") ["The state is test", "The state is est"]))
 </code></pre>
 <p>However, if the parse is unsuccessful because the state is empty, then no log is printed at all:</p>
-<pre><code class="language-text">&gt; runParser split &quot;&quot;
-(Left [&quot;Empty string&quot;])
+<pre><code class="language-text">&gt; runParser split ""
+(Left ["Empty string"])
 </code></pre>
 <p>This is because of how the side-effects provided by the <code>ExceptT</code> monad transformer interact with the side-effects provided by the <code>WriterT</code> monad transformer. We can address this by changing the order in which the monad transformer stack is composed. If we move the <code>ExceptT</code> transformer to the top of the stack, then the log will contain all messages written up until the first error, as we saw earlier when we transformed <code>Writer</code> with <code>ExceptT</code>.</p>
 <p>One problem with this code is that we have to use the <code>lift</code> function multiple times to lift computations over multiple monad transformers; for example, the call to <code>throwError</code> has to be lifted twice, once over <code>WriterT</code> and a second time over <code>StateT</code>. This is fine for small monad transformer stacks but quickly becomes inconvenient.</p>
-<p>Fortunately, as we will see, we can use the automatic code generation provided by type class inference to do most of this &quot;heavy lifting&quot; for us.</p>
+<p>Fortunately, as we will see, we can use the automatic code generation provided by type class inference to do most of this "heavy lifting" for us.</p>
 <h2 id="exercises-3"><a class="header" href="#exercises-3">Exercises</a></h2>
 <ol>
 <li>
-<p>(Easy) Use the <code>ExceptT</code> monad transformer over the <code>Identity</code> functor to write a function <code>safeDivide</code> which divides two numbers, throwing an error (as the String &quot;Divide by zero!&quot;) if the denominator is zero.</p>
+<p>(Easy) Use the <code>ExceptT</code> monad transformer over the <code>Identity</code> functor to write a function <code>safeDivide</code> which divides two numbers, throwing an error (as the String "Divide by zero!") if the denominator is zero.</p>
 </li>
 <li>
 <p>(Medium) Write a parser</p>
@@ -572,8 +572,8 @@ split = do
 </code></pre>
 <p>which matches a string as a prefix of the current state or fails with an error message.</p>
 <p>Your parser should work as follows:</p>
-<pre><code class="language-text">&gt; runParser (string &quot;abc&quot;) &quot;abcdef&quot;
-(Right (Tuple (Tuple &quot;abc&quot; &quot;def&quot;) [&quot;The state is abcdef&quot;]))
+<pre><code class="language-text">&gt; runParser (string "abc") "abcdef"
+(Right (Tuple (Tuple "abc" "def") ["The state is abcdef"]))
 </code></pre>
 <p><em>Hint</em>: you can use the implementation of <code>split</code> as a starting point. You might find the <code>stripPrefix</code> function useful.</p>
 </li>
@@ -593,16 +593,16 @@ modify :: forall s. (s -&gt; s) -&gt; State s Unit
 put    :: forall m s. MonadState s m =&gt; s        -&gt; m Unit
 modify :: forall m s. MonadState s m =&gt; (s -&gt; s) -&gt; m Unit
 </code></pre>
-<p>The <code>Control.Monad.State.Class</code> module defines the <code>MonadState</code> (multi-parameter) type class, which allows us to abstract over &quot;monads which support pure mutable state&quot;. As one would expect, the <code>State s</code> type constructor is an instance of the <code>MonadState s</code> type class, but there are many more interesting instances of this class.</p>
+<p>The <code>Control.Monad.State.Class</code> module defines the <code>MonadState</code> (multi-parameter) type class, which allows us to abstract over "monads which support pure mutable state". As one would expect, the <code>State s</code> type constructor is an instance of the <code>MonadState s</code> type class, but there are many more interesting instances of this class.</p>
 <p>In particular, there are instances of <code>MonadState</code> for the <code>WriterT</code>, <code>ReaderT</code>, and <code>ExceptT</code> monad transformers provided in the <code>transformers</code> package. Each has an instance for <code>MonadState</code> whenever the underlying <code>Monad</code> does. In practice, this means that as long as <code>StateT</code> appears <em>somewhere</em> in the monad transformer stack, and everything above <code>StateT</code> is an instance of <code>MonadState</code>, then we are free to use <code>get</code>, <code>put</code>, and <code>modify</code> directly without the need to use <code>lift</code>.</p>
 <p>Indeed, the same is true of the actions we covered for the <code>ReaderT</code>, <code>WriterT</code>, and <code>ExceptT</code> transformers. <code>transformers</code> defines a type class for each of the major transformers, allowing us to abstract over monads that support their operations.</p>
 <p>In the case of the <code>split</code> function above, the monad stack we constructed is an instance of each of the <code>MonadState</code>, <code>MonadWriter</code>, and <code>MonadError</code> type classes. This means that we don't need to call <code>lift</code> at all! We can just use the actions <code>get</code>, <code>put</code>, <code>tell</code>, and <code>throwError</code> as if they were defined on the monad stack itself:</p>
 <pre><code class="language-haskell">split :: Parser String
 split = do
   s &lt;- get
-  tell [&quot;The state is &quot; &lt;&gt; show s]
+  tell ["The state is " &lt;&gt; show s]
   case s of
-    &quot;&quot; -&gt; throwError [&quot;Empty string&quot;]
+    "" -&gt; throwError ["Empty string"]
     _ -&gt; do
       put (drop 1 s)
       pure (take 1 s)
@@ -628,15 +628,15 @@ some :: forall f a. Alternative f =&gt; Lazy (f (Array a)) =&gt; f a -&gt; f (Ar
 <p>In the case of our <code>Parser</code> monad transformer stack, there is an instance of <code>Alternative</code> induced by the <code>ExceptT</code> component, which supports failure by composing errors in different branches using a <code>Monoid</code> instance (this is why we chose <code>Array String</code> for our <code>Errors</code> type). This means that we can use the <code>many</code> and <code>some</code> functions to run a parser multiple times:</p>
 <pre><code class="language-text">&gt; import Data.Array (many)
 
-&gt; runParser (many split) &quot;test&quot;
-(Right (Tuple (Tuple [&quot;t&quot;, &quot;e&quot;, &quot;s&quot;, &quot;t&quot;] &quot;&quot;)
-              [ &quot;The state is \&quot;test\&quot;&quot;
-              , &quot;The state is \&quot;est\&quot;&quot;
-              , &quot;The state is \&quot;st\&quot;&quot;
-              , &quot;The state is \&quot;t\&quot;&quot;
+&gt; runParser (many split) "test"
+(Right (Tuple (Tuple ["t", "e", "s", "t"] "")
+              [ "The state is \"test\""
+              , "The state is \"est\""
+              , "The state is \"st\""
+              , "The state is \"t\""
               ]))
 </code></pre>
-<p>Here, the input string <code>&quot;test&quot;</code> has been repeatedly split to return an array of four single-character strings, the leftover state is empty, and the log shows that we applied the <code>split</code> combinator four times.</p>
+<p>Here, the input string <code>"test"</code> has been repeatedly split to return an array of four single-character strings, the leftover state is empty, and the log shows that we applied the <code>split</code> combinator four times.</p>
 <h2 id="monad-comprehensions"><a class="header" href="#monad-comprehensions">Monad Comprehensions</a></h2>
 <p>The <code>Control.MonadPlus</code> module defines a subclass of the <code>Alternative</code> type class, called <code>MonadPlus</code>. <code>MonadPlus</code> captures those type constructors which are both monads and instances of <code>Alternative</code>:</p>
 <pre><code class="language-haskell">class (Monad m, Alternative m) &lt;= MonadPlus m
@@ -665,26 +665,26 @@ lower = do
 <pre><code class="language-text">&gt; upperOrLower = some upper &lt;|&gt; some lower
 </code></pre>
 <p>This parser will match characters until the case changes:</p>
-<pre><code class="language-text">&gt; runParser upperOrLower &quot;abcDEF&quot;
-(Right (Tuple (Tuple [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;] (&quot;DEF&quot;))
-              [ &quot;The state is \&quot;abcDEF\&quot;&quot;
-              , &quot;The state is \&quot;bcDEF\&quot;&quot;
-              , &quot;The state is \&quot;cDEF\&quot;&quot;
+<pre><code class="language-text">&gt; runParser upperOrLower "abcDEF"
+(Right (Tuple (Tuple ["a","b","c"] ("DEF"))
+              [ "The state is \"abcDEF\""
+              , "The state is \"bcDEF\""
+              , "The state is \"cDEF\""
               ]))
 </code></pre>
 <p>We can even use <code>many</code> to fully split a string into its lower and upper case components:</p>
 <pre><code class="language-text">&gt; components = many upperOrLower
 
-&gt; runParser components &quot;abCDeFgh&quot;
-(Right (Tuple (Tuple [[&quot;a&quot;,&quot;b&quot;],[&quot;C&quot;,&quot;D&quot;],[&quot;e&quot;],[&quot;F&quot;],[&quot;g&quot;,&quot;h&quot;]] &quot;&quot;)
-              [ &quot;The state is \&quot;abCDeFgh\&quot;&quot;
-              , &quot;The state is \&quot;bCDeFgh\&quot;&quot;
-              , &quot;The state is \&quot;CDeFgh\&quot;&quot;
-              , &quot;The state is \&quot;DeFgh\&quot;&quot;
-              , &quot;The state is \&quot;eFgh\&quot;&quot;
-              , &quot;The state is \&quot;Fgh\&quot;&quot;
-              , &quot;The state is \&quot;gh\&quot;&quot;
-              , &quot;The state is \&quot;h\&quot;&quot;
+&gt; runParser components "abCDeFgh"
+(Right (Tuple (Tuple [["a","b"],["C","D"],["e"],["F"],["g","h"]] "")
+              [ "The state is \"abCDeFgh\""
+              , "The state is \"bCDeFgh\""
+              , "The state is \"CDeFgh\""
+              , "The state is \"DeFgh\""
+              , "The state is \"eFgh\""
+              , "The state is \"Fgh\""
+              , "The state is \"gh\""
+              , "The state is \"h\""
               ]))
 </code></pre>
 <p>Again, this illustrates the power of reusability that monad transformers bring – we were able to write a backtracking parser in a declarative style with only a few lines of code, by reusing standard abstractions!</p>
@@ -694,7 +694,7 @@ lower = do
 <p>(Easy) Remove the calls to the <code>lift</code> function from your implementation of the <code>string</code> parser. Verify that the new implementation type checks, and convince yourself it should.</p>
 </li>
 <li>
-<p>(Medium) Use your <code>string</code> parser with the <code>some</code> combinator to write a parser <code>asFollowedByBs</code> that recognizes strings consisting of several copies of the string <code>&quot;a&quot;</code> followed by several copies of the string <code>&quot;b&quot;</code>.</p>
+<p>(Medium) Use your <code>string</code> parser with the <code>some</code> combinator to write a parser <code>asFollowedByBs</code> that recognizes strings consisting of several copies of the string <code>"a"</code> followed by several copies of the string <code>"b"</code>.</p>
 </li>
 <li>
 <p>(Medium) Use the <code>&lt;|&gt;</code> operator to write a parser <code>asOrBs</code> that recognizes strings of the letters <code>a</code> or <code>b</code> in any order.</p>
@@ -771,12 +771,12 @@ pickUp item = do
           put $ GameState state { items     = newItems
                                 , inventory = newInventory
                                 }
-          tell (L.singleton (&quot;You now have the &quot; &lt;&gt; show item))
+          tell (L.singleton ("You now have the " &lt;&gt; show item))
 </code></pre>
 <p>Note that there is no need to <code>lift</code> either of the two computations here because there are appropriate instances for both <code>MonadState</code> and <code>MonadWriter</code> for our <code>Game</code> monad transformer stack.</p>
 <p>The argument to <code>put</code> uses a record update to modify the game state's <code>items</code> and <code>inventory</code> fields. We use the <code>update</code> function from <code>Data.Map</code>, which modifies a value at a particular key. In this case, we modify the set of items at the player's current location, using the <code>delete</code> function to remove the specified item from the set. <code>inventory</code> is also updated, using <code>insert</code> to add the new item to the player's inventory set.</p>
 <p>Finally, the <code>pickUp</code> function handles the remaining cases by notifying the user using <code>tell</code>:</p>
-<pre><code class="language-haskell">    _ -&gt; tell (L.singleton &quot;I don't see that item here.&quot;)
+<pre><code class="language-haskell">    _ -&gt; tell (L.singleton "I don't see that item here.")
 </code></pre>
 <p>As an example of using the <code>Reader</code> monad, we can look at the code for the <code>debug</code> command. This command allows the user to inspect the game state at runtime if the game is running in debug mode:</p>
 <pre><code class="language-haskell">  GameEnvironment env &lt;- ask
@@ -784,7 +784,7 @@ pickUp item = do
     then do
       state :: GameState &lt;- get
       tell (L.singleton (show state))
-    else tell (L.singleton &quot;Not running in debug mode.&quot;)
+    else tell (L.singleton "Not running in debug mode.")
 </code></pre>
 <p>Here, we use the <code>ask</code> action to read the game configuration. Again, note that we don't need to <code>lift</code> any computation, and we can use actions defined in the <code>MonadState</code>, <code>MonadReader</code>, and <code>MonadWriter</code> type classes in the same do notation block.</p>
 <p>If the <code>debugMode</code> flag is set, the <code>tell</code> action is used to write the state to the log. Otherwise, an error message is added.</p>
@@ -821,12 +821,12 @@ runGame env = do
   interface &lt;- RL.createConsoleInterface RL.noCompletion
 </code></pre>
 <p>The first step is to set the prompt at the console. We pass the <code>interface</code> handle, and provide the prompt string and indentation level:</p>
-<pre><code class="language-haskell">  RL.setPrompt &quot;&gt; &quot; interface
+<pre><code class="language-haskell">  RL.setPrompt "&gt; " interface
 </code></pre>
 <p>In our case, we are interested in implementing the line handler function. Our line handler is defined using a helper function in a <code>let</code> declaration, as follows:</p>
 <pre><code class="language-haskell">    lineHandler :: GameState -&gt; String -&gt; Effect Unit
     lineHandler currentState input = do
-      case runRWS (game (split (wrap &quot; &quot;) input)) env currentState of
+      case runRWS (game (split (wrap " ") input)) env currentState of
         RWSResult state _ written -&gt; do
           for_ written log
           RL.setLineHandler (lineHandler state) $ interface
@@ -859,15 +859,15 @@ runGame env = do
 <p>This is best illustrated by example. The application's <code>main</code> function is defined using <code>customExecParser</code> as follows:</p>
 <pre><code class="language-haskell">main = OP.customExecParser prefs argParser &gt;&gt;= runGame 
 </code></pre>
-<p>The first argument is used to configure the <code>optparse</code> library. In our case, we simply configure it to show the help message when the application is run without any arguments (instead of showing a &quot;missing argument&quot; error) by using <code>OP.prefs OP.showHelpOnEmpty</code>, but the <code>Options.Applicative.Builder</code> module provides several other options.</p>
+<p>The first argument is used to configure the <code>optparse</code> library. In our case, we simply configure it to show the help message when the application is run without any arguments (instead of showing a "missing argument" error) by using <code>OP.prefs OP.showHelpOnEmpty</code>, but the <code>Options.Applicative.Builder</code> module provides several other options.</p>
 <p>The second argument is the complete description of our parser program:</p>
 <pre><code class="language-haskell">  argParser :: OP.ParserInfo GameEnvironment
   argParser = OP.info (env &lt;**&gt; OP.helper) parserOptions
 
   parserOptions = fold 
     [ OP.fullDesc
-    , OP.progDesc &quot;Play the game as &lt;player name&gt;&quot;
-    , OP.header &quot;Monadic Adventures! A game to learn monad transformers&quot; 
+    , OP.progDesc "Play the game as &lt;player name&gt;"
+    , OP.header "Monadic Adventures! A game to learn monad transformers" 
     ]
 </code></pre>
 <p>Here <code>OP.info</code> combines a <code>Parser</code> with a set of options for how the help message is formatted. <code>env &lt;**&gt; OP.helper</code> takes any command line argument <code>Parser</code> named <code>env</code> and automatically adds a <code>--help</code> option. Options for the help message are of type <code>InfoMod</code>, which is a monoid, so we can use the <code>fold</code> function to add several options together.</p>
@@ -877,17 +877,17 @@ runGame env = do
 
   player :: OP.Parser String
   player = OP.strOption $ fold 
-    [ OP.long &quot;player&quot;
+    [ OP.long "player"
     , OP.short 'p'
-    , OP.metavar &quot;&lt;player name&gt;&quot;
-    , OP.help &quot;The player's name &lt;String&gt;&quot;
+    , OP.metavar "&lt;player name&gt;"
+    , OP.help "The player's name &lt;String&gt;"
     ]
 
   debug :: OP.Parser Boolean
   debug = OP.switch $ fold 
-    [ OP.long &quot;debug&quot;
+    [ OP.long "debug"
     , OP.short 'd'
-    , OP.help &quot;Use debug mode&quot;
+    , OP.help "Use debug mode"
     ]
 </code></pre>
 <p><code>player</code> and <code>debug</code> are both <code>Parser</code>s, so we can use our applicative operators <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> to lift our <code>gameEnvironment</code> function, which has the type <code>PlayerName -&gt; Boolean -&gt; GameEnvironment</code> over <code>Parser</code>. <code>OP.strOption</code> constructs a command line option that expects a string value and is configured via a collection of <code>Mod</code>s folded together. <code>OP.flag</code> works similarly but doesn't expect an associated value. <code>optparse</code> offers extensive <a href="https://pursuit.purescript.org/packages/purescript-optparse">documentation</a> on different modifiers available to build various command line parsers.</p>

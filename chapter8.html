@@ -228,9 +228,9 @@ countThrows n = do
 <p>In this case, we can look for a deeply-nested element using do notation. Suppose we wanted to read a user's city from a user profile that had been encoded as an XML document:</p>
 <pre><code class="language-hs">userCity :: XML -&gt; Maybe XML
 userCity root = do
-  prof &lt;- child root &quot;profile&quot;
-  addr &lt;- child prof &quot;address&quot;
-  city &lt;- child addr &quot;city&quot;
+  prof &lt;- child root "profile"
+  addr &lt;- child prof "address"
+  city &lt;- child addr "city"
   pure city
 </code></pre>
 <p>The <code>userCity</code> function looks for a child element <code>profile</code>, an element <code>address</code> inside the <code>profile</code> element, and finally, an element <code>city</code> inside the <code>address</code> element. If any of these elements are missing, the return value will be <code>Nothing</code>. Otherwise, the return value is constructed using <code>Just</code> from the <code>city</code> node.</p>
@@ -269,9 +269,9 @@ class (Applicative m, Bind m) &lt;= Monad m
 <p>If there are multiple binds involved, this rule is applied multiple times, starting from the top. For example, the <code>userCity</code> example that we saw earlier gets desugared as follows:</p>
 <pre><code class="language-hs">userCity :: XML -&gt; Maybe XML
 userCity root =
-  child root &quot;profile&quot; &gt;&gt;= \prof -&gt;
-    child prof &quot;address&quot; &gt;&gt;= \addr -&gt;
-      child addr &quot;city&quot; &gt;&gt;= \city -&gt;
+  child root "profile" &gt;&gt;= \prof -&gt;
+    child prof "address" &gt;&gt;= \addr -&gt;
+      child addr "city" &gt;&gt;= \city -&gt;
         pure city
 </code></pre>
 <p>Notably, code expressed using do notation is often much clearer than the equivalent code using the <code>&gt;&gt;=</code> operator. However, writing binds explicitly using <code>&gt;&gt;=</code> can often lead to opportunities to write code in <em>point-free</em> form – but the usual warnings about readability apply.</p>
@@ -316,7 +316,7 @@ userCity root =
     m3
 </code></pre>
 <h2 id="folding-with-monads"><a class="header" href="#folding-with-monads">Folding With Monads</a></h2>
-<p>As an example of working with monads abstractly, this section will present a function that works with any type constructor in the <code>Monad</code> type class. This should solidify the intuition that monadic code corresponds to programming &quot;in a larger language&quot; with side-effects, and also illustrate the generality which programming with monads brings.</p>
+<p>As an example of working with monads abstractly, this section will present a function that works with any type constructor in the <code>Monad</code> type class. This should solidify the intuition that monadic code corresponds to programming "in a larger language" with side-effects, and also illustrate the generality which programming with monads brings.</p>
 <p>The function we will write is called <code>foldM</code>. It generalizes the <code>foldl</code> function we met earlier to a monadic context. Here is its type signature:</p>
 <pre><code class="language-hs">foldM :: forall m a b. Monad m =&gt; (a -&gt; b -&gt; m a) -&gt; a -&gt; List b -&gt; m a
 foldl :: forall   a b.            (a -&gt; b -&gt;   a) -&gt; a -&gt; List b -&gt;   a
@@ -337,7 +337,7 @@ foldl :: forall   a b.            (a -&gt; b -&gt;   a) -&gt; a -&gt; List b -&g
   foldM f a' bs
 </code></pre>
 <p>Note that this implementation is almost identical to that of <code>foldl</code> on lists, except for do notation.</p>
-<p>We can define and test this function in PSCi. Here is an example – suppose we defined a &quot;safe division&quot; function on integers, which tested for division by zero and used the <code>Maybe</code> type constructor to indicate failure:</p>
+<p>We can define and test this function in PSCi. Here is an example – suppose we defined a "safe division" function on integers, which tested for division by zero and used the <code>Maybe</code> type constructor to indicate failure:</p>
 <pre><code class="language-hs">safeDivide :: Int -&gt; Int -&gt; Maybe Int
 safeDivide _ 0 = Nothing
 safeDivide a b = Just (a / b)
@@ -355,7 +355,7 @@ Nothing
 <p>The <code>foldM safeDivide</code> function returns <code>Nothing</code> if a division by zero was attempted at any point. Otherwise, it returns the result of repeatedly dividing the accumulator, wrapped in the <code>Just</code> constructor.</p>
 <h2 id="monads-and-applicatives"><a class="header" href="#monads-and-applicatives">Monads and Applicatives</a></h2>
 <p>Every instance of the <code>Monad</code> type class is also an instance of the <code>Apply</code> type class, by virtue of the superclass relationship between the two classes.</p>
-<p>However, there is also an implementation of the <code>Apply</code> type class which comes &quot;for free&quot; for any instance of <code>Monad</code>, given by the <code>ap</code> function:</p>
+<p>However, there is also an implementation of the <code>Apply</code> type class which comes "for free" for any instance of <code>Monad</code>, given by the <code>ap</code> function:</p>
 <pre><code class="language-hs">ap :: forall m a b. Monad m =&gt; m (a -&gt; b) -&gt; m a -&gt; m b
 ap mf ma = do
   f &lt;- mf
@@ -364,13 +364,13 @@ ap mf ma = do
 </code></pre>
 <p>If <code>m</code> is a law-abiding member of the <code>Monad</code> type class, then there is a valid <code>Apply</code> instance for <code>m</code> given by <code>ap</code>.</p>
 <p>The interested reader can check that <code>ap</code> agrees with <code>apply</code> for the monads we have already encountered: <code>Array</code>, <code>Maybe</code>, and <code>Either e</code>.</p>
-<p>If every monad is also an applicative functor, then we should be able to apply our intuition for applicative functors to every monad. In particular, we can reasonably expect a monad to correspond, in some sense, to programming &quot;in a larger language&quot; augmented with some set of additional side-effects. We should be able to lift functions of arbitrary arities, using <code>map</code> and <code>apply</code>, into this new language.</p>
+<p>If every monad is also an applicative functor, then we should be able to apply our intuition for applicative functors to every monad. In particular, we can reasonably expect a monad to correspond, in some sense, to programming "in a larger language" augmented with some set of additional side-effects. We should be able to lift functions of arbitrary arities, using <code>map</code> and <code>apply</code>, into this new language.</p>
 <p>But monads allow us to do more than we could do with just applicative functors, and the key difference is highlighted by the syntax of do notation. Consider the <code>userCity</code> example again, in which we looked for a user's city in an XML document that encoded their user profile:</p>
 <pre><code class="language-hs">userCity :: XML -&gt; Maybe XML
 userCity root = do
-  prof &lt;- child root &quot;profile&quot;
-  addr &lt;- child prof &quot;address&quot;
-  city &lt;- child addr &quot;city&quot;
+  prof &lt;- child root "profile"
+  addr &lt;- child prof "address"
+  city &lt;- child addr "city"
   pure city
 </code></pre>
 <p>Do notation allows the second computation to depend on the result <code>prof</code> of the first, and the third computation to depend on the result <code>addr</code> of the second, and so on. This dependence on previous values is not possible using only the interface of the <code>Applicative</code> type class.</p>
@@ -435,7 +435,7 @@ lift2 f a b = f &lt;$&gt; a &lt;*&gt; b
 <li>Interacting with a websocket</li>
 <li>Writing/reading to/from local storage</li>
 </ul>
-<p>We have already seen plenty of examples of &quot;non-native&quot; side-effects:</p>
+<p>We have already seen plenty of examples of "non-native" side-effects:</p>
 <ul>
 <li>Optional values, as represented by the <code>Maybe</code> data type</li>
 <li>Errors, as represented by the <code>Either</code> data type</li>
@@ -455,7 +455,7 @@ lift2 f a b = f &lt;$&gt; a &lt;*&gt; b
 <pre><code class="language-hs">log :: String -&gt; Effect Unit
 </code></pre>
 <blockquote>
-<p><em>Aside:</em> You may encounter IDE suggestions for the more general (and more elaborately typed) <code>log</code> function from <code>Effect.Class.Console</code>. This is interchangeable with the one from <code>Effect.Console</code> when dealing with the basic <code>Effect</code> monad. Reasons for the more general version will become clearer after reading about &quot;Monad Transformers&quot; in the &quot;Monadic Adventures&quot; chapter. For the curious (and impatient), this works because there's a <code>MonadEffect</code> instance for <code>Effect</code>.</p>
+<p><em>Aside:</em> You may encounter IDE suggestions for the more general (and more elaborately typed) <code>log</code> function from <code>Effect.Class.Console</code>. This is interchangeable with the one from <code>Effect.Console</code> when dealing with the basic <code>Effect</code> monad. Reasons for the more general version will become clearer after reading about "Monad Transformers" in the "Monadic Adventures" chapter. For the curious (and impatient), this works because there's a <code>MonadEffect</code> instance for <code>Effect</code>.</p>
 <pre><code class="language-hs">log :: forall m. MonadEffect m =&gt; String -&gt; m Unit
 </code></pre>
 </blockquote>
@@ -486,7 +486,7 @@ main = random &gt;&gt;= logShow
 <blockquote>
 <p><em>Aside:</em> <code>spago run</code> defaults to searching in the <code>Main</code> module for a <code>main</code> function. You may also specify an alternate module as an entry point with the <code>--main</code> flag, as in the above example. Just be sure that this alternate module also contains a <code>main</code> function.</p>
 </blockquote>
-<p>Note that it's also possible to generate &quot;random&quot; (technically pseudorandom) data without resorting to impure effectful code. We'll cover these techniques in the &quot;Generative Testing&quot; chapter.</p>
+<p>Note that it's also possible to generate "random" (technically pseudorandom) data without resorting to impure effectful code. We'll cover these techniques in the "Generative Testing" chapter.</p>
 <p>As mentioned previously, the <code>Effect</code> monad is of central importance to PureScript. The reason why it's central is that it is the conventional way to interoperate with PureScript's <code>Foreign Function Interface</code>, which provides the mechanism to execute a program and perform side effects. While it's desirable to avoid using the <code>Foreign Function Interface</code>, it's fairly critical to understand how it works and how to use it, so I recommend reading that chapter before doing any serious PureScript work. That said, the <code>Effect</code> monad is fairly simple. It has a few helper functions but doesn't do much except encapsulate side effects.</p>
 <h2 id="exceptions"><a class="header" href="#exceptions">Exceptions</a></h2>
 <p>Let's examine a function from the <code>node-fs</code> package that involves two <em>native</em> side effects: reading mutable state and exceptions:</p>
@@ -498,7 +498,7 @@ import Node.FS.Sync (readTextFile)
 
 main :: Effect Unit
 main = do
-  lines &lt;- readTextFile UTF8 &quot;iDoNotExist.md&quot;
+  lines &lt;- readTextFile UTF8 "iDoNotExist.md"
   log lines
 </code></pre>
 <p>We encounter the following exception:</p>
@@ -514,10 +514,10 @@ Error: ENOENT: no such file or directory, open 'iDoNotExist.md'
 <p>To manage this exception gracefully, we can wrap the potentially problematic code in <code>try</code> to handle either outcome:</p>
 <pre><code class="language-hs">main :: Effect Unit
 main = do
-  result &lt;- try $ readTextFile UTF8 &quot;iDoNotExist.md&quot;
+  result &lt;- try $ readTextFile UTF8 "iDoNotExist.md"
   case result of
-    Right lines -&gt; log $ &quot;Contents: \n&quot; &lt;&gt; lines
-    Left  error -&gt; log $ &quot;Couldn't open file. Error was: &quot; &lt;&gt; message error
+    Right lines -&gt; log $ "Contents: \n" &lt;&gt; lines
+    Left  error -&gt; log $ "Couldn't open file. Error was: " &lt;&gt; message error
 </code></pre>
 <p><code>try</code> runs an <code>Effect</code> and returns eventual exceptions as a <code>Left</code> value. If the computation succeeds, the result gets wrapped in a <code>Right</code>:</p>
 <pre><code class="language-hs">try :: forall a. Effect a -&gt; Effect (Either Error a)
@@ -526,7 +526,7 @@ main = do
 <pre><code class="language-hs">exceptionHead :: List Int -&gt; Effect Int
 exceptionHead l = case l of
   x : _ -&gt; pure x
-  Nil -&gt; throwException $ error &quot;empty list&quot;
+  Nil -&gt; throwException $ error "empty list"
 </code></pre>
 <p>Note that the <code>exceptionHead</code> function is a somewhat impractical example, as it is best to avoid generating exceptions in PureScript code and instead use non-native effects such as <code>Either</code> and <code>Maybe</code> to manage errors and missing values.</p>
 <h2 id="mutable-state"><a class="header" href="#mutable-state">Mutable State</a></h2>
@@ -615,7 +615,7 @@ simulate x0 v0 time =
 
         var ref = { value: { x: x0, v: v0 } };
 
-        Control_Monad_ST_Internal[&quot;for&quot;](0)(time * 1000 | 0)(function (v) {
+        Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
           return Control_Monad_ST_Internal.modify(function (o) {
             return {
               v: o.v - 9.81 * 1.0e-3,
@@ -640,9 +640,9 @@ simulate x0 v0 time =
     return function (time) {
       return function __do() {
 
-        var ref = Control_Monad_ST_Internal[&quot;new&quot;]({ x: x0, v: v0 })();
+        var ref = Control_Monad_ST_Internal["new"]({ x: x0, v: v0 })();
 
-        Control_Monad_ST_Internal[&quot;for&quot;](0)(time * 1000 | 0)(function (v) {
+        Control_Monad_ST_Internal["for"](0)(time * 1000 | 0)(function (v) {
           return Control_Monad_ST_Internal.modify(function (o) {
             return {
               v: o.v - 9.81 * 1.0e-3,
@@ -661,7 +661,7 @@ simulate x0 v0 time =
 <p>The <code>ST</code> effect is a good way to generate short JavaScript when working with locally-scoped mutable state, especially when used together with actions like <code>for</code>, <code>foreach</code>, and <code>while</code>, which generate efficient loops.</p>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
 <ol>
-<li>(Medium) Rewrite the <code>safeDivide</code> function as <code>exceptionDivide</code> and throw an exception using <code>throwException</code> with the message <code>&quot;div zero&quot;</code> if the denominator is zero.</li>
+<li>(Medium) Rewrite the <code>safeDivide</code> function as <code>exceptionDivide</code> and throw an exception using <code>throwException</code> with the message <code>"div zero"</code> if the denominator is zero.</li>
 <li>(Medium) Write a function <code>estimatePi :: Int -&gt; Number</code> that uses <code>n</code> terms of the <a href="https://mathworld.wolfram.com/GregorySeries.html">Gregory Series</a> to calculate an approximation of <code>pi</code>. <em>Hints:</em> You can pattern your answer like the definition of <code>simulate</code> above. You might need to convert an <code>Int</code> into a <code>Number</code> using <code>toNumber :: Int -&gt; Number</code> from <code>Data.Int</code>.</li>
 <li>(Medium) Write a function <code>fibonacci :: Int -&gt; Int</code> to compute the <code>n</code>th Fibonacci number, using <code>ST</code> to track the values of the previous two Fibonacci numbers. Using PSCi, compare the speed of your new <code>ST</code>-based implementation against the recursive implementation (<code>fib</code>) from Chapter 5.</li>
 </ol>
@@ -691,25 +691,25 @@ $ npx spago build
 $ npx parcel src/index.html --open
 </code></pre>
 <p>If development tools such as <code>spago</code> and <code>parcel</code> are installed globally, then the <code>npx</code> prefix may be omitted. You have likely already installed <code>spago</code> globally with <code>npm i -g spago</code>, and the same can be done for <code>parcel</code>.</p>
-<p><code>parcel</code> should launch a browser window with our &quot;Address Book&quot; app. If you keep the <code>parcel</code> terminal open and rebuild with <code>spago</code> in another terminal, the page should automatically refresh with your latest edits. You can also configure automatic rebuilds (and therefore automatic page refresh) on file-save if you're using an <a href="https://github.com/purescript/documentation/blob/master/ecosystem/Editor-and-tool-support.md#editors">editor</a> that supports <a href="https://github.com/purescript/purescript/tree/master/psc-ide"><code>purs ide</code></a> or are running <a href="https://github.com/kRITZCREEK/pscid"><code>pscid</code></a>.</p>
+<p><code>parcel</code> should launch a browser window with our "Address Book" app. If you keep the <code>parcel</code> terminal open and rebuild with <code>spago</code> in another terminal, the page should automatically refresh with your latest edits. You can also configure automatic rebuilds (and therefore automatic page refresh) on file-save if you're using an <a href="https://github.com/purescript/documentation/blob/master/ecosystem/Editor-and-tool-support.md#editors">editor</a> that supports <a href="https://github.com/purescript/purescript/tree/master/psc-ide"><code>purs ide</code></a> or are running <a href="https://github.com/kRITZCREEK/pscid"><code>pscid</code></a>.</p>
 <p>In this Address Book app, you can enter some values into the form fields and see the validation errors printed onto the page.</p>
 <p>Let's explore how it works.</p>
 <p>The <code>src/index.html</code> file is minimal:</p>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta charset="UTF-8"&gt;
     &lt;title&gt;Address Book&lt;/title&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css&quot; crossorigin=&quot;anonymous&quot;&gt;
+    &lt;link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous"&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;div id=&quot;container&quot;&gt;&lt;/div&gt;
-    &lt;script type=&quot;module&quot; src=&quot;./index.js&quot;&gt;&lt;/script&gt;
+    &lt;div id="container"&gt;&lt;/div&gt;
+    &lt;script type="module" src="./index.js"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
 <p>The <code>&lt;script</code> line includes the JavaScript entry point, <code>index.js</code>, which contains this single line:</p>
-<pre><code class="language-js">import { main } from &quot;../output/Main/index.js&quot;;
+<pre><code class="language-js">import { main } from "../output/Main/index.js";
 
 main();
 </code></pre>
@@ -717,37 +717,37 @@ main();
 <p>The <code>main</code> function uses the DOM and HTML APIs to render our address book component within the <code>container</code> element we defined in <code>index.html</code>:</p>
 <pre><code class="language-hs">main :: Effect Unit
 main = do
-  log &quot;Rendering address book component&quot;
+  log "Rendering address book component"
   -- Get window object
   w &lt;- window
   -- Get window's HTML document
   doc &lt;- document w
-  -- Get &quot;container&quot; element in HTML
-  ctr &lt;- getElementById &quot;container&quot; $ toNonElementParentNode doc
+  -- Get "container" element in HTML
+  ctr &lt;- getElementById "container" $ toNonElementParentNode doc
   case ctr of
-    Nothing -&gt; throw &quot;Container element not found.&quot;
+    Nothing -&gt; throw "Container element not found."
     Just c -&gt; do
       -- Create AddressBook react component
       addressBookApp &lt;- mkAddressBookApp
       let
         -- Create JSX node from react component. Pass-in empty props
         app = element addressBookApp {}
-      -- Render AddressBook JSX node in DOM &quot;container&quot; element
+      -- Render AddressBook JSX node in DOM "container" element
       D.render app c
 </code></pre>
 <p>Note that these three lines:</p>
 <pre><code class="language-hs">w &lt;- window
 doc &lt;- document w
-ctr &lt;- getElementById &quot;container&quot; $ toNonElementParentNode doc
+ctr &lt;- getElementById "container" $ toNonElementParentNode doc
 </code></pre>
 <p>Can be consolidated to:</p>
 <pre><code class="language-hs">doc &lt;- document =&lt;&lt; window
-ctr &lt;- getElementById &quot;container&quot; $ toNonElementParentNode doc
+ctr &lt;- getElementById "container" $ toNonElementParentNode doc
 </code></pre>
 <p>Or consolidated even further to:</p>
-<pre><code class="language-hs">ctr &lt;- getElementById &quot;container&quot; &lt;&lt;&lt; toNonElementParentNode =&lt;&lt; document =&lt;&lt; window
+<pre><code class="language-hs">ctr &lt;- getElementById "container" &lt;&lt;&lt; toNonElementParentNode =&lt;&lt; document =&lt;&lt; window
 -- or, equivalently:
-ctr &lt;- window &gt;&gt;= document &gt;&gt;= toNonElementParentNode &gt;&gt;&gt; getElementById &quot;container&quot;
+ctr &lt;- window &gt;&gt;= document &gt;&gt;= toNonElementParentNode &gt;&gt;&gt; getElementById "container"
 </code></pre>
 <p>It is a matter of personal preference whether the intermediate <code>w</code> and <code>doc</code> variables aid in readability.</p>
 <p>Let's dig into our AddressBook <code>reactComponent</code>. We'll start with a simplified component and then build up to the actual code in <code>Main.purs</code>.</p>
@@ -755,29 +755,29 @@ ctr &lt;- window &gt;&gt;= document &gt;&gt;= toNonElementParentNode &gt;&gt;&gt
 <pre><code class="language-hs">mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp =
   reactComponent
-    &quot;AddressBookApp&quot;
-    (\props -&gt; pure $ D.text &quot;Hi! I'm an address book&quot;)
+    "AddressBookApp"
+    (\props -&gt; pure $ D.text "Hi! I'm an address book")
 </code></pre>
 <p><code>reactComponent</code> has this intimidating signature:</p>
 <pre><code class="language-hs">reactComponent ::
   forall hooks props.
-  Lacks &quot;children&quot; props =&gt;
-  Lacks &quot;key&quot; props =&gt;
-  Lacks &quot;ref&quot; props =&gt;
+  Lacks "children" props =&gt;
+  Lacks "key" props =&gt;
+  Lacks "ref" props =&gt;
   String -&gt;
   ({ | props } -&gt; Render Unit hooks JSX) -&gt;
   Effect (ReactComponent { | props })
 </code></pre>
 <p>The important points to note are the arguments after all the type class constraints. It takes a <code>String</code> (an arbitrary component name), a function that describes how to convert <code>props</code> into rendered <code>JSX</code>, and returns our <code>ReactComponent</code> wrapped in an <code>Effect</code>.</p>
 <p>The props-to-JSX function is simply:</p>
-<pre><code class="language-hs">\props -&gt; pure $ D.text &quot;Hi! I'm an address book&quot;
+<pre><code class="language-hs">\props -&gt; pure $ D.text "Hi! I'm an address book"
 </code></pre>
 <p><code>props</code> are ignored, <code>D.text</code> returns <code>JSX</code>, and <code>pure</code> lifts to rendered JSX. Now <code>component</code> has everything it needs to produce the <code>ReactComponent</code>.</p>
 <p>Next, we'll examine some of the additional complexities of the full Address Book component.</p>
 <p>These are the first few lines of our full component:</p>
 <pre><code class="language-hs">mkAddressBookApp :: Effect (ReactComponent {})
 mkAddressBookApp = do
-  reactComponent &quot;AddressBookApp&quot; \props -&gt; R.do
+  reactComponent "AddressBookApp" \props -&gt; R.do
     Tuple person setPerson &lt;- useState examplePerson
 </code></pre>
 <p>We track <code>person</code> as a piece of state with the <code>useState</code> hook.</p>
@@ -801,38 +801,38 @@ setPerson :: (state -&gt; state) -&gt; Effect Unit
 <p>The specific type of <code>state</code> is determined by our initial default value. <code>Person</code> <code>Record</code> in this case because that is the type of <code>examplePerson</code>.</p>
 <p><code>person</code> is how we access the current state at each rerender.</p>
 <p><code>setPerson</code> is how we update the state. We provide a function describing how to transform the current state into the new one. The record update syntax is perfect for this when the type of <code>state</code> happens to be a <code>Record</code>, for example:</p>
-<pre><code class="language-hs">setPerson (\currentPerson -&gt; currentPerson {firstName = &quot;NewName&quot;})
+<pre><code class="language-hs">setPerson (\currentPerson -&gt; currentPerson {firstName = "NewName"})
 
 </code></pre>
 <p>Or as shorthand:</p>
-<pre><code class="language-hs">setPerson _ {firstName = &quot;NewName&quot;}
+<pre><code class="language-hs">setPerson _ {firstName = "NewName"}
 </code></pre>
 <p>Non-<code>Record</code> states can also follow this update pattern. See <a href="https://github.com/megamaddu/purescript-react-basic-hooks/pull/24#issuecomment-620300541">this guide</a> for more details on best practices.</p>
-<p>Recall that <code>useState</code> is used within an <code>R.do</code> block. <code>R.do</code> is a special react hooks variant of <code>do</code>. The <code>R.</code> prefix &quot;qualifies&quot; this as coming from <code>React.Basic.Hooks</code>, and means we use their hooks-compatible version of <code>bind</code> in the <code>R.do</code> block. This is known as a &quot;qualified do&quot;. It lets us ignore the <code>Hook (UseState state)</code> wrapping and bind the inner <code>Tuple</code> of values to variables.</p>
+<p>Recall that <code>useState</code> is used within an <code>R.do</code> block. <code>R.do</code> is a special react hooks variant of <code>do</code>. The <code>R.</code> prefix "qualifies" this as coming from <code>React.Basic.Hooks</code>, and means we use their hooks-compatible version of <code>bind</code> in the <code>R.do</code> block. This is known as a "qualified do". It lets us ignore the <code>Hook (UseState state)</code> wrapping and bind the inner <code>Tuple</code> of values to variables.</p>
 <p>Another possible state management strategy is with <code>useReducer</code>, but that is outside the scope of this chapter.</p>
 <p>Rendering <code>JSX</code> occurs here:</p>
 <pre><code class="language-hs">pure
   $ D.div
-      { className: &quot;container&quot;
+      { className: "container"
       , children:
           renderValidationErrors errors
             &lt;&gt; [ D.div
-                  { className: &quot;row&quot;
+                  { className: "row"
                   , children:
                       [ D.form_
-                          $ [ D.h3_ [ D.text &quot;Basic Information&quot; ]
-                            , formField &quot;First Name&quot; &quot;First Name&quot; person.firstName \s -&gt;
+                          $ [ D.h3_ [ D.text "Basic Information" ]
+                            , formField "First Name" "First Name" person.firstName \s -&gt;
                                 setPerson _ { firstName = s }
-                            , formField &quot;Last Name&quot; &quot;Last Name&quot; person.lastName \s -&gt;
+                            , formField "Last Name" "Last Name" person.lastName \s -&gt;
                                 setPerson _ { lastName = s }
-                            , D.h3_ [ D.text &quot;Address&quot; ]
-                            , formField &quot;Street&quot; &quot;Street&quot; person.homeAddress.street \s -&gt;
+                            , D.h3_ [ D.text "Address" ]
+                            , formField "Street" "Street" person.homeAddress.street \s -&gt;
                                 setPerson _ { homeAddress { street = s } }
-                            , formField &quot;City&quot; &quot;City&quot; person.homeAddress.city \s -&gt;
+                            , formField "City" "City" person.homeAddress.city \s -&gt;
                                 setPerson _ { homeAddress { city = s } }
-                            , formField &quot;State&quot; &quot;State&quot; person.homeAddress.state \s -&gt;
+                            , formField "State" "State" person.homeAddress.state \s -&gt;
                                 setPerson _ { homeAddress { state = s } }
-                            , D.h3_ [ D.text &quot;Contact Information&quot; ]
+                            , D.h3_ [ D.text "Contact Information" ]
                             ]
                           &lt;&gt; renderPhoneNumbers
                       ]
@@ -855,7 +855,7 @@ renderValidationErrors xs =
     renderError err = D.li_ [ D.text err ]
   in
     [ D.div
-        { className: &quot;alert alert-danger row&quot;
+        { className: "alert alert-danger row"
         , children: [ D.ul_ (map renderError xs) ]
         }
     ]
@@ -864,24 +864,24 @@ renderValidationErrors xs =
 <pre><code class="language-hs">children: [ D.ul_ (map renderError xs)]
 </code></pre>
 <p>We use the <code>className</code> property to define classes for CSS styling. We're using the <a href="https://getbootstrap.com/">Bootstrap</a> <code>stylesheet</code> for this project, which is imported in <code>index.html</code>. For example, we want items in our form arranged as <code>row</code>s, and validation errors to be emphasized with <code>alert-danger</code> styling:</p>
-<pre><code class="language-hs">className: &quot;alert alert-danger row&quot;
+<pre><code class="language-hs">className: "alert alert-danger row"
 </code></pre>
 <p>A second helper function is <code>formField</code>, which creates a text input for a single form field:</p>
 <pre><code class="language-hs">formField :: String -&gt; String -&gt; String -&gt; (String -&gt; Effect Unit) -&gt; R.JSX
 formField name placeholder value setValue =
   D.div
-    { className: &quot;form-group row&quot;
+    { className: "form-group row"
     , children:
         [ D.label
-            { className: &quot;col-sm col-form-label&quot;
+            { className: "col-sm col-form-label"
             , htmlFor: name
             , children: [ D.text name ]
             }
         , D.div
-            { className: &quot;col-sm&quot;
+            { className: "col-sm"
             , children:
                 [ D.input
-                    { className: &quot;form-control&quot;
+                    { className: "form-control"
                     , id: name
                     , placeholder
                     , value
@@ -932,7 +932,7 @@ formField name placeholder value setValue =
 <p>(Easy) Modify the application to include a work phone number text box.</p>
 </li>
 <li>
-<p>(Medium) Right now, the application shows validation errors collected in a single &quot;pink-alert&quot; background.  Modify to give each validation error its own pink-alert background by separating them with blank lines.</p>
+<p>(Medium) Right now, the application shows validation errors collected in a single "pink-alert" background.  Modify to give each validation error its own pink-alert background by separating them with blank lines.</p>
 <p><em>Hint</em>: Instead of using a <code>ul</code> element to show the validation errors in a list, modify the code to create one <code>div</code> with the <code>alert</code> and <code>alert-danger</code> styles for each error.</p>
 </li>
 <li>

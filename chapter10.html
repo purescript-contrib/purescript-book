@@ -221,7 +221,7 @@ foreign import _encodeURIComponent :: String -&gt; String
 </code></pre>
 <p>We also need to write a foreign JavaScript module to import it from. A corresponding foreign JavaScript module is one of the same name but the extension changed from <code>.purs</code> to <code>.js</code>. If the PureScript module above is saved as <code>URI.purs</code>, then the foreign JavaScript module is saved as <code>URI.js</code>.
 Since <code>encodeURIComponent</code> is already defined, we have to export it as <code>_encodeURIComponent</code>:</p>
-<pre><code class="language-javascript">&quot;use strict&quot;;
+<pre><code class="language-javascript">"use strict";
 
 export const _encodeURIComponent = encodeURIComponent;
 </code></pre>
@@ -230,12 +230,12 @@ export const _encodeURIComponent = encodeURIComponent;
 <pre><code class="language-text">$ spago repl
 
 &gt; import Test.URI
-&gt; _encodeURIComponent &quot;Hello World&quot;
-&quot;Hello%20World&quot;
+&gt; _encodeURIComponent "Hello World"
+"Hello%20World"
 </code></pre>
 <p>We can also define our own functions in foreign modules. Here's an example of how to create and call a custom JavaScript function that squares a <code>Number</code>:</p>
 <p><code>test/Examples.js</code>:</p>
-<pre><code class="language-js">&quot;use strict&quot;;
+<pre><code class="language-js">"use strict";
 
 export const square = function (n) {
   return n * n;
@@ -528,7 +528,7 @@ maybeHead = toMaybe &lt;&lt;&lt; undefinedHead
 <p>Like our earlier guide on passing the <code>Maybe</code> constructor over FFI, this is another case of writing PureScript that calls JavaScript, which calls PureScript functions again. Here we will explore how to pass type class member functions over the FFI.</p>
 <p>We start with writing a foreign JavaScript function that expects the appropriate instance of <code>show</code> to match the type of <code>x</code>.</p>
 <pre><code class="language-js">export const boldImpl = show =&gt; x =&gt;
-  show(x).toUpperCase() + &quot;!!!&quot;;
+  show(x).toUpperCase() + "!!!";
 </code></pre>
 <p>Then we write the matching signature:</p>
 <pre><code class="language-hs">foreign import boldImpl :: forall a. (a -&gt; String) -&gt; a -&gt; String
@@ -546,15 +546,15 @@ bold = boldImpl show
 
 &gt; import Test.Examples
 &gt; import Data.Tuple
-&gt; bold (Tuple 1 &quot;Hat&quot;)
-&quot;(TUPLE 1 \&quot;HAT\&quot;)!!!&quot;
+&gt; bold (Tuple 1 "Hat")
+"(TUPLE 1 \"HAT\")!!!"
 </code></pre>
 <p>Here's another example demonstrating passing multiple functions, including a function of multiple arguments (<code>eq</code>):</p>
 <pre><code class="language-js">export const showEqualityImpl = eq =&gt; show =&gt; a =&gt; b =&gt; {
   if (eq(a)(b)) {
-    return &quot;Equivalent&quot;;
+    return "Equivalent";
   } else {
-    return show(a) + &quot; is not equal to &quot; + show(b);
+    return show(a) + " is not equal to " + show(b);
   }
 }
 </code></pre>
@@ -568,12 +568,12 @@ showEquality = showEqualityImpl eq show
 &gt; import Test.Examples
 &gt; import Data.Maybe
 &gt; showEquality Nothing (Just 5)
-&quot;Nothing is not equal to (Just 5)&quot;
+"Nothing is not equal to (Just 5)"
 </code></pre>
 <h2 id="effectful-functions"><a class="header" href="#effectful-functions">Effectful Functions</a></h2>
 <p>Let's extend our <code>bold</code> function to log to the console. Logging is an <code>Effect</code>, and <code>Effect</code>s are represented in JavaScript as a function of zero arguments, <code>()</code> with arrow notation:</p>
 <pre><code class="language-js">export const yellImpl = show =&gt; x =&gt; () =&gt;
-  console.log(show(x).toUpperCase() + &quot;!!!&quot;);
+  console.log(show(x).toUpperCase() + "!!!");
 </code></pre>
 <p>The new foreign import is the same as before, except that the return type changed from <code>String</code> to <code>Effect Unit</code>.</p>
 <pre><code class="language-hs">foreign import yellImpl :: forall a. (a -&gt; String) -&gt; a -&gt; Effect Unit
@@ -586,8 +586,8 @@ yell = yellImpl show
 
 &gt; import Test.Examples
 &gt; import Data.Tuple
-&gt; yell (Tuple 1 &quot;Hat&quot;)
-(TUPLE 1 &quot;HAT&quot;)!!!
+&gt; yell (Tuple 1 "Hat")
+(TUPLE 1 "HAT")!!!
 unit
 </code></pre>
 <p>There are also <code>EffectFn</code> wrappers from <code>Effect.Uncurried</code>. These are similar to the <code>Fn</code> wrappers from <code>Data.Function.Uncurried</code> that we've already seen. These wrappers let you call uncurried effectful functions in PureScript.</p>
@@ -595,7 +595,7 @@ unit
 <p>Instead, we'll modify our previous <code>diagonal</code> example to include logging in addition to returning the result:</p>
 <pre><code class="language-js">export const diagonalLog = function(w, h) {
   let result = Math.sqrt(w * w + h * h);
-  console.log(&quot;Diagonal is &quot; + result);
+  console.log("Diagonal is " + result);
   return result;
 };
 </code></pre>
@@ -633,9 +633,9 @@ sleep = sleepImpl &gt;&gt;&gt; toAffE
 &gt; import Effect.Aff
 &gt; :pa
 … launchAff_ do
-…   log &quot;waiting&quot;
+…   log "waiting"
 …   sleep 300
-…   log &quot;done waiting&quot;
+…   log "done waiting"
 …
 waiting
 unit
@@ -683,7 +683,7 @@ unit
     sum += x;
     sums.push(sum);
   });
-  sums.push(&quot;Broken&quot;); // Bug
+  sums.push("Broken"); // Bug
   return sums;
 };
 
@@ -746,10 +746,10 @@ addComplexDecoded a b = decodeJson $ addComplexJson a b
 &gt; import Test.Examples
 
 &gt; cumulativeSumsDecoded [1, 2, 3]
-(Left &quot;Couldn't decode Array (Failed at index 3): Value is not a Number&quot;)
+(Left "Couldn't decode Array (Failed at index 3): Value is not a Number")
 
 &gt; addComplexDecoded { real: 1.0, imag: 2.0 } { real: 3.0, imag: 4.0 }
-(Left &quot;JSON was missing expected field: imag&quot;)
+(Left "JSON was missing expected field: imag")
 </code></pre>
 <p>If we call the working versions, a <code>Right</code> value is returned.</p>
 <p>Try this yourself by modifying <code>test/Examples.js</code> with the following change to point to the working versions before running the next repl block.</p>
@@ -783,7 +783,7 @@ mapSetFoo = encodeJson &gt;&gt;&gt; mapSetFooJson &gt;&gt;&gt; decodeJson
 <p>Here is the JavaScript implementation. Note the <code>Array.from</code> step, which is necessary to convert the JavaScript <code>Map</code> into a JSON-friendly format before decoding converts it back to a PureScript <code>Map</code>.</p>
 <pre><code class="language-js">export const mapSetFooJson = j =&gt; {
   let m = new Map(j);
-  m.set(&quot;Foo&quot;, 42);
+  m.set("Foo", 42);
   return Array.from(m);
 };
 </code></pre>
@@ -794,16 +794,16 @@ mapSetFoo = encodeJson &gt;&gt;&gt; mapSetFooJson &gt;&gt;&gt; decodeJson
 &gt; import Data.Map
 &gt; import Data.Tuple
 
-&gt; myMap = fromFoldable [ Tuple &quot;hat&quot; 1, Tuple &quot;cat&quot; 2 ]
+&gt; myMap = fromFoldable [ Tuple "hat" 1, Tuple "cat" 2 ]
 
 &gt; :type myMap
 Map String Int
 
 &gt; myMap
-(fromFoldable [(Tuple &quot;cat&quot; 2),(Tuple &quot;hat&quot; 1)])
+(fromFoldable [(Tuple "cat" 2),(Tuple "hat" 1)])
 
 &gt; mapSetFoo myMap
-(Right (fromFoldable [(Tuple &quot;Foo&quot; 42),(Tuple &quot;cat&quot; 2),(Tuple &quot;hat&quot; 1)]))
+(Right (fromFoldable [(Tuple "Foo" 42),(Tuple "cat" 2),(Tuple "hat" 1)]))
 </code></pre>
 <h2 id="exercises-4"><a class="header" href="#exercises-4">Exercises</a></h2>
 <ol>
@@ -818,10 +818,10 @@ Map String Int
 </li>
 <li>
 <p>(Difficult) Rewrite the earlier <code>quadraticRoots</code> function as <code>quadraticRootsSafe</code> that uses JSON to pass the <code>Pair</code> of <code>Complex</code> roots over FFI. Don't use the <code>Pair</code> constructor in JavaScript, but instead, just return the pair in a decoder-compatible format.
-<em>Hint</em>: You'll need to write a <code>DecodeJson</code> instance for <code>Pair</code>. Consult the <a href="https://github.com/purescript-contrib/purescript-argonaut-codecs/tree/main/docs#writing-new-instances">argonaut docs</a> for instruction on writing your own decode instance. Their <a href="https://github.com/purescript-contrib/purescript-argonaut-codecs/blob/master/src/Data/Argonaut/Decode/Class.purs">decodeJsonTuple</a> instance may also be a helpful reference.  Note that you'll need a <code>newtype</code> wrapper for <code>Pair</code> to avoid creating an &quot;orphan instance&quot;.</p>
+<em>Hint</em>: You'll need to write a <code>DecodeJson</code> instance for <code>Pair</code>. Consult the <a href="https://github.com/purescript-contrib/purescript-argonaut-codecs/tree/main/docs#writing-new-instances">argonaut docs</a> for instruction on writing your own decode instance. Their <a href="https://github.com/purescript-contrib/purescript-argonaut-codecs/blob/master/src/Data/Argonaut/Decode/Class.purs">decodeJsonTuple</a> instance may also be a helpful reference.  Note that you'll need a <code>newtype</code> wrapper for <code>Pair</code> to avoid creating an "orphan instance".</p>
 </li>
 <li>
-<p>(Medium) Write a <code>parseAndDecodeArray2D :: String -&gt; Either String (Array (Array Int))</code> function to parse and decode a JSON string containing a 2D array, such as <code>&quot;[[1, 2, 3], [4, 5], [6]]&quot;</code>. <em>Hint</em>: You'll need to use <code>jsonParser</code> to convert the <code>String</code> into <code>Json</code> before decoding.</p>
+<p>(Medium) Write a <code>parseAndDecodeArray2D :: String -&gt; Either String (Array (Array Int))</code> function to parse and decode a JSON string containing a 2D array, such as <code>"[[1, 2, 3], [4, 5], [6]]"</code>. <em>Hint</em>: You'll need to use <code>jsonParser</code> to convert the <code>String</code> into <code>Json</code> before decoding.</p>
 </li>
 <li>
 <p>(Medium) The following data type represents a binary tree with values at the leaves:</p>
@@ -869,12 +869,12 @@ export const getItem = key =&gt; () =&gt;
 <pre><code class="language-hs">saveButton :: R.JSX
 saveButton =
   D.label
-    { className: &quot;form-group row col-form-label&quot;
+    { className: "form-group row col-form-label"
     , children:
         [ D.button
-            { className: &quot;btn-primary btn&quot;
+            { className: "btn-primary btn"
             , onClick: handler_ validateAndSave
-            , children: [ D.text &quot;Save&quot; ]
+            , children: [ D.text "Save" ]
             }
         ]
     }
@@ -882,12 +882,12 @@ saveButton =
 <p>And write our validated <code>person</code> as a JSON string with <code>setItem</code> in the <code>validateAndSave</code> function:</p>
 <pre><code class="language-hs">validateAndSave :: Effect Unit
 validateAndSave = do
-  log &quot;Running validators&quot;
+  log "Running validators"
   case validatePerson' person of
-    Left errs -&gt; log $ &quot;There are &quot; &lt;&gt; show (length errs) &lt;&gt; &quot; validation errors.&quot;
+    Left errs -&gt; log $ "There are " &lt;&gt; show (length errs) &lt;&gt; " validation errors."
     Right validPerson -&gt; do
-      setItem &quot;person&quot; $ stringify $ encodeJson validPerson
-      log &quot;Saved&quot;
+      setItem "person" $ stringify $ encodeJson validPerson
+      log "Saved"
 </code></pre>
 <p>Note that if we attempt to compile at this stage, we'll encounter the following error:</p>
 <pre><code class="language-text">  No type class instance was found for
@@ -905,8 +905,8 @@ instance EncodeJson PhoneType where encodeJson = genericEncodeJson
 instance DecodeJson PhoneType where decodeJson = genericDecodeJson
 </code></pre>
 <p>Now we can save our <code>person</code> to local storage, but this isn't very useful unless we can retrieve the data. We'll tackle that next.</p>
-<p>We'll start with retrieving the &quot;person&quot; string from local storage:</p>
-<pre><code class="language-hs">item &lt;- getItem &quot;person&quot;
+<p>We'll start with retrieving the "person" string from local storage:</p>
+<pre><code class="language-hs">item &lt;- getItem "person"
 </code></pre>
 <p>Then we'll create a helper function to convert the string from local storage to our <code>Person</code> record. Note that this string in storage may be <code>null</code>, so we represent it as a foreign <code>Json</code> until it is successfully decoded as a <code>String</code>. There are a number of other conversion steps along the way – each of which returns an <code>Either</code> value, so it makes sense to organize these together in a <code>do</code> block.</p>
 <pre><code class="language-hs">processItem :: Json -&gt; Either String Person
@@ -918,7 +918,7 @@ processItem item = do
 <p>Then we inspect this result to see if it succeeded. If it fails, we'll log the errors and use our default <code>examplePerson</code>, otherwise, we'll use the person retrieved from local storage.</p>
 <pre><code class="language-hs">initialPerson &lt;- case processItem item of
   Left  err -&gt; do
-    log $ &quot;Error: &quot; &lt;&gt; err &lt;&gt; &quot;. Loading examplePerson&quot;
+    log $ "Error: " &lt;&gt; err &lt;&gt; ". Loading examplePerson"
     pure examplePerson
   Right p   -&gt; pure p
 </code></pre>
@@ -929,17 +929,17 @@ app = element addressBookApp { initialPerson }
 <p>And pick it up on the other side to use in our state hook:</p>
 <pre><code class="language-hs">mkAddressBookApp :: Effect (ReactComponent { initialPerson :: Person })
 mkAddressBookApp =
-  reactComponent &quot;AddressBookApp&quot; \props -&gt; R.do
+  reactComponent "AddressBookApp" \props -&gt; R.do
     Tuple person setPerson &lt;- useState props.initialPerson
 </code></pre>
 <p>As a finishing touch, we'll improve the quality of our error messages by appending to the <code>String</code> of each <code>Left</code> value with <code>lmap</code>.</p>
 <pre><code class="language-hs">processItem :: Json -&gt; Either String Person
 processItem item = do
-  jsonString &lt;- lmap (&quot;No string in local storage: &quot; &lt;&gt; _) $ decodeJson item
-  j          &lt;- lmap (&quot;Cannot parse JSON string: &quot;   &lt;&gt; _) $ jsonParser jsonString
-  lmap               (&quot;Cannot decode Person: &quot;       &lt;&gt; _) $ decodeJson j
+  jsonString &lt;- lmap ("No string in local storage: " &lt;&gt; _) $ decodeJson item
+  j          &lt;- lmap ("Cannot parse JSON string: "   &lt;&gt; _) $ jsonParser jsonString
+  lmap               ("Cannot decode Person: "       &lt;&gt; _) $ decodeJson j
 </code></pre>
-<p>Only the first error should ever occur during the normal operation of this app. You can trigger the other errors by opening your web browser's dev tools, editing the saved &quot;person&quot; string in local storage, and refreshing the page. How you modify the JSON string determines which error is triggered. See if you can trigger each of them.</p>
+<p>Only the first error should ever occur during the normal operation of this app. You can trigger the other errors by opening your web browser's dev tools, editing the saved "person" string in local storage, and refreshing the page. How you modify the JSON string determines which error is triggered. See if you can trigger each of them.</p>
 <p>That covers local storage. Next, we'll implement the <code>alert</code> action, similar to the <code>log</code> action from the <code>Effect.Console</code> module. The only difference is that the <code>alert</code> action uses the <code>window.alert</code> method, whereas the <code>log</code> action uses the <code>console.log</code> method. As such, <code>alert</code> can only be used in environments where <code>window.alert</code> is defined, such as a web browser.</p>
 <pre><code class="language-hs">foreign import alert :: String -&gt; Effect Unit
 </code></pre>
@@ -952,16 +952,16 @@ processItem item = do
 <li>The state cannot be retrieved from local storage.</li>
 </ul>
 <p>That is accomplished by simply replacing <code>log</code> with <code>alert</code> on these lines:</p>
-<pre><code class="language-hs">Left errs -&gt; alert $ &quot;There are &quot; &lt;&gt; show (length errs) &lt;&gt; &quot; validation errors.&quot;
+<pre><code class="language-hs">Left errs -&gt; alert $ "There are " &lt;&gt; show (length errs) &lt;&gt; " validation errors."
 
-alert $ &quot;Error: &quot; &lt;&gt; err &lt;&gt; &quot;. Loading examplePerson&quot;
+alert $ "Error: " &lt;&gt; err &lt;&gt; ". Loading examplePerson"
 </code></pre>
 <h2 id="exercises-5"><a class="header" href="#exercises-5">Exercises</a></h2>
 <ol>
 <li>(Easy) Write a wrapper for the <code>removeItem</code> method on the <code>localStorage</code> object, and add your foreign function to the <code>Effect.Storage</code> module.</li>
-<li>(Medium) Add a &quot;Reset&quot; button that, when clicked, calls the newly-created <code>removeItem</code> function to delete the &quot;person&quot; entry from local storage.</li>
+<li>(Medium) Add a "Reset" button that, when clicked, calls the newly-created <code>removeItem</code> function to delete the "person" entry from local storage.</li>
 <li>(Easy) Write a wrapper for the <code>confirm</code> method on the JavaScript <code>Window</code> object, and add your foreign function to the <code>Effect.Alert</code> module.</li>
-<li>(Medium) Call this <code>confirm</code> function when a users clicks the &quot;Reset&quot; button to ask if they're sure they want to reset their address book.</li>
+<li>(Medium) Call this <code>confirm</code> function when a users clicks the "Reset" button to ask if they're sure they want to reset their address book.</li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
 <p>In this chapter, we've learned how to work with foreign JavaScript code from PureScript, and we've seen the issues involved with writing trustworthy code using the FFI:</p>
@@ -1007,7 +1007,7 @@ Test.gcd(15)(20);
 </code></pre>
 <p>Where compiled PureScript code is intended to be called from JavaScript, it is recommended that identifiers only use alphanumeric characters and avoid JavaScript keywords. If user-defined operators are provided for use in PureScript code, it is good practice to provide an alternative function with an alphanumeric name for use in JavaScript.</p>
 <h3 id="runtime-data-representation"><a class="header" href="#runtime-data-representation">Runtime Data Representation</a></h3>
-<p>Types allow us to reason at compile-time that our programs are &quot;correct&quot; in some sense – that is, they will not break at runtime. But what does that mean? In PureScript, it means that the type of an expression should be compatible with its representation at runtime.</p>
+<p>Types allow us to reason at compile-time that our programs are "correct" in some sense – that is, they will not break at runtime. But what does that mean? In PureScript, it means that the type of an expression should be compatible with its representation at runtime.</p>
 <p>For that reason, it is important to understand the representation of data at runtime to be able to use PureScript and JavaScript code together effectively. This means that for any given PureScript expression, we should be able to understand the behavior of the value it will evaluate to at runtime.</p>
 <p>The good news is that PureScript expressions have particularly simple representations at runtime. It should always be possible to understand the runtime data representation of an expression by considering its type.</p>
 <p>For simple types, the correspondence is almost trivial. For example, if an expression has the type <code>Boolean</code>, then its value <code>v</code> at runtime should satisfy <code>typeof v === 'boolean'</code>. That is, expressions of type <code>Boolean</code> evaluate to one of the (JavaScript) values <code>true</code> or <code>false</code>. In particular, there is no PureScript expression of type <code>Boolean</code> which evaluates to <code>null</code> or <code>undefined</code>.</p>
@@ -1076,7 +1076,7 @@ identity a = a
 <p>But that is not enough – the runtime representation of a quantified type is more strict than this. We require any expression to be <em>parametrically polymorphic</em> – that is, it cannot use any information about the type of its argument in its implementation. This additional condition prevents problematic implementations such as the following JavaScript function from inhabiting a polymorphic type:</p>
 <pre><code class="language-javascript">function invalid(a) {
     if (typeof a === 'string') {
-        return &quot;Argument was a string.&quot;;
+        return "Argument was a string.";
     } else {
         return a;
     }
@@ -1089,12 +1089,12 @@ identity a = a
 <p>Functions with a type class constraint have an interesting representation at runtime. Because the function's behavior might depend on the type class instance chosen by the compiler, the function is given an additional argument, called a <em>type class dictionary</em>, which contains the implementation of the type class functions provided by the chosen instance.</p>
 <p>For example, here is a simple PureScript function with a constrained type that uses the <code>Show</code> type class:</p>
 <pre><code class="language-haskell">shout :: forall a. Show a =&gt; a -&gt; String
-shout a = show a &lt;&gt; &quot;!!!&quot;
+shout a = show a &lt;&gt; "!!!"
 </code></pre>
 <p>The generated JavaScript looks like this:</p>
 <pre><code class="language-javascript">var shout = function (dict) {
     return function (a) {
-        return show(dict)(a) + &quot;!!!&quot;;
+        return show(dict)(a) + "!!!";
     };
 };
 </code></pre>
