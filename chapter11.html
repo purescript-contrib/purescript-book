@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="light" dir="ltr">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -7,45 +7,59 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
         <!-- MathJax -->
         <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    </head>
-    <body class="sidebar-visible no-js">
-    <div id="body-container">
-        <!-- Provide site root to javascript -->
-        <script>
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
-        </script>
 
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-83824000.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-f2c26de6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -59,87 +73,69 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            var body = document.querySelector('body');
-            body.classList.remove('no-js')
-            body.classList.add('js');
+            html.classList.add("js");
         </script>
 
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var body = document.querySelector('body');
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            body.classList.remove('sidebar-visible');
-            body.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
-        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Foreword</a></li><li class="chapter-item expanded "><a href="chapter1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter2.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="chapter3.html"><strong aria-hidden="true">3.</strong> Functions and Records</a></li><li class="chapter-item expanded "><a href="chapter4.html"><strong aria-hidden="true">4.</strong> Pattern Matching</a></li><li class="chapter-item expanded "><a href="chapter5.html"><strong aria-hidden="true">5.</strong> Recursion, Maps And Folds</a></li><li class="chapter-item expanded "><a href="chapter6.html"><strong aria-hidden="true">6.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="chapter7.html"><strong aria-hidden="true">7.</strong> Applicative Validation</a></li><li class="chapter-item expanded "><a href="chapter8.html"><strong aria-hidden="true">8.</strong> The Effect Monad</a></li><li class="chapter-item expanded "><a href="chapter9.html"><strong aria-hidden="true">9.</strong> Asynchronous Effects</a></li><li class="chapter-item expanded "><a href="chapter10.html"><strong aria-hidden="true">10.</strong> The Foreign Function Interface</a></li><li class="chapter-item expanded "><a href="chapter11.html" class="active"><strong aria-hidden="true">11.</strong> Monadic Adventures</a></li><li class="chapter-item expanded "><a href="chapter12.html"><strong aria-hidden="true">12.</strong> Canvas Graphics</a></li><li class="chapter-item expanded "><a href="chapter13.html"><strong aria-hidden="true">13.</strong> Generative Testing</a></li><li class="chapter-item expanded "><a href="chapter14.html"><strong aria-hidden="true">14.</strong> Domain-Specific Languages</a></li></ol>
-            </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
             </div>
         </nav>
 
-        <!-- Track and set sidebar scroll position -->
-        <script>
-            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
-            sidebarScrollbox.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
-                }
-            }, { passive: true });
-            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
-            sessionStorage.removeItem('sidebar-scroll');
-            if (sidebarScrollTop) {
-                // preserve sidebar scroll position when navigating via links within sidebar
-                sidebarScrollbox.scrollTop = sidebarScrollTop;
-            } else {
-                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
-                var activeSection = document.querySelector('#sidebar .active');
-                if (activeSection) {
-                    activeSection.scrollIntoView({ block: 'center' });
-                }
-            }
-        </script>
-
-        <div id="page-wrapper" class="page-wrapper">
+        <div id="mdbook-page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
                         </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
                         </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
                         </button>
                     </div>
 
@@ -147,42 +143,47 @@
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
                         <a href="https://github.com/purescript-contrib/purescript-book" title="Git repository" aria-label="Git repository">
-                            <i id="git-repository-button" class="fa fa-github"></i>
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
                         </a>
 
                     </div>
                 </div>
 
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
                     </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
                         </ul>
                     </div>
                 </div>
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
                         link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
                     });
                 </script>
 
-                <div id="content" class="content">
+                <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="monadic-adventures"><a class="header" href="#monadic-adventures">Monadic Adventures</a></h1>
 <h2 id="chapter-goals"><a class="header" href="#chapter-goals">Chapter Goals</a></h2>
 <p>The goal of this chapter will be to learn about <em>monad transformers</em>, which provide a way to combine side-effects provided by different monads. The motivating example will be a text adventure game that can be played on the console in NodeJS. The various side-effects of the game (logging, state, and configuration) will all be provided by a monad transformer stack.</p>
 <h2 id="project-setup"><a class="header" href="#project-setup">Project Setup</a></h2>
-<p>This module's project introduces the following new dependencies:</p>
+<p>This module’s project introduces the following new dependencies:</p>
 <ul>
 <li><code>ordered-collections</code>, which provides data types for immutable maps and sets</li>
 <li><code>transformers</code>, which provides implementations of standard monad transformers</li>
@@ -213,7 +214,7 @@ $ node index.js -p Phil
 &gt;
 </code></pre>
 <p>From the prompt, you can enter commands like <code>look</code>, <code>inventory</code>, <code>take</code>, <code>use</code>, <code>north</code>, <code>south</code>, <code>east</code>, and <code>west</code>. There is also a <code>debug</code> command, which can print the game state when the <code>--debug</code> command line option is provided.</p>
-<p>The game is played on a two-dimensional grid, and the player moves by issuing commands <code>north</code>, <code>south</code>, <code>east</code>, and <code>west</code>. The game contains a collection of items that can either be in the player's possession (in the user's <em>inventory</em>) or on the game grid at some location. Items can be picked up by the player using the <code>take</code> command.</p>
+<p>The game is played on a two-dimensional grid, and the player moves by issuing commands <code>north</code>, <code>south</code>, <code>east</code>, and <code>west</code>. The game contains a collection of items that can either be in the player’s possession (in the user’s <em>inventory</em>) or on the game grid at some location. Items can be picked up by the player using the <code>take</code> command.</p>
 <p>For reference, here is a complete walkthrough of the game:</p>
 <pre><code class="language-text">$ spago run -a "-p Phil"
 
@@ -247,7 +248,7 @@ You win!
 <h2 id="the-state-monad"><a class="header" href="#the-state-monad">The State Monad</a></h2>
 <p>We will start by looking at some of the monads provided by the <code>transformers</code> package.</p>
 <p>The first example is the <code>State</code> monad, which provides a way to model <em>mutable state</em> in pure code. We have already seen an approach to a mutable state provided by the <code>Effect</code> monad. <code>State</code> provides an alternative.</p>
-<p>The <code>State</code> type constructor takes two type parameters: the type <code>s</code> of the state and the return type <code>a</code>. Even though we speak of the "<code>State</code> monad", the instance of the <code>Monad</code> type class is actually provided for the <code>State s</code> type constructor for any type <code>s</code>.</p>
+<p>The <code>State</code> type constructor takes two type parameters: the type <code>s</code> of the state and the return type <code>a</code>. Even though we speak of the “<code>State</code> monad”, the instance of the <code>Monad</code> type class is actually provided for the <code>State s</code> type constructor for any type <code>s</code>.</p>
 <p>The <code>Control.Monad.State</code> module provides the following API:</p>
 <pre><code class="language-haskell">get     :: forall s.             State s s
 gets    :: forall s. (s -&gt; a) -&gt; State s a
@@ -255,8 +256,8 @@ put     :: forall s. s        -&gt; State s Unit
 modify  :: forall s. (s -&gt; s) -&gt; State s s
 modify_ :: forall s. (s -&gt; s) -&gt; State s Unit
 </code></pre>
-<p>Note that these API signatures are presented in a simplified form using the <code>State</code> type constructor for now. The actual API involves <code>MonadState</code>, which we'll cover in the later "Type Classes" section of this chapter, so don't worry if you see different signatures in your IDE tooltips or on Pursuit.</p>
-<p>Let's see an example. One use of the <code>State</code> monad might be to add the values in an array of integers to the current state. We could do that by choosing <code>Int</code> as the state type <code>s</code> and using <code>traverse_</code> to traverse the array, with a call to <code>modify</code> for each array element:</p>
+<p>Note that these API signatures are presented in a simplified form using the <code>State</code> type constructor for now. The actual API involves <code>MonadState</code>, which we’ll cover in the later “Type Classes” section of this chapter, so don’t worry if you see different signatures in your IDE tooltips or on Pursuit.</p>
+<p>Let’s see an example. One use of the <code>State</code> monad might be to add the values in an array of integers to the current state. We could do that by choosing <code>Int</code> as the state type <code>s</code> and using <code>traverse_</code> to traverse the array, with a call to <code>modify</code> for each array element:</p>
 <pre><code class="language-haskell">import Data.Foldable (traverse_)
 import Control.Monad.State
 import Control.Monad.State.Class
@@ -313,7 +314,7 @@ false
 local :: forall r a. (r -&gt; r) -&gt; Reader r a -&gt; Reader r a
 </code></pre>
 <p>The <code>ask</code> action can be used to read the current configuration, and the <code>local</code> action can be used to run a computation with a modified configuration.</p>
-<p>For example, suppose we were developing an application controlled by permissions, and we wanted to use the <code>Reader</code> monad to hold the current user's permissions object. We might choose the type <code>r</code> to be some type <code>Permissions</code> with the following API:</p>
+<p>For example, suppose we were developing an application controlled by permissions, and we wanted to use the <code>Reader</code> monad to hold the current user’s permissions object. We might choose the type <code>r</code> to be some type <code>Permissions</code> with the following API:</p>
 <pre><code class="language-haskell">hasPermission :: String -&gt; Permissions -&gt; Boolean
 addPermission :: String -&gt; Permissions -&gt; Permissions
 </code></pre>
@@ -325,7 +326,7 @@ createUser = do
     then map Just newUser
     else pure Nothing
 </code></pre>
-<p>To elevate the user's permissions, we might use the <code>local</code> action to modify the <code>Permissions</code> object during the execution of some computation:</p>
+<p>To elevate the user’s permissions, we might use the <code>local</code> action to modify the <code>Permissions</code> object during the execution of some computation:</p>
 <pre><code class="language-haskell">runAsAdmin :: forall a. Reader Permissions a -&gt; Reader Permissions a
 runAsAdmin = local (addPermission "admin")
 </code></pre>
@@ -337,7 +338,7 @@ createUserAsAdmin = runAsAdmin createUser
 <pre><code class="language-haskell">runReader :: forall r a. Reader r a -&gt; r -&gt; a
 </code></pre>
 <h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
-<p>In these exercises, we will use the <code>Reader</code> monad to build a small library for rendering documents with indentation. The "global configuration" will be a number indicating the current indentation level:</p>
+<p>In these exercises, we will use the <code>Reader</code> monad to build a small library for rendering documents with indentation. The “global configuration” will be a number indicating the current indentation level:</p>
 <pre><code class="language-haskell">type Level = Int
 
 type Doc = Reader Level String
@@ -386,7 +387,7 @@ type Doc = Reader Level String
 <pre><code class="language-haskell">tell :: forall w a. Monoid w =&gt; w -&gt; Writer w Unit
 </code></pre>
 <p>The <code>tell</code> action appends the provided value to the current accumulated result.</p>
-<p>As an example, let's add a log to an existing function using the <code>Array String</code> monoid. Consider our previous implementation of the <em>greatest common divisor</em> function:</p>
+<p>As an example, let’s add a log to an existing function using the <code>Array String</code> monoid. Consider our previous implementation of the <em>greatest common divisor</em> function:</p>
 <pre><code class="language-haskell">gcd :: Int -&gt; Int -&gt; Int
 gcd n 0 = n
 gcd 0 m = m
@@ -440,17 +441,17 @@ Tuple 3 ["gcdLog 21 15","gcdLog 6 15","gcdLog 6 9","gcdLog 6 3","gcdLog 3 3"]
 <p>What is a monad transformer? Well, as we have seen, a monad augments PureScript code with some type of side effect, which can be interpreted in PureScript by using the appropriate handler (<code>runState</code>, <code>runReader</code>, <code>runWriter</code>, etc.) This is fine if we only need to use <em>one</em> side-effect. However, it is often useful to use more than one side-effect at once. For example, we might want to use <code>Reader</code> together with <code>Maybe</code> to express <em>optional results</em> in the context of some global configuration. Or we might want the mutable state provided by the <code>State</code> monad together with the pure error tracking capability of the <code>Either</code> monad. This is the problem solved by <em>monad transformers</em>.</p>
 <p>Note that we have already seen that the <code>Effect</code> monad partially solves this problem. Monad transformers provide another solution, and each approach has its own benefits and limitations.</p>
 <p>A monad transformer is a type constructor parameterized by a type and another type constructor. It takes one monad and turns it into another monad, adding its own variety of side-effects.</p>
-<p>Let's see an example. The monad transformer version of the <code>State</code> monad is <code>StateT</code>, defined in the <code>Control.Monad.State.Trans</code> module. We can find the kind of <code>StateT</code> using PSCi:</p>
+<p>Let’s see an example. The monad transformer version of the <code>State</code> monad is <code>StateT</code>, defined in the <code>Control.Monad.State.Trans</code> module. We can find the kind of <code>StateT</code> using PSCi:</p>
 <pre><code class="language-text">&gt; import Control.Monad.State.Trans
 &gt; :kind StateT
 Type -&gt; (Type -&gt; Type) -&gt; Type -&gt; Type
 </code></pre>
 <p>This looks quite confusing, but we can apply <code>StateT</code> one argument at a time to understand how to use it.</p>
-<p>The first type argument is the type of the state we wish to use, as was the case for <code>State</code>. Let's use a state of type <code>String</code>:</p>
+<p>The first type argument is the type of the state we wish to use, as was the case for <code>State</code>. Let’s use a state of type <code>String</code>:</p>
 <pre><code class="language-text">&gt; :kind StateT String
 (Type -&gt; Type) -&gt; Type -&gt; Type
 </code></pre>
-<p>The next argument is a type constructor of kind <code>Type -&gt; Type</code>. It represents the underlying monad, which we want to add the effects of <code>StateT</code> to. For the sake of an example, let's choose the <code>Either String</code> monad:</p>
+<p>The next argument is a type constructor of kind <code>Type -&gt; Type</code>. It represents the underlying monad, which we want to add the effects of <code>StateT</code> to. For the sake of an example, let’s choose the <code>Either String</code> monad:</p>
 <pre><code class="language-text">&gt; :kind StateT String (Either String)
 Type -&gt; Type
 </code></pre>
@@ -460,7 +461,7 @@ Type
 </code></pre>
 <p>Finally, we are left with something of kind <code>Type</code>, which means we can try to find values of this type.</p>
 <p>The monad we have constructed – <code>StateT String (Either String)</code> – represents computations that can fail with an error and use mutable state.</p>
-<p>We can use the actions of the outer <code>StateT String</code> monad (<code>get</code>, <code>put</code>, and <code>modify</code>) directly, but to use the effects of the wrapped monad (<code>Either String</code>), we need to "lift" them over the monad transformer. The <code>Control.Monad.Trans</code> module defines the <code>MonadTrans</code> type class, which captures those type constructors which are monad transformers, as follows:</p>
+<p>We can use the actions of the outer <code>StateT String</code> monad (<code>get</code>, <code>put</code>, and <code>modify</code>) directly, but to use the effects of the wrapped monad (<code>Either String</code>), we need to “lift” them over the monad transformer. The <code>Control.Monad.Trans</code> module defines the <code>MonadTrans</code> type class, which captures those type constructors which are monad transformers, as follows:</p>
 <pre><code class="language-haskell">class MonadTrans t where
   lift :: forall m a. Monad m =&gt; m a -&gt; t m a
 </code></pre>
@@ -478,7 +479,7 @@ split = do
       pure (take 1 s)
 </code></pre>
 <p>If the state is not empty, the computation uses <code>put</code> to update the state to <code>drop 1 s</code> (that is, <code>s</code> with the first character removed) and returns <code>take 1 s</code> (that is, the first character of <code>s</code>).</p>
-<p>Let's try this in PSCi:</p>
+<p>Let’s try this in PSCi:</p>
 <pre><code class="language-text">&gt; runStateT split "test"
 Right (Tuple "t" "est")
 
@@ -505,9 +506,9 @@ runExceptT :: forall e m a. ExceptT e m a -&gt; m (Either e a)
 <p>This API is similar to that provided by the <code>exceptions</code> package and the <code>Exception</code> effect. However, there are some important differences:</p>
 <ul>
 <li><code>Exception</code> uses actual JavaScript exceptions, whereas <code>ExceptT</code> models errors as a pure data structure.</li>
-<li>The <code>Exception</code> effect only supports exceptions of one type, namely JavaScript's <code>Error</code> type, whereas <code>ExceptT</code> supports errors of any type. In particular, we are free to define new error types.</li>
+<li>The <code>Exception</code> effect only supports exceptions of one type, namely JavaScript’s <code>Error</code> type, whereas <code>ExceptT</code> supports errors of any type. In particular, we are free to define new error types.</li>
 </ul>
-<p>Let's try out <code>ExceptT</code> by using it to wrap the <code>Writer</code> monad. Again, we are free to use actions from the monad transformer <code>ExceptT e</code> directly, but computations in the <code>Writer</code> monad should be lifted using <code>lift</code>:</p>
+<p>Let’s try out <code>ExceptT</code> by using it to wrap the <code>Writer</code> monad. Again, we are free to use actions from the monad transformer <code>ExceptT e</code> directly, but computations in the <code>Writer</code> monad should be lifted using <code>lift</code>:</p>
 <pre><code class="language-haskell">import Control.Monad.Except
 import Control.Monad.Writer
 
@@ -526,7 +527,7 @@ Tuple (Left "Error!") ["Before the error"]
 <h2 id="monad-transformer-stacks"><a class="header" href="#monad-transformer-stacks">Monad Transformer Stacks</a></h2>
 <p>As we have seen, monad transformers can be used to build new monads on top of existing monads. For some monad transformer <code>t1</code> and some monad <code>m</code>, the application <code>t1 m</code> is also a monad. That means we can apply a <em>second</em> monad transformer <code>t2</code> to the result <code>t1 m</code> to construct a third monad <code>t2 (t1 m)</code>. In this way, we can construct a <em>stack</em> of monad transformers, which combine the side-effects provided by their constituent monads.</p>
 <p>In practice, the underlying monad <code>m</code> is either the <code>Effect</code> monad, if native side-effects are required, or the <code>Identity</code> monad, defined in the <code>Data.Identity</code> module. The <code>Identity</code> monad adds no new side-effects, so transforming the <code>Identity</code> monad only provides the effects of the monad transformer. The <code>State</code>, <code>Reader</code>, and <code>Writer</code> monads are implemented by transforming the <code>Identity</code> monad with <code>StateT</code>, <code>ReaderT</code>, and <code>WriterT</code>, respectively.</p>
-<p>Let's see an example in which three side effects are combined. We will use the <code>StateT</code>, <code>WriterT</code>, and <code>ExceptT</code> effects, with the <code>Identity</code> monad on the bottom of the stack. This monad transformer stack will provide the side effects of mutable state, accumulating a log, and pure errors.</p>
+<p>Let’s see an example in which three side effects are combined. We will use the <code>StateT</code>, <code>WriterT</code>, and <code>ExceptT</code> effects, with the <code>Identity</code> monad on the bottom of the stack. This monad transformer stack will provide the side effects of mutable state, accumulating a log, and pure errors.</p>
 <p>We can use this monad transformer stack to reproduce our <code>split</code> action with the added feature of logging.</p>
 <pre><code class="language-haskell">type Errors = Array String
 
@@ -560,11 +561,11 @@ split = do
 </code></pre>
 <p>This is because of how the side-effects provided by the <code>ExceptT</code> monad transformer interact with the side-effects provided by the <code>WriterT</code> monad transformer. We can address this by changing the order in which the monad transformer stack is composed. If we move the <code>ExceptT</code> transformer to the top of the stack, then the log will contain all messages written up until the first error, as we saw earlier when we transformed <code>Writer</code> with <code>ExceptT</code>.</p>
 <p>One problem with this code is that we have to use the <code>lift</code> function multiple times to lift computations over multiple monad transformers; for example, the call to <code>throwError</code> has to be lifted twice, once over <code>WriterT</code> and a second time over <code>StateT</code>. This is fine for small monad transformer stacks but quickly becomes inconvenient.</p>
-<p>Fortunately, as we will see, we can use the automatic code generation provided by type class inference to do most of this "heavy lifting" for us.</p>
+<p>Fortunately, as we will see, we can use the automatic code generation provided by type class inference to do most of this “heavy lifting” for us.</p>
 <h2 id="exercises-3"><a class="header" href="#exercises-3">Exercises</a></h2>
 <ol>
 <li>
-<p>(Easy) Use the <code>ExceptT</code> monad transformer over the <code>Identity</code> functor to write a function <code>safeDivide</code> which divides two numbers, throwing an error (as the String "Divide by zero!") if the denominator is zero.</p>
+<p>(Easy) Use the <code>ExceptT</code> monad transformer over the <code>Identity</code> functor to write a function <code>safeDivide</code> which divides two numbers, throwing an error (as the String “Divide by zero!”) if the denominator is zero.</p>
 </li>
 <li>
 <p>(Medium) Write a parser</p>
@@ -593,10 +594,10 @@ modify :: forall s. (s -&gt; s) -&gt; State s Unit
 put    :: forall m s. MonadState s m =&gt; s        -&gt; m Unit
 modify :: forall m s. MonadState s m =&gt; (s -&gt; s) -&gt; m Unit
 </code></pre>
-<p>The <code>Control.Monad.State.Class</code> module defines the <code>MonadState</code> (multi-parameter) type class, which allows us to abstract over "monads which support pure mutable state". As one would expect, the <code>State s</code> type constructor is an instance of the <code>MonadState s</code> type class, but there are many more interesting instances of this class.</p>
+<p>The <code>Control.Monad.State.Class</code> module defines the <code>MonadState</code> (multi-parameter) type class, which allows us to abstract over “monads which support pure mutable state”. As one would expect, the <code>State s</code> type constructor is an instance of the <code>MonadState s</code> type class, but there are many more interesting instances of this class.</p>
 <p>In particular, there are instances of <code>MonadState</code> for the <code>WriterT</code>, <code>ReaderT</code>, and <code>ExceptT</code> monad transformers provided in the <code>transformers</code> package. Each has an instance for <code>MonadState</code> whenever the underlying <code>Monad</code> does. In practice, this means that as long as <code>StateT</code> appears <em>somewhere</em> in the monad transformer stack, and everything above <code>StateT</code> is an instance of <code>MonadState</code>, then we are free to use <code>get</code>, <code>put</code>, and <code>modify</code> directly without the need to use <code>lift</code>.</p>
 <p>Indeed, the same is true of the actions we covered for the <code>ReaderT</code>, <code>WriterT</code>, and <code>ExceptT</code> transformers. <code>transformers</code> defines a type class for each of the major transformers, allowing us to abstract over monads that support their operations.</p>
-<p>In the case of the <code>split</code> function above, the monad stack we constructed is an instance of each of the <code>MonadState</code>, <code>MonadWriter</code>, and <code>MonadError</code> type classes. This means that we don't need to call <code>lift</code> at all! We can just use the actions <code>get</code>, <code>put</code>, <code>tell</code>, and <code>throwError</code> as if they were defined on the monad stack itself:</p>
+<p>In the case of the <code>split</code> function above, the monad stack we constructed is an instance of each of the <code>MonadState</code>, <code>MonadWriter</code>, and <code>MonadError</code> type classes. This means that we don’t need to call <code>lift</code> at all! We can just use the actions <code>get</code>, <code>put</code>, <code>tell</code>, and <code>throwError</code> as if they were defined on the monad stack itself:</p>
 <pre><code class="language-haskell">split :: Parser String
 split = do
   s &lt;- get
@@ -645,7 +646,7 @@ some :: forall f a. Alternative f =&gt; Lazy (f (Array a)) =&gt; f a -&gt; f (Ar
 <p>When we covered array comprehensions earlier in the book, we introduced the <code>guard</code> function, which could be used to filter out unwanted results. In fact, the <code>guard</code> function is more general and can be used for any monad, which is an instance of <code>MonadPlus</code>:</p>
 <pre><code class="language-haskell">guard :: forall m. Alternative m =&gt; Boolean -&gt; m Unit
 </code></pre>
-<p>The <code>&lt;|&gt;</code> operator allows us to backtrack in case of failure. To see how this is useful, let's define a variant of the <code>split</code> combinator which only matches upper case characters:</p>
+<p>The <code>&lt;|&gt;</code> operator allows us to backtrack in case of failure. To see how this is useful, let’s define a variant of the <code>split</code> combinator which only matches upper case characters:</p>
 <pre><code class="language-haskell">upper :: Parser String
 upper = do
   s &lt;- split
@@ -654,7 +655,7 @@ upper = do
 </code></pre>
 <p>Here, we use a <code>guard</code> to fail if the string is not upper case. Note that this code looks very similar to the array comprehensions we saw earlier – using <code>MonadPlus</code> in this way, we sometimes refer to constructing <em>monad comprehensions</em>.</p>
 <h2 id="backtracking"><a class="header" href="#backtracking">Backtracking</a></h2>
-<p>We can use the <code>&lt;|&gt;</code> operator to backtrack to another alternative in case of failure. To demonstrate this, let's define one more parser, which matches lower case characters:</p>
+<p>We can use the <code>&lt;|&gt;</code> operator to backtrack to another alternative in case of failure. To demonstrate this, let’s define one more parser, which matches lower case characters:</p>
 <pre><code class="language-haskell">lower :: Parser String
 lower = do
   s &lt;- split
@@ -746,14 +747,14 @@ type Game = RWS GameEnvironment Log GameState
 </code></pre>
 <h2 id="implementing-game-logic"><a class="header" href="#implementing-game-logic">Implementing Game Logic</a></h2>
 <p>Our game will be built from simple actions defined in the <code>Game</code> monad by reusing the actions from the <code>Reader</code>, <code>Writer</code>, and <code>State</code> monads. At the top level of our application, we will run the pure computations in the <code>Game</code> monad and use the <code>Effect</code> monad to turn the results into observable side-effects, such as printing text to the console.</p>
-<p>One of the simplest actions in our game is the <code>has</code> action. This action tests whether the player's inventory contains a particular game item. It is defined as follows:</p>
+<p>One of the simplest actions in our game is the <code>has</code> action. This action tests whether the player’s inventory contains a particular game item. It is defined as follows:</p>
 <pre><code class="language-haskell">has :: GameItem -&gt; Game Boolean
 has item = do
   GameState state &lt;- get
   pure $ item `S.member` state.inventory
 </code></pre>
 <p>This function uses the <code>get</code> action defined in the <code>MonadState</code> type class to read the current game state and then uses the <code>member</code> function defined in <code>Data.Set</code> to test whether the specified <code>GameItem</code> appears in the <code>Set</code> of inventory items.</p>
-<p>Another action is the <code>pickUp</code> action. It adds a game item to the player's inventory if it appears in the current room. It uses actions from the <code>MonadWriter</code> and <code>MonadState</code> type classes. First of all, it reads the current game state:</p>
+<p>Another action is the <code>pickUp</code> action. It adds a game item to the player’s inventory if it appears in the current room. It uses actions from the <code>MonadWriter</code> and <code>MonadState</code> type classes. First of all, it reads the current game state:</p>
 <pre><code class="language-haskell">pickUp :: GameItem -&gt; Game Unit
 pickUp item = do
   GameState state &lt;- get
@@ -774,7 +775,7 @@ pickUp item = do
           tell (L.singleton ("You now have the " &lt;&gt; show item))
 </code></pre>
 <p>Note that there is no need to <code>lift</code> either of the two computations here because there are appropriate instances for both <code>MonadState</code> and <code>MonadWriter</code> for our <code>Game</code> monad transformer stack.</p>
-<p>The argument to <code>put</code> uses a record update to modify the game state's <code>items</code> and <code>inventory</code> fields. We use the <code>update</code> function from <code>Data.Map</code>, which modifies a value at a particular key. In this case, we modify the set of items at the player's current location, using the <code>delete</code> function to remove the specified item from the set. <code>inventory</code> is also updated, using <code>insert</code> to add the new item to the player's inventory set.</p>
+<p>The argument to <code>put</code> uses a record update to modify the game state’s <code>items</code> and <code>inventory</code> fields. We use the <code>update</code> function from <code>Data.Map</code>, which modifies a value at a particular key. In this case, we modify the set of items at the player’s current location, using the <code>delete</code> function to remove the specified item from the set. <code>inventory</code> is also updated, using <code>insert</code> to add the new item to the player’s inventory set.</p>
 <p>Finally, the <code>pickUp</code> function handles the remaining cases by notifying the user using <code>tell</code>:</p>
 <pre><code class="language-haskell">    _ -&gt; tell (L.singleton "I don't see that item here.")
 </code></pre>
@@ -786,12 +787,12 @@ pickUp item = do
       tell (L.singleton (show state))
     else tell (L.singleton "Not running in debug mode.")
 </code></pre>
-<p>Here, we use the <code>ask</code> action to read the game configuration. Again, note that we don't need to <code>lift</code> any computation, and we can use actions defined in the <code>MonadState</code>, <code>MonadReader</code>, and <code>MonadWriter</code> type classes in the same do notation block.</p>
+<p>Here, we use the <code>ask</code> action to read the game configuration. Again, note that we don’t need to <code>lift</code> any computation, and we can use actions defined in the <code>MonadState</code>, <code>MonadReader</code>, and <code>MonadWriter</code> type classes in the same do notation block.</p>
 <p>If the <code>debugMode</code> flag is set, the <code>tell</code> action is used to write the state to the log. Otherwise, an error message is added.</p>
 <p>The remainder of the <code>Game</code> module defines a set of similar actions, each using only the actions defined by the <code>MonadState</code>, <code>MonadReader</code>, and <code>MonadWriter</code> type classes.</p>
 <h2 id="running-the-computation"><a class="header" href="#running-the-computation">Running the Computation</a></h2>
-<p>Since our game logic runs in the <code>RWS</code> monad, it is necessary to run the computation to respond to the user's commands.</p>
-<p>The front-end of our game is built using two packages: <code>optparse</code>, which provides applicative command line parsing, and <code>node-readline</code>, which wraps NodeJS' <code>readline</code> module, allowing us to write interactive console-based applications.</p>
+<p>Since our game logic runs in the <code>RWS</code> monad, it is necessary to run the computation to respond to the user’s commands.</p>
+<p>The front-end of our game is built using two packages: <code>optparse</code>, which provides applicative command line parsing, and <code>node-readline</code>, which wraps NodeJS’ <code>readline</code> module, allowing us to write interactive console-based applications.</p>
 <p>The interface to our game logic is provided by the function <code>game</code> in the <code>Game</code> module:</p>
 <pre><code class="language-haskell">game :: Array String -&gt; Game Unit
 </code></pre>
@@ -834,7 +835,7 @@ runGame env = do
       pure unit
 </code></pre>
 <p>The <code>let</code> binding is closed over both the game configuration, named <code>env</code>, and the console handle, named <code>interface</code>.</p>
-<p>Our handler takes an additional first argument, the game state. This is required since we need to pass the game state to <code>runRWS</code> to run the game's logic.</p>
+<p>Our handler takes an additional first argument, the game state. This is required since we need to pass the game state to <code>runRWS</code> to run the game’s logic.</p>
 <p>The first thing this action does is to break the user input into words using the <code>split</code> function from the <code>Data.String</code> module. It then uses <code>runRWS</code> to run the <code>game</code> action (in the <code>RWS</code> monad), passing the game environment and current game state.</p>
 <p>Having run the game logic, which is a pure computation, we need to print any log messages to the screen and show the user a prompt for the next command. The <code>for_</code> action is used to traverse the log (of type <code>List String</code>) and print its entries to the console. Finally, <code>setLineHandler</code> is used to update the line handler function to use the updated game state, and the prompt is displayed again using the <code>prompt</code> action.</p>
 <p>The <code>runGame</code> function finally attaches the initial line handler to the console interface and displays the initial prompt:</p>
@@ -844,7 +845,7 @@ runGame env = do
 <h2 id="exercises-5"><a class="header" href="#exercises-5">Exercises</a></h2>
 <ol>
 <li>
-<p>(Medium) Implement a new command <code>cheat</code>, which moves all game items from the game grid into the user's inventory. Create a function <code>cheat :: Game Unit</code> in the <code>Game</code> module, and use this function from <code>game</code>.</p>
+<p>(Medium) Implement a new command <code>cheat</code>, which moves all game items from the game grid into the user’s inventory. Create a function <code>cheat :: Game Unit</code> in the <code>Game</code> module, and use this function from <code>game</code>.</p>
 </li>
 <li>
 <p>(Difficult) The <code>Writer</code> component of the <code>RWS</code> monad is currently used for two types of messages: error messages and informational messages. Because of this, several parts of the code use case statements to handle error cases.</p>
@@ -856,10 +857,10 @@ runGame env = do
 <p><code>optparse</code> is an example of <em>applicative command line option parsing</em>. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the <code>optparse</code> package, the functor we are interested in is the <code>Parser</code> functor (imported from the optparse module <code>Options.Applicative</code>, not to be confused with our <code>Parser</code> that we defined in the <code>Split</code> module), which adds the side-effect of reading from command line options. It provides the following handler:</p>
 <pre><code class="language-haskell">customExecParser :: forall a. ParserPrefs -&gt; ParserInfo a -&gt; Effect a
 </code></pre>
-<p>This is best illustrated by example. The application's <code>main</code> function is defined using <code>customExecParser</code> as follows:</p>
+<p>This is best illustrated by example. The application’s <code>main</code> function is defined using <code>customExecParser</code> as follows:</p>
 <pre><code class="language-haskell">main = OP.customExecParser prefs argParser &gt;&gt;= runGame 
 </code></pre>
-<p>The first argument is used to configure the <code>optparse</code> library. In our case, we simply configure it to show the help message when the application is run without any arguments (instead of showing a "missing argument" error) by using <code>OP.prefs OP.showHelpOnEmpty</code>, but the <code>Options.Applicative.Builder</code> module provides several other options.</p>
+<p>The first argument is used to configure the <code>optparse</code> library. In our case, we simply configure it to show the help message when the application is run without any arguments (instead of showing a “missing argument” error) by using <code>OP.prefs OP.showHelpOnEmpty</code>, but the <code>Options.Applicative.Builder</code> module provides several other options.</p>
 <p>The second argument is the complete description of our parser program:</p>
 <pre><code class="language-haskell">  argParser :: OP.ParserInfo GameEnvironment
   argParser = OP.info (env &lt;**&gt; OP.helper) parserOptions
@@ -890,14 +891,14 @@ runGame env = do
     , OP.help "Use debug mode"
     ]
 </code></pre>
-<p><code>player</code> and <code>debug</code> are both <code>Parser</code>s, so we can use our applicative operators <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> to lift our <code>gameEnvironment</code> function, which has the type <code>PlayerName -&gt; Boolean -&gt; GameEnvironment</code> over <code>Parser</code>. <code>OP.strOption</code> constructs a command line option that expects a string value and is configured via a collection of <code>Mod</code>s folded together. <code>OP.flag</code> works similarly but doesn't expect an associated value. <code>optparse</code> offers extensive <a href="https://pursuit.purescript.org/packages/purescript-optparse">documentation</a> on different modifiers available to build various command line parsers.</p>
+<p><code>player</code> and <code>debug</code> are both <code>Parser</code>s, so we can use our applicative operators <code>&lt;$&gt;</code> and <code>&lt;*&gt;</code> to lift our <code>gameEnvironment</code> function, which has the type <code>PlayerName -&gt; Boolean -&gt; GameEnvironment</code> over <code>Parser</code>. <code>OP.strOption</code> constructs a command line option that expects a string value and is configured via a collection of <code>Mod</code>s folded together. <code>OP.flag</code> works similarly but doesn’t expect an associated value. <code>optparse</code> offers extensive <a href="https://pursuit.purescript.org/packages/purescript-optparse">documentation</a> on different modifiers available to build various command line parsers.</p>
 <p>Notice how we used the notation afforded by the applicative operators to give a compact, declarative specification of our command line interface. In addition, it is simple to add new command line arguments by adding a new function argument to <code>runGame</code> and then using <code>&lt;*&gt;</code> to lift <code>runGame</code> over an additional argument in the definition of <code>env</code>.</p>
 <h2 id="exercises-6"><a class="header" href="#exercises-6">Exercises</a></h2>
 <ol>
 <li>(Medium) Add a new Boolean-valued property <code>cheatMode</code> to the <code>GameEnvironment</code> record. Add a new command line flag <code>-c</code> to the <code>optparse</code> configuration, enabling cheat mode. The <code>cheat</code> command from the previous exercise should be disallowed if cheat mode is not enabled.</li>
 </ol>
 <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
-<p>This chapter was a practical demonstration of the techniques we've learned so far, using monad transformers to build a pure specification of our game and the <code>Effect</code> monad to build a front-end using the console.</p>
+<p>This chapter was a practical demonstration of the techniques we’ve learned so far, using monad transformers to build a pure specification of our game and the <code>Effect</code> monad to build a front-end using the console.</p>
 <p>Because we separated our implementation from the user interface, it would be possible to create other front-ends for our game. For example, we could use the <code>Effect</code> monad to render the game in the browser using the Canvas API or the DOM.</p>
 <p>We have seen how monad transformers allow us to write safe code in an imperative style, where the type system tracks effects. In addition, type classes provide a powerful way to abstract over the actions provided by a monad, enabling code reuse. We used standard abstractions like <code>Alternative</code> and <code>MonadPlus</code> to build useful monads by combining standard monad transformers.</p>
 <p>Monad transformers are an excellent demonstration of expressive code that can be written by relying on advanced type system features such as higher-kinded polymorphism and multi-parameter type classes.</p>
@@ -907,11 +908,11 @@ runGame env = do
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                             <a rel="prev" href="chapter10.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
                             <a rel="next prefetch" href="chapter12.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
                         <div style="clear: both"></div>
@@ -921,16 +922,21 @@ runGame env = do
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                     <a rel="prev" href="chapter10.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
                     <a rel="next prefetch" href="chapter12.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
 
         </div>
 
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
 
 
@@ -939,15 +945,16 @@ runGame env = do
         </script>
 
 
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
 
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
+
 
 
     </div>
