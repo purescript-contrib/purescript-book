@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up PureScript toolchain
         uses: purescript-contrib/setup-purescript@main
 
       - name: Cache PureScript dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-spago-${{ hashFiles('**/*.dhall') }}
           path: |
@@ -24,12 +24,12 @@ jobs:
             exercises/*/output
 
       - name: Set up Node toolchain
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: "14.x"
+          node-version: "24.x"
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         env:
           cache-name: cache-node-modules
         with:
