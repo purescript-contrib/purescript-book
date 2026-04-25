@@ -38,7 +38,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-83824000.js";
+            window.path_to_searchindex_js = "searchindex-4c3836ff.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-f2c26de6.js"></script>
@@ -209,7 +209,7 @@
 <p>The exercises are licensed under the MIT license.</p>
 <h2 id="release"><a class="header" href="#release">Release</a></h2>
 <p>PureScript v0.15.15</p>
-<p>Published on 2026-02-18</p>
+<p>Published on 2026-04-25</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <h2 id="functional-javascript"><a class="header" href="#functional-javascript">Functional JavaScript</a></h2>
@@ -1951,7 +1951,7 @@ No type class instance was found for
 <h2 id="exercises-6"><a class="header" href="#exercises-6">Exercises</a></h2>
 <ol>
 <li>
-<p>(Easy) Define a <code>Show</code> instance for <code>Point</code>. Match the same output as the <code>showPoint</code> function from the previous chapter. <em>Note:</em> Point is now a <code>newtype</code> (instead of a <code>type</code> synonym), which allows us to customize how to <code>show</code> it. Otherwise, we’d be stuck with the default <code>Show</code> instance for records.</p>
+<p>(Easy) Define a <code>Show</code> instance for <code>Point</code>. Match the same output as the <code>showPoint</code> function from chapter 4. <em>Note:</em> Point is now a <code>newtype</code> (instead of a <code>type</code> synonym), which allows us to customize how to <code>show</code> it. Otherwise, we’d be stuck with the default <code>Show</code> instance for records.</p>
 <pre><code class="language-haskell">newtype Point
   = Point
   { x :: Number
@@ -2098,7 +2098,7 @@ LT
 </li>
 <li>
 <p>(Easy) Derive (via <code>newtype</code>) a <code>Ring</code> instance for <code>Complex</code>. <em>Note</em>: You may instead write this instance manually, but that’s not as convenient.</p>
-<p>Here’s the <code>Shape</code> ADT from the previous chapter:</p>
+<p>Here’s the <code>Shape</code> ADT from chapter 4:</p>
 <pre><code class="language-haskell">data Shape
   = Circle Point Number
   | Rectangle Point Number Number
@@ -2107,7 +2107,7 @@ LT
 </code></pre>
 </li>
 <li>
-<p>(Medium) Derive (via <code>Generic</code>) a <code>Show</code> instance for <code>Shape</code>. How does the amount of code written and <code>String</code> output compare to <code>showShape</code> from the previous chapter? <em>Hint</em>: See the <a href="https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md#deriving-from-generic">Deriving from <code>Generic</code></a> section of the <a href="https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md">Type Class Deriving</a> guide.</p>
+<p>(Medium) Derive (via <code>Generic</code>) a <code>Show</code> instance for <code>Shape</code>. How does the amount of code written and <code>String</code> output compare to <code>showShape</code> from chapter 4? <em>Hint</em>: See the <a href="https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md#deriving-from-generic">Deriving from <code>Generic</code></a> section of the <a href="https://github.com/purescript/documentation/blob/master/guides/Type-Class-Deriving.md">Type Class Deriving</a> guide.</p>
 </li>
 </ol>
 <h2 id="type-class-constraints"><a class="header" href="#type-class-constraints">Type Class Constraints</a></h2>
