@@ -1,0 +1,25 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - control
+    - effect
+    - either
+    - foldable-traversable
+    - identity
+    - lists
+    - maybe
+    - newtype
+    - node-readline
+    - optparse
+    - ordered-collections
+    - prelude
+    - strings
+    - test-unit
+    - transformers
+    - tuples
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0

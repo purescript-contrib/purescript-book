@@ -1,0 +1,14 @@
+package:
+  dependencies:
+    - console
+    - control
+    - effect
+    - lists
+    - maybe
+    - prelude
+    - test-unit
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0

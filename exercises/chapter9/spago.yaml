@@ -1,0 +1,27 @@
+package:
+  dependencies:
+    - aff
+    - affjax
+    - affjax-node
+    - arrays
+    - bifunctors
+    - console
+    - effect
+    - either
+    - exceptions
+    - foldable-traversable
+    - functions
+    - maybe
+    - node-buffer
+    - node-fs-aff
+    - node-path
+    - ordered-collections
+    - parallel
+    - prelude
+    - strings
+    - test-unit
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0

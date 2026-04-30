@@ -1,0 +1,15 @@
+package:
+  dependencies:
+    - arrays
+    - console
+    - effect
+    - foldable-traversable
+    - functions
+    - lists
+    - prelude
+    - quickcheck
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 10.0.0
