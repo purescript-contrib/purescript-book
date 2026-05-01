@@ -267,7 +267,7 @@ For illustration purposes, let's define a primitive function that takes any two 
 > Note that if you use `:type` to ask about the type of `constantlyFirst`, it will be more verbose:
 >
 > ```text
-> : type constantlyFirst
+> > :type constantlyFirst
 > forall (a :: Type) (b :: Type). a -> b -> a
 > ```
 >
@@ -292,10 +292,10 @@ We don't have to indicate in code that we want to specialize a quantified type â
 While we can choose any types for `a` and `b`, the return type of `constantlyFirst` has to be the same as the type of the first argument (because both of them are "tied" to the same `a`):
 
 ```text
-:type constantlyFirst true "ignored"
+> :type constantlyFirst true "ignored"
 Boolean
 
-:type constantlyFirst "keep" 3
+> :type constantlyFirst "keep" 3
 String
 ```
 
